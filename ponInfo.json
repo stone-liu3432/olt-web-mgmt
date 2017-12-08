@@ -1,0 +1,29 @@
+{
+    "code":1,
+    "msg":"success",
+    "data":[
+        {
+            "port_name":"PON01",
+            "status":1,
+            "online":2,
+            "offline":3
+        },{
+            "port_name":"PON02",
+            "status":0,
+            "online":2,
+            "offline":5
+        },
+        {
+            "port_name":"PON03",
+            "status":0,
+            "online":4,
+            "offline":3
+        },
+        {
+            "port_name":"PON04",
+            "status":1,
+            "online":6,
+            "offline":3
+        }
+    ]
+}

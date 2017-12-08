@@ -1,0 +1,98 @@
+{
+    "data":{
+        "page":"advanced",
+        "menu":[
+            {"name":"running-status"},
+            {
+                "name":"system-mgmt",
+                "children":[
+                    {"name":"default-config"},
+                    {"name":"backup-config"},
+                    {"name":"restore-config"},
+                    {"name":"reboot"},
+                    {"name":"diagonose"},
+                    {"name":"remote-mgmt"},
+                    {"name":"upgrade"}
+                ]
+            },{
+                "name":"pon-mgmt",
+                "children":[
+                    {"name":"onu-allow"},
+                    {"name":"onu-deny"},
+                    {"name":"sla-cfg"}
+                ]
+            },{
+                "name":"onu-mgmt",
+                "children":[
+                    {"name":"onu-basic-info"}
+                 ]
+            },{
+                "name":"swport-mgmt",
+                "children":[
+                    {"name":"port-info"},
+                    {"name":"perf-info"},
+                    {"name":"port-cfg"}
+                ]
+            },{
+                "name":"layer2-mgmt",
+                "children":[
+                    {"name":"vlan-mgmt"},
+                    {"name":"mac-mgmt"}
+                ]
+            },{
+                "name":"protocol-mgmt",
+                "children":[
+                    {"name":"rstp"}
+                ]
+            }
+        ],
+        "lanMap_zh":{
+            "advanced" : "用户权限",
+            "port-cfg" :"端口配置",
+            "running-status" : "运行状态",
+            "system-mgmt" : "系统管理",
+            "default-config" : "恢复出厂配置",
+            "backup-config" : "备份配置",
+            "restore-config" : "导入配置",
+            "reboot" : "重启OLT",
+            "diagonose" : "诊断工具",
+            "remote-mgmt" : "远程管理",
+            "outbound" : "带外接口",
+            "inbound" : "带内接口",
+            "upgrade" : "升级管理",
+            "pon-mgmt" : "PON管理",
+            "onu-allow" : "ONU允许列表",
+            "onu-deny" : "ONU阻止列表",
+            "sla-cfg" : "带宽配置",
+            "onu-mgmt" : "ONU管理",
+            "onu-basic-info" : "ONU基本信息",
+            "swport-mgmt" : "端口管理",
+            "perf-info" : "统计信息",
+            "port-info" : "端口信息",
+            "vlan-cfg" : "VLAN配置",
+            "stormctrl-cfg" : "风暴控制",
+            "port-mirror" : "端口镜像",
+            "layer2-mgmt" : "layer2管理",
+            "vlan-mgmt" : "VLAN管理",
+            "mac-mgmt" : "MAC地址管理",
+            "protocol-mgmt" : "协议管理",
+            "rstp" : "rstp",
+            "port_name" : "端口号",
+            "media" : "端口类型",
+            "copper" : "RJ-45" ,
+            "fiber" : "光纤",
+            "cpu_usage" : "CPU使用率",
+            "memory_usage" : "内存使用率",
+            "online" : "在线",
+            "offline" : "离线",
+            "macaddr" : "MAC地址",
+            "ponports" : "PON口数量",
+            "geports" : "上联端口数量",
+            "build_time" : "编译时间",
+            "product_name" : "HSGQ-E08",
+            "sys_ver" : "系统版本",
+            "fw_ver" : "固件版本号",
+            "hw_ver" : "硬件版本号"
+        }
+    }
+}
