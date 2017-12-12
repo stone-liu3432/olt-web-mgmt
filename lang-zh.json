@@ -18,7 +18,7 @@
 		"pon_mgmt" : "PON管理",
 		  "onu_allow" : "ONU允许列表",
 		  "onu_deny" : "ONU阻止列表",
-		  "sla_cfg" : "带宽配置",
+		  "onu_bandwidth" : "带宽配置",
 		"onu_mgmt" : "ONU管理",
 		  "onu_basic_info" : "ONU基本信息",
 		"swport_mgmt" : "端口管理",
@@ -138,5 +138,6 @@
 		"static" : "静态",
 		"dynamic" : "动态",
 		
-		"flush" : "清除"
+		"flush" : "清除",
+		"desc" : "描述信息"
 }

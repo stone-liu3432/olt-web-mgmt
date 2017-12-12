@@ -7,6 +7,7 @@
 
 <script>
 import { mapMutations } from 'vuex'
+import { mapState } from 'vuex'
 import topBanner from '@/components/page/header'
 import mainContent from '@/components/page/main'
 export default {
@@ -16,30 +17,50 @@ export default {
      mainContent
   },
   created(){
+	// 根组件创建之前，初始化vuex部分数据
     this.$http.get('./systemInfo.json').then(res=>{
 	      this.systemInfo(res.data);
             this.$http.get('./portInfo.json').then(res=>{
-		           this.portInfo(res.data);
+				this.portInfo(res.data);
+				var pon_count = this.port_info.data.slice(0,this.system.data.ponports);
+				var ge_count = this.port_info.data.slice(this.system.data.ponports,this.port_info.data.length);
+				var portName = {
+					pon: this.get_portName(pon_count,'PON'),
+					ge: this.get_portName(ge_count,'GE')
+				};
+				this.portName(portName);
             }).catch(err=>{
-          // to do 
+                // to do 
             })
         }).catch(err=>{
       	// to do 
     })
     this.$http.get('./lang-zh.json').then(res=>{
-		  this.lanMap(res.data);
+		this.lanMap(res.data);
     }).catch(err=>{
       	// to do 
     })
     this.$router.push('/');
   },
   methods:{
-	  ...mapMutations({
+	...mapMutations({
 		systemInfo: 'updateSysData',
 		portInfo: 'updatePortData',
-		lanMap: 'updateLanMap'
-    })
-  }
+    	lanMap: 'updateLanMap',
+    	portName: 'updatePortName'
+	}),
+	// 根据port_id 分配端口名
+	get_portName(arr,prefix){
+		var obj = {};
+		for(var i=0;i<arr.length;i++){
+     	 	obj[arr[i].port_id] = {};
+			obj[arr[i].port_id].name = i < 10 ? prefix + '0' + (i+1) : prefix + (i+1);
+			obj[arr[i].port_id].id = arr[i].port_id;
+		}
+		return obj;
+	}
+  },
+  computed: mapState(['port_info','system'])
 }
 </script>
 
@@ -91,7 +112,9 @@ a{
   text-decoration:none;
   color:#000;
 }
-
+body{
+  user-select: none;
+}
 html,body,#app{
   height:100%;
 }

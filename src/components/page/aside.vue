@@ -29,7 +29,6 @@
 
 <script>
 import { mapState } from 'vuex'
-import Vue from 'Vue'
 export default {
     name: 'leftAside',
     data(){
@@ -84,6 +83,7 @@ export default {
         },
         //  点击切换页面
         selectItem(node){
+            console.log(node.name);
             this.$router.replace(node.name);
         },
         // 兼容firefox浏览器

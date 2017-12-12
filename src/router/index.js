@@ -10,7 +10,7 @@ import perfInfo from '../components/common/perfInfo'
 import portInfo from '../components/common/portInfo'
 import remoteMgmt from '../components/common/remoteMgmt'
 import rstp from '../components/common/rstp'
-import slaCfg from '../components/common/slaCfg'
+import onuBandwidth from '../components/common/onuBandwidth'
 import upgrade from '../components/common/upgrade'
 import portCfg from '../components/common/portCfg'
 import vlanMgmt from '../components/common/vlanMgmt'
@@ -48,8 +48,8 @@ export default new Router({
       path: "/onu_deny",
       component: onuDeny
     },{
-      path: "/sla_cfg",
-      component: slaCfg
+      path: "/onu_bandwidth",
+      component: onuBandwidth
     },{
       path: "/onu_basic_info",
       component: onuBasicInfo

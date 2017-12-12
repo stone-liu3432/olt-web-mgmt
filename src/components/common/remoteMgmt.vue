@@ -7,7 +7,7 @@
        <div class="remote-content" v-if="outbound.data">
            <p>
                 <span>{{ lanMap['outbound'] }}</span>
-                <a href="javascript:;" class="clear-btn">{{ lanMap["flush"] }}{{ lanMap['statistic']}}</a>
+                <a href="javascript:;" class="clear-btn" @click="clear_statistic(outbound.data)">{{ lanMap["flush"] }}{{ lanMap['statistic']}}</a>
            </p>
            <div>
                <span>{{ lanMap['ipaddr'] }}</span>
@@ -32,7 +32,7 @@
            <p>
                 <!-- <span>{{ lanMap['inbound'] }}</span> -->
                 <span>{{ item.interface }}</span>
-                <a href="javascript:;" class="clear-btn">{{ lanMap["flush"] }}{{ lanMap['statistic']}}</a>
+                <a href="javascript:;" class="clear-btn" @click="clear_statistic(item)">{{ lanMap["flush"] }}{{ lanMap['statistic']}}</a>
            </p>
            <div>
                <span>{{ lanMap['ipaddr'] }}</span>
@@ -67,6 +67,7 @@
                         <option v-for="(item,index) in interface_data" :key="index" :value="item.interface">
                             {{ lanMap[item.interface] ? lanMap[item.interface] : item.interface }}
                         </option>
+                        <option value="add"> {{ lanMap['add'] }} </option>
                     </select>
                 </div>
                 <div class="modal-item">
@@ -77,15 +78,15 @@
                     <span>{{ lanMap['ipmask'] }}</span>
                     <input type="text" placeholder="255.255.255.0" v-model="ipmask">
                 </div>
-                <div class="modal-item" v-if="vlan">
-                    <span>VLAN</span>
-                    <input type="text" placeholder="0-4094" v-model="vlan">
-                </div>
                 <div class="modal-item">
-                    <a href="javascript:;"> {{ lanMap['add'] }} </a>
-                    <a href="javascript:;"> {{ lanMap['delete'] }} </a>
-                    <a href="javascript:;"> {{ lanMap['apply'] }} </a>
-                    <a href="javascript:;"> {{ lanMap['cancel'] }} </a>
+                    <span>VLAN</span>
+                    <input type="text" id="vlanid" placeholder="0-4094" v-model="vlan" disabled>
+                </div>
+                <div class="modal-item flex-box">
+                    <a href="javascript:;" @click="isAdd"> {{ lanMap['add'] }} </a>
+                    <a href="javascript:;" @click="isDelete"> {{ lanMap['delete'] }} </a>
+                    <a href="javascript:;" @click="isApply"> {{ lanMap['apply'] }} </a>
+                    <a href="javascript:;" @click="closeModal()"> {{ lanMap['cancel'] }} </a>
                 </div>
                 <div class="close" @click="closeModal()"></div>
             </div>
@@ -103,11 +104,15 @@ import { mapState } from 'vuex'
                 outbound: {},
                 inbound: {},
                 interface_data: [],
+                // 控制模态框隐藏显示
                 modalDialog: false,
+                // 模态框所需要的所有数据
                 interface_map: {},
+                // 模态框内按钮状态
+                click_interface: '',
                 ipaddr: '',
                 ipmask: '',
-                vlan: ''
+                vlan: ' - '
             }
         },
         created(){
@@ -117,6 +122,7 @@ import { mapState } from 'vuex'
                 this.$http.get('./inbound.json').then(res=>{
                     this.inbound = res.data;
                     this.interface_data = this.interface_data.concat(res.data.data);
+                    this.click_interface = this.interface_data[0].interface;
                 }).catch(err=>{
                     // to do
                 })
@@ -137,11 +143,132 @@ import { mapState } from 'vuex'
                     this.interface_map[this.interface_data[i].interface] = this.interface_data[i];
                 }
             },
+            isAdd(){
+                if(this.click_interface === 'add'){
+                    var post_params = {
+                        "method":"add",
+                        "param":{
+                            "ipaddr": this.ipaddr,
+                            "ipmask": this.ipmask,
+                            "vlan_id": this.vlan
+                        }
+                    }
+                    // 请求url: /system?form=inbound
+                    this.$http.post('/system?form=inbound',post_params).then(res=>{
+                        // to do 
+                    }).catch(err=>{
+                        // to do
+                    })
+                }
+                return;
+            },
+            isDelete(){
+                if(this.click_interface === 'outbound'){
+                    return
+                }else if(this.click_interface === 'add'){
+                    return
+                }else{
+                    var post_params = {
+                        "method":"delete",
+                        "param":{
+                            "vlan_id": this.vlan
+                        }
+                    }
+                    // 请求url: /system?form=inbound
+                    this.$http.post('/system?form=inbound',post_params).then(res=>{
+                        // to do 
+                    }).catch(err=>{
+                        // to do 
+                    })
+                }
+            },
+            isApply(){
+                if(this.click_interface === 'add'){
+                    return
+                }else if(this.click_interface === 'outbound'){
+                    // to do
+                    var post_params = {
+                        "method":"set",
+                        "param":{
+                            "ipaddr": this.ipaddr,
+                            "ipmask": this.ipmask,
+                            "interface": this.click_interface
+                        }
+                    }
+                    // 请求url: /system?form=outbound
+                    this.$http.post('/system?form=outbound',post_params).then(res=>{
+                        // to do 
+                    }).catch(err=>{
+                        // to do 
+                    })
+                }else{
+                    var post_params = {
+                        "method":"set",
+                        "param":{
+                            "ipaddr": this.ipaddr,
+                            "ipmask": this.ipmask,
+                            "interface": this.click_interface,
+                            "vlan_id": this.vlan
+                        }
+                    }
+                    // 请求url: /system?form=inbound
+                    this.$http.post('/system?form=inbound',post_params).then(res=>{
+                        // to do 
+                    }).catch(err=>{
+                        // to do 
+                    })
+                }
+            },
+            clear_statistic(data){
+                if(data.interface === 'outbound'){
+                    var post_data = {
+                        "method": "set",
+                        "param": {
+                            "ipaddr": data.ipaddr,
+                            "ipmask": data.ipmask,
+                            "interface": data.interface
+                        }
+                    }
+                    // 请求url: /system?form=outbound   POST
+                    this.$http.post('/system?form=outbound',post_data).then(res=>{
+                        //  to do
+                    }).catch(err=>{
+                        // to do
+                    })    
+                }else{
+                    var post_data = {
+                        "method": "set",
+                        "param": {
+                            "ipaddr": data.ipaddr,
+                            "ipmask": data.ipmask,
+                            "interface": data.interface,
+                            "vlan_id": data.vlan_id
+                        }
+                    }
+                    // 请求url: /system?form=outbound   POST
+                    this.$http.post('/system?form=inbound',post_data).then(res=>{
+                        //  to do
+                    }).catch(err=>{
+                        // to do
+                    })   
+                }
+            },
             // 手动触发change事件时，更新当前组件的data值，触发页面自动更新
             isSelected(node){
+                this.click_interface = node.target.value;
+                if(node.target.value === 'add'){
+                    this.ipaddr = '';
+                    this.ipmask = '';
+                    this.vlan = '';
+                    var vlanid = document.getElementById('vlanid');
+                    vlanid.disabled = false;
+                    return
+                }
                 this.ipaddr = this.interface_map[node.target.value].ipaddr;
                 this.ipmask = this.interface_map[node.target.value].ipmask;
-                this.vlan = this.interface_map[node.target.value].vlan_id || '';
+                this.vlan = this.interface_map[node.target.value].vlan_id || ' - ';
+                var vlanid = document.getElementById('vlanid');
+                vlanid.disabled = true;
             }
         }
     }
@@ -199,6 +326,7 @@ p>span{
     border-radius: 5px;
     background: #ddd;
     margin-left: 100px;
+    border: 1px solid transparent;
 }
 .clear-btn{
     display: inline-block;
@@ -211,9 +339,12 @@ p>span{
     background: #ddd;
     float: right;
     margin-top: 5px;
+    border: 1px solid transparent;
+    transition: all .1s linear;
 }
-.clear-btn:active{
-    border: 1px solid red;
+.clear-btn:active,.remote-mgmt>a:hover,.modal-item>a:hover{
+    border: 1px solid #67AEF7;
+    background: #ccc;
 }
 .modal-dialog{
     position: fixed;
@@ -234,7 +365,7 @@ p>span{
 }
 .modal-content{
     width:550px;
-    height:350px;
+    height:360px;
     position: absolute;
     left: 0;
     right: 0;
@@ -274,7 +405,7 @@ p>span{
     text-align: center;
     border-radius: 5px;
     margin-top: 15px;
-    margin-left: 20px;
+    border: 1px solid transparent;
 }
 .close{
     position: absolute;
@@ -287,5 +418,9 @@ p>span{
 }
 .close:hover{
     background: url('../../assets/close_msg_hover.png') no-repeat;
+}
+.flex-box{
+    display: flex;
+    justify-content: space-around;
 }
 </style>

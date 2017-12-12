@@ -1,0 +1,15 @@
+{
+    "code":1,
+    "msg":"success",
+    "data":[{
+        "port_id":1,
+        "onu_id":1,
+        "macaddr":"38:3a:21:20:22:66",
+        "retry":1
+    },{
+        "port_id":1,
+        "onu_id":1,
+        "macaddr":"38:3a:21:24:22:55",
+        "retry":1
+    }]
+}

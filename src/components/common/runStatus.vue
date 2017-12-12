@@ -94,20 +94,20 @@
                 }).catch((err)=>{
                     // to do
                 })
-            }).catch((err)=>{
+            }).catch(err=>{
                 // to do
             })
             // 请求url: '/board?info=cpu'
             this.$http.get('./cpuInfo.json').then(res=>{
                 this.data.cpuInfo = res.data;
                 this.drawing(this.data.cpuInfo.data.cpu_usage,this.data.cpuInfo.data.memory_usage);
-            }).catch((err)=>{
+            }).catch(err=>{
                 // to do
             })
             // 请求url: '/port?info=pon'
             this.$http.get('./ponInfo.json').then(res=>{
                 this.data.ponInfo = res.data;
-            }).catch((err)=>{
+            }).catch(err=>{
                 // to do
             })
             //  请求url: /time?form=info
