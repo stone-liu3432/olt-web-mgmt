@@ -67,6 +67,7 @@
 		"status"  : "状态",
 		"online" : "在线",
 		"offline" : "离线",
+		"forbidden" : "禁用",
 		
 		"admin_status" : "管理状态",
 		"link_status"  : "状态",

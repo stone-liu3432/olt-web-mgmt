@@ -1,24 +1,24 @@
 <template>
     <div class="running-status">
-        <div class="container" v-if="this.data.timer.data">
+        <div class="container" v-if="this.timer.data">
             <h2>系统运行时间</h2>
             <div class="time-info">
                 <span>{{ lanMap['current_time'] + ' :' }}</span>
-                <span>{{ new Date(this.data.timer.data.time_sec).toLocaleString().replace(/\//g,'-') }}</span>
+                <span>{{ new Date(this.timer.data.time_sec).toLocaleString().replace(/\//g,'-') }}</span>
             </div>
             <div class="time-info">
                 <span>{{ lanMap['run_time']+' :' }}</span>
                 <span>
-                    {{ this.data.timer.data.days + " " + lanMap['days'] }}
-                    {{ this.data.timer.data.hours + " " + lanMap['hours'] }}
-                    {{ this.data.timer.data.mins < 10 ? '0' + this.data.timer.data.mins + " " + lanMap['mins'] : this.data.timer.data.mins + " " + lanMap['mins'] }}
-                    {{ this.data.timer.data.secs < 10 ? '0' + this.data.timer.data.secs + " " + lanMap['secs'] : this.data.timer.data.secs + " " + lanMap['secs'] }}
+                    {{ this.timer.data.days + " " + lanMap['days'] }}
+                    {{ this.timer.data.hours + " " + lanMap['hours'] }}
+                    {{ this.timer.data.mins < 10 ? '0' + this.timer.data.mins + " " + lanMap['mins'] : this.timer.data.mins + " " + lanMap['mins'] }}
+                    {{ this.timer.data.secs < 10 ? '0' + this.timer.data.secs + " " + lanMap['secs'] : this.timer.data.secs + " " + lanMap['secs'] }}
                 </span>
             </div>
         </div>
-        <div class="container"  v-if="this.data.ponInfo.data">
+        <div class="container"  v-if="this.ponInfo.data">
             <h2>PON口信息</h2>
-            <div class="pon-detail" v-for="(item,index) in this.data.ponInfo.data" :key="index">
+            <div class="pon-detail" v-for="(item,index) in this.ponInfo.data" :key="index">
                 <p>{{ item.port_name }}</p>
                 <div :class="[ item.status >= 1 ? 'bg-online' : 'bg-offline' ]">
                     <img src="../../assets/network-online.png" v-if="item.status >=1">
@@ -26,13 +26,13 @@
                 </div>
                 <p :style="{'color' : item.status >=1 ? '#51D691' : 'red'}">{{ lanMap['link_status'] + ' : ' }}{{ item.status >= 1 ? lanMap['online'] : lanMap['offline'] }}</p>
                 <p>已注册设备数:{{ item.online + item.offline }}</p>
-                <p>在线:{{ item.online }}</p>
-                <p>离线:{{ item.offline }}</p>
+                <p>{{ lanMap['online'] }}：{{ item.online }}</p>
+                <p>{{ lanMap['offline'] }}：{{ item.offline }}</p>
             </div>
         </div>
-        <div class="container"  v-if="this.data.ponInfo.data">
+        <div class="container"  v-if="this.geInfo[0]">
             <h2>GE信息</h2>
-            <div class="pon-detail" v-for="(item,index) in this.data.geInfo.data" :key="index">
+            <div class="pon-detail" v-for="(item,index) in this.geInfo" :key="index">
                 <p>{{ "GE0"+(index+1) }}</p>
                 <div :class="[ item.admin_status >= 1 ? item.link_status >= 1 ? 'bg-online' : 'bg-offline' :'bg-disabled' ]">
                     <img src="../../assets/ge-port.png" v-if="item.admin_status >=1 && item.link_status >=1 ">
@@ -40,20 +40,22 @@
                     <img src="../../assets/ge-port-disabled.png" v-if="item.admin_status < 1">
                 </div>
                 <p :style="{'color' : item.admin_status >=1 ? item.link_status >=1 ? '#51D691' : 'red' : '#aaa'}">
-                    状态:{{ item.admin_status >= 1 ? item.link_status >= 1 ? "在线" : "离线" : "禁用" }}
+                    {{ lanMap['admin_status'] }}：{{ item.admin_status >= 1 ? item.link_status >= 1 ? lanMap['online'] : lanMap['offline'] : lanMap['forbidden'] }}
                 </p>
-                <p>接口:{{ item.media }}</p>
+                <p :style="{'color' : item.admin_status >=1 ? item.link_status >=1 ? '#51D691' : 'red' : '#aaa'}">
+                    {{ lanMap['link_status']}}：{{ item.media }}
+                </p>
             </div>
         </div>
-        <div class="systemInfo" v-if="this.data.systemInfo.data">
+        <div class="systemInfo" v-if="this.system.data">
             <h2>系统信息</h2>
-            <div v-for="(item,key) of this.data.systemInfo.data" :key="key" class="systemInfo-detail"  v-if="key !== 'bl_ver'">
+            <div v-for="(item,key) of this.system.data" :key="key" class="systemInfo-detail"  v-if="key !== 'bl_ver'">
                 <!-- 根据key值，取出映射的lanMap字符 -->
                 <span>{{ lanMap[key] }}</span>
                 <span>{{ item }}</span>
             </div>
         </div>
-        <div class="cpuInfo">
+        <div class="cpuInfo" v-if="this.cpuInfo.data">
             <h2>硬件状态</h2>
             <div>
                 <p>CPU</p>
@@ -73,67 +75,54 @@
         name: 'runStatus',
         data(){
             return {
-                data:{
-                    systemInfo: {},
-                    cpuInfo: {},
-                    ponInfo: {},
-                    geInfo: {},
-                    timer: {}
-                }
+                cpuInfo: {},
+                ponInfo: {},
+                geInfo: {},
+                timer: {}
             }
         },
         created(){
-            // url: '/board?info=system'
-            this.$http.get('./systemInfo.json').then(res=>{
-                this.data.systemInfo = res.data;
-                // 请求url: /switch_port?form=info
-                this.$http.get('./geInfo.json').then(res=>{
-                    // 获取pon口数量，从端口中去除pon口，将剩下的端口（ge口）展示到页面上
-                    res.data.data = res.data.data.slice(this.data.systemInfo.data.ponports,res.data.data.length);
-                    this.data.geInfo = res.data;
-                }).catch((err)=>{
-                    // to do
-                })
-            }).catch(err=>{
-                // to do
-            })
+            // 获取pon口数量，从端口中去除pon口，将剩下的端口（ge口）展示到页面上
+            var ge_port = this.port_info.data.slice(this.system.data.ponports,this.port_info.data.length);
+            this.geInfo = ge_port;
             // 请求url: '/board?info=cpu'
-            this.$http.get('./cpuInfo.json').then(res=>{
-                this.data.cpuInfo = res.data;
-                this.drawing(this.data.cpuInfo.data.cpu_usage,this.data.cpuInfo.data.memory_usage);
+            this.$http.get('./ponInfo.json').then(res=>{
+                this.ponInfo = res.data;
             }).catch(err=>{
                 // to do
             })
-            // 请求url: '/port?info=pon'
-            this.$http.get('./ponInfo.json').then(res=>{
-                this.data.ponInfo = res.data;
+            this.$http.get('./cpuInfo.json').then(res=>{
+                this.cpuInfo = res.data;
+                setTimeout(()=>{
+                    this.drawing(this.cpuInfo.data.cpu_usage,this.cpuInfo.data.memory_usage);
+                },0)
             }).catch(err=>{
                 // to do
             })
             //  请求url: /time?form=info
             this.$http.get('./time.json').then(res=>{
-                this.data.timer = res.data;
-                if(this.data.timer.data){
-                    var timer = setInterval(()=>{
-                        if(this.data.timer.data.secs < 60){
-                            this.data.timer.data.secs += 1;
-                            if(this.data.timer.data.secs > 59){
-                                this.data.timer.data.secs = 0;
-                                this.data.timer.data.mins += 1;
-                                if(this.data.timer.data.mins > 59){
-                                    this.data.timer.data.secs = 0;
-                                    this.data.timer.data.mins = 0;
-                                    this.data.timer.data.hours += 1;
-                                    if(this.data.timer.data.nours > 23){
-                                        this.data.timer.data.secs = 0;
-                                        this.data.timer.data.mins = 0;
-                                        this.data.timer.data.hours = 0;
-                                        this.data.timer.data.days += 1;
+                this.timer = res.data;
+                if(this.timer.data){
+                    setInterval(()=>{
+                        if(this.timer.data.secs < 60){
+                            this.timer.data.secs += 1;
+                            if(this.timer.data.secs > 59){
+                                this.timer.data.secs = 0;
+                                this.timer.data.mins += 1;
+                                if(this.timer.data.mins > 59){
+                                    this.timer.data.secs = 0;
+                                    this.timer.data.mins = 0;
+                                    this.timer.data.hours += 1;
+                                    if(this.timer.data.nours > 23){
+                                        this.timer.data.secs = 0;
+                                        this.timer.data.mins = 0;
+                                        this.timer.data.hours = 0;
+                                        this.timer.data.days += 1;
                                     }
                                 }
                             }
                         }
-                        this.data.timer.data.time_sec += 1000;
+                        this.timer.data.time_sec += 1000;
                     },1000)
                 }
             }).catch(err=>{
@@ -203,7 +192,7 @@
                 memoryCtx.fillText(memoryNum+'%', 100, 100);
             }
         },
-        computed: mapState(['lanMap'])
+        computed: mapState(['lanMap','port_info','system'])
     }
 </script>
 

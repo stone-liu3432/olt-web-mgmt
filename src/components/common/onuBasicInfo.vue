@@ -5,8 +5,11 @@
 </template>
 
 <script>
+import { mapState } from 'vuex'
+import { mapMutations } from 'vuex'
     export default {
-        name: 'onuBasicInfo'
+        name: 'onuBasicInfo',
+        computed: mapState(['lanMap','port_name','menu'])
     }
 </script>
 

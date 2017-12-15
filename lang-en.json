@@ -1,5 +1,4 @@
 {
-	"lanMap_zh":{
 		"advanced" : "advanced",
 		"running_status" : "Running Status",
 		"system_mgmt" : "System Management",
@@ -19,7 +18,7 @@
 		"pon_mgmt" : "PON Management",
 		  "onu_allow" : "ONU Allow List",
 		  "onu_deny" : "ONU Deny List",
-		  "sla_cfg" : "Bandwidth config",
+		  "onu_bandwidth" : "Bandwidth config",
 		"onu_mgmt" : "ONU Management",
 		  "onu_basic_info" : "ONU Base Info",
 		"swport_mgmt" : "Switch Port Management",
@@ -138,6 +137,4 @@
 		"dynamic" : "Dynamic",
 		
 		"flush" : "Flush"
-		
-	}
 }

@@ -1,7 +1,7 @@
 <template>
     <div class="onu-bandwidth">
         <div>
-            <select @change="changePon($event)">
+            <select @change="changePon($event)" v-model="_portid">
                 <option v-for="(item,key) in port_name.pon" :key="key" :value="item.id">
                     {{ item.name }}
                 </option>
@@ -78,7 +78,9 @@ import { mapState } from 'vuex'
             }
         },
         created(){
-            // 请求 url: /onu_bandwidth?port_id=1
+            // 请求 url: /onu_bandwidth?port_id=1  //  port_id =  this.$route.query.port_id
+            //  '/onu_bandwidth?port_id=' + (this.$route.query.port_id || 1)  
+            this._portid = this.$route.query.port_id || this.port_info.data[0].port_id;
             this.$http.get('./onuBandwidth.json').then(res=>{
                 this.bound_width = res.data;
             }).catch(err=>{
@@ -169,7 +171,7 @@ import { mapState } from 'vuex'
                 }
             }
         },
-        computed: mapState(['lanMap','port_name'])
+        computed: mapState(['lanMap','port_name','port_info'])
     }
 </script>
 

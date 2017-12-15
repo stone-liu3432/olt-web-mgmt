@@ -12,7 +12,9 @@ export default new Vuex.Store({
     // 端口映射 => port_id : port_name
     port_name: {},
     // 选择语言输出到页面 => 语言映射
-    lanMap: {}
+    lanMap: {},
+    // 菜单映射
+    menu: {}
   },
   mutations:{
     updateSysData(state,data){
@@ -26,6 +28,9 @@ export default new Vuex.Store({
     },
     updatePortName(state,data){
         state.port_name = data;
-    }
+    },
+    updateMenu(state,data){
+        state.menu = data;
+    }      
   }
 })

@@ -1,0 +1,20 @@
+{
+    "code":1,
+    "msg":"success",
+    "data":{
+        "port_id":1,
+        "onu_id":1,
+        "auth_mode":"mac",
+        "auth_state":"true",
+        "status":"online",
+        "onu_type":"",
+        "rtt":1331,
+        "macaddr":"38:3a:21:20:22:66",
+        "vendor":"ZTE",
+        "onu_mode":"HS-E",
+        "onu_chip":"",
+        "fw_ver":"",
+        "geports":1,
+        "feports":0
+    }
+}

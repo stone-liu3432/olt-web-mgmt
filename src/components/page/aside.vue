@@ -1,8 +1,8 @@
 <template>
-    <div id="left-aside" class="lf" v-if="this.data.code && lanMap">
+    <div id="left-aside" class="lf" v-if="menu.code ===1 && lanMap">
         <ul class="menu">
             <!-- 主菜单/左侧导航栏 -->
-            <li v-for="(item,index) in this.data.data.menu" :key="index">
+            <li v-for="(item,index) in menu.data.menu" :key="index">
                 <!-- 添加点击事件  onselectstart =>禁止双击选取文本 -->
                 <p class="menu-item" @click="handleClick(item,$event)" onselectstart="return false;" :class="[ item.isHidden ? 'active' : '' ]"> 
                     {{ lanMap[item.name] }}
@@ -32,25 +32,14 @@ import { mapState } from 'vuex'
 export default {
     name: 'leftAside',
     data(){
-        return {
-            data: {}
-        }
-    },
-    created(){
-        // 请求url: '/board?info=menu'
-        this.$http.get('./menu.json').then(res=>{
-            this.data = res.data;
-            this.data.data.menu[0].isHidden = true;
-        }).catch(err=>{
-            // to do
-        })
+        return {}
     },
     methods:{
         handleClick(node,e){
             // 检查 菜单项下面是否有子菜单
             if(!node.children){
-                for(var key in this.data.data.menu){
-                    this.data.data.menu[key].isHidden = false;
+                for(var key in this.menu.data.menu){
+                    this.menu.data.menu[key].isHidden = false;
                 }
                 node.isHidden = true;
                 this.$router.replace(node.name);
@@ -61,12 +50,12 @@ export default {
             }else{
             // 如有，加上打开折叠效果
                 if(node.isHidden){
-                    for(var key in this.data.data.menu){
-                        this.data.data.menu[key].isHidden = false;
+                    for(var key in this.menu.data.menu){
+                        this.menu.data.menu[key].isHidden = false;
                     }
                 }else{
-                    for(var key in this.data.data.menu){
-                        this.data.data.menu[key].isHidden = false;
+                    for(var key in this.menu.data.menu){
+                        this.menu.data.menu[key].isHidden = false;
                     }
                     node.isHidden = true;
                 }
@@ -83,20 +72,10 @@ export default {
         },
         //  点击切换页面
         selectItem(node){
-            console.log(node.name);
             this.$router.replace(node.name);
-        },
-        // 兼容firefox浏览器
-        del_ff(elem){
-            var elem_child = elem.childNodes;
-            for(var i=0; i<elem_child.length;i++){
-                if(elem_child[i].nodeName == "#text" && !/\s/.test(elem_child.nodeValue))
-                    {elem.removeChild(elem_child)
-                }
-            }
         }
     },
-    computed: mapState(['lanMap'])
+    computed: mapState(['lanMap','menu'])
 }
 </script>
 

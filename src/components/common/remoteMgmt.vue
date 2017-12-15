@@ -119,6 +119,8 @@ import { mapState } from 'vuex'
             this.$http.get('./outbound.json').then(res=>{
                 this.outbound = res.data;
                 this.interface_data.push(res.data.data);
+                this.ipaddr = res.data.data.ipaddr;
+                this.ipmask = res.data.data.ipmask;
                 this.$http.get('./inbound.json').then(res=>{
                     this.inbound = res.data;
                     this.interface_data = this.interface_data.concat(res.data.data);

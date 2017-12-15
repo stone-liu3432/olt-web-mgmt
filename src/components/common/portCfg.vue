@@ -1,71 +1,80 @@
 <template>
     <div>
         <div class="vlan-config">
-            <p class="item-align">PON01</p>
-            <p>linkup</p>
-            <p>Enable</p>
+            <select class="item-align" v-model="selected">
+                <option v-for="(item,index) in port_name.pon" :key="index" :value="item.id">{{ item.name }}</option>
+                <option v-for="(item,index) in port_name.ge" :key="index" :value="item.id">{{ item.name }}</option>
+            </select>
+            <p>
+                <span>{{ lanMap['link_status'] + '：' }}</span>
+                <span>{{ port_info.data[_portid-1].link_status === 1 ? lanMap['link_up'] : lanMap['link_down'] }}</span>
+            </p>
+            <p>
+                <span>{{ lanMap['admin_status'] + '：' }}</span>
+                <span>{{ port_info.data[_portid-1].admin_status === 1 ? lanMap['enable'] : lanMap['disable'] }}</span>
+            </p>
         </div>
         <div class="config">
-            <h2>VLAN配置</h2>
+            <h2>{{ lanMap['vlan_cfg']}}</h2>
             <div>
                 <div class="vlan-config">
-                    <p>port-type</p>
+                    <p>{{ lanMap['port_type'] }}</p>
                     <select>
-                        <option value="">access</option>
-                        <option value="">trunk</option>
-                        <option value="">hybird</option>
+                        <option value="1">access</option>
+                        <option value="2">trunk</option>
+                        <option value="3">hybird</option>
                     </select>
                 </div>
                 <div class="vlan-config">
-                    <p>port-defaultVLAN</p>
+                    <p>{{ lanMap['vlan_mode'] }}</p>
                     <input type="number" max="4094" min="0">
                 </div>
                 <div class="vlan-config">
-                    <p>tagged_vlan</p>
+                    <p>{{ lanMap['tagged'] }}</p>
                     <input type="text">
                 </div>
                 <div class="vlan-config">
-                    <p>untagged_vlan</p>
+                    <p>{{ lanMap['untagged'] }}</p>
                     <input type="text">
                 </div>
                 <div class="btn-submit"> 
-                    <a href="javascript:void(0);" class="rt">提交修改</a>
+                    <a href="javascript:void(0);" class="rt">{{ lanMap['apply'] }}</a>
                 </div>
             </div>
         </div>
         <div class="config">
-            <h2>风暴控制</h2>
+            <h2>{{ lanMap['stormctrl'] }}</h2>
             <div class="storm-config">
                 <div>
-                    <span>broadcast</span>
+                    <span>{{ lanMap['broadcast'] }}</span>
                     <span>1</span>
                 </div>
                 <div>
-                    <span>multicast</span>
+                    <span>{{ lanMap['multicast'] }}</span>
                     <span>1</span>
                 </div>
                 <div>
-                    <span>unicast</span>
+                    <span>{{ lanMap['unicast'] }}</span>
                     <span>1</span>
                 </div>
                 <div class="btn-submit">
-                    <a href="javascript:void(0);" class="rt">提交修改</a>
+                    <a href="javascript:void(0);" class="rt">{{ lanMap['apply']}}</a>
                 </div>
             </div>
         </div>
         <div class="config">
-            <h2>端口镜像</h2>
+            <h2>{{ lanMap['mirror'] }}</h2>
             <div class="port-mirror">
-                <span>源端口：1</span>
-                <span>目标端口：
+                <span>{{ lanMap['src_port'] }}</span>
+                <span>{{ lanMap['dst_port'] }}
                     <select>
                         <option value="">2</option>
                         <option value="">2</option>
                     </select>
                 </span>
-                <span>类型：0</span>
+                <span>{{ lanMap['type'] }}</span>
                 <div class="btn-submit">
-                    <a href="javascript:void(0);" class="rt">提交修改</a>
+                    <a href="javascript:void(0);" class="rt">{{ lanMap['apply'] }}</a>
                 </div>
             </div>
         </div>
@@ -76,20 +85,33 @@
 import { mapState } from 'vuex';
     export default {
         name: 'vlanCfg',
+        computed: mapState(['lanMap','port_info','port_name']),
         data(){
             return {
                 vlan_data: {},
                 stormctrl_data: {},
-                mirror_data: {}
+                mirror_data: {},
+                _portid: 0,
+                selected: ''
             }
         },
         created(){
+            this._portid = this.$route.query.port_id || this.port_info.data[0].port_id;
+            this.selected = this._portid;
             // 请求url: /switch_port?form=vlan&port_id=1    默认为 1 端口
             this.$http.get('./VLANInfo.json').then(res=>{
                 this.vlan_data = res.data;
             }).catch(err=>{
                 // to do 
             })
+        },
+        methods: {
+            
+        },
+        watch: {
+            selected(){
+                this._portid = this.selected;
+            }
         }
     }
 </script>
@@ -107,8 +129,16 @@ import { mapState } from 'vuex';
     padding: 10px 0;
 }
 .vlan-config{
-    width:600px;
-    margin: 5px 0;
+    width: 800px;
+    margin: 20px 0 20px 20px;
+}
+.item-align{
+    float: left;
+    width: 200px;
+    font-size: 18px;
+    font-weight: 600;
+    margin-right: 50px;
+    text-indent: 10px;
 }
 .vlan-config>p{
     float: left;

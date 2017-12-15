@@ -78,7 +78,14 @@ export default {
         // 切换pon口时，进行的操作
         changePon(event){
             this._portid = event.target.value;
+            // 请求 url: /onu_deny_list?port_id=1
+            this.$http.get('/onu_deny_list?port_id='+this._portid).then(res=>{
+                this.onu_deny_list = res.data;
+            }).catch(err=>{
+                // to do
+            })
         },
+        //  点击 确认/取消 时进行的操作
         handle(bool){
             this.addItem.isShow = false;
             if(bool){
@@ -101,6 +108,7 @@ export default {
                 return 
             }
         },
+        //  点击添加按钮时，显示添加模板
         add(){
             this.addItem.isShow = true;
         },

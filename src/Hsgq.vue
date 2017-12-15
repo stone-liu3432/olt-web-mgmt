@@ -1,7 +1,7 @@
 <template>
   <div id="hsgq">
-    <topBanner></topBanner>
-    <mainContent></mainContent>
+    <topBanner v-if="this.system.data"></topBanner>
+    <mainContent v-if="this.port_info.data"></mainContent>
   </div>
 </template>
 
@@ -21,9 +21,15 @@ export default {
     this.$http.get('./systemInfo.json').then(res=>{
 	      this.systemInfo(res.data);
             this.$http.get('./portInfo.json').then(res=>{
-				this.portInfo(res.data);
-				var pon_count = this.port_info.data.slice(0,this.system.data.ponports);
-				var ge_count = this.port_info.data.slice(this.system.data.ponports,this.port_info.data.length);
+                this.portInfo(res.data);
+                var index;
+                for(var i=0,len=this.port_info.data.length;i<len;i++){
+                    if(this.port_info.data[i].port_id === this.system.data.ponports){
+                        index = i + 1;
+                    }
+                }
+				var pon_count = this.port_info.data.slice(0,index);
+				var ge_count = this.port_info.data.slice(index,this.port_info.data.length);
 				var portName = {
 					pon: this.get_portName(pon_count,'PON'),
 					ge: this.get_portName(ge_count,'GE')
@@ -40,6 +46,11 @@ export default {
     }).catch(err=>{
       	// to do 
     })
+    this.$http.get('./menu.json').then(res=>{
+		this.menu(res.data);
+    }).catch(err=>{
+      	// to do 
+    })
     this.$router.push('/');
   },
   methods:{
@@ -47,15 +58,21 @@ export default {
 		systemInfo: 'updateSysData',
 		portInfo: 'updatePortData',
     	lanMap: 'updateLanMap',
-    	portName: 'updatePortName'
+		portName: 'updatePortName',
+		menu: 'updateMenu'
 	}),
 	// 根据port_id 分配端口名
 	get_portName(arr,prefix){
 		var obj = {};
 		for(var i=0;i<arr.length;i++){
      	 	obj[arr[i].port_id] = {};
-			obj[arr[i].port_id].name = i < 10 ? prefix + '0' + (i+1) : prefix + (i+1);
-			obj[arr[i].port_id].id = arr[i].port_id;
+            obj[arr[i].port_id].name = i < 10 ? prefix + '0' + arr[i].port_id : prefix + arr[i].port_id;
+            if(arr[i].port_id > this.system.data.ponports){
+                var n = arr[i].port_id - this.system.data.ponports;
+                obj[arr[i].port_id].name = i < 10 ? prefix + '0' + n : prefix + n;
+            }
+            obj[arr[i].port_id].id = arr[i].port_id;
+            obj[arr[i].port_id].data = arr[i]; 
 		}
 		return obj;
 	}
