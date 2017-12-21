@@ -1,15 +1,403 @@
 <template>
-    <div>
-        vlanCfg
+    <div class="vlan-mgmt">
+        <div>
+            <h2>{{ lanMap['vlan_cfg'] }}</h2>
+            <div>
+                <a href="javascript:;" @click="createVlan">创建VLAN</a>
+                <!-- <a href="javascript:;" @click="addPort">添加端口</a>
+                <a href="javascript:;" @click="removePort">移除端口</a> -->
+            </div>
+            <div class="add-vlan" v-if="create_vlan">
+                <span>VLAN ID：</span>
+                <span>
+                    <input type="text" placeholder="VLAN ID 1-4094" v-model="new_vlan">
+                </span>
+                <a href="javascript:;" @click="handle_create(true)">{{ lanMap['apply'] }}</a>
+                <a href="javascript:;" @click="handle_create(false)">{{ lanMap['cancel'] }}</a>
+            </div>
+        </div>
+        <p>vlan列表</p>
+        <ul v-if="vlan_list.data">
+            <li>
+                <!-- <input type="radio" name="checkedVlan" style="visibility:hidden"> -->
+                <span v-for="(item,key) in vlan_list.data[0]" :key="key">{{ /*lanMap[key]*/ key }}</span>
+                <span class="vlan-cfg-title">管理</span>
+            </li>
+            <li v-for="(item,index) in vlan_list.data" :key="index">
+                <!-- <input type="radio" v-model="vlanid" :value="item.vlan_id"> -->
+                <span>{{ item.vlan_id }}</span>
+                <span>{{ item.tagged_port }}</span>
+                <span>{{ item.untagged_port }}</span>
+                <a href="javascript:;"  @click="config_port(item.vlan_id)">VLAN配置</a>
+                <a href="javascript:;"  @click="deleteVlan(item.vlan_id)">删除VLAN</a>
+            </li>
+        </ul>
+        <div class="modal-dialog" v-if="modalDialog">
+            <div class="cover"></div>
+            <div class="modal-content">
+                <div class="modal-title">
+                    <span>VLAN ID:</span>
+                    <span>{{ vlanid }}</span>
+                </div>
+                <div class="modal-body">
+                    <div class="vlan-mode">
+                        <h3 class="lf">tagged:</h3>
+                        <div class="vlan-port lf">
+                            <div>
+                                <span v-for="(item,key) in port_name.pon" :key="key" class="tagged">
+                                    <!-- name属性用来绑定 tagged 和 untagged ,二者只能二选一 或者 不选 -->
+                                    <input type="radio" :name="item.id" :id="'tagged'+item.id" @click="changeState($event)" value="0">
+                                    <label :for="'tagged'+item.id">{{ item.name }}</label>
+                                </span>
+                            </div>
+                            <div>
+                                <span v-for="(item,key) in port_name.ge" :key="key" class="tagged">
+                                    <input type="radio" :name="item.id" :id="'tagged'+item.id" @click="changeState($event)" value="0">
+                                    <label :for="'tagged'+item.id">{{ item.name }}</label>
+                                </span>
+                            </div>
+                        </div>
+                    </div>
+                    <hr/>
+                    <div class="vlan-mode">
+                        <h3 class="lf">untagged:</h3>
+                        <div class="vlan-port lf">
+                            <div>
+                                <span v-for="(item,key) in port_name.pon" :key="key" class="untagged">
+                                    <input type="radio" :name="item.id" :id="'untagged'+item.id" @click="changeState($event)" value="0">
+                                    <label :for="'untagged'+item.id">{{ item.name }}</label>
+                                </span>
+                            </div>
+                            <div>
+                                <span v-for="(item,key) in port_name.ge" :key="key" class="untagged">
+                                    <input type="radio" :name="item.id" :id="'untagged'+item.id" @click="changeState($event)" value="0">
+                                    <label :for="'untagged'+item.id">{{ item.name }}</label>
+                                </span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="vlan-mode">
+                        <a href="javascript:;" class="rt" @click="handle_cfg(false)">取消</a>
+                        <a href="javascript:;" class="rt" @click="handle_cfg(true)">确定</a>
+                    </div>
+                </div>
+                <div class="close" @click="closeModal"></div>
+            </div>
+        </div>
+        <confirm tool-tips="是否确认删除此VLAN?" @choose="result" v-if="userChoose"></confirm>
     </div>
 </template>
 
 <script>
+import { mapState } from 'vuex'
+import confirm from '@/components/common/confirm'
     export default {
-        name: 'vlanMgmt'
+        name: 'vlanMgmt',
+        components: { confirm },
+        data(){
+            return {
+                // 已有的 VLAN列表
+                vlan_list: {},
+                // 删除VLAN确认框组件
+                userChoose: false,
+                // 创建VLAN模态框的显示隐藏参数
+                create_vlan: false,
+                vlanid: 0,
+                // 创建VLAN时，绑定的新创建的 VLAN ID
+                new_vlan: '',
+                vlan_map: {},
+                // 模态框隐藏显示
+                modalDialog: false,
+            }
+        },
+        created(){
+            this.getData();
+        },
+        methods: {
+            getData(){
+                this.$http.get('./vlan_list.json').then(res=>{
+                    this.vlan_list = res.data;
+                    if(this.vlan_list.data){
+                        var vlan_map = {}
+                        for(var key in this.vlan_list.data){
+                            vlan_map[this.vlan_list.data[key].vlan_id] = this.vlan_list.data[key];
+                        }
+                        this.vlan_map = vlan_map;
+                    }
+                }).catch(err=>{
+                    // to do
+                })
+            },
+            changeState(e){
+                if(e.target.value == 1){
+                    e.target.checked = false;
+                    e.target.value = 0;
+                }else{
+                    e.target.checked = true;
+                    e.target.value = 1;
+                }
+            },
+            //  创建VLAN
+            createVlan(){
+                this.create_vlan = !this.create_vlan;
+            },
+            //  删除VLAN
+            deleteVlan(vlanid){
+                this.userChoose = true;
+                this.vlanid = vlanid;
+            },
+            //  配置 VLAN 端口模态框
+            config_port(id){
+                this.modalDialog = true;
+                this.vlanid = id;
+                //  setTimeout延迟执行，会等到页面(DOM)加载完成后再执行此操作，否则取不到值
+                setTimeout(()=>{
+                    var tagged = document.querySelectorAll('span.tagged>input');
+                    var untagged = document.querySelectorAll('span.untagged>input');
+                    var tag_checked = this.vlan_map[this.vlanid].tagged_port.split(',');
+                    var untag_checked = this.vlan_map[this.vlanid].untagged_port.split(',');
+                    for(var i=0,len1=tagged.length;i<len1;i++){
+                        for(var j=0,len2=tag_checked.length;j<len2;j++){
+                            if(tagged[i].nextElementSibling.innerText.replace(/\s/g,'') === tag_checked[j].replace(/\s/g,'')){
+                                tagged[i].checked = 'true';
+                                tagged[i].value = 1;
+                            }
+                        }
+                    }
+                    for(var i=0,len1=untagged.length;i<len1;i++){
+                        for(var j=0,len2=untag_checked.length;j<len2;j++){
+                            if(untagged[i].nextElementSibling.innerText.replace(/\s/g,'') === untag_checked[j].replace(/\s/g,'')){
+                                untagged[i].checked = 'true';
+                                untagged[i].value = 1;
+                            }
+                        }
+                    }
+                },0)
+            },
+            // //  添加端口
+            // addPort(){
+            //     this.modalDialog = true;
+            // },
+            // //  移除端口
+            // removePort(){
+            //     this.modalDialog = true;
+            // },
+            closeModal(){
+                this.modalDialog = false;
+            },
+            //  模态框控件
+            result(bool){
+                if(bool){
+                    // to do
+                    var post_param = {
+                        "method":"destroy",
+                        "param":{
+                            "vlan_id": this.vlanid
+                        }
+                    }
+                    this.$http.post('/switch_vlan',post_param).then(res=>{
+                        // do sth
+                        this.getData();
+                    }).catch(err=>{
+                        // to do
+                    })
+                    this.userChoose = false;
+                }else{
+                    this.userChoose = false;
+                    this.vlanid = 0;
+                }
+            },
+            //  配置模态框的按钮动作，根据用户选择进行操作
+            handle_cfg(bool){
+                if(bool){
+                    var tagged = document.querySelectorAll('span.tagged>input');
+                    var untagged = document.querySelectorAll('span.untagged>input');
+                    var tag_str = '',untag_str = ''
+                    for(var i=0,len=tagged.length;i<len;i++){
+                        if(tagged[i].checked){
+                            tag_str += tagged[i].nextElementSibling.innerText;
+                            tag_str += ',';
+                        }
+                    }
+                    for(var i=0,len=untagged.length;i<len;i++){
+                        if(untagged[i].checked){
+                            untag_str += untagged[i].nextElementSibling.innerText;
+                            untag_str += ',';
+                        }
+                    }
+                    var post_param = {
+                        "method":"set",
+                        "param":{
+                            "vlan_id": this.vlanid,
+                            "tagged": tag_str.replace(/\,$/,''),
+                            "untagged": untag_str.replace(/\,$/,'')
+                        }
+                    }
+                    this.$http.post('/switch_vlan',post_param).then(res=>{
+                        // do sth
+                    }).catch(err=>{
+                        // to do
+                    })
+                    return
+                }
+                this.modalDialog = false;
+            },
+            //  添加VLAN时的动作，根据用户选择进行操作
+            handle_create(bool){
+                if(bool){
+                    var vid = Number(this.new_vlan);
+                    if(isNaN(vid) || vid > 4094) return
+                    var post_param = {
+                        "method":"create",
+                        "param":{
+                            "type":1,
+                            "vlan_id": vid
+                        }
+                    }
+                    this.$http.post('/switch_vlan',post_param).then(res=>{
+                        // do sth
+                        this.getData();
+                    }).catch(err=>{
+                        // to do
+                    })
+                }
+                this.create_vlan = false;
+            }
+        },
+        computed: mapState(['lanMap','port_name','system'])
     }
 </script>
 
 <style scoped>
-
+div.vlan-mgmt{
+    margin: 10px 50px 20px 10px;
+}
+div>h2{
+    float: left;
+    font-size: 24px;
+    font-weight: 600;
+    color: #67AEF7;
+    margin-right: 50px;
+}
+h2+div{
+    margin:20px 0;
+}
+h2+div:after{
+    content: "";
+    display: table;
+    clear: both;
+}
+.add-vlan{
+    margin-left: 50px;
+}
+p{
+    margin: 20px 10px;
+    font-size: 20px;
+    font-weight: 600;
+    color:#67AEF7;
+}
+li{
+    word-wrap: break-word;
+    border: 1px solid #ddd;
+    border-top: none;
+    font-size: 0;
+}
+li:first-child{
+    border-top: 1px solid #ddd;
+}
+li>input{
+    width: 30px;
+}
+li>span{
+    display: inline-block;
+    text-align: center;
+    height: inherit;
+    padding: 5px;
+    vertical-align: middle;
+    font-size: 16px;
+}
+/* li>span:nth-child(2){
+    width: 9%;
+}
+li>span:nth-child(3),li>span:nth-child(4){
+    width: 37%;
+} */
+li>span:first-child{
+    width: 9%;
+}
+li>span:nth-child(2),li>span:nth-child(3){
+    width: 32%;
+}
+a{
+    display: inline-block;
+    width: 100px;
+    height: 30px;
+    font-size: 16px;
+    line-height: 30px;
+    text-align: center;
+    border-radius: 5px;
+    background: #ddd;
+    transition: all .1s linear;
+    vertical-align: middle;
+    margin: 5px;
+}
+a:active{
+    border: 1px solid #67AEF7;
+    background: #ccc;
+}
+.vlan-cfg-title{
+    width: 200px;
+}
+div.cover+div{
+    width:850px;
+    height:360px;
+    position: absolute;
+    left: 0;
+    right: 0;
+    top: 0;
+    bottom: 0;
+    margin: auto;
+    background: #fff;
+    z-index: 600;
+    overflow: hidden;
+}
+div.modal-content{
+    padding: 20px;
+}
+div.modal-title{
+    margin: 30px 20px;
+    font-size: 20px;
+    color: #67aef7;
+}
+div.modal-body{
+    margin: 0 20px;
+}
+div.modal-body>div>span:first-child{
+    display: inline-block;
+    width: 100px;
+}
+div.vlan-mode>h3{
+    width: 100px;
+    height: 30px;
+    line-height: 30px;
+    padding-left: 5px;
+}
+div.vlan-port>div{
+    height: 30px;
+    line-height: 30px;
+}
+div.vlan-mode:after{
+    content: "";
+    display: table;
+    clear: both;
+}
+label{
+    margin-right: 20px;
+}
+div.vlan-mode{
+    margin: 30px 0;
+}
+div.vlan-mode>a{
+    margin-left: 50px;
+}
 </style>

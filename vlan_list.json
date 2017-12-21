@@ -1,0 +1,21 @@
+{
+    "code":1,
+    "msg":"success",
+    "data":[{
+        "vlan_id":1,
+        "tagged_port":"PON01,GE01,GE04,GE07,GE08",
+        "untagged_port":"PON03,PON04,GE02,GE05,GE06"
+    },{
+        "vlan_id":2,
+        "tagged_port":"PON01,PON02,GE01,GE07,GE08",
+        "untagged_port":"PON03,PON04,GE02,GE03,GE06"
+    },{
+        "vlan_id":3,
+        "tagged_port":"PON01,GE07,GE08",
+        "untagged_port":"PON03,GE03,GE05,GE06"
+    },{
+        "vlan_id":4,
+        "tagged_port":"PON01,PON02,GE01,GE08",
+        "untagged_port":"PON03,GE05,GE06"
+    }]
+}

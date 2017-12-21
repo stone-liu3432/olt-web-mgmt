@@ -1,10 +1,16 @@
 <template>
     <div>
+        <div>
+            <h2>{{ lanMap['port_cfg'] }}</h2>
+        </div>
         <div class="vlan-config">
-            <select class="item-align" v-model="selected">
-                <option v-for="(item,index) in port_name.pon" :key="index" :value="item.id">{{ item.name }}</option>
-                <option v-for="(item,index) in port_name.ge" :key="index" :value="item.id">{{ item.name }}</option>
-            </select>
+            <p class="item-align">
+                <span>{{ lanMap['port_id'] + '：' }}</span>
+                <select v-model="selected">
+                    <option v-for="(item,index) in port_name.pon" :key="index" :value="item.id">{{ item.name }}</option>
+                    <option v-for="(item,index) in port_name.ge" :key="index" :value="item.id">{{ item.name }}</option>
+                </select>
+            </p>  
             <p>
                 <span>{{ lanMap['link_status'] + '：' }}</span>
                 <span>{{ port_info.data[_portid-1].link_status === 1 ? lanMap['link_up'] : lanMap['link_down'] }}</span>
@@ -15,7 +21,7 @@
             </p>
         </div>
         <div class="config">
-            <h2>{{ lanMap['vlan_cfg']}}</h2>
+            <h3>{{ lanMap['vlan_cfg']}}</h3>
             <div>
                 <div class="vlan-config">
                     <p>{{ lanMap['port_type'] }}</p>
@@ -26,7 +32,7 @@
                     </select>
                 </div>
                 <div class="vlan-config">
-                    <p>{{ lanMap['vlan_mode'] }}</p>
+                    <p>{{ lanMap['pvid'] }}</p>
                     <input type="number" max="4094" min="0">
                 </div>
                 <div class="vlan-config">
@@ -43,7 +49,7 @@
             </div>
         </div>
         <div class="config">
-            <h2>{{ lanMap['stormctrl'] }}</h2>
+            <h3>{{ lanMap['stormctrl'] }}</h3>
             <div class="storm-config">
                 <div>
                     <span>{{ lanMap['broadcast'] }}</span>
@@ -63,7 +69,7 @@
             </div>
         </div>
         <div class="config">
-            <h2>{{ lanMap['mirror'] }}</h2>
+            <h3>{{ lanMap['mirror'] }}</h3>
             <div class="port-mirror">
                 <span>{{ lanMap['src_port'] }}</span>
                 <span>{{ lanMap['dst_port'] }}
@@ -121,7 +127,7 @@ import { mapState } from 'vuex';
     padding:10px;
     margin:10px;
 }
-.config>h2{
+.config>h3{
     padding: 10px 0;
 }
 .config>div{
@@ -132,13 +138,27 @@ import { mapState } from 'vuex';
     width: 800px;
     margin: 20px 0 20px 20px;
 }
-.item-align{
-    float: left;
+h2{
     width: 200px;
+	font-size: 20px;
+	font-weight: 600;
+	color: 	#67AEF7;
+    margin: 10px 0 20px 10px;
+}
+h3{
+    color: #67aef7;
     font-size: 18px;
-    font-weight: 600;
-    margin-right: 50px;
+    font-weight: 500;
+}
+.item-align>select{
+    width: 100px;
+    height: 30px;
+    font-size: 16px;
     text-indent: 10px;
+    margin-left: 10px;
+}
+.item-align>span{
+    margin-left: 10px;
 }
 .vlan-config>p{
     float: left;
@@ -172,13 +192,16 @@ import { mapState } from 'vuex';
     width: 100px;
     height: 30px;
     display: inline-block;
-    border: 1px solid #ddd;
+    border: 1px solid transparent;
     border-radius: 5px;
     background: #ddd;
     line-height: 30px;
     text-align: center;
     margin-top: 10px;
     margin-right: 30px;
+}
+a:active{
+    border:1px solid #1E90FF;
 }
 .btn-submit:after{
     content: "";

@@ -31,23 +31,6 @@ import { mapState } from 'vuex'
 </script>
 
 <style scoped>
-.modal-dialog{
-    position: fixed;
-    left: 0;
-    top: 0;
-    width: 100%;
-    height: 100%;
-    z-index: 500;
-}
-.cover{
-    width:100%;
-    height:100%;
-    position: fixed;
-    top: 0;
-    left: 0;
-    background: #666;
-    opacity: 0.5;
-}
 div.cover+div{
     width:550px;
     height:180px;
@@ -64,7 +47,6 @@ div.cover+div{
     border-radius: 5px;
 }
 .tool-tips{
-    background: #ddd;
     width: 550px;
     margin-top: 20px;
     font-size: 16px;

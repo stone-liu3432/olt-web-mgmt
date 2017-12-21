@@ -20,9 +20,6 @@
                 </transition>
             </li>
         </ul>
-        <div class="expressConfig">
-            快速配置
-        </div>
         <div class="menu-footer">公司信息<br>版权信息等</div>
     </div>
 </template>

@@ -1,0 +1,21 @@
+{
+    "code":1,
+    "msg":"success",
+    "data":[{
+        "tab_type":"blackhole",
+        "sindex":1,
+        "eindex":10,
+        "finish":0,
+        "table":[{
+            "macaddr":"00:00:25:00:00:00",
+            "vlan_id":10,
+            "port_id":1,
+            "mac_type":1
+        },{
+            "macaddr":"00:00:25:00:00:01",
+            "vlan_id":10,
+            "port_id":1,
+            "mac_type":1
+        }]
+    }]
+}

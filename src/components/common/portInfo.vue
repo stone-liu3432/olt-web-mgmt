@@ -1,10 +1,13 @@
 <template>
     <div class="port-info">
+        <div>
+            <h2>{{ lanMap['port_info'] }}</h2>
+        </div>
         <ul class="port-info-title"  onselectstart="return false;">
             <li>
                 <span>{{ lanMap['port_id']}}</span>
             </li>
-            <li  v-for="(item,key) of this.port_info.data[0]" :key="key" v-if="key !== 'port_id'">
+            <li  v-for="(item,key) of this.port_info.data[0]" :key="key" v-if="key !== 'port_id'&& key != 'pvid'">
                 <span>{{ lanMap[key] }}</span>
             </li>
             <li>
@@ -33,14 +36,14 @@
             <li>
                 <span>{{ item.flow_ctrl >= 1 ? "Enable" : "Disable" }}</span>
             </li>
-            <li>
+            <!-- <li>
                 <span>{{ item.pvid }}</span>
-            </li>
+            </li> -->
             <li>
                 <span>{{ item.media }}</span>
             </li>
-            <li class="cfg-btn"  onselectstart="return false;">
-                <span @click="jump(item.port_id)">{{ lanMap['config'] }}</span>
+            <li class="cfg-btn"  onselectstart="return false;" @click="jump(item.port_id)">
+                <span>{{ lanMap['config'] }}</span>
             </li>
         </ul>
     </div>
@@ -59,7 +62,7 @@ import { mapState } from 'vuex'
                 var sub_item = document.querySelectorAll('p.sub-item');
                 for(var i=0;i<sub_item.length;i++){
                     sub_item[i].className = 'sub-item';
-                    if(sub_item[i].innerText == this.lanMap['port_cfg']){
+                    if(sub_item[i].innerText.replace(/\s/g,'') == this.lanMap['port_cfg']){
                         sub_item[i].className += ' actived';
                     }
                 }
@@ -79,9 +82,17 @@ import { mapState } from 'vuex'
     max-width:1200px;
     justify-content: space-around;
 }
+h2{
+    width: 200px;
+	font-size: 20px;
+	font-weight: 600;
+	color: 	#67AEF7;
+    margin: 10px 0 20px 10px;
+}
 ul>li{
     width:12%;
-    border:1px solid #666;
+    min-width: 105px;
+    border:1px solid #ccc;
     text-align: center;
     border-bottom: none;
     border-right: none;
@@ -97,10 +108,10 @@ ul>li>span{
     vertical-align: middle;
 }
 ul>li:last-child{
-    border-right:1px solid #666;
+    border-right:1px solid #ccc;
 }
 ul:last-child{
-    border-bottom: 1px solid #666;
+    border-bottom: 1px solid #ccc;
 }
 .cfg-btn{
     color: #24689B;

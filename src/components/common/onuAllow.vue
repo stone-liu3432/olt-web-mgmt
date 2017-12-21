@@ -11,7 +11,7 @@
             <a href="javascript:;" @click="auth_state()">ONU认证</a>
             <a href="javascript:;" @click="onu_bandwieth()">带宽</a>
             <a href="javascript:;" @click="reboot()">重启OUN</a>
-            <a href="javascript:;" @click="onu_detail()">查看详情</a>
+            <a href="javascript:;" @click="onu_detail()" title="勾选一个onu以查看详情">查看详情</a>
         </div>
         <div>
 
@@ -106,11 +106,11 @@ import { mapMutations } from 'vuex'
             //  跳转带宽管理
             onu_bandwieth(){
                 // 请求url: /onu_bandwidth?port_id=1
-                this.$router.push('/onu_bandwidth?port_id='+this._portid);
+                this.$router.push('/sla_cfg?port_id='+this._portid);
                 var sub_item = document.querySelectorAll('p.sub-item');
                 for(var i=0;i<sub_item.length;i++){
                     sub_item[i].className = 'sub-item';
-                    if(sub_item[i].innerText == this.lanMap['onu_bandwidth']){
+                    if(sub_item[i].innerText.replace(/\s/g,'') == this.lanMap['sla_cfg']){
                         sub_item[i].className += ' actived';
                     }
                 }
@@ -122,12 +122,15 @@ import { mapMutations } from 'vuex'
             //  跳转到 onu 详情页
             onu_detail(){
                 //请求url:  /onu_basic_info?form=base-info&port_id=1&onu_id=1
-                this.$router.push('/onu_basic_info?form=base-info&port_id=1&onu_id=1');
+                if(!this._onuid){
+                    return
+                }
+                this.$router.push('/onu_basic_info?form=base-info&port_id='+this._portid+'&onu_id='+this._onuid);
                 // 清除当前子菜单的选中效果，给被跳转的子菜单加上选中效果
                 var sub_item = document.querySelectorAll('p.sub-item');
                 for(var i=0;i<sub_item.length;i++){
                     sub_item[i].className = 'sub-item';
-                    if(sub_item[i].innerText == this.lanMap['onu_basic_info']){
+                    if(sub_item[i].innerText.replace(/\s/g,'') == this.lanMap['onu_basic_info']){
                         sub_item[i].className += ' actived';
                     }
                 }
@@ -179,6 +182,7 @@ ul>li{
     height: 30px;
     line-height: 30px;
     border-bottom: 1px solid #ddd;
+    vertical-align: middle;
 }
 ul>li:last-child{
     border-bottom: none;
@@ -191,6 +195,7 @@ span{
 }
 input{
     margin-left:20px;
+    margin-top: 9px;
 }
 select{
     width: 160px;

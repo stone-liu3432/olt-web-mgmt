@@ -14,7 +14,9 @@ export default new Vuex.Store({
     // 选择语言输出到页面 => 语言映射
     lanMap: {},
     // 菜单映射
-    menu: {}
+    menu: {},
+    // onu列表
+    onu_list: {}
   },
   mutations:{
     updateSysData(state,data){
@@ -31,6 +33,9 @@ export default new Vuex.Store({
     },
     updateMenu(state,data){
         state.menu = data;
-    }      
+    },
+    updateOnuList(state,data){
+        state.onu_list = data;
+    }
   }
 })

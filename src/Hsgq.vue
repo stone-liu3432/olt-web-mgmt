@@ -51,6 +51,11 @@ export default {
     }).catch(err=>{
       	// to do 
     })
+    this.$http.get('./onuallow.json').then(res=>{
+        this.onu_list(res.data);
+    }).catch(err=>{
+        // to do 
+    })
     this.$router.push('/');
   },
   methods:{
@@ -59,7 +64,8 @@ export default {
 		portInfo: 'updatePortData',
     	lanMap: 'updateLanMap',
 		portName: 'updatePortName',
-		menu: 'updateMenu'
+        menu: 'updateMenu',
+        onu_list: 'updateOnuList'
 	}),
 	// 根据port_id 分配端口名
 	get_portName(arr,prefix){
@@ -144,20 +150,57 @@ html,body,#app{
 select{
     border: 1px solid #C8CCCF;
 }
+.flex-box{
+    display: flex;
+}
 input[type="text"]{
     text-indent: 10px;
     font-size: 16px;
     height: 30px;
     line-height: 30px;
     border:1px solid #c8cccf;
-    /* color:#6a6f77; */
     color: #000;
-    -web-kit-appearance:none;
-    -moz-appearance: none;
+    appearance: none;
     outline:0;
     text-decoration:none;
 }
 input[type="text"]:focus{
-  border:1px solid #1E90FF;
+    border:1px solid #1E90FF;
+}
+a{
+    border: 1px solid transparent;
+}
+a:active{
+    border:1px solid #1E90FF;
+}
+/* 分用模态框类 */
+.modal-dialog{
+    position: fixed;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 500;
+}
+.cover{
+    width:100%;
+    height:100%;
+    position: fixed;
+    top: 0;
+    left: 0;
+    background: #666;
+    opacity: 0.5;
+}
+.close{
+    position: absolute;
+    top: 0;
+    right: 0;
+    width: 60px;
+    height: 60px;
+    cursor: pointer;
+    background: url('./assets/close_msg.png') no-repeat;
+}
+.close:hover{
+    background: url('./assets/close_msg_hover.png') no-repeat;
 }
 </style>

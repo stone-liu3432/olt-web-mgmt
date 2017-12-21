@@ -83,10 +83,18 @@
                     <input type="text" id="vlanid" placeholder="0-4094" v-model="vlan" disabled>
                 </div>
                 <div class="modal-item flex-box">
-                    <a href="javascript:;" @click="isAdd"> {{ lanMap['add'] }} </a>
-                    <a href="javascript:;" @click="isDelete"> {{ lanMap['delete'] }} </a>
-                    <a href="javascript:;" @click="isApply"> {{ lanMap['apply'] }} </a>
-                    <a href="javascript:;" @click="closeModal()"> {{ lanMap['cancel'] }} </a>
+                    <a href="javascript:;" @click="isAdd" :class="[ click_interface !== 'add' ? 'not-allowed' : '' ]"> 
+                        {{ lanMap['add'] }} 
+                    </a>
+                    <a href="javascript:;" @click="isDelete" :class="[ (click_interface !== 'add' && click_interface !== 'outbound') ? '' : 'not-allowed' ]">
+                        {{ lanMap['delete'] }}
+                    </a>
+                    <a href="javascript:;" @click="isApply" :class="[ click_interface !== 'add' ? '' : 'not-allowed' ]">
+                        {{ lanMap['apply'] }}
+                    </a>
+                    <a href="javascript:;" @click="closeModal()">
+                        {{ lanMap['cancel'] }}
+                    </a>
                 </div>
                 <div class="close" @click="closeModal()"></div>
             </div>
@@ -344,26 +352,14 @@ p>span{
     border: 1px solid transparent;
     transition: all .1s linear;
 }
-.clear-btn:active,.remote-mgmt>a:hover,.modal-item>a:hover{
+.clear-btn:active,.remote-mgmt>a:active,.modal-item>a:active{
     border: 1px solid #67AEF7;
     background: #ccc;
 }
-.modal-dialog{
-    position: fixed;
-    left: 0;
-    top: 0;
-    width: 100%;
-    height: 100%;
-    z-index: 500;
-}
-.cover{
-    width:100%;
-    height:100%;
-    position: fixed;
-    top: 0;
-    left: 0;
-    background: #666;
-    opacity: 0.5;
+.modal-item>a.not-allowed:hover,.modal-item>a.not-allowed:active{
+    cursor: not-allowed;
+    border: 1px solid transparent;
+    background: #ddd;
 }
 .modal-content{
     width:550px;
@@ -408,18 +404,6 @@ p>span{
     border-radius: 5px;
     margin-top: 15px;
     border: 1px solid transparent;
-}
-.close{
-    position: absolute;
-    top: 0;
-    right: 0;
-    width: 60px;
-    height: 60px;
-    cursor: pointer;
-    background: url('../../assets/close_msg.png') no-repeat;
-}
-.close:hover{
-    background: url('../../assets/close_msg_hover.png') no-repeat;
 }
 .flex-box{
     display: flex;
