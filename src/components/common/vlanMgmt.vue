@@ -17,19 +17,32 @@
             </div>
         </div>
         <p>vlan列表</p>
-        <ul v-if="vlan_list.data">
+        <ul v-if="vlan_tab">
             <li>
                 <!-- <input type="radio" name="checkedVlan" style="visibility:hidden"> -->
-                <span v-for="(item,key) in vlan_list.data[0]" :key="key">{{ /*lanMap[key]*/ key }}</span>
+                <span v-for="(item,key) in vlan_tab[0]" :key="key">{{ /*lanMap[key]*/ key }}</span>
                 <span class="vlan-cfg-title">管理</span>
             </li>
-            <li v-for="(item,index) in vlan_list.data" :key="index">
+            <li v-for="(item,index) in vlan_tab" :key="index">
                 <!-- <input type="radio" v-model="vlanid" :value="item.vlan_id"> -->
                 <span>{{ item.vlan_id }}</span>
                 <span>{{ item.tagged_port }}</span>
                 <span>{{ item.untagged_port }}</span>
                 <a href="javascript:;"  @click="config_port(item.vlan_id)">VLAN配置</a>
                 <a href="javascript:;"  @click="deleteVlan(item.vlan_id)">删除VLAN</a>
+            </li>
+            <li v-if="pagination.page > 2" class="paginations">
+                <ul class="pagination rt">
+                    <li :class="pagination.index > 1 ? '' : 'disabled'" @click="changeIndex(1)">&lt;&lt;</li>
+                    <li :class="pagination.index > 1 ? '' : 'disabled'" @click="changeIndex(pagination.index-1)">&lt;</li>
+                    <li v-if="pagination.index>2" @click="changeIndex(pagination.index-2)">{{ pagination.index-2 }}</li>
+                    <li v-if="pagination.index>1" @click="changeIndex(pagination.index-1)">{{ pagination.index-1 }}</li>
+                    <li class="actived" @click="changeIndex(pagination.index)">{{ pagination.index }}</li>
+                    <li v-if="pagination.page-1 >= pagination.index" @click="changeIndex(pagination.index+1)">{{ pagination.index+1 }}</li>
+                    <li v-if="pagination.page-2 >= pagination.index" @click="changeIndex(pagination.index+2)">{{ pagination.index+2 }}</li>
+                    <li :class="pagination.page-1 >= pagination.index ? '' : 'disabled'" @click="changeIndex(pagination.index+1)">&gt;</li>
+                    <li :class="pagination.page !== pagination.index ? '' : 'disabled'" @click="changeIndex(pagination.page)">&gt;&gt;</li>
+                </ul>
             </li>
         </ul>
         <div class="modal-dialog" v-if="modalDialog">
@@ -98,6 +111,8 @@ import confirm from '@/components/common/confirm'
             return {
                 // 已有的 VLAN列表
                 vlan_list: {},
+                // 分页的数据
+                vlan_tab: {},
                 // 删除VLAN确认框组件
                 userChoose: false,
                 // 创建VLAN模态框的显示隐藏参数
@@ -106,6 +121,15 @@ import confirm from '@/components/common/confirm'
                 // 创建VLAN时，绑定的新创建的 VLAN ID
                 new_vlan: '',
                 vlan_map: {},
+                // 分页插件数据
+                pagination: {
+                    // 当前页面
+                    index: 1,
+                    // 总页数
+                    page: 0,
+                    // 每页显示的数据数量
+                    display: 20
+                },
                 // 模态框隐藏显示
                 modalDialog: false,
             }
@@ -124,6 +148,8 @@ import confirm from '@/components/common/confirm'
                         }
                         this.vlan_map = vlan_map;
                     }
+                    this.pagination.page = Math.ceil(this.vlan_list.data.length/this.pagination.display);
+                    this.getPage();
                 }).catch(err=>{
                     // to do
                 })
@@ -174,14 +200,6 @@ import confirm from '@/components/common/confirm'
                     }
                 },0)
             },
-            // //  添加端口
-            // addPort(){
-            //     this.modalDialog = true;
-            // },
-            // //  移除端口
-            // removePort(){
-            //     this.modalDialog = true;
-            // },
             closeModal(){
                 this.modalDialog = false;
             },
@@ -206,6 +224,17 @@ import confirm from '@/components/common/confirm'
                     this.userChoose = false;
                     this.vlanid = 0;
                 }
+            },
+            //  分页切换
+            changeIndex(n){
+                if(n < 1 || n > this.pagination.page){
+                    return 
+                }
+                this.pagination.index = n;
+                this.getPage();            },
+            //  计算分页中当前显示页面的数据
+            getPage(){
+                this.vlan_tab = this.vlan_list.data.slice(this.pagination.display*(this.pagination.index-1),this.pagination.index*this.pagination.display);
             },
             //  配置模态框的按钮动作，根据用户选择进行操作
             handle_cfg(bool){
@@ -399,5 +428,38 @@ div.vlan-mode{
 }
 div.vlan-mode>a{
     margin-left: 50px;
+}
+ul.pagination>li.disabled{
+    /* pointer-events: none; */
+    cursor: not-allowed;
+    box-shadow: none;
+    opacity: .65;
+}
+ul.pagination:after{
+    content: "";
+    display: table;
+    clear: both;
+}
+ul.pagination{
+    margin: 10px;
+}
+ul.pagination>li{
+    float: left;
+    font-size: 16px;
+    color: #666;
+    margin-left: 10px;
+    border-radius: 3px;
+    padding: 3px 8px;
+    border: 1px solid #333;
+    cursor: pointer;
+}
+ul>li.actived{
+    color: #67aef7;
+    border-color: #67aef7;
+}
+li.paginations:after{
+    content: "";
+    display: table;
+    clear: both;
 }
 </style>

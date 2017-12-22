@@ -137,7 +137,8 @@
 	"mac_type" : "MAC地址类型",
 	"blackhole" : "黑洞",
 	"static" : "静态",
-	"dynamic" : "动态",
+    "dynamic" : "动态",
+    "vlan_id" : "VLAN ID",
 	
 	"flush" : "清除",
 	"desc" : "描述信息"

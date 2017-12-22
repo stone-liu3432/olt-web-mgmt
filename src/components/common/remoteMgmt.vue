@@ -165,7 +165,7 @@ import { mapState } from 'vuex'
                     }
                     // 请求url: /system?form=inbound
                     this.$http.post('/system?form=inbound',post_params).then(res=>{
-                        // to do 
+                        // to do
                     }).catch(err=>{
                         // to do
                     })
