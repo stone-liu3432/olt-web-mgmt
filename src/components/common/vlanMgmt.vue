@@ -31,6 +31,9 @@
                 <a href="javascript:;"  @click="config_port(item.vlan_id)">VLAN配置</a>
                 <a href="javascript:;"  @click="deleteVlan(item.vlan_id)">删除VLAN</a>
             </li>
+            <li v-if="vlan_list.data && vlan_list.data.length%200 == 0">
+                <a href="javascript:;" @click="loadmore">加载更多</a>
+            </li>
             <li v-if="pagination.page > 2" class="paginations">
                 <ul class="pagination rt">
                     <li :class="pagination.index > 1 ? '' : 'disabled'" @click="changeIndex(1)">&lt;&lt;</li>
@@ -120,6 +123,9 @@ import confirm from '@/components/common/confirm'
                 vlanid: 0,
                 // 创建VLAN时，绑定的新创建的 VLAN ID
                 new_vlan: '',
+                // 分页数据(懒加载)
+                count: 0,
+                // vlan映射
                 vlan_map: {},
                 // 分页插件数据
                 pagination: {
@@ -139,8 +145,13 @@ import confirm from '@/components/common/confirm'
         },
         methods: {
             getData(){
+                // 请求url: /switch_vlan?count=0
                 this.$http.get('./vlan_list.json').then(res=>{
-                    this.vlan_list = res.data;
+                    if(this.count == 0){
+                        this.vlan_list = res.data;
+                    }else{
+                        this.vlan_list.data.concat(res.data.data);
+                    }
                     if(this.vlan_list.data){
                         var vlan_map = {}
                         for(var key in this.vlan_list.data){
@@ -153,6 +164,10 @@ import confirm from '@/components/common/confirm'
                 }).catch(err=>{
                     // to do
                 })
+            },
+            loadmore(){
+                this.count += 1;
+                this.getData();
             },
             changeState(e){
                 if(e.target.value == 1){
@@ -244,13 +259,13 @@ import confirm from '@/components/common/confirm'
                     var tag_str = '',untag_str = ''
                     for(var i=0,len=tagged.length;i<len;i++){
                         if(tagged[i].checked){
-                            tag_str += tagged[i].nextElementSibling.innerText;
+                            tag_str += tagged[i].name;
                             tag_str += ',';
                         }
                     }
                     for(var i=0,len=untagged.length;i<len;i++){
                         if(untagged[i].checked){
-                            untag_str += untagged[i].nextElementSibling.innerText;
+                            untag_str += untagged[i].name;
                             untag_str += ',';
                         }
                     }
@@ -258,8 +273,8 @@ import confirm from '@/components/common/confirm'
                         "method":"set",
                         "param":{
                             "vlan_id": this.vlanid,
-                            "tagged": tag_str.replace(/\,$/,''),
-                            "untagged": untag_str.replace(/\,$/,'')
+                            "tagged_portlist": tag_str.replace(/\,$/,''),
+                            "untagged_portlist": untag_str.replace(/\,$/,'')
                         }
                     }
                     this.$http.post('/switch_vlan',post_param).then(res=>{

@@ -1,8 +1,11 @@
 <template>
     <div>
-        <form name="uploadForm" method="POST" enctype="multipart/form-data" action="/ProcessServer/FileOperate/fileUpServlet"> 
-            <input type="file" name="file1" size="80" class="hide" id="file" @change="changeFile()"/>
-            <span class="updateFile" id="fileName">点击选择文件</span>
+        <div class="upgrade">
+            <h2>{{ lanMap['upgrade'] }}</h2>
+        </div>
+        <form class="upload-form"> 
+            <input type="file" name="file1" size="80" class="hide" id="file1" @change="changeFile()"/>
+            <span class="updateFile" id="fileName1">点击选择文件</span>
             <a href="javascript:;" @click="upgrade">{{ lanMap["restore_config"] }}</a>
         </form>
     </div>
@@ -15,14 +18,19 @@ import { mapState } from 'vuex'
         computed: mapState(['lanMap']),
         methods: {
             changeFile(){
-                var file = document.getElementById('file');
-                var fileName = document.getElementById('fileName');
+                var file = document.getElementById('file1');
+                var fileName = document.getElementById('fileName1');
                 fileName.innerText = file.value.substring(file.value.lastIndexOf('\\')+1);
             },
             upgrade(){
                 var formData = new FormData();
-                var file = document.getElementById('file');
+                var file = document.getElementById('file1');
                 var files = file.files[0];
+                if(!files) {
+                    var fileName = document.getElementById('fileName1');
+                    fileName.innerText = '点击选择文件';
+                    return
+                }
                 formData.append('file',files);
                 this.$http.post('/upgrade', formData,{headers: {'Content-Type': 'multipart/form-data'}}).then( (res) => {
                     // alert(res);
@@ -35,8 +43,18 @@ import { mapState } from 'vuex'
 </script>
 
 <style scoped>
-form{
+div.upgrade{
+    margin: 10px 50px 20px 10px;
+}
+div.upgrade>h2{
+    font-size: 24px;
+    font-weight: 600;
+    color: #67AEF7;
+    margin-right: 50px;
+}
+form.upload-form{
     position: relative;
+    left: 30px;
 }
 .updateFile{
     position: absolute;

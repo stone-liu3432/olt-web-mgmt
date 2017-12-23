@@ -45,7 +45,7 @@
                 <a href="javascript:;" @click="query_portid">{{ lanMap['apply'] }}</a>
             </div>
             <div v-if="choose_vlan" class="query-frame">
-                <input type="text" placeholder="VLAN ID" v-model="vlan_id_s">
+                <input type="text" placeholder="VLAN ID" v-model="vlan_id">
                 <!-- <input type="text" placeholder="max"> -->
                 <a href="javascript:;" @click="query_vlanid">{{ lanMap['apply'] }}</a>
             </div>
@@ -64,6 +64,9 @@
                 <span>
                     <a href="javascript:;" @click="delete_mac(item)">{{ lanMap['delete'] }}</a>
                 </span>
+            </li>
+            <li v-if="mac_table.length%200 === 0">
+                <a href="javascript:;" @click="loadmore">加载更多</a>
             </li>
             <li v-if="pagination.page > 2" class="paginations">
                 <ul class="pagination rt">
@@ -102,7 +105,10 @@ import confirm from '@/components/common/confirm'
                 macage: '',
                 // 控制老化时间模态框显示隐藏
                 cfg_age: false,
+                // 加载方式(查询条件)
                 flag: 1,
+                // 懒加载
+                count: 0,
                 // 分页插件数据
                 pagination: {
                     // 当前页面
@@ -121,7 +127,7 @@ import confirm from '@/components/common/confirm'
                 flag: 1,
                 mac_type: 3,
                 port_id: 0,
-                vlan_id_s: 0,
+                vlan_id: 0,
                 vlan_id_e: 0,
                 macaddr: '00:00:00:00:00:00',
                 macmask: '00:00:00:00:00:00',
@@ -150,20 +156,32 @@ import confirm from '@/components/common/confirm'
                 var post_param = {
                     "method":"get",
                     "param":{
-                        "flags": this.flag,
-                        "mac_type": this.mac_type,
-                        "port_id": this.port_id,
-                        "vlan_id_s": this.vlan_id_s,
-                        "vlan_id_e": this.vlan_id_e,
+                        "flags": Number(this.flag),
+                        "count": this.count,
+                        "mac_type": Number(this.mac_type),
+                        "port_id": Number(this.port_id),
+                        "vlan_id": Number(this.vlan_id),
+                        "vlan_id_e": Number(this.vlan_id_e),
                         "macaddr": this.macaddr,
                         "macmask": this.macmask
                     }
                 }
                 this.$http.post('/switch_mac？form=table',post_param).then(res=>{
                     // do sth
+                    if(this.tab.length%200 === 0){
+                        this.tab.concat(res.data.data);
+                    }else if(this.count === 0){
+                        this.tab = res.data.data;
+                    }
+                    this.pagination.page = Math.ceil(this.tab.length/this.pagination.display);
+                    this.getPage();
                 }).catch(err=>{
                     // to do
                 })
+            },
+            loadmore(){
+                this.count += 1;
+                this.getData();
             },
             //  删除mac地址处理函数
             delete_mac(data){
@@ -225,21 +243,24 @@ import confirm from '@/components/common/confirm'
                 this.choose_macaddr = false;
             },
             query_macaddr(){
+                this.count = 0,
                 this.mac_type = 3,
                 this.port_id = 0,
-                this.vlan_id_s = 0,
+                this.vlan_id = 0,
                 this.vlan_id_e = 0,
                 this.getData();
             },
             query_portid(){
+                this.count = 0,
                 this.mac_type = 3,
-                this.vlan_id_s = 0,
+                this.vlan_id = 0,
                 this.vlan_id_e = 0,
                 this.macaddr = '00:00:00:00:00:00',
                 this.macmask = '00:00:00:00:00:00',
                 this.getData();
             },
             query_vlanid(){
+                this.count = 0,
                 this.mac_type = 3,
                 this.port_id = 0,
                 this.macaddr = '00:00:00:00:00:00',
@@ -267,6 +288,12 @@ import confirm from '@/components/common/confirm'
                 }
             },
             mac_type(){
+                this.count = 0,
+                this.port_id = 0,
+                this.vlan_id = 0,
+                this.vlan_id_e = 0,
+                this.macaddr = '00:00:00:00:00:00',
+                this.macmask = '00:00:00:00:00:00',
                 this.getData();
             }
         }
