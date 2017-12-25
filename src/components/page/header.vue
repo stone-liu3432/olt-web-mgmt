@@ -37,6 +37,7 @@ export default {
     left:0;
     background: #252532;
     color:#fff;
+    z-index: 999;
   }
   .top-banner::after{
     content : '';

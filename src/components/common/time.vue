@@ -1,6 +1,6 @@
 <template>
     <div>
-        time        
+        time
     </div>
 </template>
 

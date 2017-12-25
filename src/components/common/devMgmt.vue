@@ -84,7 +84,7 @@
                     this.$http.get('/system_def_config').then(res=>{
                         // do sth
                         if(res.data.code === 1){
-                            this.$http.get().then(res=>{
+                            this.$http.get('/system_reboot').then(res=>{
                                 
                             }).catch(err=>{
                                 // to do

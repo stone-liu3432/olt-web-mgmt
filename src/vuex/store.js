@@ -16,7 +16,9 @@ export default new Vuex.Store({
     // 菜单映射
     menu: {},
     // onu列表
-    onu_list: {}
+    onu_list: {},
+    //  加载进度条
+    isLoading: true
   },
   mutations:{
     updateSysData(state,data){
@@ -36,6 +38,9 @@ export default new Vuex.Store({
     },
     updateOnuList(state,data){
         state.onu_list = data;
+    },
+    isLoading(state,data){
+        state.isLoading = data;
     }
   }
 })

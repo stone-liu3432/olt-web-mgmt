@@ -36,8 +36,7 @@
 </template>
 
 <script>
-import { mapState } from 'vuex'
-import { mapMutations } from 'vuex'
+import { mapState,mapMutations } from 'vuex'
     export default {
         name: 'onuAllow',
         data(){
