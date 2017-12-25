@@ -1,5 +1,6 @@
 <template>
     <div>
+        <loading v-if="!mac_age.data && !cfg_age && !tab"></loading>
         <div>
             <h2>{{ lanMap['mac_mgmt'] }}</h2>
         </div>
@@ -89,9 +90,10 @@
 <script>
 import { mapState } from 'vuex'
 import confirm from '@/components/common/confirm'
+import loading from '@/components/common/loading'
     export default {
         name: 'macMgmt',
-        components: { confirm },
+        components: { confirm,loading },
         computed: mapState(['lanMap']),
         data(){
             return {

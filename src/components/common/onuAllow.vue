@@ -13,9 +13,7 @@
             <a href="javascript:;" @click="reboot()">重启OUN</a>
             <a href="javascript:;" @click="onu_detail()" title="勾选一个onu以查看详情">查看详情</a>
         </div>
-        <div>
-
-        </div>
+        <div></div>
         <ul v-if="this.onu_allow_list.data">
             <li class="flex-box">
                 <input type="radio" style="opacity:0">
@@ -32,13 +30,16 @@
                 <span>{{ item.register_time }}</span>
             </li>
         </ul>
+        <loading v-if="!onu_allow_list.data"></loading>
     </div>
 </template>
 
 <script>
 import { mapState,mapMutations } from 'vuex'
+import loading from '@/components/common/loading'
     export default {
         name: 'onuAllow',
+        components: { loading },
         data(){
             return {
                 onu_allow_list: {},

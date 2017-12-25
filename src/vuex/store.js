@@ -17,8 +17,8 @@ export default new Vuex.Store({
     menu: {},
     // onu列表
     onu_list: {},
-    //  加载进度条
-    isLoading: true
+    //  是否登陆
+    accessToken: ''
   },
   mutations:{
     updateSysData(state,data){
@@ -39,8 +39,8 @@ export default new Vuex.Store({
     updateOnuList(state,data){
         state.onu_list = data;
     },
-    isLoading(state,data){
-        state.isLoading = data;
+    updateLogin(state,data){
+        state.accessToken = data;
     }
   }
 })

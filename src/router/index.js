@@ -1,5 +1,6 @@
 import Vue from 'vue'
-import detail from '../components/page/detail'
+import main from '../components/page/main'
+import login from '../components/page/login'
 import runStatus from '../components/common/runStatus'
 import diagonose from '../components/common/diagonose'
 import macMgmt from '../components/common/macMgmt'
@@ -20,60 +21,146 @@ import Router from 'vue-router'
 
 Vue.use(Router)
 
-export default new Router({
-  routes: [
-    {
+const router = new Router({
+  routes: [{
       path: '/',
-      component: runStatus
+      component: login
     },
     {
-      path: '/running_status',
-      component: runStatus
-    },{
-      path: '/dev_mgmt',
-      component: devMgmt
-    },{
-      path: "/diagonose",
-      component: diagonose
-    }, {
-      path: "/remote_mgmt",
-      component: remoteMgmt
-    },{
-      path: "/upgrade",
-      component: upgrade
-    },{
-      path: "/onu_allow",
-      component: onuAllow
-    },{
-      path: "/onu_deny",
-      component: onuDeny
-    },{
-      path: "/sla_cfg",
-      component: slaCfg
-    },{
-      path: "/onu_basic_info",
-      component: onuBasicInfo
-    },{
-      path: "/perf_info",
-      component: perfInfo
-    },{
-      path: "/port_info",
-      component: portInfo
-    },{
-      path: "/port_cfg",
-      component: portCfg
-    },{
-      path: "/vlan_mgmt",
-      component: vlanMgmt
-    },{
-      path: "/mac_mgmt",
-      component: macMgmt
-    },{
-      path: "/rstp",
-      component: rstp
-    },{
-      path: "/time",
-      component: time
+      path: '/login',
+      component: login
+    },
+    {
+      path: '/main',
+      meta: {
+        // 添加该字段，表示进入这个路由是需要登录的
+        requireAuth: true
+      },
+      component: main,
+      children: [{
+          path: '/',
+          component: runStatus,
+          meta: {
+            requireAuth: true
+          }
+        },
+        {
+          path: '/running_status',
+          component: runStatus,
+          meta: {
+            requireAuth: true
+          }
+        }, {
+          path: '/dev_mgmt',
+          component: devMgmt,
+          meta: {
+            requireAuth: true
+          }
+        }, {
+          path: "/diagonose",
+          component: diagonose,
+          meta: {
+            requireAuth: true
+          }
+        }, {
+          path: "/remote_mgmt",
+          component: remoteMgmt,
+          meta: {
+            requireAuth: true
+          }
+        }, {
+          path: "/upgrade",
+          component: upgrade,
+          meta: {
+            requireAuth: true
+          }
+        }, {
+          path: "/onu_allow",
+          component: onuAllow,
+          meta: {
+            requireAuth: true
+          }
+        }, {
+          path: "/onu_deny",
+          component: onuDeny,
+          meta: {
+            requireAuth: true
+          }
+        }, {
+          path: "/sla_cfg",
+          component: slaCfg,
+          meta: {
+            requireAuth: true
+          }
+        }, {
+          path: "/onu_basic_info",
+          component: onuBasicInfo,
+          meta: {
+            requireAuth: true
+          }
+        }, {
+          path: "/perf_info",
+          component: perfInfo,
+          meta: {
+            requireAuth: true
+          }
+        }, {
+          path: "/port_info",
+          component: portInfo,
+          meta: {
+            requireAuth: true
+          }
+        }, {
+          path: "/port_cfg",
+          component: portCfg,
+          meta: {
+            requireAuth: true
+          }
+        }, {
+          path: "/vlan_mgmt",
+          component: vlanMgmt,
+          meta: {
+            requireAuth: true
+          }
+        }, {
+          path: "/mac_mgmt",
+          component: macMgmt,
+          meta: {
+            requireAuth: true
+          }
+        }, {
+          path: "/rstp",
+          component: rstp,
+          meta: {
+            requireAuth: true
+          }
+        }, {
+          path: "/time",
+          component: time,
+          meta: {
+            requireAuth: true
+          }
+        }
+      ]
     }
   ]
 })
+
+router.beforeEach((to, from, next) => {
+    // 判断该路由是否需要登录权限
+    if (to.meta.requireAuth) {
+        // 通过vuex state获取当前的token是否存在
+        // if (store.state.token) {
+        //     next();
+        // } else {
+        //     next({path: '/login'})
+        // }
+        console.log('未验证登陆状态');
+        //next({ path:'/login' });
+        next();
+    }else{
+        next();
+    }
+})
+
+export default router

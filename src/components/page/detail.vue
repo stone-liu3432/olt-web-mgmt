@@ -1,23 +1,13 @@
 <template>
     <div id="detail" class="lf">
-        <loading v-if="isLoading"></loading>
         <router-view></router-view>
     </div>
 </template>
 
 <script>
-import loading from '@/components/common/loading'
-import { mapMutations,mapState } from 'vuex'
     export default {
-        name: 'detail',
-        components: { loading },
-        methosd: {
-            ...mapMutations({
-                isLoading: 'isLoading'
-            }),
-        },
-        computed: mapState(['isLoading'])
-    }    
+        name: 'detail'
+    }
 </script>
 
 <style>

@@ -1,5 +1,6 @@
 <template>
   <div id="main-content">
+      <topBanner></topBanner>
       <leftAside></leftAside>
       <detail></detail>
   </div>
@@ -8,11 +9,13 @@
 <script>
 import leftAside from '@/components/page/aside'
 import detail from '@/components/page/detail'
+import topBanner from '@/components/page/header'
     export default {
         name: 'mainContent',
         components: {
             leftAside,
-            detail
+            detail,
+            topBanner
         }
     }
 </script>

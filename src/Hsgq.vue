@@ -1,20 +1,18 @@
 <template>
   <div id="hsgq">
-    <topBanner v-if="this.system.data"></topBanner>
-    <mainContent v-if="this.port_info.data"></mainContent>
+    <router-view></router-view>
+    <loading v-if="!port_info.data" class="load"></loading>
   </div>
 </template>
 
 <script>
 import { mapMutations } from 'vuex'
 import { mapState } from 'vuex'
-import topBanner from '@/components/page/header'
-import mainContent from '@/components/page/main'
+import loading from '@/components/common/loading'
 export default {
   name: 'hsgq',
   components: {
-     topBanner,
-     mainContent
+     loading
   },
   created(){
 	// 根组件创建之前，初始化vuex部分数据
@@ -56,7 +54,10 @@ export default {
     }).catch(err=>{
         // to do 
     })
-    this.$router.push('/');
+    //this.$router.push('/');
+    //  会话保存，在用户刷新页面后保存登陆状态
+    sessionStorage.setItem('accessToken',12312341545);
+    
   },
   methods:{
 	...mapMutations({
@@ -202,5 +203,8 @@ a:active{
 }
 .close:hover{
     background: url('./assets/close_msg_hover.png') no-repeat;
+}
+#hsgq>.load{
+    position: static;
 }
 </style>

@@ -60,12 +60,12 @@ div.loading-cover{
 div.loading-content{
     width: 100%;
     height: 100%;
-    margin: 200px 0;
     text-align: center;
 }
 svg{
     position: relative;
     left: -100px;
+    top: 200px;
     width: 120px;
     height: 120px;
     margin: 0 auto;
