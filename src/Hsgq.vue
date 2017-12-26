@@ -6,8 +6,7 @@
 </template>
 
 <script>
-import { mapMutations } from 'vuex'
-import { mapState } from 'vuex'
+import { mapState,mapMutations } from 'vuex'
 import loading from '@/components/common/loading'
 export default {
   name: 'hsgq',
@@ -15,49 +14,10 @@ export default {
      loading
   },
   created(){
-	// 根组件创建之前，初始化vuex部分数据
-    this.$http.get('./systemInfo.json').then(res=>{
-	      this.systemInfo(res.data);
-            this.$http.get('./portInfo.json').then(res=>{
-                this.portInfo(res.data);
-                var index;
-                for(var i=0,len=this.port_info.data.length;i<len;i++){
-                    if(this.port_info.data[i].port_id === this.system.data.ponports){
-                        index = i + 1;
-                    }
-                }
-                var pon_count = this.port_info.data.slice(0,index);
-				var ge_count = this.port_info.data.slice(index,this.port_info.data.length);
-				var portName = {
-					pon: this.get_portName(pon_count,'PON'),
-					ge: this.get_portName(ge_count,'GE')
-				};
-				this.portName(portName);
-            }).catch(err=>{
-                // to do 
-            })
-        }).catch(err=>{
-      	// to do 
-    })
     this.$http.get('./lang-zh.json').then(res=>{
 		this.lanMap(res.data);
     }).catch(err=>{
       	// to do 
-    })
-    this.$http.get('./menu.json').then(res=>{
-		this.menu(res.data);
-    }).catch(err=>{
-      	// to do 
-    })
-    this.$http.get('./onuallow.json').then(res=>{
-        this.onu_list(res.data);
-    }).catch(err=>{
-        // to do 
-    })
-    this.$http.get('./url.json').then(res=>{
-        this.url(res.data.betaUrl);
-    }).catch(err=>{
-        // to do
     })
     this.$router.push('/main');
     //  会话保存，在用户刷新页面后保存登陆状态
@@ -65,13 +25,7 @@ export default {
   },
   methods:{
 	...mapMutations({
-		systemInfo: 'updateSysData',
-		portInfo: 'updatePortData',
-    	lanMap: 'updateLanMap',
-		portName: 'updatePortName',
-        menu: 'updateMenu',
-        onu_list: 'updateOnuList',
-        url: 'updateUrl'
+    	lanMap: 'updateLanMap'
 	}),
 	// 根据port_id 分配端口名
 	get_portName(arr,prefix){

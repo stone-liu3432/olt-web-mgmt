@@ -1,18 +1,16 @@
 <template>
-    <div id="left-aside" class="lf" v-if="menu.code ===1 && lanMap">
-        <ul class="menu">
+    <div id="left-aside" class="lf">
+        <ul class="menu" v-if="menu.code == 1 && lanMap">
             <!-- 主菜单/左侧导航栏 -->
             <li v-for="(item,index) in menu.data.menu" :key="index">
-                <!-- 添加点击事件  onselectstart =>禁止双击选取文本 -->
-                <p class="menu-item" @click="handleClick(item,$event)" onselectstart="return false;" :class="[ item.isHidden ? 'active' : '' ]"> 
+                <p class="menu-item" @click="handleClick(item,$event)" :class="[ item.isHidden ? 'active' : '' ]"> 
                     {{ lanMap[item.name] }}
                 </p>
                 <!-- 二级菜单 -->
                 <transition name="bounce">
                     <ul class="sub-menu" v-if="item.children" :class="{ hide: item.isHidden }">
                         <li v-for="(_item,_index) in item.children" :key="_index" @click="selectEvent($event)">
-                            <!-- 添加点击事件  onselectstart =>禁止双击选取文本 -->
-                            <p class="sub-item" @click="selectItem(_item)" onselectstart="return false;">
+                            <p class="sub-item" @click="selectItem(_item)">
                                 {{ lanMap[_item.name] }}
                             </p>
                         </li>
@@ -25,13 +23,23 @@
 </template>
 
 <script>
-import { mapState } from 'vuex'
+import { mapState,mapMutations } from 'vuex'
 export default {
     name: 'leftAside',
     data(){
         return {}
     },
+    created(){
+        this.$http.get('./menu.json').then(res=>{
+            this.addmenu(res.data);
+        }).catch(err=>{
+            // to do 
+        })
+    },
     methods:{
+        ...mapMutations({
+            addmenu: 'updateMenu'
+        }),
         handleClick(node,e){
             // 检查 菜单项下面是否有子菜单
             if(!node.children){

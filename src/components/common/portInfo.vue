@@ -7,14 +7,14 @@
             <li>
                 <span>{{ lanMap['port_id']}}</span>
             </li>
-            <li  v-for="(item,key) of this.port_info.data[0]" :key="key" v-if="key !== 'port_id'&& key != 'pvid'">
+            <li  v-for="(item,key) of port_info.data[0]" :key="key" v-if="key !== 'port_id'&& key != 'pvid'">
                 <span>{{ lanMap[key] }}</span>
             </li>
             <li>
                 <span>{{ lanMap['config']}}</span>
             </li>
         </ul>
-        <ul class="port-info-title" v-for="(item,index) in this.port_info.data" :key="index" onselectstart="return false;">
+        <ul class="port-info-title" v-if="port_info.data && port_name.pon" v-for="(item,index) in port_info.data" :key="index" onselectstart="return false;">
             <li>
                 <span>{{ port_name.pon[item.port_id] ? port_name.pon[item.port_id].name : port_name.ge[item.port_id].name }}</span>
             </li>
@@ -55,6 +55,9 @@ import { mapState } from 'vuex'
         name: 'portInfo',
         data(){
             return {}
+        },
+        created(){
+            // console.log(this.port_info);
         },
         methods:{
             jump(id){

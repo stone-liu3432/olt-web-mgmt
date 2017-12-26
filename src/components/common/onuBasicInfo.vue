@@ -1,6 +1,6 @@
 <template>
-    <div  v-if="onu_basic_info.data && port_name && onu_basic_info">
-		<div class="onu-basic-info">
+    <div  v-if="onu_basic_info.data && port_name.pon">
+		<div class="onu-basic-info" v-if="port_name.pon">
 			<h2>{{ lanMap['onu_basic_info'] }}</h2>
 			<div>
 				<span>{{ lanMap['port_id'] }}</span>
@@ -8,9 +8,9 @@
 					<option v-for="(item,index) in port_name.pon" :value="item.id">{{ item.name }}</option>
 				</select>
 			</div>
-			<div>
+			<div v-if="onu_list.data">
 				<span>{{ lanMap['onu_id'] }}</span>
-				<select v-model="onuid" v-if="onu_list">
+				<select v-model="onuid">
 					<option v-for="(item,index) in onu_list.data" :value="item.onu_id">{{ 'ONU'+item.port_id + '/' + item.onu_id }}</option>
 				</select>
 			</div>
@@ -28,11 +28,10 @@
 </template>
 
 <script>
-import { mapState } from 'vuex'
-import { mapMutations } from 'vuex'
+import { mapState,mapMutations } from 'vuex'
     export default {
         name: 'onuBasicInfo',
-		computed: mapState(['lanMap','port_name','port_info','onu_list']),
+		computed: mapState(['lanMap','port_name','port_info']),
         data(){
             return {
 				onu_basic_info: {},
@@ -41,17 +40,24 @@ import { mapMutations } from 'vuex'
             }
         },
         created(){
-			this.portid = this.$route.query.port_id || this.port_info.data[0].port_id;
-			this.onuid = this.$route.query.onu_id || this.onu_list.data[this.portid-1].onu_id;
-            // 请求url:  请求url: /onumgmt?form=base-info&port_id=1&onu_id=1
-            this.$http.get('./onu_basic_info.json').then(res=>{
-                this.onu_basic_info = res.data;
+            this.$http.get('./onuallow.json').then(res=>{
+                this.onu_list(res.data);
+                this.portid = this.$route.query.port_id || this.port_info.data[0].port_id;
+                this.onuid = this.$route.query.onu_id || this.onu_list.data[this.portid-1].onu_id;
+                // // 请求url:  请求url: /onumgmt?form=base-info&port_id=1&onu_id=1
+                // this.$http.get('./onu_basic_info.json').then(res=>{
+                //     this.onu_basic_info = res.data;
+                // }).catch(err=>{
+                //     // to do
+                // })
             }).catch(err=>{
-                // to do
+                // to do 
             })
 		},
 		methods:{
-
+            ...mapMutations({
+                onu_list: 'updateOnuList'
+            }),
 		},
 		watch: {
 			portid(){

@@ -10,15 +10,21 @@
             <form>
                 <div>
                     <span>USER</span>
-                    <input type="text">
+                    <input type="text" v-model="userName">
                 </div>
-                <div>
+                <div class="user-pwd">
                     <span>password</span>
-                    <input type="password">
+                    <input type="password" v-model="userPwd" id="userPwd">
+                    <i :class="[ visible ? 'visible' : 'invisible']" @click="changeVisible"></i>
                 </div>
-                <h3>请输入符合规范的用户名，不能输入中文、空格和特殊字符</h3>
+                <h3 :style="{'opacity': verify_uname ? 1 : 0}">
+                    请输入符合规范的4-20位用户名，不能输入中文、空格和特殊字符
+                </h3>
+                <h3 :style="{'opacity': verify_upwd ? 1 : 0}">
+                    密码限定长度为6-20位,且不能使用空格
+                </h3>
                 <div>
-                    <a href="javascript:;">登录</a>
+                    <a href="javascript:;" @click="userLogin">登录</a>
                 </div>
             </form>
         </div>
@@ -31,7 +37,48 @@
         data(){
             return {
                 userName: '',
-                userPwd: ''
+                userPwd: '',
+                verify_uname: false,
+                verify_upwd: false,
+                visible: false
+            }
+        },
+        methods: {
+            userLogin(){
+
+            },
+            changeVisible(){
+                this.visible = !this.visible;
+                var uPwd = document.getElementById('userPwd');
+                if(this.visible){
+                    uPwd.type = 'text';
+                }else{
+                    uPwd.type = 'password';
+                }
+            }
+        },
+        watch: {
+            userName(){
+                var reg = /^\w{4,20}$/;
+                if(!reg.test(this.userName)){
+                    this.verify_uname = true;
+                }else{
+                    this.verify_uname = false;
+                }
+                if(this.userName == ''){
+                    this.verify_uname = false;
+                }
+            },
+            userPwd(){
+                var reg = /^\S{6,20}$/;
+                if(!reg.test(this.userPwd)){
+                    this.verify_upwd = true;
+                }else{
+                    this.verify_upwd = false;
+                }
+                if(this.userPwd == ''){
+                    this.verify_upwd = false;
+                }
             }
         }
     }
@@ -45,7 +92,7 @@ div.login{
     background: #62628B;
 }
 div.login-banner{
-    height: 200px;
+    height: 150px;
     background: rgb(73, 44, 44);
 }
 div.login-body{
@@ -71,6 +118,8 @@ div.login-body>h3{
 }
 div.login-body a{
     display: inline-block;
+    position: relative;
+    left: 25px;
     width: 300px;
     height: 42px;
     line-height: 42px;
@@ -81,15 +130,22 @@ div.login-body a{
     border-radius: 5px;
     transition: all 0.3s linear;
 }
-div.login-body a:hover{
-    background: #0099CC;
+div.login-body a:active{
+    background: rgb(13, 113, 146);
 }
 form div{
     height: 50px;
     line-height: 50px;
-    width: 350px;
+    width: 450px;
     margin: 20px auto;
-    border: 1px solid #ddd;
+}
+div.user-pwd{
+    position: relative;
+}
+form span{
+    display: inline-block;
+    width: 100px;
+    height: 30px;
 }
 form>h3{
     height: 30px;
@@ -97,11 +153,28 @@ form>h3{
     font-size: 14px;
     color: red;
 }
+form i{
+    display: inline-block;
+    width: 32px;
+    height: 32px;
+    position: absolute;
+    top: 9px;
+    right: 35px;
+    cursor: pointer;
+}
+i.invisible{
+    background: url('../../assets/invisible.png') no-repeat;
+}
+i.visible{
+    background: url('../../assets/visible.png') no-repeat;
+}
 input{
-    width: 200px;
-    height: 30px;
-    text-indent: 15px;
-    border: 1px solid #ddd;
+    width: 300px;
+    height: 40px;
+    text-indent: 10px;
+    border: 1px solid #ccc;
+    font-size: 16px;
+    border-radius: 3px;
     outline: none;
 }
 input:focus{

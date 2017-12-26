@@ -6,6 +6,7 @@
                 <span>{{ lanMap['port_id'] }}</span>
                 <select v-model="portid">
                     <option v-for="(item,index) in port_name.pon" :value="item.id">{{ item.name }}</option>
+                    <option v-for="(item,index) in port_name.ge" :value="item.id">{{ item.name }}</option>
                 </select>
             </div>
         </div>

@@ -18,8 +18,7 @@ export default new Vuex.Store({
     // onu列表
     onu_list: {},
     //  是否登陆
-    accessToken: '',
-    url: {}
+    accessToken: ''
   },
   mutations:{
     updateSysData(state,data){
@@ -42,9 +41,6 @@ export default new Vuex.Store({
     },
     updateLogin(state,data){
         state.accessToken = data;
-    },
-    updateUrl(state,data){
-        state.url = data;
     }
   }
 })

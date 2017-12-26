@@ -147,20 +147,20 @@ const router = new Router({
 })
 
 router.beforeEach((to, from, next) => {
-    // 判断该路由是否需要登录权限
-    if (to.meta.requireAuth) {
-        // 通过vuex state获取当前的token是否存在
-        // if (store.state.token) {
-        //     next();
-        // } else {
-        //     next({path: '/login'})
-        // }
-        console.log('未验证登陆状态');
-        //next({ path:'/login' });
-        next();
-    }else{
-        next();
-    }
+  // 判断该路由是否需要登录权限
+  if (to.meta.requireAuth) {
+    // 通过vuex state获取当前的token是否存在
+    // if (store.state.token) {
+    //     next();
+    // } else {
+    //     next({path: '/login'})
+    // }
+    console.log('未验证登陆状态');
+    // next({ path:'/main' });
+    next();
+  }else{
+    next();
+  }
 })
 
 export default router

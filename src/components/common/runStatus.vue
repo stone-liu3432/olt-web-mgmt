@@ -70,7 +70,7 @@
 </template>
 
 <script>
-    import { mapState } from 'vuex'
+    import { mapState,mapMutations } from 'vuex'
     export default {
         name: 'runStatus',
         data(){
@@ -82,7 +82,7 @@
             }
         },
         created(){
-            // 根组件创建之前，初始化vuex部分数据
+            // 组件创建之前，初始化vuex部分数据
             this.$http.get('./systemInfo.json').then(res=>{
                 this.systemInfo(res.data);
                     this.$http.get('./portInfo.json').then(res=>{
@@ -154,6 +154,11 @@
             })
         },
         methods:{
+            ...mapMutations({
+                systemInfo: 'updateSysData',
+                portInfo: 'updatePortData',
+                portName: 'updatePortName'
+            }),
             drawing(cpuNum,memoryNum){
                 var cpu = document.getElementById('cpu-detail');
                 var cpuCtx = cpu.getContext('2d');

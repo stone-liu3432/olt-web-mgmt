@@ -7,8 +7,7 @@
 </template>
 
 <script>
-import { mapMutations } from 'vuex'
-import { mapState } from 'vuex'
+import { mapState,mapMutations } from 'vuex'
 import leftAside from '@/components/page/aside'
 import detail from '@/components/page/detail'
 import topBanner from '@/components/page/header'
@@ -20,7 +19,62 @@ import topBanner from '@/components/page/header'
             topBanner
         },
         created(){
+            // 根组件创建之前，初始化vuex部分数据
+            //this.$http.get('./systemInfo.json').then(res=>{
+            this.$http.get('./systemInfo.json').then(res=>{
+                this.systemInfo(res.data);
+                    //this.$http.get('./portInfo.json').then(res=>{
+                    this.$http.get('./portInfo.json').then(res=>{
+                        this.portInfo(res.data);
+                        var index;
+                        for(var i=0,len=this.port_info.data.length;i<len;i++){
+                            if(this.port_info.data[i].port_id === this.system.data.ponports){
+                                index = i + 1;
+                            }
+                        }
+                        var pon_count = this.port_info.data.slice(0,index);
+                        var ge_count = this.port_info.data.slice(index,this.port_info.data.length);
+                        var portName = {
+                            pon: this.get_portName(pon_count,'PON'),
+                            ge: this.get_portName(ge_count,'GE')
+                        };
+                        this.portName(portName);
+                    }).catch(err=>{
+                        // to do 
+                    })
+                }).catch(err=>{
+                // to do 
+            })
+            //this.$http.get('./menu.json').then(res=>{
+            this.$http.get('./menu.json').then(res=>{
+                this.menu(res.data);
+            }).catch(err=>{
+                // to do 
+            })
             this.$router.push('/main');
+        },
+        methods: {
+            ...mapMutations({
+                systemInfo: 'updateSysData',
+                portInfo: 'updatePortData',
+                lanMap: 'updateLanMap',
+                portName: 'updatePortName'
+            }),
+            // 根据port_id 分配端口名
+            get_portName(arr,prefix){
+                var obj = {};
+                for(var i=0;i<arr.length;i++){
+                    obj[arr[i].port_id] = {};
+                    obj[arr[i].port_id].name = i < 10 ? prefix + '0' + arr[i].port_id : prefix + arr[i].port_id;
+                    if(arr[i].port_id > this.system.data.ponports){
+                        var n = arr[i].port_id - this.system.data.ponports;
+                        obj[arr[i].port_id].name = i < 10 ? prefix + '0' + n : prefix + n;
+                    }
+                    obj[arr[i].port_id].id = arr[i].port_id;
+                    obj[arr[i].port_id].data = arr[i]; 
+                }
+                return obj;
+            }
         },
         computed: mapState(['port_info','system'])
     }
