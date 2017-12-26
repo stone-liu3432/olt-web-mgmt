@@ -56,19 +56,19 @@ import { mapMutations } from 'vuex'
 		watch: {
 			portid(){
 				// 请求url:  请求url: /onumgmt?form=base-info&port_id=1&onu_id=1
-				// this.$http.get('./onumgmt?form=base-info&port_id='+this.portid+'&onu_id='+this.onuid).then(res=>{
-				// 	this.onu_basic_info = res.data;
-				// }).catch(err=>{
-				// 	// to do
-				// })
+				this.$http.get('./onumgmt?form=base-info&port_id='+this.portid+'&onu_id='+this.onuid).then(res=>{
+					this.onu_basic_info = res.data;
+				}).catch(err=>{
+					// to do
+				})
 			},
 			onuid(){
 				// 请求url:  请求url: /onumgmt?form=base-info&port_id=1&onu_id=1
-				// this.$http.get('./onumgmt?form=base-info&port_id='+this.portid+'&onu_id='+this.onuid).then(res=>{
-				// 	this.onu_basic_info = res.data;
-				// }).catch(err=>{
-				// 	// to do
-				// })
+				this.$http.get('./onumgmt?form=base-info&port_id='+this.portid+'&onu_id='+this.onuid).then(res=>{
+					this.onu_basic_info = res.data;
+				}).catch(err=>{
+					// to do
+				})
 			}
 		},
     }

@@ -170,12 +170,12 @@ import loading from '@/components/common/loading'
 
 <style scoped>
 .onu-allow{
-    margin: 30px 0 0 30px;
+    margin-top: 30px;
 }
 ul{
     border:1px solid #ddd;
     margin-top: 30px;
-    width: 1160px;
+    min-width: 1160px;
 }
 ul>li{
     font-size: 0;

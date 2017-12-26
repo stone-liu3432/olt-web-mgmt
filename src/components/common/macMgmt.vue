@@ -145,13 +145,36 @@ import loading from '@/components/common/loading'
             }).catch(err=>{
                 // to do 
             })
-            this.$http.get('./mac_table.json').then(res=>{
-                this.tab = res.data.data;
-                this.pagination.page = Math.ceil(this.tab.length/this.pagination.display);
-                this.getPage();
-            }).catch(err=>{
-                // to do 
-            })
+            if(false){
+                var post_param = {
+                        "method":"get",
+                        "param":{
+                            "flags":1,
+                            "count":0,
+                            "mac_type":3,
+                            "port_id":1,
+                            "vlan_id_s":10,
+                            "vlan_id_e":100,
+                            "macaddr":"00:00:00:00:00:11",
+                            "macmask":"00:00:00:00:00:ff"
+                        }
+                }
+                this.$http.post('/switch_mac?form=table',post_param).then(res=>{
+                    this.tab = res.data.data;
+                    this.pagination.page = Math.ceil(this.tab.length/this.pagination.display);
+                    this.getPage();
+                }).catch(err=>{
+                    // to do
+                })
+            }else{
+                this.$http.get('./mac_table.json').then(res=>{
+                    this.tab = res.data.data;
+                    this.pagination.page = Math.ceil(this.tab.length/this.pagination.display);
+                    this.getPage();
+                }).catch(err=>{
+                    // to do 
+                })
+            }
         },
         methods: {
             getData(){
@@ -368,6 +391,7 @@ ul.mac-table>li.paginations{
 }
 ul.pagination{
     margin: 10px;
+    margin-right: 60px;
 }
 ul.pagination>li{
     float: left;

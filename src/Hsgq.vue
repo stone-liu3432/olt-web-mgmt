@@ -26,7 +26,7 @@ export default {
                         index = i + 1;
                     }
                 }
-				var pon_count = this.port_info.data.slice(0,index);
+                var pon_count = this.port_info.data.slice(0,index);
 				var ge_count = this.port_info.data.slice(index,this.port_info.data.length);
 				var portName = {
 					pon: this.get_portName(pon_count,'PON'),
@@ -54,10 +54,14 @@ export default {
     }).catch(err=>{
         // to do 
     })
-    //this.$router.push('/');
+    this.$http.get('./url.json').then(res=>{
+        this.url(res.data.betaUrl);
+    }).catch(err=>{
+        // to do
+    })
+    this.$router.push('/main');
     //  会话保存，在用户刷新页面后保存登陆状态
     sessionStorage.setItem('accessToken',12312341545);
-    
   },
   methods:{
 	...mapMutations({
@@ -66,7 +70,8 @@ export default {
     	lanMap: 'updateLanMap',
 		portName: 'updatePortName',
         menu: 'updateMenu',
-        onu_list: 'updateOnuList'
+        onu_list: 'updateOnuList',
+        url: 'updateUrl'
 	}),
 	// 根据port_id 分配端口名
 	get_portName(arr,prefix){

@@ -34,7 +34,6 @@ import { mapState } from 'vuex'
             //请求url: /switch_port?form=statistic&port_id=1   //  打包时删除
             this.$http.get('./perfInfo.json').then(res=>{
                 this.data = res.data;
-                //console.log(this.data.data);
             }).catch(err=>{
                 // to do 
             })
@@ -42,11 +41,11 @@ import { mapState } from 'vuex'
         watch:{
             portid(){
                 //请求url: /switch_port?form=statistic&port_id=1
-                // this.$http.get('/switch_port?form=statistic&port_id='+this.portid).then(res=>{
-                //     this.data = res.data;
-                // }).catch(err=>{
-                //     // to do 
-                // })
+                this.$http.get('/switch_port?form=statistic&port_id='+this.portid).then(res=>{
+                    this.data = res.data;
+                }).catch(err=>{
+                    // to do 
+                })
             }
         }
     }

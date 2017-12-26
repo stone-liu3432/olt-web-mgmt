@@ -177,12 +177,12 @@ import { mapState } from 'vuex'
 
 <style scoped>
 .onu-bandwidth{
-    margin: 30px 0 0 30px;
+    margin-top: 30px;
 }
 ul{
     border:1px solid #ddd;
     margin-top: 30px;
-    width: 1160px;
+    min-width: 1060px;
 }
 ul>li{
     font-size: 0;
@@ -217,8 +217,8 @@ input{
     margin-left:20px;
 }
 select{
-    width: 160px;
-    height: 36px;
+    width: 140px;
+    height: 32px;
     font-size: 16px;
     border-radius: 5px;
     text-indent: 10px;

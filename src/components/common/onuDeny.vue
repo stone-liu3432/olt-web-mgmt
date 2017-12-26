@@ -147,17 +147,19 @@ export default {
 
 <style scoped>
 .onu-deny{
-    margin: 30px 0 0 30px;
+    margin-top: 30px;
 }
 .add-item{
     height: 40px;
-    width: 1160px;
+    min-width: 1060px;
     margin-top: 10px;
     border: 1px solid #ddd;
     line-height: 40px;
+    vertical-align: middle;
 }
 .add-item>span{
     width: 15%;
+    vertical-align: middle;
 }
 ul{
     border:1px solid #ddd;
@@ -192,7 +194,7 @@ select+a{
 a{
     display: inline-block;
     width: 120px;
-    height: 36px;
+    height: 32px;
     line-height: 36px;
     border-radius: 5px;
     background: #ddd;

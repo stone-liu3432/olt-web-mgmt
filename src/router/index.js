@@ -38,7 +38,7 @@ const router = new Router({
       },
       component: main,
       children: [{
-          path: '/',
+          path: '/main',
           component: runStatus,
           meta: {
             requireAuth: true

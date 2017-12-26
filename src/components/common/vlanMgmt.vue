@@ -246,7 +246,8 @@ import confirm from '@/components/common/confirm'
                     return 
                 }
                 this.pagination.index = n;
-                this.getPage();            },
+                this.getPage();
+            },
             //  计算分页中当前显示页面的数据
             getPage(){
                 this.vlan_tab = this.vlan_list.data.slice(this.pagination.display*(this.pagination.index-1),this.pagination.index*this.pagination.display);

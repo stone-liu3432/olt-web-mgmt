@@ -16,7 +16,7 @@
                 </span>
             </div>
         </div>
-        <div class="container"  v-if="this.ponInfo.data">
+        <div class="container"  v-if="ponInfo.data">
             <h2>PON口信息</h2>
             <div class="pon-detail" v-for="(item,index) in this.ponInfo.data" :key="index">
                 <p>{{ item.port_name }}</p>
@@ -82,9 +82,33 @@
             }
         },
         created(){
-            // 获取pon口数量，从端口中去除pon口，将剩下的端口（ge口）展示到页面上
-            var ge_port = this.port_info.data.slice(this.system.data.ponports,this.port_info.data.length);
-            this.geInfo = ge_port;
+            // 根组件创建之前，初始化vuex部分数据
+            this.$http.get('./systemInfo.json').then(res=>{
+                this.systemInfo(res.data);
+                    this.$http.get('./portInfo.json').then(res=>{
+                        this.portInfo(res.data);
+                         // 获取pon口数量，从端口中去除pon口，将剩下的端口（ge口）展示到页面上
+                        var ge_port = this.port_info.data.slice(this.system.data.ponports,this.port_info.data.length);
+                        this.geInfo = ge_port;
+                        var index;
+                        for(var i=0,len=this.port_info.data.length;i<len;i++){
+                            if(this.port_info.data[i].port_id === this.system.data.ponports){
+                                index = i + 1;
+                            }
+                        }
+                        var pon_count = this.port_info.data.slice(0,index);
+                        var ge_count = this.port_info.data.slice(index,this.port_info.data.length);
+                        var portName = {
+                            pon: this.get_portName(pon_count,'PON'),
+                            ge: this.get_portName(ge_count,'GE')
+                        };
+                        this.portName(portName);
+                    }).catch(err=>{
+                        // to do 
+                    })
+                }).catch(err=>{
+                // to do 
+            })
             // 请求url: '/board?info=cpu'
             this.$http.get('./ponInfo.json').then(res=>{
                 this.ponInfo = res.data;
