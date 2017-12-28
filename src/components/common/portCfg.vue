@@ -20,7 +20,7 @@
                 <span>{{ port_info.data[_portid-1].admin_status === 1 ? lanMap['enable'] : lanMap['disable'] }}</span>
             </p>
         </div>
-        <div class="config">
+        <!-- <div class="config">
             <h3>{{ lanMap['vlan_cfg']}}</h3>
             <div>
                 <div class="vlan-config">
@@ -47,7 +47,7 @@
                     <a href="javascript:void(0);" class="rt">{{ lanMap['apply'] }}</a>
                 </div>
             </div>
-        </div>
+        </div> -->
         <div class="config">
             <h3>{{ lanMap['stormctrl'] }}</h3>
             <div class="storm-config">
