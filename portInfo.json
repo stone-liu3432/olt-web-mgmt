@@ -56,7 +56,7 @@
             "duplex":1,
             "flow_ctrl":1,
             "pvid":1,
-            "media":"fiber",
+            "media":"copper",
             "erate":"100kbps",
             "irate":"100kbps"
         },
@@ -69,7 +69,7 @@
             "duplex":1,
             "flow_ctrl":1,
             "pvid":1,
-            "media":"fiber",
+            "media":"copper",
             "erate":"100kbps",
             "irate":"100kbps"
         },
@@ -82,7 +82,7 @@
             "duplex":1,
             "flow_ctrl":1,
             "pvid":1,
-            "media":"fiber",
+            "media":"copper",
             "erate":"100kbps",
             "irate":"100kbps"
         },
@@ -95,7 +95,7 @@
             "duplex":1,
             "flow_ctrl":1,
             "pvid":1,
-            "media":"fiber",
+            "media":"copper",
             "erate":"100kbps",
             "irate":"100kbps"
         },

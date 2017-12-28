@@ -30,16 +30,14 @@
                 <span>{{ item.register_time }}</span>
             </li>
         </ul>
-        <loading v-if="!onu_allow_list.data"></loading>
+        <p v-else>没有更多的数据了...</p>
     </div>
 </template>
 
 <script>
 import { mapState,mapMutations } from 'vuex'
-import loading from '@/components/common/loading'
     export default {
         name: 'onuAllow',
-        components: { loading },
         data(){
             return {
                 onu_allow_list: {},
@@ -51,9 +49,19 @@ import loading from '@/components/common/loading'
         created(){
             // 请求 url: /onu_allow_list?port_id=1
             //    '/onu_allow_list?port_id=' + (this.$route.query.port_id || 1 )
-            this.$http.get('./onuallow.json').then(res=>{
-                this.onu_allow_list = res.data;
-                this._portid = 1;
+            var url;
+            if(this.change_url.onu_allow.indexOf('+')=== -1){
+                url = this.change_url.onu_allow;
+            }else{
+                url = eval(this.change_url.onu_allow);
+            }
+            this.$http.get(url).then(res=>{
+                if(res.data.code === 1){
+                    this.onu_allow_list = res.data;
+                    this._portid = 1; 
+                }else{
+                    this.onu_allow_list = {};
+                }
             }).catch(err=>{
                 // to do 
             })
@@ -164,7 +172,7 @@ import loading from '@/components/common/loading'
                 this.update_menu(_menu);
             }
         },
-        computed: mapState(['lanMap','port_name','menu'])
+        computed: mapState(['lanMap','port_name','menu','change_url'])
     }
 </script>
 
@@ -175,7 +183,7 @@ import loading from '@/components/common/loading'
 ul{
     border:1px solid #ddd;
     margin-top: 30px;
-    min-width: 1160px;
+    min-width: 1040px;
 }
 ul>li{
     font-size: 0;
@@ -189,7 +197,7 @@ ul>li:last-child{
 }
 span{
     display: inline-block;
-    width: 19%;
+    width: 18%;
     text-align: center;
     font-size: 16px;
 }
@@ -220,5 +228,10 @@ a{
 .onu-allow-btn{
     height: 26px;
     line-height: 26px;
+}
+p{
+    margin: 20px 0 20px 20px;
+    font-size: 16px;
+    color: red;
 }
 </style>

@@ -64,7 +64,7 @@ div.loading-content{
 }
 svg{
     position: relative;
-    left: -100px;
+    left: 0;
     top: 200px;
     width: 120px;
     height: 120px;

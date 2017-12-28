@@ -3,10 +3,21 @@
         <div class="upgrade">
             <h2>{{ lanMap['upgrade'] }}</h2>
         </div>
+        <div class="upgrade">
+            <h3>{{ lanMap['firmware'] }}</h3>
+        </div>
         <form class="upload-form"> 
-            <input type="file" name="file1" size="80" class="hide" id="file1" @change="changeFile()"/>
+            <input type="file" class="hide" id="file1" @change="changeFile('file1','fileName1')"/>
             <span class="updateFile" id="fileName1">点击选择文件</span>
-            <a href="javascript:;" @click="upgrade">{{ lanMap["restore_config"] }}</a>
+            <a href="javascript:;" @click="firmware">{{ lanMap["firmware"] }}</a>
+        </form>
+        <div class="upgrade">
+            <h3>{{ lanMap['system'] }}</h3>
+        </div>
+        <form class="upload-form">
+            <input type="file" class="hide" id="file2" @change="changeFile('file2','fileName2')"/>
+            <span class="updateFile" id="fileName2">点击选择文件</span>
+            <a href="javascript:;" @click="system">{{ lanMap["system"] }}</a>
         </form>
     </div>
 </template>
@@ -17,12 +28,12 @@ import { mapState } from 'vuex'
         name: 'upgrade',
         computed: mapState(['lanMap']),
         methods: {
-            changeFile(){
-                var file = document.getElementById('file1');
-                var fileName = document.getElementById('fileName1');
+            changeFile(fileid,fnameid){
+                var file = document.getElementById(fileid);
+                var fileName = document.getElementById(fnameid);
                 fileName.innerText = file.value.substring(file.value.lastIndexOf('\\')+1);
             },
-            upgrade(){
+            firmware(){
                 var formData = new FormData();
                 var file = document.getElementById('file1');
                 var files = file.files[0];
@@ -32,7 +43,23 @@ import { mapState } from 'vuex'
                     return
                 }
                 formData.append('file',files);
-                this.$http.post('/upgrade', formData,{headers: {'Content-Type': 'multipart/form-data'}}).then( (res) => {
+                this.$http.post('/upgrade?type=firmware', formData,{headers: {'Content-Type': 'multipart/form-data'}}).then( (res) => {
+                    // alert(res);
+                }).catch((error) =>{
+                    // to do
+                });
+            },
+            system(){
+                var formData = new FormData();
+                var file = document.getElementById('file2');
+                var files = file.files[0];
+                if(!files) {
+                    var fileName = document.getElementById('fileName2');
+                    fileName.innerText = '点击选择文件';
+                    return
+                }
+                formData.append('file',files);
+                this.$http.post('/upgrade?type=system', formData,{headers: {'Content-Type': 'multipart/form-data'}}).then( (res) => {
                     // alert(res);
                 }).catch((error) =>{
                     // to do
@@ -44,13 +71,20 @@ import { mapState } from 'vuex'
 
 <style scoped>
 div.upgrade{
-    margin: 10px 50px 20px 10px;
+    margin: 20px 50px 30px 10px;
 }
 div.upgrade>h2{
     font-size: 24px;
     font-weight: 600;
     color: #67AEF7;
     margin-right: 50px;
+    margin-bottom: 30px;
+}
+div.upgrade>h3{
+    font-size: 20PX;
+    font-weight: 600;
+    color: rgb(52, 135, 218);
+    margin-left: 20px;
 }
 form.upload-form{
     position: relative;

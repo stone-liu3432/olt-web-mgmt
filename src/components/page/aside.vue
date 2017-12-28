@@ -1,6 +1,6 @@
 <template>
     <div id="left-aside" class="lf">
-        <ul class="menu" v-if="menu.code == 1 && lanMap">
+        <ul class="menu" v-if="menu.data && lanMap">
             <!-- 主菜单/左侧导航栏 -->
             <li v-for="(item,index) in menu.data.menu" :key="index">
                 <p class="menu-item" @click="handleClick(item,$event)" :class="[ item.isHidden ? 'active' : '' ]"> 
@@ -30,16 +30,17 @@ export default {
         return {}
     },
     created(){
-        this.$http.get('./menu.json').then(res=>{
-            this.addmenu(res.data);
-        }).catch(err=>{
-            // to do 
-        })
+        // this.$http.get('./menu.json').then(res=>{
+        //     this.addmenu(res.data);
+        //     console.log(this.menu);
+        // }).catch(err=>{
+        //     // to do 
+        // })
     },
     methods:{
-        ...mapMutations({
-            addmenu: 'updateMenu'
-        }),
+        // ...mapMutations({
+        //     addmenu: 'updateMenu'
+        // }),
         handleClick(node,e){
             // 检查 菜单项下面是否有子菜单
             if(!node.children){

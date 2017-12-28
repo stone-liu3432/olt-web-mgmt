@@ -49,7 +49,7 @@ import confirm from '@/components/common/confirm'
 export default {
     name: 'ounDeny',
     components: { confirm },
-    computed: mapState(['lanMap','port_name']),
+    computed: mapState(['lanMap','port_name','change_url']),
     data(){
         return {
             onu_deny_list:{},
@@ -68,7 +68,13 @@ export default {
     },
     created(){
         // 请求 url: /onu_deny_list?port_id=1
-        this.$http.get('./onu_deny_list.json').then(res=>{
+        var url;
+        if(this.change_url.onu_deny.indexOf('+') === -1){
+            url = this.change_url.onu_deny;
+        }else{
+            url = eval(this.change_url.onu_deny);
+        }
+        this.$http.get(url).then(res=>{
             this.onu_deny_list = res.data;
         }).catch(err=>{
             // to do

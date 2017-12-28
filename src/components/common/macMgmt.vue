@@ -16,9 +16,9 @@
             <a href="javascript:;" @click="macage_choose(false)">{{ lanMap['cancel'] }}</a>
         </div>
         <div class="query-select">
-            <p>详情</p>
+            <p>{{ lanMap['detail'] }}</p>
             <div class="query-frame">
-                <span>查询方式：</span>
+                <span>{{ lanMap['inquery_mode'] }}：</span>
                 <select v-model="flag">
                     <option value="1">{{ lanMap['mac_type'] }}</option>
                     <option value="2">{{ lanMap['port_id'] }}</option>
@@ -51,23 +51,26 @@
                 <a href="javascript:;" @click="query_vlanid">{{ lanMap['apply'] }}</a>
             </div>
         </div>
-        <ul class="mac-table" v-if="this.mac_table">
+        <ul class="mac-table" v-if="this.mac_table[0]">
             <li>
-                <span>序列号</span>
+                <span>{{ lanMap['CDkey'] }}</span>
                 <span v-for="(item,key) in mac_table[0]" :key="key">{{ lanMap[key] }}</span>
+                <span>{{ lanMap['delete'] }}</span>
             </li>
             <li v-for="(item,key) in mac_table" :key="key">
                 <span>{{ (pagination.index-1)*pagination.display + key + 1 }}</span>
                 <span>{{ item.macaddr }}</span>
                 <span>{{ item.vlan_id }}</span>
                 <span>{{ item.port_id ? item.port_id : 'CPU' }}</span>
-                <span>{{ item.mac_type }}</span>
+                <span>
+                    {{ item.mac_type === 0 ? lanMap['dynamic'] : item.mac_type === 1 ? lanMap['static'] : lanMap['blackhole'] }}
+                </span>
                 <span>
                     <a href="javascript:;" @click="delete_mac(item)">{{ lanMap['delete'] }}</a>
                 </span>
             </li>
             <li v-if="mac_table.length%200 === 0">
-                <a href="javascript:;" @click="loadmore">加载更多</a>
+                <a href="javascript:;" @click="loadmore">{{ lanMap['loadmore'] }}</a>
             </li>
             <li v-if="pagination.page > 2" class="paginations">
                 <ul class="pagination rt">
@@ -83,6 +86,9 @@
                 </ul>
             </li>
         </ul>
+        <div v-else class="nomore-data">
+            <p>没有更多的数据了...</p>
+        </div>
         <confirm tool-tips="是否确认删除？" @choose="result" v-if="userChoose"></confirm> 
     </div>
 </template>
@@ -94,7 +100,7 @@ import loading from '@/components/common/loading'
     export default {
         name: 'macMgmt',
         components: { confirm,loading },
-        computed: mapState(['lanMap']),
+        computed: mapState(['lanMap','change_url']),
         data(){
             return {
                 //  mac地址老化时间 
@@ -102,7 +108,7 @@ import loading from '@/components/common/loading'
                 //  mac表
                 tab: {},
                 //  分页mac表
-                mac_table: {},
+                mac_table: [],
                 // 绑定老化时间输入框
                 macage: '',
                 // 控制老化时间模态框显示隐藏
@@ -140,41 +146,31 @@ import loading from '@/components/common/loading'
             }
         },
         created(){
-            this.$http.get('./mac_age.json').then(res=>{
+            this.$http.get(this.change_url.macage).then(res=>{
                 this.mac_age = res.data;
             }).catch(err=>{
                 // to do 
             })
-            if(false){
-                var post_param = {
-                        "method":"get",
-                        "param":{
-                            "flags":1,
-                            "count":0,
-                            "mac_type":3,
-                            "port_id":1,
-                            "vlan_id_s":10,
-                            "vlan_id_e":100,
-                            "macaddr":"00:00:00:00:00:11",
-                            "macmask":"00:00:00:00:00:ff"
-                        }
-                }
-                this.$http.post('/switch_mac?form=table',post_param).then(res=>{
-                    this.tab = res.data.data;
-                    this.pagination.page = Math.ceil(this.tab.length/this.pagination.display);
-                    this.getPage();
-                }).catch(err=>{
-                    // to do
-                })
-            }else{
-                this.$http.get('./mac_table.json').then(res=>{
-                    this.tab = res.data.data;
-                    this.pagination.page = Math.ceil(this.tab.length/this.pagination.display);
-                    this.getPage();
-                }).catch(err=>{
-                    // to do 
-                })
+            var post_param = {
+                    "method":"get",
+                    "param":{
+                        "flags":1,
+                        "count":0,
+                        "mac_type":3,
+                        "port_id":1,
+                        "vlan_id_s":10,
+                        "vlan_id_e":100,
+                        "macaddr":"00:00:00:00:00:11",
+                        "macmask":"00:00:00:00:00:ff"
+                    }
             }
+            this.$http.post(this.change_url.mactab,post_param).then(res=>{
+                this.tab = res.data.data;
+                this.pagination.page = Math.ceil(this.tab.length/this.pagination.display);
+                this.getPage();
+            }).catch(err=>{
+                // to do
+            })
         },
         methods: {
             getData(){
@@ -191,15 +187,19 @@ import loading from '@/components/common/loading'
                         "macmask": this.macmask
                     }
                 }
-                this.$http.post('/switch_mac？form=table',post_param).then(res=>{
-                    // do sth
-                    if(this.tab.length%200 === 0){
-                        this.tab.concat(res.data.data);
-                    }else if(this.count === 0){
-                        this.tab = res.data.data;
+                this.$http.post('/switch_mac?form=table',post_param).then(res=>{
+                    if(res.data.code === 1){
+                        if(this.tab.length%200 === 0){
+                            this.tab.concat(res.data.data);
+                        }else if(this.count === 0){
+                            this.tab = res.data.data;
+                        }
+                        this.pagination.page = Math.ceil(this.tab.length/this.pagination.display);
+                        this.getPage();
+                    }else{
+                        this.mac_table = {};
+                        console.log(res.data.message);
                     }
-                    this.pagination.page = Math.ceil(this.tab.length/this.pagination.display);
-                    this.getPage();
                 }).catch(err=>{
                     // to do
                 })
@@ -210,7 +210,7 @@ import loading from '@/components/common/loading'
             },
             //  删除mac地址处理函数
             delete_mac(data){
-                //  找开模态框
+                //  打开模态框
                 this.userChoose = true;
                 //  将要删除的节点的数据缓存
                 this.delete_mac_data = data;
@@ -225,8 +225,9 @@ import loading from '@/components/common/loading'
                             "vlan_id":this.delete_mac_data.vlan_id
                         }
                     }
-                    this.$http.post('/switch_mac？form=table',post_params).then(res=>{
+                    this.$http.post('/switch_mac?form=table',post_params).then(res=>{
                         // do sth
+                        this.getData();
                     }).catch(err=>{
                         // to do
                     })
@@ -250,8 +251,11 @@ import loading from '@/components/common/loading'
                 if(bool && this.macage){
                     this.$http.get('/switch_mac?form=age&value=' + this.macage).then(res=>{
                         //  do sth
-                    }).catch(err=>{
-                        // to do
+                        if(res.data.code == 1){
+                            this.$http.get(this.change_url.macage).then(res=>{
+                                this.mac_age = res.data;
+                            })
+                        }
                     })
                 }
                 this.cfg_age = false;
@@ -268,28 +272,31 @@ import loading from '@/components/common/loading'
                 this.choose_macaddr = false;
             },
             query_macaddr(){
-                this.count = 0,
-                this.mac_type = 3,
-                this.port_id = 0,
-                this.vlan_id = 0,
-                this.vlan_id_e = 0,
+                this.tab = {};
+                this.count = 0;
+                this.mac_type = 3;
+                this.port_id = 0;
+                this.vlan_id = 0;
+                this.vlan_id_e = 0;
                 this.getData();
             },
             query_portid(){
-                this.count = 0,
-                this.mac_type = 3,
-                this.vlan_id = 0,
-                this.vlan_id_e = 0,
-                this.macaddr = '00:00:00:00:00:00',
-                this.macmask = '00:00:00:00:00:00',
+                this.tab = {};
+                this.count = 0;
+                this.mac_type = 3;
+                this.vlan_id = 0;
+                this.vlan_id_e = 0;
+                this.macaddr = '00:00:00:00:00:00';
+                this.macmask = '00:00:00:00:00:00';
                 this.getData();
             },
             query_vlanid(){
-                this.count = 0,
-                this.mac_type = 3,
-                this.port_id = 0,
-                this.macaddr = '00:00:00:00:00:00',
-                this.macmask = '00:00:00:00:00:00',
+                this.tab = {};
+                this.count = 0;
+                this.mac_type = 3;
+                this.port_id = 0;
+                this.macaddr = '00:00:00:00:00:00';
+                this.macmask = '00:00:00:00:00:00';
                 this.getData();
             }
         },
@@ -302,6 +309,7 @@ import loading from '@/components/common/loading'
                 if(this.flag==1){
                     this.hide_query_select();
                     this.choose_mactype = true;
+                    this.getData();
                 }
                 if(this.flag==2){
                     this.hide_query_select();
@@ -313,12 +321,13 @@ import loading from '@/components/common/loading'
                 }
             },
             mac_type(){
-                this.count = 0,
-                this.port_id = 0,
-                this.vlan_id = 0,
-                this.vlan_id_e = 0,
-                this.macaddr = '00:00:00:00:00:00',
-                this.macmask = '00:00:00:00:00:00',
+                this.tab = {};
+                this.count = 0;
+                this.port_id = 0;
+                this.vlan_id = 0;
+                this.vlan_id_e = 0;
+                this.macaddr = '00:00:00:00:00:00';
+                this.macmask = '00:00:00:00:00:00';
                 this.getData();
             }
         }
@@ -328,6 +337,11 @@ import loading from '@/components/common/loading'
 <style scoped>
 ul.mac-table{
     border: 1px solid #ddd;
+}
+div.nomore-data{
+    margin: 0 50px;
+    font-size: 18px;
+    color: red;
 }
 div>h2{
     font-size: 20px;

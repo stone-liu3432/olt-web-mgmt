@@ -1,5 +1,5 @@
 <template>
-    <div v-if="outbound && inbound">
+    <div>
        <div class="remote-mgmt">
            <span>{{ lanMap['remote_mgmt'] }}</span>
            <a href="javascript:;" @click="openModal()">{{ lanMap['config'] }}</a>
@@ -28,9 +28,16 @@
                <span>{{ outbound.data.transbytes }}</span>
            </div>
        </div>
-       <div class="remote-content" v-for="(item,index) in inbound.data" :key="index">
+       <div v-else>
            <p>
-                <!-- <span>{{ lanMap['inbound'] }}</span> -->
+               <span>{{ lanMap['outbound'] }}</span>
+           </p>
+           <p>
+               <span>带外接口连接失败</span>
+           </p>
+       </div>
+       <div class="remote-content" v-if="inbound.data" v-for="(item,index) in inbound.data" :key="index">
+           <p>
                 <span>{{ item.interface }}</span>
                 <a href="javascript:;" class="clear-btn" @click="clear_statistic(item)">{{ lanMap["flush"] }}{{ lanMap['statistic']}}</a>
            </p>
@@ -54,6 +61,14 @@
                <span>{{ lanMap['transbytes'] }}</span>
                <span>{{ item.transbytes }}</span>
            </div>
+       </div>
+       <div class="remote-content" v-if="!inbound.data">
+           <p>
+               <span>{{ lanMap['inbound'] }}</span>
+           </p>
+           <p style="border-bottom:none;">
+               <span>当前没有带内接口</span>
+           </p>
        </div>
        <div class="modal-dialog" v-if="modalDialog && interface_data">
             <div class="cover"></div>
@@ -106,7 +121,7 @@
 import { mapState } from 'vuex'
     export default {
         name: 'remoteMgmt',
-        computed: mapState(['lanMap']),
+        computed: mapState(['lanMap','change_url']),
         data(){
             return {
                 outbound: {},
@@ -124,14 +139,18 @@ import { mapState } from 'vuex'
             }
         },
         created(){
-            this.$http.get('./outbound.json').then(res=>{
+            this.$http.get(this.change_url.outbound).then(res=>{
                 this.outbound = res.data;
-                this.interface_data.push(res.data.data);
-                this.ipaddr = res.data.data.ipaddr;
-                this.ipmask = res.data.data.ipmask;
-                this.$http.get('./inbound.json').then(res=>{
-                    this.inbound = res.data;
-                    this.interface_data = this.interface_data.concat(res.data.data);
+                if(res.data.code == 1){
+                        this.interface_data.push(res.data.data);
+                        this.ipaddr = res.data.data.ipaddr;
+                        this.ipmask = res.data.data.ipmask;
+                    }
+                this.$http.get(this.change_url.inbound).then(res=>{
+                    if(res.data.code == 1){
+                        this.inbound = res.data;
+                        this.interface_data = this.interface_data.concat(res.data.data);
+                    }
                     this.click_interface = this.interface_data[0].interface;
                 }).catch(err=>{
                     // to do

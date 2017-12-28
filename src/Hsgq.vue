@@ -26,22 +26,7 @@ export default {
   methods:{
 	...mapMutations({
     	lanMap: 'updateLanMap'
-	}),
-	// 根据port_id 分配端口名
-	get_portName(arr,prefix){
-		var obj = {};
-		for(var i=0;i<arr.length;i++){
-     	 	obj[arr[i].port_id] = {};
-            obj[arr[i].port_id].name = i < 10 ? prefix + '0' + arr[i].port_id : prefix + arr[i].port_id;
-            if(arr[i].port_id > this.system.data.ponports){
-                var n = arr[i].port_id - this.system.data.ponports;
-                obj[arr[i].port_id].name = i < 10 ? prefix + '0' + n : prefix + n;
-            }
-            obj[arr[i].port_id].id = arr[i].port_id;
-            obj[arr[i].port_id].data = arr[i]; 
-		}
-		return obj;
-	}
+	})
   },
   computed: mapState(['port_info','system'])
 }
@@ -140,7 +125,7 @@ a:active{
     top: 0;
     width: 100%;
     height: 100%;
-    z-index: 500;
+    z-index: 1000;
 }
 .cover{
     width:100%;

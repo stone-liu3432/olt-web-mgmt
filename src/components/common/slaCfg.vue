@@ -81,7 +81,13 @@ import { mapState } from 'vuex'
             // 请求 url: /onu_bandwidth?port_id=1  //  port_id =  this.$route.query.port_id
             //  '/onu_bandwidth?port_id=' + (this.$route.query.port_id || 1)  
             this._portid = this.$route.query.port_id || this.port_info.data[0].port_id;
-            this.$http.get('./onuBandwidth.json').then(res=>{
+            var url;
+            if(this.change_url.bandwidth.indexOf('+') === -1){
+                url = this.change_url.bandwidth;
+            }else{
+                url = eval(this.change_url.bandwidth);
+            }
+            this.$http.get(url).then(res=>{
                 this.bound_width = res.data;
             }).catch(err=>{
                 // to do 
@@ -171,7 +177,7 @@ import { mapState } from 'vuex'
                 }
             }
         },
-        computed: mapState(['lanMap','port_name','port_info'])
+        computed: mapState(['lanMap','port_name','port_info','change_url'])
     }
 </script>
 

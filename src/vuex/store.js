@@ -1,5 +1,6 @@
 import Vue from 'vue'
 import Vuex from 'vuex'
+import change_url from '@/config/url'
 
 Vue.use(Vuex)
 
@@ -18,7 +19,9 @@ export default new Vuex.Store({
     // onu列表
     onu_list: {},
     //  是否登陆
-    accessToken: ''
+    accessToken: '',
+    //  全局替换url  testUrl => 开发版本   betaUrl => 测试版本
+    change_url: change_url.testUrl
   },
   mutations:{
     updateSysData(state,data){

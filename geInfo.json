@@ -56,7 +56,7 @@
             "duplex":1,
             "flow_ctrl":1,
             "pvid":1,
-            "media":"RJ-45"
+            "media":"copper"
         },
         {
             "port_id":6,
@@ -67,7 +67,7 @@
             "duplex":1,
             "flow_ctrl":1,
             "pvid":1,
-            "media":"RJ-45"
+            "media":"copper"
         },
         {
             "port_id":7,
@@ -78,7 +78,7 @@
             "duplex":1,
             "flow_ctrl":1,
             "pvid":1,
-            "media":"RJ-45"
+            "media":"copper"
         },
         {
             "port_id":8,
@@ -89,7 +89,7 @@
             "duplex":1,
             "flow_ctrl":1,
             "pvid":1,
-            "media":"RJ-45"
+            "media":"copper"
         },
         {
             "port_id":9,

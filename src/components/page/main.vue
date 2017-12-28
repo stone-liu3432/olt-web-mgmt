@@ -21,10 +21,10 @@ import topBanner from '@/components/page/header'
         created(){
             // 根组件创建之前，初始化vuex部分数据
             //this.$http.get('./systemInfo.json').then(res=>{
-            this.$http.get('./systemInfo.json').then(res=>{
+            this.$http.get(this.change_url.system).then(res=>{
                 this.systemInfo(res.data);
                     //this.$http.get('./portInfo.json').then(res=>{
-                    this.$http.get('./portInfo.json').then(res=>{
+                    this.$http.get(this.change_url.port).then(res=>{
                         this.portInfo(res.data);
                         var index;
                         for(var i=0,len=this.port_info.data.length;i<len;i++){
@@ -45,9 +45,8 @@ import topBanner from '@/components/page/header'
                 }).catch(err=>{
                 // to do 
             })
-            //this.$http.get('./menu.json').then(res=>{
-            this.$http.get('./menu.json').then(res=>{
-                this.menu(res.data);
+            this.$http.get(this.change_url.menu).then(res=>{
+                this.addmenu(res.data);
             }).catch(err=>{
                 // to do 
             })
@@ -58,7 +57,8 @@ import topBanner from '@/components/page/header'
                 systemInfo: 'updateSysData',
                 portInfo: 'updatePortData',
                 lanMap: 'updateLanMap',
-                portName: 'updatePortName'
+                portName: 'updatePortName',
+                addmenu: 'updateMenu'
             }),
             // 根据port_id 分配端口名
             get_portName(arr,prefix){
@@ -76,7 +76,7 @@ import topBanner from '@/components/page/header'
                 return obj;
             }
         },
-        computed: mapState(['port_info','system'])
+        computed: mapState(['port_info','system','change_url'])
     }
 </script>
 

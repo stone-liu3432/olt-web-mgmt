@@ -1,5 +1,5 @@
 <template>
-    <div  v-if="onu_basic_info.data && port_name.pon">
+    <div>
 		<div class="onu-basic-info" v-if="port_name.pon">
 			<h2>{{ lanMap['onu_basic_info'] }}</h2>
 			<div>
@@ -31,7 +31,7 @@
 import { mapState,mapMutations } from 'vuex'
     export default {
         name: 'onuBasicInfo',
-		computed: mapState(['lanMap','port_name','port_info']),
+		computed: mapState(['lanMap','port_name','port_info','change_url','onu_list']),
         data(){
             return {
 				onu_basic_info: {},
@@ -40,23 +40,35 @@ import { mapState,mapMutations } from 'vuex'
             }
         },
         created(){
-            this.$http.get('./onuallow.json').then(res=>{
-                this.onu_list(res.data);
+            var _url;
+            if(this.change_url.onu_allow.indexOf('+') === -1){
+                _url = this.change_url.onu_allow;
+            }else{
+                _url = eval(this.change_url.onu_allow);
+            }
+            this.$http.get(_url).then(res=>{
+                this.addonu_list(res.data);
                 this.portid = this.$route.query.port_id || this.port_info.data[0].port_id;
                 this.onuid = this.$route.query.onu_id || this.onu_list.data[this.portid-1].onu_id;
-                // // 请求url:  请求url: /onumgmt?form=base-info&port_id=1&onu_id=1
-                // this.$http.get('./onu_basic_info.json').then(res=>{
-                //     this.onu_basic_info = res.data;
-                // }).catch(err=>{
-                //     // to do
-                // })
+                // 请求url:  请求url: /onumgmt?form=base-info&port_id=1&onu_id=1
+                var url;
+                if(this.change_url.onumgmt.indexOf('+') === -1){
+                    url = this.change_url.onumgmt;
+                }else{
+                    url = eval(this.change_url.onumgmt);
+                }
+                this.$http.get(url).then(_res=>{
+                    this.onu_basic_info = _res.data;
+                }).catch(err=>{
+                    // to do
+                })
             }).catch(err=>{
                 // to do 
             })
 		},
 		methods:{
             ...mapMutations({
-                onu_list: 'updateOnuList'
+                addonu_list: 'updateOnuList'
             }),
 		},
 		watch: {

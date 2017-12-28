@@ -91,7 +91,7 @@
 import { mapState } from 'vuex';
     export default {
         name: 'vlanCfg',
-        computed: mapState(['lanMap','port_info','port_name']),
+        computed: mapState(['lanMap','port_info','port_name','change_url']),
         data(){
             return {
                 vlan_data: {},
@@ -105,7 +105,13 @@ import { mapState } from 'vuex';
             this._portid = this.$route.query.port_id || this.port_info.data[0].port_id;
             this.selected = this._portid;
             // 请求url: /switch_port?form=vlan&port_id=1    默认为 1 端口
-            this.$http.get('./VLANInfo.json').then(res=>{
+            var url;
+            if(this.change_url.vlan.indexOf('+') === -1){
+                url = this.change_url.vlan;
+            }else{
+                url = eval(this.change_url.vlan);
+            }
+            this.$http.get(url).then(res=>{
                 this.vlan_data = res.data;
             }).catch(err=>{
                 // to do 

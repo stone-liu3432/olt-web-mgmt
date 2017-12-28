@@ -141,5 +141,10 @@
     "vlan_id" : "VLAN ID",
 	
 	"flush" : "清除",
-	"desc" : "描述信息"
+    "desc" : "描述信息",
+    "loadmore": "加载更多",
+    "vlan_list": "VLAN列表",
+    "detail": "详情",
+    "inquery_mode": "查询方式",
+    "CDkey": "序列号"
 }

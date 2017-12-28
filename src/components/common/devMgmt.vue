@@ -48,22 +48,25 @@
                 </p>
             </div>
         </div>
-        <confirm tool-tips="是否确认删除此VLAN?" @choose="result" v-if="userChoose"></confirm>
+        <confirm tool-tips="是否确认恢复出厂设置?" @choose="result" v-if="userChoose"></confirm>
+        <loading class="load" v-if="isLoading"></loading>
     </div>
 </template>
 
 <script>
     import { mapState } from 'vuex'
     import confirm from '@/components/common/confirm'
+    import loading from '@/components/common/loading'
     export default {
         name: 'devMgmt',
         computed: mapState(['lanMap']),
         data(){
             return {
-                userChoose: false
+                userChoose: false,
+                isLoading: false
             }
         },
-        components: { confirm },
+        components: { confirm,loading },
         methods:{
             //  选择上传文件
             changeFile(){
@@ -74,9 +77,18 @@
             //  重启OLT
             reboot(){
                 this.$http.get('/system_reboot').then(res=>{
-                    alert(res.data.msg);
-                }).catch(err=>{
-
+                    if(res.data.code === 1){
+                        this.isLoading = true;
+                        var timer = setInterval(()=>{
+                            this.$http.get('/board?info=menu').then(res=>{
+                                if(res.data.code === 1){
+                                    this.$route.push('/main');
+                                    this.isLoading = false;
+                                    timer = null;
+                                }
+                            })
+                        },5000)
+                    }
                 })
             },
             result(bool){
@@ -188,5 +200,15 @@ input{
 p{
     color: #666;
     margin-top: 10px;
+}
+div.load{
+    position: fixed;
+    width: 100%;
+    height: 100%;
+    top: 0;
+    left: 0;
+    z-index: 1000;
+    background: #000;
+    opacity: 0.9;
 }
 </style>

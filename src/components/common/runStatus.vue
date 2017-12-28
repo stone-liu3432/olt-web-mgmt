@@ -1,30 +1,14 @@
 <template>
     <div class="running-status">
-        <div class="container" v-if="this.timer.data">
-            <h2>系统运行时间</h2>
-            <div class="time-info">
-                <span>{{ lanMap['current_time'] + ' :' }}</span>
-                <span>{{ new Date(this.timer.data.time_sec).toLocaleString().replace(/\//g,'-') }}</span>
-            </div>
-            <div class="time-info">
-                <span>{{ lanMap['run_time']+' :' }}</span>
-                <span>
-                    {{ this.timer.data.days + " " + lanMap['days'] }}
-                    {{ this.timer.data.hours + " " + lanMap['hours'] }}
-                    {{ this.timer.data.mins < 10 ? '0' + this.timer.data.mins + " " + lanMap['mins'] : this.timer.data.mins + " " + lanMap['mins'] }}
-                    {{ this.timer.data.secs < 10 ? '0' + this.timer.data.secs + " " + lanMap['secs'] : this.timer.data.secs + " " + lanMap['secs'] }}
-                </span>
-            </div>
-        </div>
         <div class="container"  v-if="ponInfo.data">
             <h2>PON口信息</h2>
             <div class="pon-detail" v-for="(item,index) in this.ponInfo.data" :key="index">
                 <p>{{ item.port_name }}</p>
                 <div :class="[ item.status >= 1 ? 'bg-online' : 'bg-offline' ]">
-                    <img src="../../assets/network-online.png" v-if="item.status >=1">
-                    <img src="../../assets/network-offline.png" v-if="item.status <1">
+                    <img src="../../assets/pon_online.png" v-if="item.status >=1">
+                    <img src="../../assets/pon_offline.png" v-if="item.status <1">
                 </div>
-                <p :style="{'color' : item.status >=1 ? '#51D691' : 'red'}">{{ lanMap['link_status'] + ' : ' }}{{ item.status >= 1 ? lanMap['online'] : lanMap['offline'] }}</p>
+                <p :style="{'color' : item.status >=1 ? '#29BDFA' : '#8D8F92'}">{{ lanMap['link_status'] + ' : ' }}{{ item.status >= 1 ? lanMap['online'] : lanMap['offline'] }}</p>
                 <p>已注册设备数:{{ item.online + item.offline }}</p>
                 <p>{{ lanMap['online'] }}：{{ item.online }}</p>
                 <p>{{ lanMap['offline'] }}：{{ item.offline }}</p>
@@ -35,15 +19,18 @@
             <div class="pon-detail" v-for="(item,index) in this.geInfo" :key="index">
                 <p>{{ "GE0"+(index+1) }}</p>
                 <div :class="[ item.admin_status >= 1 ? item.link_status >= 1 ? 'bg-online' : 'bg-offline' :'bg-disabled' ]">
-                    <img src="../../assets/ge-port.png" v-if="item.admin_status >=1 && item.link_status >=1 ">
-                    <img src="../../assets/ge-port-offline.png" v-if="item.admin_status >=1 && item.link_status < 1">
-                    <img src="../../assets/ge-port-disabled.png" v-if="item.admin_status < 1">
+                    <img src="../../assets/uplink-fiber-blue.png" v-if="item.media == 'fiber' &&item.admin_status >=1 && item.link_status >=1 ">
+                    <img src="../../assets/uplink-fiber-black.png" v-if="item.media == 'fiber' && item.admin_status >=1 && item.link_status < 1">
+                    <img src="../../assets/uplink-fiber-black-disable.png" v-if="item.media == 'fiber' && item.admin_status < 1">
+                    <img src="../../assets/uplink-rj45-blue.png" v-if="item.media == 'copper' &&item.admin_status >=1 && item.link_status >=1 ">
+                    <img src="../../assets/uplink-rj45-black.png" v-if="item.media == 'copper' && item.admin_status >=1 && item.link_status < 1">
+                    <img src="../../assets/uplink-rj45-disable.png" v-if="item.media == 'copper' && item.admin_status < 1">
                 </div>
-                <p :style="{'color' : item.admin_status >=1 ? item.link_status >=1 ? '#51D691' : 'red' : '#aaa'}">
+                <p :style="{'color' : item.admin_status >=1 ? item.link_status >=1 ? '#29BDFA' : '#aaa' : 'red'}">
                     {{ lanMap['admin_status'] }}：{{ item.admin_status >= 1 ? item.link_status >= 1 ? lanMap['online'] : lanMap['offline'] : lanMap['forbidden'] }}
                 </p>
-                <p :style="{'color' : item.admin_status >=1 ? item.link_status >=1 ? '#51D691' : 'red' : '#aaa'}">
-                    {{ lanMap['link_status']}}：{{ item.media }}
+                <p :style="{'color' : item.admin_status >=1 ? item.link_status >=1 ? '#29BDFA' : '#aaa' : 'red'}">
+                    {{ lanMap['link_status']}}：{{ item.link_status >=1 ? lanMap['link_up'] : lanMap['link_down'] }}
                 </p>
             </div>
         </div>
@@ -65,6 +52,22 @@
                 <P>内存</P>
                 <canvas width="200" height="200" id="memory-detail"></canvas>
             </div>
+            <div class="container" v-if="this.timer.data">
+                <h2>系统运行时间</h2>
+                <div class="time-info">
+                    <span>{{ lanMap['current_time'] + ' :' }}</span>
+                    <span>{{ new Date(this.timer.data.time_sec).toLocaleString().replace(/\//g,'-') }}</span>
+                </div>
+                <div class="time-info">
+                    <span>{{ lanMap['run_time']+' :' }}</span>
+                    <span>
+                        {{ this.timer.data.days + " " + lanMap['days'] }}
+                        {{ this.timer.data.hours + " " + lanMap['hours'] }}
+                        {{ this.timer.data.mins < 10 ? '0' + this.timer.data.mins + " " + lanMap['mins'] : this.timer.data.mins + " " + lanMap['mins'] }}
+                        {{ this.timer.data.secs < 10 ? '0' + this.timer.data.secs + " " + lanMap['secs'] : this.timer.data.secs + " " + lanMap['secs'] }}
+                    </span>
+                </div>
+            </div>
         </div>
     </div>
 </template>
@@ -83,9 +86,9 @@
         },
         created(){
             // 组件创建之前，初始化vuex部分数据
-            this.$http.get('./systemInfo.json').then(res=>{
+            this.$http.get(this.change_url.system).then(res=>{
                 this.systemInfo(res.data);
-                    this.$http.get('./portInfo.json').then(res=>{
+                    this.$http.get(this.change_url.port).then(res=>{
                         this.portInfo(res.data);
                          // 获取pon口数量，从端口中去除pon口，将剩下的端口（ge口）展示到页面上
                         var ge_port = this.port_info.data.slice(this.system.data.ponports,this.port_info.data.length);
@@ -110,12 +113,12 @@
                 // to do 
             })
             // 请求url: '/board?info=cpu'
-            this.$http.get('./ponInfo.json').then(res=>{
+            this.$http.get(this.change_url.pon).then(res=>{
                 this.ponInfo = res.data;
             }).catch(err=>{
                 // to do
             })
-            this.$http.get('./cpuInfo.json').then(res=>{
+            this.$http.get(this.change_url.cpu).then(res=>{
                 this.cpuInfo = res.data;
                 setTimeout(()=>{
                     this.drawing(this.cpuInfo.data.cpu_usage,this.cpuInfo.data.memory_usage);
@@ -124,7 +127,7 @@
                 // to do
             })
             //  请求url: /time?form=info
-            this.$http.get('./time.json').then(res=>{
+            this.$http.get(this.change_url.time).then(res=>{
                 this.timer = res.data;
                 if(this.timer.data){
                     setInterval(()=>{
@@ -221,7 +224,7 @@
                 memoryCtx.fillText(memoryNum+'%', 100, 100);
             }
         },
-        computed: mapState(['lanMap','port_info','system'])
+        computed: mapState(['lanMap','port_info','system','change_url'])
     }
 </script>
 
@@ -239,7 +242,7 @@
 }
 .time-info>span:first-child{
     display: inline-block;
-    width:200px;
+    width:100px;
     text-align: right;
     margin-right: 20px;
 }
@@ -264,24 +267,24 @@ h2{
     font-weight: 500;
 }
 .pon-detail>div{
-    width:70px;
-    height:70px;
-    padding:3px;
+    width:64px;
+    height:64px;
+    padding:5px;
     margin:10px auto;
     border-radius: 5px;
 }
 .bg-online{
-    border:2px solid #51D691;
+    border:2px solid #29BDFA;
 } 
 .bg-offline{
-    border:2px solid red;
+    border:2px solid #A4A9A9;
 }
 .bg-disabled{
-    border: 2px solid #ddd;
+    border: 2px solid #A4A9A9;
 }
 .systemInfo{
     width:500px;
-    border:1px solid #666;
+    /* border:1px solid #666; */
     padding-bottom:10px;
     margin-top: 10px;
     float: left;
@@ -309,7 +312,7 @@ h2{
     width:500px;
     margin:10px 0 0 20px;
     padding-bottom: 20px;
-    border:1px solid #666;
+    /* border:1px solid #666; */
 }
 .cpuInfo>h2{
     height:50px;
