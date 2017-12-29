@@ -7,7 +7,7 @@
             <li>
                 <span>{{ lanMap['port_id']}}</span>
             </li>
-            <li  v-for="(item,key) of port_info.data[0]" :key="key" v-if="key !== 'port_id'&& key != 'pvid'">
+            <li  v-for="(item,key) of port_info.data[0]" :key="key" v-if="key !== 'port_id'">
                 <span>{{ lanMap[key] }}</span>
             </li>
             <li>
@@ -36,9 +36,9 @@
             <li>
                 <span>{{ item.flow_ctrl >= 1 ? "Enable" : "Disable" }}</span>
             </li>
-            <!-- <li>
-                <span>{{ item.pvid }}</span>
-            </li> -->
+            <li>
+                <span>{{ item.mtu }}</span>
+            </li>
             <li>
                 <span>{{ item.media }}</span>
             </li>
@@ -57,7 +57,7 @@ import { mapState } from 'vuex'
             return {}
         },
         created(){
-            // console.log(this.port_info);
+            // do sth
         },
         methods:{
             jump(id){
@@ -71,7 +71,7 @@ import { mapState } from 'vuex'
                 }
             }
         },
-        computed: mapState(['lanMap','port_info','port_name'])
+        computed: mapState(['lanMap','port_info','port_name','change_url'])
     }
 </script>
 

@@ -69,11 +69,11 @@ export default {
     created(){
         // 请求 url: /onu_deny_list?port_id=1
         var url;
-        if(this.change_url.onu_deny.indexOf('+') === -1){
-            url = this.change_url.onu_deny;
-        }else{
-            url = eval(this.change_url.onu_deny);
-        }
+        if(this.change_url.onu_allow[this.change_url.onu_allow.length - 1] != '='){
+                url = this.change_url.onu_allow;
+            }else{
+                url = this.change_url.onu_allow + this._portid;
+            }
         this.$http.get(url).then(res=>{
             this.onu_deny_list = res.data;
         }).catch(err=>{

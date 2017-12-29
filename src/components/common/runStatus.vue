@@ -3,12 +3,14 @@
         <div class="container"  v-if="ponInfo.data">
             <h2>PON口信息</h2>
             <div class="pon-detail" v-for="(item,index) in this.ponInfo.data" :key="index">
-                <p>{{ item.port_name }}</p>
+                <!-- <p>{{ item.port_id < 10 ? 'PON0' + item.port_id : 'PON' + item.port_id }}</p> -->
                 <div :class="[ item.status >= 1 ? 'bg-online' : 'bg-offline' ]">
                     <img src="../../assets/pon_online.png" v-if="item.status >=1">
                     <img src="../../assets/pon_offline.png" v-if="item.status <1">
                 </div>
-                <p :style="{'color' : item.status >=1 ? '#29BDFA' : '#8D8F92'}">{{ lanMap['link_status'] + ' : ' }}{{ item.status >= 1 ? lanMap['online'] : lanMap['offline'] }}</p>
+                <p :style="{'color' : item.status >=1 ? '#29BDFA' : '#8D8F92'}">
+                    {{ item.port_id < 10 ? 'PON0' + item.port_id : 'PON' + item.port_id }} : {{ item.status >= 1 ? lanMap['online'] : lanMap['offline'] }}
+                </p>
                 <p>已注册设备数:{{ item.online + item.offline }}</p>
                 <p>{{ lanMap['online'] }}：{{ item.online }}</p>
                 <p>{{ lanMap['offline'] }}：{{ item.offline }}</p>
@@ -17,7 +19,7 @@
         <div class="container"  v-if="this.geInfo[0]">
             <h2>GE信息</h2>
             <div class="pon-detail" v-for="(item,index) in this.geInfo" :key="index">
-                <p>{{ "GE0"+(index+1) }}</p>
+                <!-- <p>{{ "GE0"+(index+1) }}</p> -->
                 <div :class="[ item.admin_status >= 1 ? item.link_status >= 1 ? 'bg-online' : 'bg-offline' :'bg-disabled' ]">
                     <img src="../../assets/uplink-fiber-blue.png" v-if="item.media == 'fiber' &&item.admin_status >=1 && item.link_status >=1 ">
                     <img src="../../assets/uplink-fiber-black.png" v-if="item.media == 'fiber' && item.admin_status >=1 && item.link_status < 1">
@@ -27,29 +29,29 @@
                     <img src="../../assets/uplink-rj45-disable.png" v-if="item.media == 'copper' && item.admin_status < 1">
                 </div>
                 <p :style="{'color' : item.admin_status >=1 ? item.link_status >=1 ? '#29BDFA' : '#aaa' : 'red'}">
-                    {{ lanMap['admin_status'] }}：{{ item.admin_status >= 1 ? item.link_status >= 1 ? lanMap['online'] : lanMap['offline'] : lanMap['forbidden'] }}
+                    {{ index < 10 ? "GE0"+(index+1) : 'GE'+(index+1) }}：{{ item.admin_status >= 1 ? item.link_status >=1 ? lanMap['link_up'] : lanMap['link_down'] : lanMap['forbidden'] }}
                 </p>
                 <p :style="{'color' : item.admin_status >=1 ? item.link_status >=1 ? '#29BDFA' : '#aaa' : 'red'}">
-                    {{ lanMap['link_status']}}：{{ item.link_status >=1 ? lanMap['link_up'] : lanMap['link_down'] }}
+                    {{ lanMap['admin_status'] }}：{{ item.admin_status >= 1 ? item.link_status >= 1 ? lanMap['enable'] : lanMap['disable'] : lanMap['disable'] }}
                 </p>
             </div>
         </div>
-        <div class="systemInfo" v-if="this.system.data">
+        <div class="system-info" v-if="this.system.data">
             <h2>系统信息</h2>
-            <div v-for="(item,key) of this.system.data" :key="key" class="systemInfo-detail"  v-if="key !== 'bl_ver'">
+            <div v-for="(item,key) of this.system.data" :key="key" class="system-info-detail"  v-if="key !== 'bl_ver'">
                 <!-- 根据key值，取出映射的lanMap字符 -->
                 <span>{{ lanMap[key] }}</span>
                 <span>{{ item }}</span>
             </div>
         </div>
-        <div class="cpuInfo" v-if="this.cpuInfo.data">
+        <div class="cpu-info" v-if="this.cpuInfo.data">
             <h2>硬件状态</h2>
             <div>
-                <p>CPU</p>
+                <p>{{ lanMap['cpu_usage'] }}</p>
                 <canvas width="200" height="200" id="cpu-detail"></canvas>
             </div>
             <div>
-                <P>内存</P>
+                <P>{{ lanMap['memory_usage'] }}</P>
                 <canvas width="200" height="200" id="memory-detail"></canvas>
             </div>
             <div class="container" v-if="this.timer.data">
@@ -81,43 +83,19 @@
                 cpuInfo: {},
                 ponInfo: {},
                 geInfo: {},
-                timer: {}
+                timer: {},
+                interval: null
             }
         },
         created(){
-            // 组件创建之前，初始化vuex部分数据
-            this.$http.get(this.change_url.system).then(res=>{
-                this.systemInfo(res.data);
-                    this.$http.get(this.change_url.port).then(res=>{
-                        this.portInfo(res.data);
-                         // 获取pon口数量，从端口中去除pon口，将剩下的端口（ge口）展示到页面上
-                        var ge_port = this.port_info.data.slice(this.system.data.ponports,this.port_info.data.length);
-                        this.geInfo = ge_port;
-                        var index;
-                        for(var i=0,len=this.port_info.data.length;i<len;i++){
-                            if(this.port_info.data[i].port_id === this.system.data.ponports){
-                                index = i + 1;
-                            }
-                        }
-                        var pon_count = this.port_info.data.slice(0,index);
-                        var ge_count = this.port_info.data.slice(index,this.port_info.data.length);
-                        var portName = {
-                            pon: this.get_portName(pon_count,'PON'),
-                            ge: this.get_portName(ge_count,'GE')
-                        };
-                        this.portName(portName);
-                    }).catch(err=>{
-                        // to do 
-                    })
-                }).catch(err=>{
-                // to do 
-            })
-            // 请求url: '/board?info=cpu'
+            this.get_ge();
+            //获取 PON 口信息
             this.$http.get(this.change_url.pon).then(res=>{
                 this.ponInfo = res.data;
             }).catch(err=>{
                 // to do
             })
+            // 请求url: '/board?info=cpu'
             this.$http.get(this.change_url.cpu).then(res=>{
                 this.cpuInfo = res.data;
                 setTimeout(()=>{
@@ -155,13 +133,65 @@
             }).catch(err=>{
                 // to do
             })
+            this.interval = setInterval(()=>{
+                this.get_pon();
+                this.get_ge();
+            },5000)
         },
-        methods:{
+        beforeDestroy(){
+            clearInterval(this.interval);
+        },
+        methods: {
             ...mapMutations({
                 systemInfo: 'updateSysData',
                 portInfo: 'updatePortData',
                 portName: 'updatePortName'
             }),
+            get_pon(){
+                this.$http.get(this.change_url.pon).then(res=>{
+                    this.ponInfo = res.data;
+                }).catch(err=>{
+                    // to do
+                })
+            },
+            get_ge(){
+                this.$http.get(this.change_url.port).then(res=>{
+                    this.portInfo(res.data);
+                    // 获取pon口数量，从端口中去除pon口，将剩下的端口（ge口）展示到页面上
+                    var ge_port = this.port_info.data.slice(this.system.data.ponports,this.port_info.data.length);
+                    this.geInfo = ge_port;
+                    var index;
+                    for(var i=0,len=this.port_info.data.length;i<len;i++){
+                        if(this.port_info.data[i].port_id === this.system.data.ponports){
+                            index = i + 1;
+                        }
+                    }
+                    var pon_count = this.port_info.data.slice(0,index);
+                    var ge_count = this.port_info.data.slice(index,this.port_info.data.length);
+                    var portName = {
+                        pon: this.get_portName(pon_count,'PON'),
+                        ge: this.get_portName(ge_count,'GE')
+                    };
+                    this.portName(portName);
+                }).catch(err=>{
+                    // to do
+                })
+            },
+            // 根据port_id 分配端口名
+            get_portName(arr,prefix){
+                var obj = {};
+                for(var i=0;i<arr.length;i++){
+                    obj[arr[i].port_id] = {};
+                    obj[arr[i].port_id].name = i < 10 ? prefix + '0' + arr[i].port_id : prefix + arr[i].port_id;
+                    if(arr[i].port_id > this.system.data.ponports){
+                        var n = arr[i].port_id - this.system.data.ponports;
+                        obj[arr[i].port_id].name = i < 10 ? prefix + '0' + n : prefix + n;
+                    }
+                    obj[arr[i].port_id].id = arr[i].port_id;
+                    obj[arr[i].port_id].data = arr[i]; 
+                }
+                return obj;
+            },
             drawing(cpuNum,memoryNum){
                 var cpu = document.getElementById('cpu-detail');
                 var cpuCtx = cpu.getContext('2d');
@@ -282,49 +312,49 @@ h2{
 .bg-disabled{
     border: 2px solid #A4A9A9;
 }
-.systemInfo{
+.system-info{
     width:500px;
     /* border:1px solid #666; */
     padding-bottom:10px;
     margin-top: 10px;
     float: left;
 }
-.systemInfo>div.systemInfo-detail:last-child{
+.system-info>div.system-info-detail:last-child{
     border-bottom: none;
 }
-.systemInfo>h2{
+.system-info>h2{
     height:50px;
     padding-left:10px;
     line-height:50px;
     border-bottom:1px solid #ddd;
 }
-.systemInfo-detail>span:first-child{
+.system-info-detail>span:first-child{
     display:inline-block;
     width:150px;
     padding:10px 30px 10px 0;
     text-align:right;
 }
-.systemInfo-detail{
+.system-info-detail{
     border-bottom:1px solid #ddd;
 }
-.cpuInfo{
+.cpu-info{
     float:left;
     width:500px;
     margin:10px 0 0 20px;
     padding-bottom: 20px;
     /* border:1px solid #666; */
 }
-.cpuInfo>h2{
+.cpu-info>h2{
     height:50px;
     padding-left:10px;
     line-height:50px;
     border-bottom:1px solid #ddd;
 }
-.cpuInfo>div{
+.cpu-info>div{
     float: left;
     margin-left:30px;
 }
-.cpuInfo>div>p{
+.cpu-info>div>p{
     padding:10px;
     color:#555;
 }

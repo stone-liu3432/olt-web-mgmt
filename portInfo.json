@@ -10,7 +10,7 @@
             "speed":"1000M",
             "duplex":1,
             "flow_ctrl":1,
-            "pvid":1,
+            "mtu":1,
             "media":"fiber"
         },{
             "port_id":2,
@@ -20,7 +20,7 @@
             "speed":"1000M",
             "duplex":1,
             "flow_ctrl":1,
-            "pvid":1,
+            "mtu":1,
             "media":"fiber"
         },
         {
@@ -31,7 +31,7 @@
             "speed":"1000M",
             "duplex":1,
             "flow_ctrl":1,
-            "pvid":1,
+            "mtu":1,
             "media":"fiber"
         },
         {
@@ -42,7 +42,7 @@
             "speed":"1000M",
             "duplex":1,
             "flow_ctrl":1,
-            "pvid":1,
+            "mtu":1,
             "media":"fiber",
             "erate":"100kbps",
             "irate":"100kbps"
@@ -55,7 +55,7 @@
             "speed":"1000M",
             "duplex":1,
             "flow_ctrl":1,
-            "pvid":1,
+            "mtu":1,
             "media":"copper",
             "erate":"100kbps",
             "irate":"100kbps"
@@ -68,7 +68,7 @@
             "speed":"1000M",
             "duplex":1,
             "flow_ctrl":1,
-            "pvid":1,
+            "mtu":1,
             "media":"copper",
             "erate":"100kbps",
             "irate":"100kbps"
@@ -81,7 +81,7 @@
             "speed":"1000M",
             "duplex":1,
             "flow_ctrl":1,
-            "pvid":1,
+            "mtu":1,
             "media":"copper",
             "erate":"100kbps",
             "irate":"100kbps"
@@ -94,7 +94,7 @@
             "speed":"1000M",
             "duplex":1,
             "flow_ctrl":1,
-            "pvid":1,
+            "mtu":1,
             "media":"copper",
             "erate":"100kbps",
             "irate":"100kbps"
@@ -107,7 +107,7 @@
             "speed":"1000M",
             "duplex":1,
             "flow_ctrl":1,
-            "pvid":1,
+            "mtu":1,
             "media":"fiber",
             "erate":"100kbps",
             "irate":"100kbps"
@@ -120,7 +120,7 @@
             "speed":"1000M",
             "duplex":1,
             "flow_ctrl":1,
-            "pvid":1,
+            "mtu":1,
             "media":"fiber",
             "erate":"100kbps",
             "irate":"100kbps"
@@ -133,7 +133,7 @@
             "speed":"1000M",
             "duplex":1,
             "flow_ctrl":1,
-            "pvid":1,
+            "mtu":1,
             "media":"fiber",
             "erate":"100kbps",
             "irate":"100kbps"
@@ -146,7 +146,7 @@
             "speed":"1000M",
             "duplex":1,
             "flow_ctrl":1,
-            "pvid":1,
+            "mtu":1,
             "media":"fiber",
             "erate":"100kbps",
             "irate":"100kbps"

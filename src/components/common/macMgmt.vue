@@ -61,7 +61,7 @@
                 <span>{{ (pagination.index-1)*pagination.display + key + 1 }}</span>
                 <span>{{ item.macaddr }}</span>
                 <span>{{ item.vlan_id }}</span>
-                <span>{{ item.port_id ? item.port_id : 'CPU' }}</span>
+                <span>{{ item.port_id ? getName(item.port_id) : 'CPU' }}</span>
                 <span>
                     {{ item.mac_type === 0 ? lanMap['dynamic'] : item.mac_type === 1 ? lanMap['static'] : lanMap['blackhole'] }}
                 </span>
@@ -100,7 +100,7 @@ import loading from '@/components/common/loading'
     export default {
         name: 'macMgmt',
         components: { confirm,loading },
-        computed: mapState(['lanMap','change_url']),
+        computed: mapState(['lanMap','change_url','port_name']),
         data(){
             return {
                 //  mac地址老化时间 
@@ -154,14 +154,14 @@ import loading from '@/components/common/loading'
             var post_param = {
                     "method":"get",
                     "param":{
-                        "flags":1,
-                        "count":0,
-                        "mac_type":3,
-                        "port_id":1,
-                        "vlan_id_s":10,
-                        "vlan_id_e":100,
-                        "macaddr":"00:00:00:00:00:11",
-                        "macmask":"00:00:00:00:00:ff"
+                        "flags": 1,
+                        "count": 0,
+                        "mac_type": 3,
+                        "port_id": 1,
+                        "vlan_id": 0,
+                        "vlan_id_e": 0,
+                        "macaddr": "00:00:00:00:00:11",
+                        "macmask": "00:00:00:00:00:ff"
                     }
             }
             this.$http.post(this.change_url.mactab,post_param).then(res=>{
@@ -173,6 +173,10 @@ import loading from '@/components/common/loading'
             })
         },
         methods: {
+            getName(id){
+                if(id < 1) return false
+                return this.port_name.pon[id] ? this.port_name.pon[id].name : this.port_name.ge[id].name;
+            },
             getData(){
                 var post_param = {
                     "method":"get",

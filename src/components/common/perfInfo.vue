@@ -34,10 +34,10 @@ import { mapState } from 'vuex'
             this.portid = this.port_info.data[0].port_id;
             //请求url: /switch_port?form=statistic&port_id=1   //  打包时删除
             var url;
-            if(this.change_url.perf.indexOf('+') === -1){
+            if(this.change_url.perf[this.change_url.perf.length - 1] != '='){
                 url = this.change_url.perf;
             }else{
-                url = eval(this.change_url.perf);
+                url = this.change_url.perf + this.portid;
             }
             this.$http.get(url).then(res=>{
                 this.data = res.data;

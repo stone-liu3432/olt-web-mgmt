@@ -11,23 +11,27 @@
             <a href="javascript:;" @click="auth_state()">ONU认证</a>
             <a href="javascript:;" @click="onu_bandwieth()">带宽</a>
             <a href="javascript:;" @click="reboot()">重启OUN</a>
-            <a href="javascript:;" @click="onu_detail()" title="勾选一个onu以查看详情">查看详情</a>
+            <!-- <a href="javascript:;" title="勾选一个onu以查看详情">查看详情</a> -->
         </div>
         <div></div>
         <ul v-if="this.onu_allow_list.data">
             <li class="flex-box">
-                <input type="radio" style="opacity:0">
+                <!-- <input type="radio" style="opacity:0"> -->
                 <span v-for="(item,key) in this.onu_allow_list.data[0]" :key="key" v-if=" key != 'port_id' ">
                     {{ lanMap[key] }}
                 </span>
+                <span>{{ lanMap['detail'] }}</span>
             </li>
             <li v-for="(item,index) in this.onu_allow_list.data" :key="index" class="flex-box">
-                <input type="radio" name="onu" @click="checkedOnu(item)">
+                <!-- <input type="radio" name="onu" @click="checkedOnu(item)"> -->
                 <span>{{ 'ONU0'+item.port_id +'/'+ item.onu_id }}</span>
                 <span>{{ item.macaddr }}</span>
                 <span>{{ item.status }}</span>
                 <span>{{ item.auth_state }}</span>
                 <span>{{ item.register_time }}</span>
+                <span @click="onu_detail(item.port_id,item.onu_id)">
+                    <i title="查看详情"></i>
+                </span>
             </li>
         </ul>
         <p v-else>没有更多的数据了...</p>
@@ -46,14 +50,16 @@ import { mapState,mapMutations } from 'vuex'
                 _macaddr: ''
             }
         },
+        computed: mapState(['lanMap','port_name','menu','change_url']),
         created(){
             // 请求 url: /onu_allow_list?port_id=1
-            //    '/onu_allow_list?port_id=' + (this.$route.query.port_id || 1 )
+            //    '/onu_allow_list?port_id=' + ( this.$route.query.port_id || 1 )
+            this._portid = this.$route.query.port_id || 1;
             var url;
-            if(this.change_url.onu_allow.indexOf('+')=== -1){
+            if(this.change_url.onu_allow[this.change_url.onu_allow.length - 1] != '='){
                 url = this.change_url.onu_allow;
             }else{
-                url = eval(this.change_url.onu_allow);
+                url = this.change_url.onu_allow + this._portid;
             }
             this.$http.get(url).then(res=>{
                 if(res.data.code === 1){
@@ -79,11 +85,6 @@ import { mapState,mapMutations } from 'vuex'
                 }).catch(err=>{
                     // to do 
                 })
-            },
-            // 单选框，切换选中的onu
-            checkedOnu(node){
-                this._onuid = node.onu_id;
-                this._macaddr = node.macaddr;
             },
             // 删除onu
             delete_onu(){
@@ -128,11 +129,10 @@ import { mapState,mapMutations } from 'vuex'
                 // 待添加
             },
             //  跳转到 onu 详情页
-            onu_detail(){
+            onu_detail(portid,onuid){
                 //请求url:  /onu_basic_info?form=base-info&port_id=1&onu_id=1
-                if(!this._onuid){
-                    return
-                }
+                this._portid = portid;
+                this._onuid = onuid;
                 this.$router.push('/onu_basic_info?form=base-info&port_id='+this._portid+'&onu_id='+this._onuid);
                 // 清除当前子菜单的选中效果，给被跳转的子菜单加上选中效果
                 var sub_item = document.querySelectorAll('p.sub-item');
@@ -171,8 +171,7 @@ import { mapState,mapMutations } from 'vuex'
                 // 调用 vuex Mutations方法，更新 store 状态
                 this.update_menu(_menu);
             }
-        },
-        computed: mapState(['lanMap','port_name','menu','change_url'])
+        }
     }
 </script>
 
@@ -197,7 +196,7 @@ ul>li:last-child{
 }
 span{
     display: inline-block;
-    width: 18%;
+    width: 16%;
     text-align: center;
     font-size: 16px;
 }
@@ -233,5 +232,15 @@ p{
     margin: 20px 0 20px 20px;
     font-size: 16px;
     color: red;
+}
+i{
+    display: inline-block;
+    cursor: pointer;
+    width: 30px;
+    height: 30px;
+    background: url('../../assets/detail-normal.png') no-repeat -1px -1px;
+}
+i:hover{
+    background: url('../../assets/detail-hover.png') no-repeat -1px -1px;
 }
 </style>

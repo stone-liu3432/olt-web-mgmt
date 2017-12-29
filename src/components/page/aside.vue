@@ -29,14 +29,6 @@ export default {
     data(){
         return {}
     },
-    created(){
-        // this.$http.get('./menu.json').then(res=>{
-        //     this.addmenu(res.data);
-        //     console.log(this.menu);
-        // }).catch(err=>{
-        //     // to do 
-        // })
-    },
     methods:{
         // ...mapMutations({
         //     addmenu: 'updateMenu'

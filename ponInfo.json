@@ -3,24 +3,24 @@
     "msg":"success",
     "data":[
         {
-            "port_name":"PON01",
+            "port_id":1,
             "status":1,
             "online":2,
             "offline":3
         },{
-            "port_name":"PON02",
+            "port_id":2,
             "status":0,
             "online":2,
             "offline":5
         },
         {
-            "port_name":"PON03",
+            "port_id":3,
             "status":0,
             "online":4,
             "offline":3
         },
         {
-            "port_name":"PON04",
+            "port_id":4,
             "status":1,
             "online":6,
             "offline":3

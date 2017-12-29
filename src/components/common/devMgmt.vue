@@ -81,10 +81,11 @@
                         this.isLoading = true;
                         var timer = setInterval(()=>{
                             this.$http.get('/board?info=menu').then(res=>{
+                                console.log(res);
                                 if(res.data.code === 1){
                                     this.$route.push('/main');
                                     this.isLoading = false;
-                                    timer = null;
+                                    clearInterval(timer);
                                 }
                             })
                         },5000)

@@ -82,10 +82,10 @@ import { mapState } from 'vuex'
             //  '/onu_bandwidth?port_id=' + (this.$route.query.port_id || 1)  
             this._portid = this.$route.query.port_id || this.port_info.data[0].port_id;
             var url;
-            if(this.change_url.bandwidth.indexOf('+') === -1){
-                url = this.change_url.bandwidth;
+            if(this.change_url.onu_allow[this.change_url.onu_allow.length - 1] != '='){
+                url = this.change_url.onu_allow;
             }else{
-                url = eval(this.change_url.bandwidth);
+                url = this.change_url.onu_allow + this._portid;
             }
             this.$http.get(url).then(res=>{
                 this.bound_width = res.data;

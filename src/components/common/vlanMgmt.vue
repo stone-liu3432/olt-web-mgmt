@@ -160,10 +160,10 @@ import confirm from '@/components/common/confirm'
             getData(){
                 // 请求url: /switch_vlan?count=0
                 var url;
-                if(this.change_url.vlancfg.indexOf('+') === -1){
+                if(this.change_url.vlancfg[this.change_url.vlancfg.length - 1] != '='){
                     url = this.change_url.vlancfg;
                 }else{
-                    url = eval(this.change_url.vlancfg);
+                    url = this.change_url.vlancfg + this.count;
                 }
                 this.$http.get(url).then(res=>{
                     if(this.count == 0){
