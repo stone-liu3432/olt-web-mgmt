@@ -80,7 +80,10 @@
 	"pvid"  : "端口VLAN",
 	"media" : "端口媒介",
 	"copper" : "RJ45" ,
-	"fiber" : "光纤",
+    "fiber" : "光纤",
+    "erate":"出口速率",
+    "irate":"入口速率",
+
 	
 	"ipaddr" : "IP地址",
 	"ipmask" : "IP掩码",

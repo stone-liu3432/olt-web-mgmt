@@ -38,8 +38,9 @@
                 </span>
             </li>
         </ul>
+        <div v-else>没有更多的数据了...</div>
         <!-- tool-tips => 自定义的消息内容   confirm => 确认框组件 -->
-        <confirm tool-tips="123123" @choose="result" v-if="userChoose"></confirm>
+        <confirm tool-tips="是否确定？" @choose="result" v-if="userChoose"></confirm>
     </div>
 </template>
 
@@ -68,11 +69,12 @@ export default {
     },
     created(){
         // 请求 url: /onu_deny_list?port_id=1
+        this._portid = this.port_name.pon['1'].id;
         var url;
         if(this.change_url.onu_allow[this.change_url.onu_allow.length - 1] != '='){
-                url = this.change_url.onu_allow;
+                url = this.change_url.onu_deny;
             }else{
-                url = this.change_url.onu_allow + this._portid;
+                url = this.change_url.onu_deny + this._portid;
             }
         this.$http.get(url).then(res=>{
             this.onu_deny_list = res.data;
@@ -181,9 +183,12 @@ ul>li{
 ul>li:last-child{
     border-bottom: none;
 }
+ul+div{
+    margin-left: 30px;
+}
 span{
     display: inline-block;
-    width: 18%;
+    width: 16%;
     text-align: center;
     font-size: 16px;
 }

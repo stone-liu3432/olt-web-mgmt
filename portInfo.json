@@ -43,9 +43,7 @@
             "duplex":1,
             "flow_ctrl":1,
             "mtu":1,
-            "media":"fiber",
-            "erate":"100kbps",
-            "irate":"100kbps"
+            "media":"fiber"
         },
         {
             "port_id":5,

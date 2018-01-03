@@ -18,7 +18,9 @@ var change_url = {
         vlan: "./VLANInfo.json",
         vlancfg: "./vlan_list.json",
         macage: "./mac_age.json",
-        mactab: "./mac_table.json"
+        mactab: "./mac_table.json",
+        swich_port_info: './swich_port_info.json',
+        beta: 'test'
     },
     betaUrl: {
         menu: "/board?info=menu",
@@ -39,7 +41,9 @@ var change_url = {
         vlan: "/switch_port?form=vlan",
         vlancfg: "/switch_vlan?count=",
         macage: "/switch_mac?form=age",
-        mactab: "/switch_mac?form=table"
+        mactab: "/switch_mac?form=table",
+        swich_port_info: '/switch_port?form=port_info&port_id=',
+        beta: 'beta'
     }
 }
 

@@ -1,7 +1,7 @@
 <template>
     <div class="onu-bandwidth">
         <div>
-            <select @change="changePon($event)" v-model="_portid">
+            <select v-model="portid">
                 <option v-for="(item,key) in port_name.pon" :key="key" :value="item.id">
                     {{ item.name }}
                 </option>
@@ -16,18 +16,28 @@
             </li>
             <li v-for="(item,index) in this.bound_width.data" :key="index">
                 <span>{{ 'ONU0'+item.port_id +'/'+ item.onu_id }}</span>
-                <span>{{ item.sla_type }}</span>
-                <span>{{ item.fix }}</span>
-                <span>{{ item.assure }}</span>
-                <span>{{ item.max }}</span>
+                <span>{{ item.macaddr }}</span>
+                <span>{{ item.status }}</span>
+                <span>{{ item.auth_state }}</span>
+                <span>{{ item.register_time }}</span>
                 <span>
-                    <a href="javascript:;" @click="sla_config(item)">{{ lanMap['config'] }}</a>
+                    <a href="javascript:;" @click="sla_config(item.onu_id)">{{ lanMap['config'] }}</a>
                 </span>
-                <!-- params:[ onu_id type fix assure max ] -->
-                <div v-if="isConfig.port_id === item.port_id && isConfig.onu_id === item.onu_id">
-                    <span>{{ 'ONU0'+item.port_id +'/'+ item.onu_id }}</span>
+            </li>
+        </ul>
+        <div v-else></div>
+        <div class="modal-dialog" v-if="isConfig">
+            <div class="cover"></div>
+            <div class="dialog" v-if="onu_detail.data">
+                <h2>ONU配置</h2>
+                <div class="dialog-item">
+                    <span>{{ lanMap['onu_id'] }}</span>
+                    <span></span>
+                </div>
+                <div class="dialog-item">
+                    <span>{{ lanMap['sla_type'] }}</span>
                     <span>
-                        <select @change="handle($event)" class="sla-type">
+                        <select class="sla-type" v-model="post_params.sla_type">
                             <option value="type1">type1</option>
                             <option value="type2">type2</option>
                             <option value="type3">type3</option>
@@ -35,22 +45,36 @@
                             <option value="type5">type5</option>
                         </select> 
                     </span>
+                </div>
+                <div class="dialog-item">
+                    <span>{{ lanMap['fix'] }}</span>
                     <span>
                         <input type="text" placeholder="0-1024 Mbps" class="sla-fix" v-model="post_params.fix">
                     </span>
+                </div>
+                <div class="dialog-item">
+                    <span>{{ lanMap['assure'] }}</span>
                     <span>
                         <input type="text" placeholder="0-1024 Mbps" class="sla-assure" v-model="post_params.assure" disabled>
                     </span>
+                </div>
+                <div class="dialog-item">
+                    <span>{{ lanMap['max'] }}</span>
                     <span>
                         <input type="text" placeholder="0-1024 Mbps" class="sla-max" v-model="post_params.max" disabled>
                     </span>
-                    <span>
-                        <a href="javascript:;" @click="isChange(item,true)">{{ lanMap['apply'] }}</a>
-                        <a href="javascript:;" @click="isChange(item,false)">{{ lanMap['cancel'] }}</a>
-                    </span>
                 </div>
-            </li>
-        </ul>
+                <div class="dialog-item">
+                    <a href="javascript:;" @click="isChange(true)">{{ lanMap['apply'] }}</a>
+                    <a href="javascript:;" @click="isChange(false)">{{ lanMap['cancel'] }}</a>
+                </div>
+                <div class="close" @click="closeModal"></div>
+            </div>
+            <div v-else class="failed">
+                <p>获取数据失败，请刷新或稍后再试...</p>
+                <div class="close" @click="closeModal"></div>
+            </div>
+        </div>
         <loading v-if="false"></loading>
     </div>
 </template>
@@ -64,120 +88,135 @@ import { mapState } from 'vuex'
         data(){
             return {
                 bound_width: {},
-                _portid: 1,
-                isConfig: {
-                    port_id: 0,
-                    onu_id: 0
-                },
+                portid: 0,
+                isConfig: false,
                 post_params: {
+                    "onu_id": 1,
                     "sla_type": '',
                     "fix": 0,
                     "assure": 0,
                     "max": 0
-                }
+                },
+                onu_detail: {}
             }
         },
         created(){
             // 请求 url: /onu_bandwidth?port_id=1  //  port_id =  this.$route.query.port_id
             //  '/onu_bandwidth?port_id=' + (this.$route.query.port_id || 1)  
-            this._portid = this.$route.query.port_id || this.port_info.data[0].port_id;
-            var url;
-            if(this.change_url.onu_allow[this.change_url.onu_allow.length - 1] != '='){
-                url = this.change_url.onu_allow;
-            }else{
-                url = this.change_url.onu_allow + this._portid;
+            this.portid = this.$route.query.port_id || this.port_info.data[0].port_id;
+            if(this.change_url.beta === 'test'){
+                var url;
+                if(this.change_url.onu_allow[this.change_url.onu_allow.length - 1] != '='){
+                    url = this.change_url.onu_allow;
+                }else{
+                    url = this.change_url.onu_allow + this.portid;
+                }
+                this.$http.get(url).then(res=>{
+                    this.bound_width = res.data;
+                }).catch(err=>{
+                    // to do 
+                })
             }
-            this.$http.get(url).then(res=>{
-                this.bound_width = res.data;
-            }).catch(err=>{
-                // to do 
-            })
         },
         methods: {
-            changePon(e){
-                this._portid = e.target.value;
-                // 选择不同的pon口时，获取数据
-                this.getData();
+            closeModal(){
+                this.post_params.sla_type = '';
+                this.isConfig = false;
             },
             // 点击设置按钮时执行的动作
-            sla_config(node){
-                // 收集数据，动态绑定
-                this.post_params.sla_type = node.sla_type;
-                this.post_params.fix = node.fix;
-                this.post_params.max = node.max;
-                this.post_params.assure = node.assure;
-                // 点击隐藏打开效果
-                if(!this.isConfig.port_id && !this.isConfig.onu_id){
-                    this.isConfig.port_id = node.port_id;
-                    this.isConfig.onu_id = node.onu_id;
+            sla_config(uid){
+                var url;
+                if(this.change_url.beta === 'test'){
+                    url = './onu-band-width.json';
                 }else{
-                    this.isConfig.port_id = 0;
-                    this.isConfig.onu_id = 0; 
+                    url = '/onu_bandwidth?port_id='+ this.portid +'&onu_id='+ uid;
                 }
+                this.$http.get(url).then(res=>{
+                    if(res.data.code === 1){
+                        this.onu_detail = res.data;
+                        for(var key in this.onu_detail.data){
+                            this.post_params[key] = this.onu_detail.data[key];
+                        }
+                    }else{
+                        this.onu_detail = {};
+                    }
+                }).catch(err=>{
+                    // to do
+                })
+                this.isConfig = true;
             },
-            isChange(node,bool){
+            getData(){
+                 this.$http.get('/onu_bandwidth?port_id='+ this.portid).then(res=>{
+                    if(res.data.code === 1){
+                        this.bound_width = res.data;
+                    }else{
+                        this.bound_width = {};
+                    }
+                }).catch(err=>{
+                    // to do
+                })
+            },
+            isChange(bool){
                 if(bool){
                     // 点击确定时，收集数据，发送POST请求
                     var postData = {
                         "method":"set",
                         "param":{
-                            "port_id": node.port_id,
-                            "onu_id": node.onu_id,
+                            "port_id": this.portid,
+                            "onu_id": this.post_params.onu_id,
                             "sla_type": this.post_params.sla_type,
                             "fix":  this.post_params.fix,
                             "assure": this.post_params.assure,
                             "max": this.post_params.max
                         }
                     }
-                    // console.dir(postData);
                     this.$http.post('/onu_bandwidth',postData).then(res=>{
-                        // to do
+                        if(res.data.code === 1){
+                           this.getData();
+                        }
                     }).catch(err=>{
                         // to do 
                     })
                 }
-                this.isConfig.port_id = 0;
-                this.isConfig.onu_id = 0;
-            },
-            getData(){
-                this.$http.get('/onu_bandwidth?port_id=' + this._portid).then(res=>{
-                    // this.bound_width = res.data;
-                }).catch(err=>{
-                    // to do
-                })
-            },
-            // 下拉切换sla_type类型时的动作
-            handle(e){
-                // 切换sla_type时，动态绑定到 data
-                this.post_params.sla_type = e.target.value;
-                // sla_type类型不同时，不同的可设置选项
-                var sla_fix = document.querySelector('.sla-fix');
-                var sla_assure = document.querySelector('.sla-assure');
-                var sla_max = document.querySelector('.sla-max');
-                if(e.target.value === 'type1'){
-                    sla_assure.disabled = true;
-                    sla_max.disabled = true;
-                    sla_fix.disabled = false;
-                }else if(e.target.value === 'type2'){
-                    sla_fix.disabled = true;
-                    sla_assure.disabled = false;
-                    sla_max.disabled = true;
-                }else if(e.target.value === 'type3'){
-                    sla_fix.disabled = true;
-                    sla_assure.disabled = false;
-                    sla_max.disabled = false;
-                }else if(e.target.value === 'type4'){
-                    sla_fix.disabled = true;
-                    sla_assure.disabled = true;
-                    sla_max.disabled = false;
-                }else if(e.target.value === 'type5'){
-                    sla_fix.disabled = false;
-                    sla_assure.disabled = false;
-                    sla_max.disabled = false;
-                }
+                this.post_params.sla_type = '';
+                this.isConfig = false;
             }
         },
-        computed: mapState(['lanMap','port_name','port_info','change_url'])
+        computed: mapState(['lanMap','port_name','port_info','change_url']),
+        watch: {
+            portid(){
+                this.getData();
+            },
+            'post_params.sla_type'(){
+                setTimeout(()=>{
+                    // sla_type类型不同时，不同的可设置选项
+                    var sla_fix = document.querySelector('.sla-fix');
+                    var sla_assure = document.querySelector('.sla-assure');
+                    var sla_max = document.querySelector('.sla-max');
+                    if(this.post_params.sla_type === 'type1'){
+                        sla_assure.disabled = true;
+                        sla_max.disabled = true;
+                        sla_fix.disabled = false;
+                    }else if(this.post_params.sla_type === 'type2'){
+                        sla_fix.disabled = true;
+                        sla_assure.disabled = false;
+                        sla_max.disabled = true;
+                    }else if(this.post_params.sla_type === 'type3'){
+                        sla_fix.disabled = true;
+                        sla_assure.disabled = false;
+                        sla_max.disabled = false;
+                    }else if(this.post_params.sla_type === 'type4'){
+                        sla_fix.disabled = true;
+                        sla_assure.disabled = true;
+                        sla_max.disabled = false;
+                    }else if(this.post_params.sla_type === 'type5'){
+                        sla_fix.disabled = false;
+                        sla_assure.disabled = false;
+                        sla_max.disabled = false;
+                    }
+                },0)
+            }
+        }
     }
 </script>
 
@@ -202,25 +241,12 @@ li>div{
     height: 36px;
     line-height: 36px;
 }
-div>span{
-    width: 16%;
-}
-div>span>input{
-    margin-left: 15%;
-    width: 80%;
-}
-div>span>a{
-    width: 40%;
-}
 span{
     display: inline-block;
     width: 16%;
     text-align: center;
     font-size: 16px;
     line-height: 36px;
-}
-input{
-    margin-left:20px;
 }
 select{
     width: 140px;
@@ -238,5 +264,56 @@ a{
     background: #ddd;
     text-align: center;
     margin-left: 10px;
+}
+div.dialog{
+    position: absolute;
+    top: 0;
+    right: 0;
+    bottom : 0;
+    left: 0;
+    margin: auto;
+    width: 500px;
+    height: 370px;
+    background: #fff;
+    border-radius: 5px;
+}
+div.dialog>h2{
+    margin: 20px 0;
+    text-align: center;
+    font-size: 22px;
+    color: #67aef7;
+}
+div.dialog-item{
+    margin: 10px;
+}
+div.dialog-item input{
+    width: 140px;
+}
+div.dialog-item>span{
+    display: inline-block;
+    width: 40%;
+}
+div.dialog-item>a{
+    margin-left: 75px;
+    margin-top: 15px;
+}
+div.failed{
+    position: absolute;
+    top: 0;
+    right: 0;
+    bottom : 0;
+    left: 0;
+    margin: auto;
+    width: 500px;
+    height: 370px;
+    background: #fff;
+    border-radius: 5px;
+}
+div.failed>p{
+    color: red;
+    padding: 20px 0 0 20px;
+}
+input[disabled]{
+    cursor: not-allowed;
 }
 </style>

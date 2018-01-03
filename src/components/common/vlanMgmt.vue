@@ -35,8 +35,8 @@
             <li v-for="(item,index) in vlan_tab" :key="index">
                 <!-- <input type="radio" v-model="vlanid" :value="item.vlan_id"> -->
                 <span>{{ item.vlan_id }}</span>
-                <span>{{ analysis(item.tagged_portlist) }}</span>
-                <span>{{ analysis(item.untagged_portlist) }}</span>
+                <span>{{ analysis(item.tagged_portlist) || '—' }}</span>
+                <span>{{ analysis(item.untagged_portlist) || '—' }}</span>
                 <a href="javascript:;"  @click="config_port(item.vlan_id)">{{ lanMap['config'] }}</a>
                 <a href="javascript:;"  @click="deleteVlan(item.vlan_id)">{{ lanMap['delete'] }}</a>
             </li>
@@ -328,7 +328,6 @@ import confirm from '@/components/common/confirm'
                     }).catch(err=>{
                         // to do
                     })
-                    return
                 }
                 this.modalDialog = false;
             },
@@ -455,6 +454,7 @@ p{
 }
 li{
     word-wrap: break-word;
+    word-break: keep-all;
     border: 1px solid #ddd;
     border-top: none;
     font-size: 0;
@@ -468,7 +468,6 @@ li>input{
 li>span{
     display: inline-block;
     text-align: center;
-    height: inherit;
     padding: 5px;
     vertical-align: middle;
     font-size: 16px;

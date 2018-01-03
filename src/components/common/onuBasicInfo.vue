@@ -17,7 +17,7 @@
             <div v-else class="error-msg">当前PON口下暂无ONU信息...</div>
 		</div>
 		<hr>
-        <div v-for="(item,key) in onu_basic_info.data" :key="key" v-if=" key != 'port_id' && (onu_basic_info.data.length !== 0)" class="onu-info-item">
+        <div v-for="(item,key) in onu_basic_info.data" :key="key" v-if=" key != 'port_id' && onu_basic_info.data && (onu_basic_info.data.length !== 0)" class="onu-info-item">
             <span>
                 {{ lanMap[key] }}
             </span>
@@ -102,13 +102,29 @@ import { mapState,mapMutations } from 'vuex'
 			portid(){
 				// 请求url:  请求url: /onumgmt?form=base-info&port_id=1&onu_id=1
 				this.$http.get('/onu_allow_list?form=resource&port_id='+this.portid).then(res=>{
-					this.onu_basic_info = res.data;
+					if(res.data.code === 1){
+                        var _onu_list = this.analysis(res.data.data.resource);
+                        if(!_onu_list) return
+                        var obj = {
+                            port_id: res.data.data.port_id,
+                            data: _onu_list
+                        }
+                        this.addonu_list(obj);
+                        this.onuid = this.onu_list.data[0];
+                        this.$http.get('/onumgmt?form=base-info&port_id=' + this.portid + '&onu_id=' + this.onuid).then(res=>{
+                            this.onu_basic_info = res.data;
+                        }).catch(err=>{
+                            // to do
+                        })
+                    }else{
+                        this.addonu_list({});
+                        this.onu_basic_info = {data: []};
+                    }
 				}).catch(err=>{
 					// to do
 				})
 			},
 			onuid(){
-                console.log('onuid is changed');
 				// 请求url:  请求url: /onumgmt?form=base-info&port_id=1&onu_id=1
 				this.$http.get('/onumgmt?form=base-info&port_id='+this.portid+'&onu_id='+this.onuid).then(res=>{
 					this.onu_basic_info = res.data;

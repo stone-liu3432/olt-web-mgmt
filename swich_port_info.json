@@ -1,0 +1,17 @@
+{
+    "code":1,
+    "msg":"success",
+    "data":{
+        "port_id":1,
+        "admin_status":1,
+        "link_status":1,
+        "auto_neg":1,
+        "speed":"1000M",
+        "duplex":1,
+        "flow_ctrl":1,
+        "mtu":1500,
+        "media":"fiber",
+        "erate":72,
+        "irate":1500
+    }
+}
