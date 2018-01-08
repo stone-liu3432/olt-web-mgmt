@@ -49,6 +49,7 @@
             </div>
         </div>
         <confirm tool-tips="是否确认恢复出厂设置?" @choose="result" v-if="userChoose"></confirm>
+        <confirm tool-tips="是否确认重启设备?" @choose="reboot_result" v-if="rebootChoose"></confirm>
         <loading class="load" v-if="isLoading"></loading>
     </div>
 </template>
@@ -63,6 +64,7 @@
         data(){
             return {
                 userChoose: false,
+                rebootChoose: false,
                 isLoading: false
             }
         },
@@ -72,26 +74,40 @@
             changeFile(){
                 var file = document.getElementById('file');
                 var fileName = document.getElementById('fileName');
+                var files = file.files[0];
+                if(!files) {
+                    fileName.innerText = '点击选择文件';
+                    return
+                }
                 fileName.innerText = file.value.substring(file.value.lastIndexOf('\\')+1);
             },
             //  重启OLT
             reboot(){
-                this.$http.get('/system_reboot').then(res=>{
-                    if(res.data.code === 1){
-                        this.isLoading = true;
-                        var timer = setInterval(()=>{
-                            this.$http.get('/board?info=menu').then(res=>{
-                                console.log(res);
-                                if(res.data.code === 1){
-                                    this.$route.push('/main');
-                                    this.isLoading = false;
-                                    clearInterval(timer);
-                                }
-                            })
-                        },5000)
-                    }
-                })
+                this.rebootChoose = true;
             },
+            reboot_result(bool){
+                if(bool){
+                    var self = this;
+                    this.$http.get('/system_reboot').then(res=>{
+                        if(res.data.code === 1){
+                            this.isLoading = true;
+                            var timer = setInterval(()=>{
+                                this.$http.get('/board?info=menu').then(res=>{
+                                    if(res.data.code === 1){
+                                        clearInterval(timer);
+                                        this.isLoading = false;
+                                        this.$route.push('/main');
+                                    }
+                                })
+                            },5000)
+                        }
+                    }).catch(err=>{
+                        // to do
+                    })   
+                }
+                this.rebootChoose = false;
+            },
+            //  恢复出厂设置模态框
             result(bool){
                 if(bool){
                     this.$http.get('/system_def_config').then(res=>{

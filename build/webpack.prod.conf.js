@@ -25,7 +25,9 @@ const webpackConfig = merge(baseWebpackConfig, {
   devtool: config.build.productionSourceMap ? config.build.devtool : false,
   output: {
     path: config.build.assetsRoot,
+    //filename: utils.assetsPath('js/[name].js'),
     filename: utils.assetsPath('js/[name].[chunkhash].js'),
+    //chunkFilename: utils.assetsPath('js/[id].js')
     chunkFilename: utils.assetsPath('js/[id].[chunkhash].js')
   },
   plugins: [
@@ -43,6 +45,7 @@ const webpackConfig = merge(baseWebpackConfig, {
     }),
     // extract css into its own file
     new ExtractTextPlugin({
+      //filename: utils.assetsPath('css/[name].css'),
       filename: utils.assetsPath('css/[name].[contenthash].css'),
       // set the following option to `true` if you want to extract CSS from
       // codesplit chunks into this main css file as well.

@@ -1,18 +1,13 @@
 <template>
   <div id="hsgq">
     <router-view></router-view>
-    <loading v-if="!port_info.data" class="load"></loading>
   </div>
 </template>
 
 <script>
 import { mapState, mapMutations } from "vuex";
-import loading from "@/components/common/loading";
 export default {
   name: "hsgq",
-  components: {
-    loading
-  },
   created() {
     this.$http
       .get("./lang-zh.json")
@@ -22,9 +17,12 @@ export default {
       .catch(err => {
         // to do
       });
-    this.$router.push("/login");
-    //  会话保存，在用户刷新页面后保存登陆状态
-    sessionStorage.setItem("accessToken", 12312341545);
+      if(sessionStorage.getItem('x-token') !== null){
+          this.$router.push('/main')
+      }else{
+          this.$router.push("/login")
+          //this.$router.push('/main')
+      }
   },
   methods: {
     ...mapMutations({

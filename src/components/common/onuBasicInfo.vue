@@ -42,33 +42,35 @@ import { mapState,mapMutations } from 'vuex'
         },
         created(){
             this.portid = this.$route.query.port_id || this.port_info.data[0].port_id;
-            var _url;
-            if(this.change_url.onu_allow[this.change_url.onu_allow.length - 1] != '='){
-                _url = this.change_url.onu_list;
-            }else{
-                _url = this.change_url.onu_list + this.portid;
-            }
-            this.$http.get(_url).then(res=>{
-                if(res.data.code === 1){
-                    var _onu_list = this.analysis(res.data.data.resource);
-                    if(!_onu_list) return
-                    var obj = {
-                        port_id: res.data.data.port_id,
-                        data: _onu_list
-                    }
-                    this.addonu_list(obj);
-                    this.onuid = this.onu_list.data[0];
-                    this.$http.get('/onumgmt?form=base-info&port_id=' + this.portid + '&onu_id=' + this.onuid).then(res=>{
-					    this.onu_basic_info = res.data;
-                    }).catch(err=>{
-                        // to do
-                    })
+            if(this.change_url.beta === 'test'){
+                var _url;
+                if(this.change_url.onu_allow[this.change_url.onu_allow.length - 1] != '='){
+                    _url = this.change_url.onu_list;
                 }else{
-                    this.addonu_list({});
+                    _url = this.change_url.onu_list + this.portid;
                 }
-            }).catch(err=>{
-                // to do
-            })
+                this.$http.get(_url).then(res=>{
+                    if(res.data.code === 1){
+                        var _onu_list = this.analysis(res.data.data.resource);
+                        if(!_onu_list) return
+                        var obj = {
+                            port_id: res.data.data.port_id,
+                            data: _onu_list
+                        }
+                        this.addonu_list(obj);
+                        this.onuid = this.$route.query.onu_id || this.onu_list.data[0];
+                        this.$http.get('/onumgmt?form=base-info&port_id=' + this.portid + '&onu_id=' + this.onuid).then(res=>{
+                            this.onu_basic_info = res.data;
+                        }).catch(err=>{
+                            // to do
+                        })
+                    }else{
+                        this.addonu_list({});
+                    }
+                }).catch(err=>{
+                    // to do
+                })
+            }
 		},
 		methods:{
             ...mapMutations({
@@ -110,7 +112,7 @@ import { mapState,mapMutations } from 'vuex'
                             data: _onu_list
                         }
                         this.addonu_list(obj);
-                        this.onuid = this.onu_list.data[0];
+                        this.onuid = this.$route.query.onuid || this.onu_list.data[0];
                         this.$http.get('/onumgmt?form=base-info&port_id=' + this.portid + '&onu_id=' + this.onuid).then(res=>{
                             this.onu_basic_info = res.data;
                         }).catch(err=>{
@@ -132,7 +134,7 @@ import { mapState,mapMutations } from 'vuex'
 					// to do
 				})
 			}
-		},
+		}
     }
 </script>
 

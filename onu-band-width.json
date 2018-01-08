@@ -2,7 +2,7 @@
     "code":1,
     "message":"success",
     "data":{
-        "pon_id":1,
+        "port_id":1,
         "onu_id":1,
         "sla_type":"type5",
         "fix":1,

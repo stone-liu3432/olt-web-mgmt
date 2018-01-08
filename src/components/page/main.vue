@@ -3,6 +3,12 @@
       <topBanner></topBanner>
       <leftAside></leftAside>
       <detail v-if="port_info && system"></detail>
+      <div class="modal-dialog" v-if="modal">
+          <div class="cover"></div>
+          <div class="tips-body">
+              <div>登录超时，将于 {{ count }} 秒后跳转到登录页面</div>
+          </div>
+      </div>
   </div>
 </template>
 
@@ -18,7 +24,36 @@ import topBanner from '@/components/page/header'
             detail,
             topBanner
         },
+        data(){
+            return {
+                modal: false,
+                count: 0
+            }
+        },
         created(){
+            this.$http.interceptors.response.use(function(response){
+                if(response.data.code === 0){
+                    sessionStorage.clear();
+                    this.$route.push('/login');
+                }
+                if(response.data.code === -1){
+                    this.modal = true;
+                    var n = 5;
+                    setInterval(()=>{
+                        this.count = n;
+                        n--;
+                        if(n <= 0){
+                            this.modal = false;
+                            sessionStorage.clear();
+                            this.$route.push('/login')
+                        }
+                    },1000)
+                }
+                return response;
+            },function(error){
+                return Promise.reject(error);
+            });
+
             //根组件创建之前，初始化vuex部分数据
             this.$http.get(this.change_url.system).then(res=>{
                 this.systemInfo(res.data);
@@ -35,26 +70,9 @@ import topBanner from '@/components/page/header'
         methods: {
             ...mapMutations({
                 systemInfo: 'updateSysData',
-                portInfo: 'updatePortData',
-                lanMap: 'updateLanMap',
-                portName: 'updatePortName',
-                addmenu: 'updateMenu'
-            }),
-            // 根据port_id 分配端口名
-            get_portName(arr,prefix){
-                var obj = {};
-                for(var i=0;i<arr.length;i++){
-                    obj[arr[i].port_id] = {};
-                    obj[arr[i].port_id].name = i < 10 ? prefix + '0' + arr[i].port_id : prefix + arr[i].port_id;
-                    if(arr[i].port_id > this.system.data.ponports){
-                        var n = arr[i].port_id - this.system.data.ponports;
-                        obj[arr[i].port_id].name = i < 10 ? prefix + '0' + n : prefix + n;
-                    }
-                    obj[arr[i].port_id].id = arr[i].port_id;
-                    obj[arr[i].port_id].data = arr[i]; 
-                }
-                return obj;
-            }
+                addmenu: 'updateMenu',
+                isAccessToken: 'updateLogin'
+            })
         },
         computed: mapState(['port_info','system','change_url'])
     }
@@ -63,5 +81,24 @@ import topBanner from '@/components/page/header'
 <style>
 #main-content{
     height:100%;
+}
+div.tips-body{
+    width: 500px;
+    height: 300px;
+    position: absolute;
+    left: 0;
+    right: 0;
+    top: 0;
+    bottom: 0;
+    margin: auto;
+    background: #fff;
+    border-radius: 10px;
+}
+div.tips-body>div{
+    font-size: 20px;
+    font-weight: 600;
+    color: red;
+    text-align: center;
+    margin-top: 130px;
 }
 </style>

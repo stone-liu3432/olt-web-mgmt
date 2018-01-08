@@ -31,7 +31,12 @@ import { mapState } from 'vuex'
             changeFile(fileid,fnameid){
                 var file = document.getElementById(fileid);
                 var fileName = document.getElementById(fnameid);
+                var files = file.files[0];
                 fileName.innerText = file.value.substring(file.value.lastIndexOf('\\')+1);
+                if(!files) {
+                    fileName.innerText = '点击选择文件';
+                    return
+                }
             },
             firmware(){
                 var formData = new FormData();

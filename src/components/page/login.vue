@@ -14,7 +14,9 @@
                 </div>
                 <div class="user-pwd">
                     <span>password</span>
-                    <input type="password" v-model="userPwd" id="userPwd" :style="{ 'border-color' : verify_upwd ? 'red' : '#aaa' }">
+                    <input type="text" onfocus="this.type='password'" 
+                    v-model="userPwd" id="userPwd" :style="{ 'border-color' : verify_upwd ? 'red' : '#aaa' }" 
+                    autocomplete="off" @keyup.enter="userLogin">
                     <i :class="[ visible ? 'visible' : 'invisible']" @click="changeVisible"></i>
                 </div>
                 <div class="login-tips">
@@ -50,7 +52,7 @@ import md5 from 'md5'
         },
         methods: {
             userLogin(){
-                if(this.verify_uname || this.verify_upwd){
+                if(this.verify_uname || this.verify_upwd || this.userName === '' || this.userPwd === ''){
                     return 
                 }
                 var self = this;
@@ -58,7 +60,6 @@ import md5 from 'md5'
                     url: '/userlogin',
                     method: 'POST',
                     data: self.userName + ':' + self.userPwd,
-                    //headers: {'X-Token': 'XMLHttpRequest'},
                     transformRequest: function (data) {
                         data = md5(data);
                         return data;
@@ -66,7 +67,7 @@ import md5 from 'md5'
                     timeout: 5000
                 }).then(res=>{
                     if(res.data.code === 1){
-                        console.log(res.headers['X-Token']);
+                        sessionStorage.setItem('x-token',res.headers['x-token']);
                         this.$router.push('/main');
                     }else{
                         this.login_failed = true;

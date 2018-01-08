@@ -8,6 +8,16 @@ import axios from 'axios'
 import store from './vuex/store'
 
 Vue.use(Vuex)
+axios.interceptors.request.use(
+    config => {
+        var xtoken = sessionStorage.getItem('x-token');
+        config.headers['X-Token'] = xtoken
+        return config
+    },function(err){
+        return Promise.reject(err)
+    }  
+)
+
 Vue.prototype.$http = axios
 
 Vue.config.productionTip = false

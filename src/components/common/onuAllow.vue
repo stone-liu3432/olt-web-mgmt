@@ -1,17 +1,15 @@
 <template>
     <div class="onu-allow">
         <div>
-            <select @change="changePon($event)">
+            <select v-model="portid">
                 <option v-for="(item,key) in port_name.pon" :key="key" :value="item.id">
                     {{ item.name }}
                 </option>
             </select>
             <a href="javascript:;" @click="add_onu()">增加</a>
-            <a href="javascript:;" @click="delete_onu()">删除</a>
             <a href="javascript:;" @click="auth_state()">ONU认证</a>
             <a href="javascript:;" @click="onu_bandwieth()">带宽</a>
             <a href="javascript:;" @click="reboot()">重启OUN</a>
-            <!-- <a href="javascript:;" title="勾选一个onu以查看详情">查看详情</a> -->
         </div>
         <div></div>
         <ul v-if="this.onu_allow_list.data">
@@ -20,17 +18,18 @@
                 <span v-for="(item,key) in this.onu_allow_list.data[0]" :key="key" v-if=" key != 'port_id' ">
                     {{ lanMap[key] }}
                 </span>
-                <span>{{ lanMap['detail'] }}</span>
+                <span>{{ lanMap['config'] }}</span>
             </li>
             <li v-for="(item,index) in this.onu_allow_list.data" :key="index" class="flex-box">
-                <!-- <input type="radio" name="onu" @click="checkedOnu(item)"> -->
                 <span>{{ 'ONU0'+item.port_id +'/'+ item.onu_id }}</span>
                 <span>{{ item.macaddr }}</span>
                 <span>{{ item.status }}</span>
-                <span>{{ item.auth_state }}</span>
+                <span>{{ item.auth_state ? 'true' : 'false' }}</span>
                 <span>{{ item.register_time }}</span>
-                <span @click="onu_detail(item.port_id,item.onu_id)">
-                    <i title="查看详情"></i>
+                <span>
+                    <i title="查看详情" class="onu-detail" @click="onu_detail(item.port_id,item.onu_id)"></i>
+                    <i title="删除ONU" class="onu-delete" @click="delete_onu(item)"></i>
+                    <i title="添加到阻止列表" class="onu-remove" @click="remove_onu(item)"></i>
                 </span>
             </li>
         </ul>
@@ -45,56 +44,55 @@ import { mapState,mapMutations } from 'vuex'
         data(){
             return {
                 onu_allow_list: {},
-                _portid: 1,
-                _onuid: 0,
-                _macaddr: ''
+                portid: 0
             }
         },
         computed: mapState(['lanMap','port_name','menu','change_url']),
         created(){
             // 请求 url: /onu_allow_list?port_id=1
-            //    '/onu_allow_list?port_id=' + ( this.$route.query.port_id || 1 )
-            this._portid = this.$route.query.port_id || 1;
-            var url;
-            if(this.change_url.onu_allow[this.change_url.onu_allow.length - 1] != '='){
-                url = this.change_url.onu_allow;
-            }else{
-                url = this.change_url.onu_allow + this._portid;
-            }
-            this.$http.get(url).then(res=>{
-                if(res.data.code === 1){
-                    this.onu_allow_list = res.data;
-                    this._portid = 1; 
+            // '/onu_allow_list?port_id=' + ( this.$route.query.port_id || 1 )
+            this.portid = this.$route.query.port_id || 1;
+            if(this.change_url.beta === 'test'){
+                var url;
+                if(this.change_url.onu_allow[this.change_url.onu_allow.length - 1] != '='){
+                    url = this.change_url.onu_allow;
                 }else{
-                    this.onu_allow_list = {};
+                    url = this.change_url.onu_allow + this.portid;
                 }
-            }).catch(err=>{
-                // to do 
-            })
+                this.$http.get(url).then(res=>{
+                    if(res.data.code === 1){
+                        this.onu_allow_list = res.data;
+                    }else{
+                        this.onu_allow_list = {};
+                    }
+                }).catch(err=>{
+                    // to do 
+                })
+            }
         },
         methods:{
             ...mapMutations({
                 update_menu: 'updateMenu'
             }),
-            // 修改 pon 口时调用，保存pon_id
-            changePon(event){
-                this._portid = event.target.value;
-                // 请求 url: /onu_allow_list?port_id=1
-                this.$http.get('/onu_allow_list?port_id='+ this._portid).then(res=>{
-                    this.onu_allow_list = res.data;
+            getData(){
+                this.$http.get('/onu_allow_list?port_id='+ this.portid).then(res=>{
+                    if(res.data.code === 1){
+                        this.onu_allow_list = res.data;
+                    }else{
+                        this.onu_allow_list = {};
+                    }
                 }).catch(err=>{
                     // to do 
                 })
             },
             // 删除onu
-            delete_onu(){
-                var portId = this._portid || 1;
+            delete_onu(node){
                 var post_params = {
                     "method":"delete",
                     "param":{
-                        "port_id": portId,
-                        "onu_id": this._onuid,
-                        "macaddr": this._macaddr
+                        "port_id": node.port_id,
+                        "onu_id": node.onu_id,
+                        "macaddr": node.macaddr
                     }
                 }
                 this.$http.post('/onu_allow_list',post_params).then(res=>{
@@ -105,17 +103,45 @@ import { mapState,mapMutations } from 'vuex'
             },
             //  手动添加 onu
             add_onu(){
-                console.log('clicked add');
-                // 待添加功能 
+                // 待添加功能
+                var post_params = {
+                    "method":"add",
+                    "param":{
+                        "port_id":1,
+                        "onu_id":0,
+                        "macaddr":"38:3a:21:20:22:66",
+                        "auth_state":1,
+                        "onu_type":" ",
+                        "onu_desc":" "
+                    }
+                }
             },
             //  onu 认证
             auth_state(){
                 // 待添加
             },
+            //  移动ONU到阻止列表
+            remove_onu(node){
+                var post_params = {
+                    "method":"reject",
+                    "param":{
+                        "port_id": node.port_id,
+                        "onu_id": node.onu_id,
+                        "macaddr": node.macaddr
+                    }
+                }
+                this.$http.post('/onu_allow_list',post_params).then(res=>{
+                    if(re.data.code === 1){
+                        this.getData();
+                    }
+                }).catch(err=>{
+                    // to do
+                })
+            },
             //  跳转带宽管理
             onu_bandwieth(){
                 // 请求url: /onu_bandwidth?port_id=1
-                this.$router.push('/sla_cfg?port_id='+this._portid);
+                this.$router.push('/sla_cfg?port_id='+this.portid);
                 var sub_item = document.querySelectorAll('p.sub-item');
                 for(var i=0;i<sub_item.length;i++){
                     sub_item[i].className = 'sub-item';
@@ -131,9 +157,7 @@ import { mapState,mapMutations } from 'vuex'
             //  跳转到 onu 详情页
             onu_detail(portid,onuid){
                 //请求url:  /onu_basic_info?form=base-info&port_id=1&onu_id=1
-                this._portid = portid;
-                this._onuid = onuid;
-                this.$router.push('/onu_basic_info?form=base-info&port_id='+this._portid+'&onu_id='+this._onuid);
+                this.$router.push('/onu_basic_info?form=base-info&port_id='+ portid + '&onu_id=' + onuid);
                 // 清除当前子菜单的选中效果，给被跳转的子菜单加上选中效果
                 var sub_item = document.querySelectorAll('p.sub-item');
                 for(var i=0;i<sub_item.length;i++){
@@ -171,6 +195,11 @@ import { mapState,mapMutations } from 'vuex'
                 // 调用 vuex Mutations方法，更新 store 状态
                 this.update_menu(_menu);
             }
+        },
+        watch: {
+            portid(){
+                this.getData();
+            }
         }
     }
 </script>
@@ -186,8 +215,8 @@ ul{
 }
 ul>li{
     font-size: 0;
-    height: 30px;
-    line-height: 30px;
+    height: 36px;
+    line-height: 36px;
     border-bottom: 1px solid #ddd;
     vertical-align: middle;
 }
@@ -236,11 +265,26 @@ p{
 i{
     display: inline-block;
     cursor: pointer;
-    width: 30px;
-    height: 30px;
-    background: url('../../assets/detail-normal.png') no-repeat -1px -1px;
+    width: 32px;
+    height: 32px;
+    vertical-align: middle;
 }
-i:hover{
-    background: url('../../assets/detail-hover.png') no-repeat -1px -1px;
+i.onu-detail{
+    background: url('../../assets/detail-normal.png') no-repeat;
+}
+i.onu-detail:hover{
+    background: url('../../assets/detail-hover.png') no-repeat;
+}
+i.onu-delete{
+    background: url('../../assets/delete-normal.png') no-repeat;
+}
+i.onu-delete:hover{
+    background: url('../../assets/delete-hover.png') no-repeat;
+}
+i.onu-remove{
+    background: url('../../assets/remove-normal.png') no-repeat;
+}
+i.onu-remove:hover{
+    background: url('../../assets/remove-hover.png') no-repeat;
 }
 </style>

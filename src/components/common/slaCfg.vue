@@ -7,32 +7,32 @@
                 </option>
             </select>
         </div>
-        <ul v-if="this.bound_width.data">
+        <ul v-if="this.band_width.data">
             <li>
-                <span v-for="(item,key) in this.bound_width.data[0]" :key="key" v-if=" key != 'onu_id'">
+                <span v-for="(item,key) in this.band_width.data[0]" :key="key" v-if=" key != 'onu_id'">
                     {{ lanMap[key] }}
                 </span>
                 <span>{{ lanMap['config'] }}</span>
             </li>
-            <li v-for="(item,index) in this.bound_width.data" :key="index">
+            <li v-for="(item,index) in this.band_width.data" :key="index">
                 <span>{{ 'ONU0'+item.port_id +'/'+ item.onu_id }}</span>
-                <span>{{ item.macaddr }}</span>
-                <span>{{ item.status }}</span>
-                <span>{{ item.auth_state }}</span>
-                <span>{{ item.register_time }}</span>
+                <span>{{ item.sla_type }}</span>
+                <span>{{ item.fix }}</span>
+                <span>{{ item.assure }}</span>
+                <span>{{ item.max }}</span>
                 <span>
                     <a href="javascript:;" @click="sla_config(item.onu_id)">{{ lanMap['config'] }}</a>
                 </span>
             </li>
         </ul>
-        <div v-else></div>
+        <div v-else>当前端口下暂无ONU带宽信息</div>
         <div class="modal-dialog" v-if="isConfig">
             <div class="cover"></div>
             <div class="dialog" v-if="onu_detail.data">
                 <h2>ONU配置</h2>
                 <div class="dialog-item">
                     <span>{{ lanMap['onu_id'] }}</span>
-                    <span></span>
+                    <span>{{ 'ONU0'+onu_detail.data.port_id +'/'+onu_detail.data.onu_id }}</span>
                 </div>
                 <div class="dialog-item">
                     <span>{{ lanMap['sla_type'] }}</span>
@@ -87,7 +87,7 @@ import { mapState } from 'vuex'
         components: { loading },
         data(){
             return {
-                bound_width: {},
+                band_width: {},
                 portid: 0,
                 isConfig: false,
                 post_params: {
@@ -107,12 +107,12 @@ import { mapState } from 'vuex'
             if(this.change_url.beta === 'test'){
                 var url;
                 if(this.change_url.onu_allow[this.change_url.onu_allow.length - 1] != '='){
-                    url = this.change_url.onu_allow;
+                    url = this.change_url.bandwidth;
                 }else{
-                    url = this.change_url.onu_allow + this.portid;
+                    url = this.change_url.bandwidth + this.portid;
                 }
                 this.$http.get(url).then(res=>{
-                    this.bound_width = res.data;
+                    this.band_width = res.data;
                 }).catch(err=>{
                     // to do 
                 })
@@ -148,9 +148,9 @@ import { mapState } from 'vuex'
             getData(){
                  this.$http.get('/onu_bandwidth?port_id='+ this.portid).then(res=>{
                     if(res.data.code === 1){
-                        this.bound_width = res.data;
+                        this.band_width = res.data;
                     }else{
-                        this.bound_width = {};
+                        this.band_width = {};
                     }
                 }).catch(err=>{
                     // to do
@@ -175,7 +175,7 @@ import { mapState } from 'vuex'
                            this.getData();
                         }
                     }).catch(err=>{
-                        // to do 
+                        // to do
                     })
                 }
                 this.post_params.sla_type = '';

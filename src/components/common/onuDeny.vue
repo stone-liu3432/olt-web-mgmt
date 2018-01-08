@@ -102,7 +102,7 @@ export default {
                     "param":{
                         "port_id":this._portid,
                         "macaddr": this.addItem.macaddr,
-                        "desc" : this.addItem.desc
+                        "onu_desc" : this.addItem.desc
                     }
                 }
                 this.$http.post('/onu_deny_list',this.post_param.add).then(res=>{
