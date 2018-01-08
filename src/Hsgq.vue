@@ -1,35 +1,37 @@
 <template>
   <div id="hsgq">
     <router-view></router-view>
+    <loading v-if="isLoading"></loading>
   </div>
 </template>
 
 <script>
-import { mapState, mapMutations } from "vuex";
+import { mapState, mapMutations } from "vuex"
+import loading from '@/components/common/loading'
 export default {
   name: "hsgq",
+  components: { loading },
   created() {
-    this.$http
-      .get("./lang-zh.json")
-      .then(res => {
+    this.$http.get("./lang-zh.json").then(res => {
         this.lanMap(res.data);
       })
       .catch(err => {
         // to do
       });
-      if(sessionStorage.getItem('x-token') !== null){
-          this.$router.push('/main')
-      }else{
-          this.$router.push("/login")
-          //this.$router.push('/main')
-      }
+    if (sessionStorage.getItem("x-token") !== null) {
+      this.$router.push("/main");
+    } else {
+      //this.$router.push("/login");
+      this.$router.push('/main')
+    }
   },
   methods: {
     ...mapMutations({
-      lanMap: "updateLanMap"
+      lanMap: "updateLanMap",
+      loading: 'updateLoading'
     })
   },
-  computed: mapState(["port_info", "system"])
+  computed: mapState(["port_info", "system",'isLoading'])
 };
 </script>
 
@@ -43,6 +45,10 @@ export default {
   min-width: 1280px;
   max-width: 1980px;
 }
+.global-load{
+    display: none;
+}
+
 /**************** RESET STYLE****************/
 body,
 div,

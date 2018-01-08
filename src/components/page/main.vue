@@ -31,37 +31,42 @@ import topBanner from '@/components/page/header'
             }
         },
         created(){
-            this.$http.interceptors.response.use(function(response){
+            var self = this;
+            this.$http.interceptors.response.use(response=>{
                 if(response.data.code === 0){
                     sessionStorage.clear();
-                    this.$route.push('/login');
+                    self.$router.push('/login');
                 }
                 if(response.data.code === -1){
-                    this.modal = true;
+                    self.modal = true;
                     var n = 5;
                     setInterval(()=>{
-                        this.count = n;
+                        self.count = n;
                         n--;
                         if(n <= 0){
-                            this.modal = false;
+                            self.modal = false;
                             sessionStorage.clear();
-                            this.$route.push('/login')
+                            self.$router.push('/login')
                         }
                     },1000)
                 }
                 return response;
-            },function(error){
+            },error=>{
                 return Promise.reject(error);
             });
 
             //根组件创建之前，初始化vuex部分数据
             this.$http.get(this.change_url.system).then(res=>{
+                if(res.data.code === 1){
                 this.systemInfo(res.data);
+                }
             }).catch(err=>{
             // to do 
             })
             this.$http.get(this.change_url.menu).then(res=>{
-                this.addmenu(res.data);
+                if(res.data.code === 1){
+                    this.addmenu(res.data);
+                }
             }).catch(err=>{
                 // to do
             })
@@ -70,8 +75,7 @@ import topBanner from '@/components/page/header'
         methods: {
             ...mapMutations({
                 systemInfo: 'updateSysData',
-                addmenu: 'updateMenu',
-                isAccessToken: 'updateLogin'
+                addmenu: 'updateMenu'
             })
         },
         computed: mapState(['port_info','system','change_url'])

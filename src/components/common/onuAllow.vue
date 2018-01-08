@@ -7,14 +7,48 @@
                 </option>
             </select>
             <a href="javascript:;" @click="add_onu()">增加</a>
-            <a href="javascript:;" @click="auth_state()">ONU认证</a>
             <a href="javascript:;" @click="onu_bandwieth()">带宽</a>
-            <a href="javascript:;" @click="reboot()">重启OUN</a>
+            <a href="javascript:;" @click="reboot()">重启ONU</a>
         </div>
-        <div></div>
+        <div class="modal-dialog" v-if="add_dialog">
+            <div class="cover"></div>
+            <div class="modal-content">
+                <h3>手动添加ONU</h3>
+                <div class="modal-item">
+                    <span>{{ lanMap['onu_id'] }}</span>
+                    <input type="text" v-model="add_onuid" placeholder="1-64">
+                    <span class="tips">为0时，表示自动分配</span>
+                </div>
+                <div class="modal-item">
+                    <span>{{ lanMap['macaddr'] }}</span>
+                    <input type="text" v-model="add_macaddr" :style="{'borderColor' : testMacaddr ? 'red' : '#ccc'}" placeholder="00:00:00:00:00:00">
+                    <span class="tips">EX : 00:00:00:00:00:00</span>
+                </div>
+                <div class="modal-item">
+                    <span>{{ lanMap['auth_state'] }}</span>
+                    <select v-model="add_onustate">
+                        <option value="1">true</option>
+                        <option value="0">false</option>
+                    </select>
+                </div>
+                <!-- <div class="modal-item">
+                    <span>{{ lanMap['onu_type'] }}</span>
+                    <input type="text">
+                </div> -->
+                <div class="modal-item">
+                    <span>{{ lanMap['desc'] }}</span>
+                    <input type="text" v-model="add_onudesc">
+                    <span class="tips">输入描述信息</span>
+                </div>
+                <div class="modal-btn">
+                    <a href="javascript:;" @click="add_onuitem(true)">{{ lanMap['apply'] }}</a>
+                    <a href="javascript:;" @click="add_onuitem(false)">{{ lanMap['cancel'] }}</a>
+                </div>
+                <div class="close" @click="closeModal"></div>
+            </div>
+        </div>
         <ul v-if="this.onu_allow_list.data">
             <li class="flex-box">
-                <!-- <input type="radio" style="opacity:0"> -->
                 <span v-for="(item,key) in this.onu_allow_list.data[0]" :key="key" v-if=" key != 'port_id' ">
                     {{ lanMap[key] }}
                 </span>
@@ -24,7 +58,11 @@
                 <span>{{ 'ONU0'+item.port_id +'/'+ item.onu_id }}</span>
                 <span>{{ item.macaddr }}</span>
                 <span>{{ item.status }}</span>
-                <span>{{ item.auth_state ? 'true' : 'false' }}</span>
+                <span>
+                    <span>{{ item.auth_state ? 'true' : 'false' }}</span>
+                    <i :class="[item.auth_state ? 'verified-actived' : 'verified']" @click="authstate_on(item)" title="点此认证"></i>
+                    <i :class="[item.auth_state ? 'unverified' : 'unverified-actived']" @click="authstate_off(item)" title="点此取消认证"></i>
+                </span>
                 <span>{{ item.register_time }}</span>
                 <span>
                     <i title="查看详情" class="onu-detail" @click="onu_detail(item.port_id,item.onu_id)"></i>
@@ -44,7 +82,13 @@ import { mapState,mapMutations } from 'vuex'
         data(){
             return {
                 onu_allow_list: {},
-                portid: 0
+                portid: 0,
+                add_dialog: false,
+                testMacaddr: false,
+                add_onuid: '',
+                add_macaddr: '',
+                add_onustate: 0,
+                add_onudesc: ''
             }
         },
         computed: mapState(['lanMap','port_name','menu','change_url']),
@@ -85,6 +129,9 @@ import { mapState,mapMutations } from 'vuex'
                     // to do 
                 })
             },
+            closeModal(){
+                this.add_dialog = false;
+            },
             // 删除onu
             delete_onu(node){
                 var post_params = {
@@ -96,7 +143,11 @@ import { mapState,mapMutations } from 'vuex'
                     }
                 }
                 this.$http.post('/onu_allow_list',post_params).then(res=>{
-                    // to do 
+                    if(res.data.code === 1){
+                        this.getData()
+                    }else{
+                        this.onu_allow_list = {}
+                    }
                 }).catch(err=>{
                     // to do
                 })
@@ -104,21 +155,89 @@ import { mapState,mapMutations } from 'vuex'
             //  手动添加 onu
             add_onu(){
                 // 待添加功能
-                var post_params = {
-                    "method":"add",
-                    "param":{
-                        "port_id":1,
-                        "onu_id":0,
-                        "macaddr":"38:3a:21:20:22:66",
-                        "auth_state":1,
-                        "onu_type":" ",
-                        "onu_desc":" "
+                this.add_macaddr = '';
+                this.add_onuid = '';
+                this.add_onudesc = '';
+                this.add_dialog = true;
+            },
+            //  添加onu 弹出层
+            add_onuitem(bool){
+                if(bool){
+                    if(this.add_onuid === ''){
+                        this.add_onuid = 0;
                     }
+                    if(this.testMacaddr || this.add_macaddr === '' || isNaN(Number(this.add_onuid)) || Number(this.add_onuid) > 64 || Number(this.add_onuid) < 0 ) {
+                        return
+                    }
+                    var post_params = {
+                        "method":"add",
+                        "param":{
+                            "port_id": this.portid,
+                            "onu_id": Number(this.add_onuid),
+                            "macaddr": this.add_macaddr,
+                            "auth_state": this.add_onustate,
+                            "onu_type": '',
+                            "onu_desc": this.add_onudesc
+                        }
+                    }
+                    this.$http.post('/onu_allow_list',post_params).then(res=>{
+                        if(res.data.code === 1){
+                            this.getData()
+                        }else{
+                            this.onu_allow_list = {}
+                        }
+                    }).catch(err=>{
+                        // to do
+                    })
                 }
+                this.add_dialog = false;
             },
             //  onu 认证
-            auth_state(){
-                // 待添加
+            authstate_on(node){
+                if(node.auth_state) return
+                var post_params = {
+                    "method": "set",
+                    "param":{
+                        "port_id": this.portid,
+                        "onu_id": node.onu_id,
+                        "macaddr": node.macaddr,
+                        "auth_state": 1,
+                        "onu_type": '',
+                        "onu_desc": ''
+                    }
+                }
+                this.$http.post('/onu_allow_list',post_params).then(res=>{
+                    if(res.data.code === 1){
+                        this.getData()
+                    }else{
+                        this.onu_allow_list = {}
+                    }
+                }).catch(err=>{
+                    // to do
+                })
+            },
+            authstate_off(node){
+                if(!node.auth_state) return
+                var post_params = {
+                    "method": "set",
+                    "param":{
+                        "port_id": this.portid,
+                        "onu_id": node.onu_id,
+                        "macaddr": node.macaddr,
+                        "auth_state": 0,
+                        "onu_type": '',
+                        "onu_desc": ''
+                    }
+                }
+                this.$http.post('/onu_allow_list',post_params).then(res=>{
+                    if(res.data.code === 1){
+                        this.getData()
+                    }else{
+                        this.onu_allow_list = {}
+                    }
+                }).catch(err=>{
+                    // to do
+                })
             },
             //  移动ONU到阻止列表
             remove_onu(node){
@@ -132,7 +251,9 @@ import { mapState,mapMutations } from 'vuex'
                 }
                 this.$http.post('/onu_allow_list',post_params).then(res=>{
                     if(re.data.code === 1){
-                        this.getData();
+                        this.getData()
+                    }else{
+                        this.onu_allow_list = {}
                     }
                 }).catch(err=>{
                     // to do
@@ -199,6 +320,14 @@ import { mapState,mapMutations } from 'vuex'
         watch: {
             portid(){
                 this.getData();
+            },
+            add_macaddr(){
+                var reg = /^[0-9a-zA-Z]{2}\:[0-9a-zA-Z]{2}\:[0-9a-zA-Z]{2}\:[0-9a-zA-Z]{2}\:[0-9a-zA-Z]{2}\:[0-9a-zA-Z]{2}$/;
+                if(!reg.test(this.add_macaddr)){
+                    this.testMacaddr = true;
+                }else{
+                    this.testMacaddr = false;
+                }
             }
         }
     }
@@ -286,5 +415,67 @@ i.onu-remove{
 }
 i.onu-remove:hover{
     background: url('../../assets/remove-hover.png') no-repeat;
+}
+div.modal-content{
+    width: 500px;
+    height: 300px;
+    background: #fff;
+    position: absolute;
+    left: 0;
+    right: 0;
+    top: 0;
+    bottom: 0;
+    margin: auto;
+    border-radius: 10px;
+}
+div.modal-content>h3{
+    margin-top: 20px;
+    margin-bottom: 20px;
+    text-align: center;
+    font-size: 18px;
+    font-weight: 600;
+    color: #67aef7;
+}
+div.modal-item input{
+    width: 180px;
+}
+div.modal-item{
+    height: 40px;
+    line-height: 40px;
+    vertical-align: middle;
+    padding-left: 30px;
+}
+div.modal-content input{
+    margin: 0 0 0 20px;
+}
+div.modal-item select{
+    margin: 0 0 0 20px;
+}
+span.tips{
+    font-size: 14px;
+    margin-left:10px;
+    width: auto;
+    color: #aaa;
+}
+div.modal-btn{
+    margin: 15px;
+}
+div.modal-btn>a{
+    margin-left: 80px;
+}
+i.verified{
+    background: url('../../assets/authstatus-normal.png') no-repeat;
+}
+i.verified-actived{
+    background: url('../../assets/authstatus-hover.png') no-repeat;
+}
+i.unverified{
+    background: url('../../assets/unauthstatus-normal.png') no-repeat;
+}
+i.unverified-actived{
+    background: url('../../assets/unauthstatus-hover.png') no-repeat;
+}
+span>span{
+    width: 40px;
 }
 </style>
