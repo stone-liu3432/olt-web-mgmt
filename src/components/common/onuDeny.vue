@@ -172,7 +172,7 @@ export default {
 ul{
     border:1px solid #ddd;
     margin-top: 30px;
-    width: 1160px;
+    width: 1020px;
 }
 ul>li{
     font-size: 0;
@@ -188,7 +188,7 @@ ul+div{
 }
 span{
     display: inline-block;
-    width: 16%;
+    width: 24%;
     text-align: center;
     font-size: 16px;
 }

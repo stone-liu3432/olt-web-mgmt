@@ -94,6 +94,7 @@
                         <li v-for="(item,key) in stormctrl_data.data" :key="key" v-if="key !== 'port_id'" class="swich-item">
                             <span>{{ lanMap[key] }}</span>
                             <input type="text" v-model="storm_data[key]">
+                            pps
                         </li>
                     </ul>
                     <div class="btn-submit">
@@ -426,7 +427,7 @@ div.contianer:after{
 }
 div.config{
     margin:10px;
-    width: 30%;
+    width: 31%;
     float: left;
     border: 1px solid #ddd;
     box-shadow: 3px 3px 3px #ddd;

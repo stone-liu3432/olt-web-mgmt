@@ -6,13 +6,15 @@
 </template>
 
 <script>
-import { mapState, mapMutations } from "vuex"
-import loading from '@/components/common/loading'
+import { mapState, mapMutations } from "vuex";
+import loading from "@/components/common/loading";
 export default {
   name: "hsgq",
   components: { loading },
   created() {
-    this.$http.get("./lang-zh.json").then(res => {
+    this.$http
+      .get("./lang-zh.json")
+      .then(res => {
         this.lanMap(res.data);
       })
       .catch(err => {
@@ -22,16 +24,16 @@ export default {
       this.$router.push("/main");
     } else {
       //this.$router.push("/login");
-      this.$router.push('/main')
+      this.$router.push("/main");
     }
   },
   methods: {
     ...mapMutations({
       lanMap: "updateLanMap",
-      loading: 'updateLoading'
+      loading: "updateLoading"
     })
   },
-  computed: mapState(["port_info", "system",'isLoading'])
+  computed: mapState(["port_info", "system", "isLoading"])
 };
 </script>
 
@@ -45,8 +47,8 @@ export default {
   min-width: 1280px;
   max-width: 1980px;
 }
-.global-load{
-    display: none;
+.global-load {
+  display: none;
 }
 
 /**************** RESET STYLE****************/
@@ -126,9 +128,6 @@ a {
   text-decoration: none;
   color: #000;
 }
-body {
-  user-select: none;
-}
 html,
 body,
 #app {
@@ -162,11 +161,12 @@ input[type="text"]:focus {
 }
 a {
   border: 1px solid transparent;
+  user-select: none;
 }
 a:active {
   border: 1px solid #1e90ff;
 }
-/* 分用模态框类 */
+/* 复用模态框类 */
 .modal-dialog {
   position: fixed;
   left: 0;
@@ -195,8 +195,5 @@ a:active {
 }
 .close:hover {
   background: url("./assets/close_msg_hover.png") no-repeat;
-}
-#hsgq > .load {
-  position: static;
 }
 </style>

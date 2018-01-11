@@ -340,7 +340,7 @@ import { mapState,mapMutations } from 'vuex'
 ul{
     border:1px solid #ddd;
     margin-top: 30px;
-    min-width: 1040px;
+    min-width: 1020px;
 }
 ul>li{
     font-size: 0;

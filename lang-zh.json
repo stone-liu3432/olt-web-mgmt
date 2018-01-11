@@ -149,5 +149,24 @@
     "vlan_list": "VLAN列表",
     "detail": "详情",
     "inquery_mode": "查询方式",
-    "CDkey": "序列号"
+    "CDkey": "序列号",
+	
+	"mode": "模式",
+	"rb_priority": "根桥优先级",
+	"rb_address": "根桥地址",
+	"db_priority": "指定桥优先级",
+	"db_address": "指定桥地址",
+	"max_age": "BPDU最大生存期",
+	"hello_time": "BPDU发送周期",
+	"forward_delay": "端口状态延时",
+	"transmit_hold_count": "BPDU限制速率",
+	"root_path_cost": "根桥路径开销",
+	
+	"priority": "端口优先级",
+	"port_path_cost": "端口路径开销",
+	"edge_status": "边缘端口",
+	"admin_link_type": "链路管理状态",
+	"oper_link_type": "链路运行状态",
+	"port_role": "端口角色",
+	"port_state": "端口状态"
 }

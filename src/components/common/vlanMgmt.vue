@@ -410,7 +410,8 @@ import confirm from '@/components/common/confirm'
 
 <style scoped>
 div.vlan-mgmt{
-    margin: 10px 50px 20px 10px;
+    /* margin: 10px 50px 20px 10px; */
+    min-width: 1020px;
 }
 div>h2{
     float: left;

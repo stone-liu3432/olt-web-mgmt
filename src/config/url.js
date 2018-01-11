@@ -20,7 +20,9 @@ var change_url = {
         macage: "./mac_age.json",
         mactab: "./mac_table.json",
         swich_port_info: './swich_port_info.json',
-        beta: 'test'
+        beta: 'test',
+        rstp: './rstp.json',
+        rstp_port: './rstp_port.json'
     },
     betaUrl: {
         menu: "/board?info=menu",
@@ -43,7 +45,9 @@ var change_url = {
         macage: "/switch_mac?form=age",
         mactab: "/switch_mac?form=table",
         swich_port_info: '/switch_port?form=port_info&port_id=',
-        beta: 'beta'
+        beta: 'beta',
+        rstp: '/switch_rstp?form=bridge',
+        rstp_port: '/switch_rstp?form=port'
     }
 }
 

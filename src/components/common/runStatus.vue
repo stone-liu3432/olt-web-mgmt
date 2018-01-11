@@ -1,7 +1,9 @@
 <template>
     <div class="running-status">
         <div class="container"  v-if="ponInfo.data">
-            <h2>PON口信息</h2>
+            <h2>
+                PON口信息
+            </h2>
             <div class="pon-detail" v-for="(item,index) in this.ponInfo.data" :key="index">
                 <!-- <p>{{ item.port_id < 10 ? 'PON0' + item.port_id : 'PON' + item.port_id }}</p> -->
                 <div :class="[ item.status >= 1 ? 'bg-online' : 'bg-offline' ]">
@@ -98,9 +100,12 @@
             // 请求url: '/board?info=cpu'
             this.$http.get(this.change_url.cpu).then(res=>{
                 this.cpuInfo = res.data;
-                setTimeout(()=>{
-                    this.drawing(this.cpuInfo.data.cpu_usage,this.cpuInfo.data.memory_usage);
-                },0)
+                // setTimeout(()=>{
+                //     this.drawing(this.cpuInfo.data.cpu_usage,this.cpuInfo.data.memory_usage);
+                // },0)
+                this.$nextTick(()=>{
+                    this.drawing(this.cpuInfo.data.cpu_usage,this.cpuInfo.data.memory_usage)
+                });
             }).catch(err=>{
                 // to do
             })

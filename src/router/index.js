@@ -148,16 +148,17 @@ const router = new Router({
 })
 
 router.beforeEach((to, from, next) => {
-  // 判断该路由是否需要登录权限
   store.commit('updateLoading',true)
+  // 判断该路由是否需要登录权限
   if (to.meta.requireAuth) {
     // if (sessionStorage.getItem('x-token') !== null) {
     //     next();
     // } else {
     //     next({path: '/login'})
     // }
-    next();
+    next(); 
   }else if(to.path === '/login'){
+  //  如果手动跳转到login页面时，清除登录信息 
       sessionStorage.clear();
       next();
   }else{
@@ -166,9 +167,7 @@ router.beforeEach((to, from, next) => {
 })
 
 router.afterEach((to,from)=>{
-    setTimeout(()=>{
-        store.commit('updateLoading',false);
-    },500)
+    store.commit('updateLoading',false);
 })
 
 export default router

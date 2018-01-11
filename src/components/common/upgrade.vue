@@ -76,7 +76,7 @@ import { mapState } from 'vuex'
 
 <style scoped>
 div.upgrade{
-    margin: 20px 50px 30px 10px;
+    margin: 30px 50px 30px 10px;
 }
 div.upgrade>h2{
     font-size: 24px;
@@ -101,6 +101,9 @@ form.upload-form{
     top: 0;
     width: 300px;
     height: 38px;
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
     border: 1px solid #ddd;
     text-align: center;
     line-height: 38px;

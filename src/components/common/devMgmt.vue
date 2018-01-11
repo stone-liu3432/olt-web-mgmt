@@ -162,12 +162,11 @@
 .dev-mgmt{
     width: 100%;
     border: 1px solid #aaa;
-    padding:10px 20px;
     margin-top: 20px;
     box-shadow: 3px 3px 3px #ddd;
 }
 .dev-mgmt>div{
-    margin-top: 10px;
+    padding: 10px 20px;
 }
 .dev-mgmt>div:first-child{
     font-size: 18px;
@@ -183,6 +182,9 @@ form{
     top: 0;
     width: 300px;
     height: 38px;
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
     border: 1px solid #ddd;
     text-align: center;
     line-height: 38px;

@@ -77,7 +77,7 @@ import { mapState } from 'vuex'
 
 <style scoped>
 .port-info{
-    width: 100%;
+    min-width: 1020px;
 }
 .port-info-title{
     display: flex;
@@ -94,7 +94,6 @@ h2{
 }
 ul>li{
     width:12%;
-    min-width: 105px;
     border:1px solid #ccc;
     text-align: center;
     border-bottom: none;

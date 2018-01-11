@@ -227,7 +227,7 @@ import { mapState } from 'vuex'
 ul{
     border:1px solid #ddd;
     margin-top: 30px;
-    min-width: 1060px;
+    min-width: 1020px;
 }
 ul>li{
     font-size: 0;

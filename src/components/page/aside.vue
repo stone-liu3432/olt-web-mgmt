@@ -79,7 +79,7 @@ export default {
 
 <style scoped>
 #left-aside{
-    width: 220px;;
+    width: 200px;;
     height: 100%;
     overflow: auto;
     position: fixed;
@@ -88,6 +88,7 @@ export default {
     background: #2F2F39;
     box-shadow: 5px 0 3px #666;
     z-index: 999;
+    user-select: none;
 }
 .menu>li>ul{
     transition: all 0.3s ease-out;

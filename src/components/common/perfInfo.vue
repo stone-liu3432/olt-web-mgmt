@@ -91,7 +91,7 @@ h2{
 	color: 	#67AEF7;
 }
 li{
-    width: 1100px;
+    width: 1020px;
     border: 1px solid #ccc;
     border-bottom: none;
 }
