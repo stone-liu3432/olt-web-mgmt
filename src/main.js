@@ -6,17 +6,20 @@ import router from './router'
 import Vuex from 'Vuex'
 import axios from 'axios'
 import store from './vuex/store'
+import VueMessage from '@/components/common/message'
 
+Vue.use(VueMessage)
 Vue.use(Vuex)
+
 axios.interceptors.request.use(
-	config => {
-		var xtoken = sessionStorage.getItem('x-token');
-		config.headers['X-Token'] = xtoken
-		return config
-	},
-	err => {
-		return Promise.reject(err)
-	}
+  config => {
+    var xtoken = sessionStorage.getItem('x-token');
+    config.headers['X-Token'] = xtoken
+    return config
+  },
+  err => {
+    return Promise.reject(err)
+  }
 )
 
 Vue.prototype.$http = axios
@@ -25,11 +28,11 @@ Vue.config.productionTip = false
 
 /* eslint-disable no-new */
 new Vue({
-	el: '#app',
-	router,
-	store,
-	template: '<Hsgq/>',
-	components: {
-		Hsgq
-	}
+  el: '#app',
+  router,
+  store,
+  template: '<Hsgq/>',
+  components: {
+    Hsgq
+  }
 });

@@ -31,30 +31,29 @@ import topBanner from '@/components/page/header'
             }
         },
         created(){
-            var self = this;
-            this.$http.interceptors.response.use(response=>{
-                if(response.data.code === 0){
-                    sessionStorage.clear();
-                    self.$router.push('/login');
-                }
-                if(response.data.code === -1){
-                    self.modal = true;
-                    var n = 5;
-                    setInterval(()=>{
-                        self.count = n;
-                        n--;
-                        if(n <= 0){
-                            self.modal = false;
-                            sessionStorage.clear();
-                            self.$router.push('/login')
-                        }
-                    },1000)
-                }
-                return response;
-            },error=>{
-                return Promise.reject(error);
-            });
-
+            //  http拦截器，如返回登录超时或登录信息异常时进行强制跳转
+            
+            // this.$http.interceptors.response.use(response=>{
+            //     if(response.data.code === 0){
+            //         this.$message({
+            //             type: 'error',
+            //             text: '非法登录信息'
+            //         })
+            //         sessionStorage.clear();
+            //         this.$router.push('/login');
+            //     }
+            //     if(response.data.code === -1){
+            //         this.$message({
+            //             type: 'error',
+            //             text: '登录超时，请重新登录'
+            //         })
+            //         sessionStorage.clear();
+            //         this.$router.push('/login');
+            //     }
+            //     return response;
+            // },err=>{
+            //     return Promise.reject(err);
+            // });
             //根组件创建之前，初始化vuex部分数据
             this.$http.get(this.change_url.system).then(res=>{
                 if(res.data.code === 1){

@@ -158,9 +158,13 @@ router.beforeEach((to, from, next) => {
     // }
     next(); 
   }else if(to.path === '/login'){
-  //  如果手动跳转到login页面时，清除登录信息 
-      sessionStorage.clear();
-      next();
+  //  正常登录状态下手动输入url跳转Login页面时，强制跳转main页面
+  //  正常登录状态下，只能通过点击 退出 按钮，跳转到login页面
+      if(sessionStorage.getItem('x-token') !== null){
+          next('./main')
+      }else{
+          next();
+      }
   }else{
       next();
   }

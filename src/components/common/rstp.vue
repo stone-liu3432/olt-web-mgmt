@@ -75,22 +75,22 @@
                 </div>
                 <div>
                     <span>{{ lanMap['max_age'] }}</span>
-                    <input type="text" v-model="bridge_info.max_age" :style="{ 'borderColor' : verify_input.max_age ? 'red' : '#ccc' }">
+                    <input type="text" v-model.number="bridge_info.max_age" :style="{ 'borderColor' : verify_input.max_age ? 'red' : '#ccc' }">
                     <span>range: 6-40</span>
                 </div>
                 <div>
                     <span>{{ lanMap['hello_time'] }}</span>
-                    <input type="text" v-model="bridge_info.hello_time" :style="{ 'borderColor' : verify_input.hello_time ? 'red' : '#ccc' }">
+                    <input type="text" v-model.number="bridge_info.hello_time" :style="{ 'borderColor' : verify_input.hello_time ? 'red' : '#ccc' }">
                     <span>range: 1-10</span>
                 </div>
                 <div>
                     <span>{{ lanMap['forward_delay'] }}</span>
-                    <input type="text" v-model="bridge_info.forward_delay" :style="{ 'borderColor' : verify_input.forward_delay ? 'red' : '#ccc' }">
+                    <input type="text" v-model.number="bridge_info.forward_delay" :style="{ 'borderColor' : verify_input.forward_delay ? 'red' : '#ccc' }">
                     <span>range: 4-30</span>
                 </div>
                 <div>
                     <span>{{ lanMap['transmit_hold_count'] }}</span>
-                    <input type="text" v-model="bridge_info.transmit_hold_count" :style="{ 'borderColor' : verify_input.transmit_hold_count ? 'red' : '#ccc' }">
+                    <input type="text" v-model.number="bridge_info.transmit_hold_count" :style="{ 'borderColor' : verify_input.transmit_hold_count ? 'red' : '#ccc' }">
                     <span>range: 1-255</span>
                 </div>
                 <div>
@@ -133,7 +133,7 @@
                 </div>
                 <div>
                     <span>{{ lanMap['port_path_cost'] }}</span>
-                    <input type="text" v-model="priority_info.port_path_cost"  :style="{ 'borderColor' : verify_input.port_path_cost ? 'red' : '#ccc' }">
+                    <input type="text" v-model.number="priority_info.port_path_cost"  :style="{ 'borderColor' : verify_input.port_path_cost ? 'red' : '#ccc' }">
                     <span>range: 0-200000000</span>
                 </div>
                 <div>
@@ -237,16 +237,16 @@ import { mapState } from 'vuex'
                 if(this.bridge_info.rb_priority !== this.rstp.data.rb_priority){
                     this.flags += 2;
                 }
-                if(Number(this.bridge_info.max_age) !== this.rstp.data.max_age){
+                if(this.bridge_info.max_age !== this.rstp.data.max_age){
                     this.flags += 4;
                 }
-                if(Number(this.bridge_info.hello_time) !== this.rstp.data.hello_time){
+                if(this.bridge_info.hello_time !== this.rstp.data.hello_time){
                     this.flags += 8;
                 }
-                if(Number(this.bridge_info.forward_delay) !== this.rstp.data.forward_delay){
+                if(this.bridge_info.forward_delay !== this.rstp.data.forward_delay){
                     this.flags += 16;
                 }
-                if(Number(this.bridge_info.transmit_hold_count) !== this.rstp.data.transmit_hold_count){
+                if(this.bridge_info.transmit_hold_count !== this.rstp.data.transmit_hold_count){
                     this.flags += 256;
                 }
                 if(this.flags === 0){
@@ -258,10 +258,10 @@ import { mapState } from 'vuex'
                     "status": this.bridge_info.status,
                     "mode": this.bridge_info.mode,
                     "rb_priority": this.bridge_info.rb_priority,
-                    "max_age": Number(this.bridge_info.max_age),
-                    "hello_time": Number(this.bridge_info.hello_time),
-                    "forward_delay": Number(this.bridge_info.forward_delay),
-                    "transmit_hold_count": Number(this.bridge_info.transmit_hold_count)
+                    "max_age": this.bridge_info.max_age,
+                    "hello_time": this.bridge_info.hello_time,
+                    "forward_delay": this.bridge_info.forward_delay,
+                    "transmit_hold_count": this.bridge_info.transmit_hold_count
                 }
                 this.$http.post('/switch_rstp?form=bridge',post_params).then(res=>{
                     if(res.data.code === 1){
@@ -274,6 +274,7 @@ import { mapState } from 'vuex'
                 })
                 this.modal = false;
             },
+            //  打开rstp桥配置模态框
             open_modal(){
                 for(var key in this.rstp.data){
                     this.bridge_info[key] = this.rstp.data[key];
@@ -281,9 +282,11 @@ import { mapState } from 'vuex'
                 this.flags = 0;
                 this.modal = true;
             },
+            //  关闭rstp桥配置模态框
             close_modal(){
                 this.modal = false;
             },
+            //  打开设置端口优先级模态框
             open_priority(){
                 for(var key in this.rstp_port.data[0]){
                     this.priority_info[key] = this.rstp_port.data[0][key];
@@ -291,14 +294,16 @@ import { mapState } from 'vuex'
                 this.flags = 0;
                 this.modal_priority = true;
             },
+            //  关闭端口优先级设置模态框
             close_priority(){
                 this.modal_priority = false;
             },
+            //  设置端口优先级内的提交按钮
             set_priority(){
                 if(this.priority_info.port_id !== this.rstp_port.data[0].port_id){
                     this.flags += 4;
                 }
-                if(Number(this.priority_info.port_path_cost) !== this.rstp_port.data[0].port_path_cost){
+                if(this.priority_info.port_path_cost !== this.rstp_port.data[0].port_path_cost){
                     this.flags += 2;
                 }
                 if(this.priority_info.edge_status !== this.rstp_port.data[0].edge_status){
@@ -317,7 +322,7 @@ import { mapState } from 'vuex'
                         "flags": this.flags,
                         "port_id": this.priority_info.port_id,
                         "priority": this.priority_info.priority,
-                        "port_path_cost": Number(this.priority_info.port_path_cost),
+                        "port_path_cost": this.priority_info.port_path_cost,
                         "edge_status": this.priority_info.edge_status,
                         "admin_link_type": this.priority_info.admin_link_type
                     }
@@ -335,35 +340,35 @@ import { mapState } from 'vuex'
         },
         watch: {
             'bridge_info.max_age'(){
-                if(this.bridge_info.max_age < 6 || this.bridge_info.max_age > 40 || isNaN(Number(this.bridge_info.max_age))){
+                if(this.bridge_info.max_age < 6 || this.bridge_info.max_age > 40 || isNaN(this.bridge_info.max_age)){
                     this.verify_input.max_age = true;
                 }else{
                     this.verify_input.max_age = false;
                 }
             },
             'bridge_info.hello_time'(){
-                if(this.bridge_info.hello_time < 1 || this.bridge_info.hello_time > 10 || isNaN(Number(this.bridge_info.hello_time))){
+                if(this.bridge_info.hello_time < 1 || this.bridge_info.hello_time > 10 || isNaN(this.bridge_info.hello_time)){
                     this.verify_input.hello_time = true;
                 }else{
                     this.verify_input.hello_time = false;
                 }
             },
             'bridge_info.forward_delay'(){
-                if(this.bridge_info.forward_delay < 4 || this.bridge_info.forward_delay > 30 || isNaN(Number(this.bridge_info.forward_delay))){
+                if(this.bridge_info.forward_delay < 4 || this.bridge_info.forward_delay > 30 || isNaN(this.bridge_info.forward_delay)){
                     this.verify_input.forward_delay = true;
                 }else{
                     this.verify_input.forward_delay = false;
                 }
             },
             'bridge_info.transmit_hold_count'(){
-                if(this.bridge_info.transmit_hold_count < 1 || this.bridge_info.transmit_hold_count > 255 || isNaN(Number(this.bridge_info.transmit_hold_count))){
+                if(this.bridge_info.transmit_hold_count < 1 || this.bridge_info.transmit_hold_count > 255 || isNaN(this.bridge_info.transmit_hold_count)){
                     this.verify_input.transmit_hold_count = true;
                 }else{
                     this.verify_input.transmit_hold_count = false;
                 }
             },
             'priority_info.port_path_cost'(){
-                if(this.priority_info.port_path_cost < 0 || this.priority_info.port_path_cost > 200000000 || isNaN(Number(this.priority_info.port_path_cost))){
+                if(this.priority_info.port_path_cost < 0 || this.priority_info.port_path_cost > 200000000 || isNaN(this.priority_info.port_path_cost)){
                     this.verify_input.port_path_cost = true;
                 }else{
                     this.verify_input.port_path_cost = false;

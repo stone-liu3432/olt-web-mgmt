@@ -1,28 +1,39 @@
 <template>
-    <div class="modal-dialog" id="cfg-success">
-        <div class="content">
-            {{ msg }}
-        </div>
+  <transition name="message-fade">
+    <div class="message" v-show="show">
+    <span class="icon"><icon name="info"></icon></span>
+      <p>{{message}}</p>
     </div>
+  </transition>
 </template>
-
+ 
 <script>
-import { mapState } from 'vuex'
 export default {
     name: 'alert',
-    props: ['msg'],
+    data(){
+        return {
+            timer: null,
+            msg: '',
+            isShow: false
+        }
+    },
     methods: {
-
+        showMsgBox(){
+            this.isShow = true;
+        }
     },
     mounted(){
         var sec = 1;
         var tips = document.getElementById('cfg-success');
-        var timer = setInterval(()=>{
+        if(this.timer){
+            clearInterval(timer);
+        }
+        this.timer = setInterval(()=>{
             tips.style.opacity = sec;
             sec -= 0.1;
             if(sec <= 0){
-                clearInterval(timer);
-                tips.style.display = 'none';
+                clearInterval(this.timer);
+                this.isShow = false;
             }
         },100)
     }
@@ -30,10 +41,7 @@ export default {
 </script>
 
 <style scoped>
-div.modal-dialog{
-    /* display: none; */
-}
-div.content{
+div.modal-dialog>div{
     position: absolute;
     top: 0;
     left: 0;
@@ -44,9 +52,21 @@ div.content{
     height: 50px;
     color: #fff;
     line-height: 50px;
-    background: #666;
+    background: #409eff;
     border-radius: 5px;
     text-align: center;
+}
+div.success{
+    background: #67c23a;
+}
+div.warming{
+    background: #e6a23c;
+}
+div.danger{
+    background: #f56c6c;
+}
+div.info{
+    background: #909399;
 }
 </style>
 

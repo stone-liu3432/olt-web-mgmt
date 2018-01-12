@@ -16,15 +16,18 @@
              (______|______)
 
         </pre>
-        <alert msg="操作失败！"></alert>
     </div>
 </template>
 
 <script>
-import alert from '@/components/common/alert'
     export default {
         name : 'time',
-        components: { alert }
+        created(){
+            
+        },
+        methods: {
+
+        }
     }
 </script>
 

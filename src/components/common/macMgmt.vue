@@ -11,7 +11,7 @@
         </div>
         <div class="mac-age" v-if="cfg_age">
             <span>{{ lanMap['age'] }} : </span>
-            <input type="text" v-model="macage" placeholder="secends">
+            <input type="text" v-model.number="macage" placeholder="secends">
             <a href="javascript:;" @click="macage_choose(true)">{{ lanMap['apply'] }}</a>
             <a href="javascript:;" @click="macage_choose(false)">{{ lanMap['cancel'] }}</a>
         </div>
@@ -42,11 +42,11 @@
                 </select>
             </div>
             <div v-if="choose_port" class="query-frame">
-                <input type="text" placeholder="port id" v-model="port_id">
+                <input type="text" placeholder="port id" v-model.number="port_id">
                 <a href="javascript:;" @click="query_portid">{{ lanMap['apply'] }}</a>
             </div>
             <div v-if="choose_vlan" class="query-frame">
-                <input type="text" placeholder="VLAN ID" v-model="vlan_id">
+                <input type="text" placeholder="VLAN ID" v-model.number="vlan_id">
                 <!-- <input type="text" placeholder="max"> -->
                 <a href="javascript:;" @click="query_vlanid">{{ lanMap['apply'] }}</a>
             </div>
@@ -106,7 +106,7 @@ import loading from '@/components/common/loading'
                 //  mac地址老化时间 
                 mac_age: {},
                 //  mac表
-                tab: {},
+                tab: [],
                 //  分页mac表
                 mac_table: [],
                 // 绑定老化时间输入框
@@ -164,13 +164,21 @@ import loading from '@/components/common/loading'
                         "macmask": "00:00:00:00:00:ff"
                     }
             }
-            this.$http.post(this.change_url.mactab,post_param).then(res=>{
-                this.tab = res.data.data;
-                this.pagination.page = Math.ceil(this.tab.length/this.pagination.display);
-                this.getPage();
-            }).catch(err=>{
-                // to do
-            })
+            if(this.change_url.beta === 'test'){
+                this.$http.get(this.change_url.mactab).then(res=>{
+                    this.tab = res.data.data;
+                    this.pagination.page = Math.ceil(this.tab.length/this.pagination.display);
+                    this.getPage();
+                })
+            }else{
+                this.$http.post(this.change_url.mactab,post_param).then(res=>{
+                    this.tab = res.data.data;
+                    this.pagination.page = Math.ceil(this.tab.length/this.pagination.display);
+                    this.getPage();
+                }).catch(err=>{
+                    // to do
+                })
+            }
         },
         methods: {
             getName(id){
@@ -181,19 +189,19 @@ import loading from '@/components/common/loading'
                 var post_param = {
                     "method":"get",
                     "param":{
-                        "flags": Number(this.flag),
+                        "flags": this.flag,
                         "count": this.count,
-                        "mac_type": Number(this.mac_type),
-                        "port_id": Number(this.port_id),
-                        "vlan_id": Number(this.vlan_id),
-                        "vlan_id_e": Number(this.vlan_id_e),
+                        "mac_type": this.mac_type,
+                        "port_id": this.port_id,
+                        "vlan_id": this.vlan_id,
+                        "vlan_id_e": this.vlan_id_e,
                         "macaddr": this.macaddr,
                         "macmask": this.macmask
                     }
                 }
                 this.$http.post('/switch_mac?form=table',post_param).then(res=>{
                     if(res.data.code === 1){
-                        if(this.tab.length%200 === 0){
+                        if(this.tab.length%200 === 0 && this.count !== 0){
                             this.tab.concat(res.data.data);
                         }else if(this.count === 0){
                             this.tab = res.data.data;
@@ -201,8 +209,7 @@ import loading from '@/components/common/loading'
                         this.pagination.page = Math.ceil(this.tab.length/this.pagination.display);
                         this.getPage();
                     }else{
-                        this.mac_table = {};
-                        console.log(res.data.message);
+                        this.mac_table = [];
                     }
                 }).catch(err=>{
                     // to do
@@ -224,9 +231,9 @@ import loading from '@/components/common/loading'
                     var post_params = {
                         "method":"delete",
                         "param":{
-                            "mac_type":this.delete_mac_data.mac_type,
-                            "macaddr":this.delete_mac_data.macaddr,
-                            "vlan_id":this.delete_mac_data.vlan_id
+                            "mac_type": this.delete_mac_data.mac_type,
+                            "macaddr": this.delete_mac_data.macaddr,
+                            "vlan_id": this.delete_mac_data.vlan_id
                         }
                     }
                     this.$http.post('/switch_mac?form=table',post_params).then(res=>{
@@ -276,7 +283,7 @@ import loading from '@/components/common/loading'
                 this.choose_macaddr = false;
             },
             query_macaddr(){
-                this.tab = {};
+                this.tab = [];
                 this.count = 0;
                 this.mac_type = 3;
                 this.port_id = 0;
@@ -285,7 +292,7 @@ import loading from '@/components/common/loading'
                 this.getData();
             },
             query_portid(){
-                this.tab = {};
+                this.tab = [];
                 this.count = 0;
                 this.mac_type = 3;
                 this.vlan_id = 0;
@@ -295,7 +302,7 @@ import loading from '@/components/common/loading'
                 this.getData();
             },
             query_vlanid(){
-                this.tab = {};
+                this.tab = [];
                 this.count = 0;
                 this.mac_type = 3;
                 this.port_id = 0;
@@ -325,7 +332,7 @@ import loading from '@/components/common/loading'
                 }
             },
             mac_type(){
-                this.tab = {};
+                this.tab = [];
                 this.count = 0;
                 this.port_id = 0;
                 this.vlan_id = 0;

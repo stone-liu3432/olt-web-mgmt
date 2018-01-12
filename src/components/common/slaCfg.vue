@@ -9,7 +9,7 @@
         </div>
         <ul v-if="this.band_width.data">
             <li>
-                <span v-for="(item,key) in this.band_width.data[0]" :key="key" v-if=" key != 'onu_id'">
+                <span v-for="(item,key) in this.band_width.data[0]" :key="key" v-if=" key != 'port_id'">
                     {{ lanMap[key] }}
                 </span>
                 <span>{{ lanMap['config'] }}</span>

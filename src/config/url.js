@@ -37,7 +37,7 @@ var change_url = {
         onu_list: '/onu_allow_list?form=resource&port_id=',
         onu_deny: "/onu_deny_list?port_id=",
         bandwidth: "/onu_bandwidth?port_id=",
-        onumgmt: "/onumgmt?form=base-info&port_id="+this.portid+"onu_id="+this.onuid,
+        onumgmt: "/onumgmt?form=base-info&port_id=",
         swich_port: "/switch_port?form=info",
         perf: "/switch_port?form=statistic&port_id=",
         vlan: "/switch_port?form=vlan",

@@ -4,7 +4,7 @@
             <h2>
                 PON口信息
             </h2>
-            <div class="pon-detail" v-for="(item,index) in this.ponInfo.data" :key="index">
+            <div class="pon-detail" v-for="(item,index) in this.ponInfo.data" :key="index" @click="jump_onu_allow(item.port_id)">
                 <!-- <p>{{ item.port_id < 10 ? 'PON0' + item.port_id : 'PON' + item.port_id }}</p> -->
                 <div :class="[ item.status >= 1 ? 'bg-online' : 'bg-offline' ]">
                     <img src="../../assets/pon_online.png" v-if="item.status >=1">
@@ -13,15 +13,17 @@
                 <p :style="{'color' : item.status >=1 ? '#29BDFA' : '#8D8F92'}">
                     {{ item.port_id < 10 ? 'PON0' + item.port_id : 'PON' + item.port_id }} : {{ item.status >= 1 ? lanMap['online'] : lanMap['offline'] }}
                 </p>
-                <p>已注册设备数:{{ item.online + item.offline }}</p>
-                <p>{{ lanMap['online'] }}：{{ item.online }}</p>
-                <p>{{ lanMap['offline'] }}：{{ item.offline }}</p>
+                <div class="pon-modal">
+                    <p>已注册设备数:{{ item.online + item.offline }}</p>
+                    <p>{{ lanMap['online'] }}：{{ item.online }}</p>
+                    <p class="tips">{{ lanMap['offline'] }}：{{ item.offline }}</p>
+                    <span>点击图片可进入onu允许列表</span>
+                </div>
             </div>
         </div>
         <div class="container"  v-if="this.geInfo[0]">
             <h2>GE信息</h2>
-            <div class="pon-detail" v-for="(item,index) in this.geInfo" :key="index">
-                <!-- <p>{{ "GE0"+(index+1) }}</p> -->
+            <div class="pon-detail" v-for="(item,index) in this.geInfo" :key="index" @click="jump_port_cfg(item.port_id)">
                 <div :class="[ item.admin_status >= 1 ? item.link_status >= 1 ? 'bg-online' : 'bg-offline' :'bg-disabled' ]">
                     <img src="../../assets/uplink-fiber-blue.png" v-if="item.media == 'fiber' &&item.admin_status >=1 && item.link_status >=1 ">
                     <img src="../../assets/uplink-fiber-black.png" v-if="item.media == 'fiber' && item.admin_status >=1 && item.link_status < 1">
@@ -33,9 +35,12 @@
                 <p :style="{'color' : item.admin_status >=1 ? item.link_status >=1 ? '#29BDFA' : '#aaa' : 'red'}">
                     {{ index < 10 ? "GE0"+(index+1) : 'GE'+(index+1) }}：{{ item.admin_status >= 1 ? item.link_status >=1 ? lanMap['link_up'] : lanMap['link_down'] : lanMap['forbidden'] }}
                 </p>
-                <p :style="{'color' : item.admin_status >=1 ? item.link_status >=1 ? '#29BDFA' : '#aaa' : 'red'}">
-                    {{ lanMap['admin_status'] }}：{{ item.admin_status >= 1 ? item.link_status >= 1 ? lanMap['enable'] : lanMap['disable'] : lanMap['disable'] }}
-                </p>
+                <div class="pon-modal">
+                    <p :style="{'color' : item.admin_status >=1 ? item.link_status >=1 ? '#29BDFA' : '#aaa' : 'red'}" class="tips">
+                        {{ lanMap['admin_status'] }}：{{ item.admin_status >= 1 ? item.link_status >= 1 ? lanMap['enable'] : lanMap['disable'] : lanMap['disable'] }}
+                    </p>
+                    <span>点击图片可进入端口配置</span>
+                </div>
             </div>
         </div>
         <div class="system-info" v-if="this.system.data">
@@ -150,8 +155,89 @@
             ...mapMutations({
                 systemInfo: 'updateSysData',
                 portInfo: 'updatePortData',
-                portName: 'updatePortName'
+                portName: 'updatePortName',
+                update_menu: 'updateMenu'
             }),
+            //  点击跳转到 onu允许列表
+            jump_onu_allow(portid){
+                this.$router.push('/onu_allow?port_id='+portid);
+                // 清除当前子菜单的选中效果，给被跳转的子菜单加上选中效果
+                var sub_item = document.querySelectorAll('p.sub-item');
+                for(var i=0;i<sub_item.length;i++){
+                    sub_item[i].className = 'sub-item';
+                    if(sub_item[i].innerText.replace(/\s/g,'') == this.lanMap['onu_allow']){
+                        sub_item[i].className += ' actived';
+                    }
+                }
+                // 清除一级菜单的选中效果
+                var menu_item = document.querySelectorAll('p.menu-item');
+                for(var i=0;i<menu_item.length;i++){
+                    menu_item[i].className = 'menu-item';
+                }
+                // 清除跳转的菜单的选中效果，并给被跳转的菜单添加选中效果
+                var sub_menu = document.querySelectorAll('ul.sub-menu');
+                for(var i=0;i<sub_menu.length;i++){
+                    sub_menu[i].className = 'sub-menu';
+                    var text = sub_menu[i].firstElementChild.innerText;
+                    text = text.replace(/(^\s*)|(\s*$)/g, "");
+                    if(text === this.lanMap['onu_allow']){
+                        sub_menu[i].className += ' hide';
+                        sub_menu[i].previousElementSibling.className += ' active';
+                    }
+                }
+                //  更新菜单状态
+                var _menu = this.menu;
+                for(var key in _menu.data.menu){
+                    if(_menu.data.menu[key].name === 'running_status'){
+                        _menu.data.menu[key].isHidden = false;
+                    }
+                    if(_menu.data.menu[key].name === 'pon_mgmt'){
+                        _menu.data.menu[key].isHidden = true;
+                    }
+                }
+                // 调用 vuex Mutations方法，更新 store 状态
+                this.update_menu(_menu);
+            },
+            //  点击跳转到 端口配置
+            jump_port_cfg(portid){
+                this.$router.push('/port_cfg?port_id='+portid);
+                // 清除当前子菜单的选中效果，给被跳转的子菜单加上选中效果
+                var sub_item = document.querySelectorAll('p.sub-item');
+                for(var i=0;i<sub_item.length;i++){
+                    sub_item[i].className = 'sub-item';
+                    if(sub_item[i].innerText.replace(/\s/g,'') == this.lanMap['port_cfg']){
+                        sub_item[i].className += ' actived';
+                    }
+                }
+                // 清除一级菜单的选中效果
+                var menu_item = document.querySelectorAll('p.menu-item');
+                for(var i=0;i<menu_item.length;i++){
+                    menu_item[i].className = 'menu-item';
+                }
+                // 清除跳转的菜单的选中效果，并给被跳转的菜单添加选中效果
+                var sub_menu = document.querySelectorAll('ul.sub-menu');
+                for(var i=0;i<sub_menu.length;i++){
+                    sub_menu[i].className = 'sub-menu';
+                    var text = sub_menu[i].firstElementChild.innerText;
+                    text = text.replace(/(^\s*)|(\s*$)/g, "");
+                    if(text === this.lanMap['port_cfg']){
+                        sub_menu[i].className += ' hide';
+                        sub_menu[i].previousElementSibling.className += ' active';
+                    }
+                }
+                //  更新菜单状态
+                var _menu = this.menu;
+                for(var key in _menu.data.menu){
+                    if(_menu.data.menu[key].name === 'running_status'){
+                        _menu.data.menu[key].isHidden = false;
+                    }
+                    if(_menu.data.menu[key].name === 'swport_mgmt'){
+                        _menu.data.menu[key].isHidden = true;
+                    }
+                }
+                // 调用 vuex Mutations方法，更新 store 状态
+                this.update_menu(_menu);
+            },
             get_pon(){
                 this.$http.get(this.change_url.pon).then(res=>{
                     this.ponInfo = res.data;
@@ -259,7 +345,7 @@
                 memoryCtx.fillText(memoryNum+'%', 100, 100);
             }
         },
-        computed: mapState(['lanMap','port_info','system','change_url'])
+        computed: mapState(['lanMap','port_info','system','change_url','menu'])
     }
 </script>
 
@@ -287,15 +373,39 @@
     text-align: center;
     padding: 20px 0;
     float: left;
+    position: relative;
+    cursor: pointer;
+}
+div.pon-detail>div.pon-modal{
+    display: none;
+    width: 100%;
+    height: auto;
+    padding: 10px 0;
+    position: absolute;
+    z-index: 9;
+    left: 0;
+    background: #eee;
+    border: 1px solid #ccc;
+}
+div.pon-detail:hover div.pon-modal{
+    display: block;
+}
+div.pon-modal>span{
+    font-size: 14px;
+    color: #3390e6;
+    padding: 5px;
 }
 .container>h2{
-    height:50px;
+    height:30px;
     padding-left:10px;
-    line-height:50px;
+    line-height:30px;
     border-bottom:1px solid #ddd;
 }
 .pon-detail>p{
     padding:5px 0;
+}
+p.tips{
+    margin-bottom: 10px;
 }
 h2{
     color:#67AEF7;
@@ -328,9 +438,9 @@ h2{
     border-bottom: none;
 }
 .system-info>h2{
-    height:50px;
+    height:30px;
     padding-left:10px;
-    line-height:50px;
+    line-height:30px;
     border-bottom:1px solid #ddd;
 }
 .system-info-detail>span:first-child{
@@ -349,10 +459,14 @@ h2{
     padding-bottom: 20px;
     /* border:1px solid #666; */
 }
+div.cpu-info>div.container{
+    width: 500px;
+    margin: 10px 0 0 0;
+}
 .cpu-info>h2{
-    height:50px;
+    height:30px;
     padding-left:10px;
-    line-height:50px;
+    line-height:30px;
     border-bottom:1px solid #ddd;
 }
 .cpu-info>div{

@@ -27,14 +27,14 @@
                 <span v-for="(item,key) in onu_deny_list.data[0]" :key="key" v-if="key != 'port_id'">
                     {{ lanMap[key] }}
                 </span>
-                <span> {{ lanMap['config'] }} </span>
+                <span> {{ lanMap['delete'] }} </span>
             </li>
             <li v-for="(item,key) in onu_deny_list.data" :key="key">
                 <span> {{ 'ONU0'+item.port_id +'/'+ item.onu_id }} </span>    
                 <span> {{ item.macaddr }} </span>
                 <span> {{ item.retry }} </span>
                 <span>
-                    <a href="javascript:;" class="inline-btn" @click="deleteOnuDeny(item.port_id,item.onu_id,item.macaddr)">{{ lanMap['delete'] }}</a>
+                    <i class="icon-delete" @click="deleteOnuDeny(item.port_id,item.onu_id,item.macaddr)"></i>
                 </span>
             </li>
         </ul>
@@ -176,9 +176,10 @@ ul{
 }
 ul>li{
     font-size: 0;
-    height: 30px;
-    line-height: 30px;
+    height: 32px;
+    line-height: 32px;
     border-bottom: 1px solid #ddd;
+    vertical-align: middle;
 }
 ul>li:last-child{
     border-bottom: none;
@@ -188,6 +189,8 @@ ul+div{
 }
 span{
     display: inline-block;
+    vertical-align: middle;
+    height: 32px;
     width: 24%;
     text-align: center;
     font-size: 16px;
@@ -215,5 +218,11 @@ a{
 .inline-btn{
     height: 26px;
     line-height: 26px;
+}
+i.icon-delete{
+    display: inline-block;
+    width: 32px;
+    height: 32px;
+    background: url('../../assets/delete-normal.png') no-repeat;
 }
 </style>

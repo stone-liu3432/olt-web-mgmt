@@ -68,8 +68,16 @@ import md5 from 'md5'
                 }).then(res=>{
                     if(res.data.code === 1){
                         sessionStorage.setItem('x-token',res.headers['x-token']);
+                        this.$message({
+                            type: 'success',
+                            text: '登录成功'
+                        })
                         this.$router.push('/main');
                     }else{
+                        this.$message({
+                            type: 'error',
+                            text: '用户名或密码验证失败'
+                        })
                         this.login_failed = true;
                     }
                 }).catch(err=>{

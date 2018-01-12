@@ -19,8 +19,8 @@
         <div class="search">
             <p class="lf">{{  lanMap['vlan_list'] }}</p>
             <div class="lf">
-                <input type="text" placeholder="input VLAN ID to search" v-model="search_id">
-                <a href="javascript:;" @click="searchVlan">{{ lanMap['find'] }}</a>
+                <input type="text" placeholder="VLAN ID" v-model.number="search_id">
+                <i class="icon-search" @click="searchVlan"></i>
             </div>
         </div>
         <div v-if="not_found_vlan">
@@ -186,6 +186,7 @@ import confirm from '@/components/common/confirm'
             },
             //  查找某一个vlan
             searchVlan(){
+                if(!this.search_id) return 
                 var list = this.vlan_list.data;
                 var tab = [];
                 this.pagination.page = 0;
@@ -426,6 +427,20 @@ div.search{
 }
 div.search>div{
     margin-left: 50px;
+    position: relative;
+}
+div.search input{
+    height: 36px;
+}
+i.icon-search{
+    display: inline-block;
+    width: 32px;
+    height: 32px;
+    background: url('../../assets/search.png');
+    cursor: pointer;
+    position: absolute;
+    top: 6px;
+    right: 3px;
 }
 div.search:after{
     content: "";

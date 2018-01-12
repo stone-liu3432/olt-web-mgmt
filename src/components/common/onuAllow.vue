@@ -399,10 +399,10 @@ i{
     vertical-align: middle;
 }
 i.onu-detail{
-    background: url('../../assets/detail-normal.png') no-repeat;
+    background: url('../../assets/detail-normal.png') no-repeat 1px 1px;
 }
 i.onu-detail:hover{
-    background: url('../../assets/detail-hover.png') no-repeat;
+    background: url('../../assets/detail-hover.png') no-repeat 1px 1px;
 }
 i.onu-delete{
     background: url('../../assets/delete-normal.png') no-repeat;
