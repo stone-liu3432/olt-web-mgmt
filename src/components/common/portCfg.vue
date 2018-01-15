@@ -73,11 +73,11 @@
                                 <option value="100M">100M</option>
                                 <option value="1000M">1000M</option>
                             </select>
-                            <input type="text" v-if="key === 'mtu'" placeholder="72-2000" v-model="port_data[key]">
+                            <input type="text" v-if="key === 'mtu'" placeholder="72-2000" v-model.number="port_data[key]">
                             <span v-if="key === 'media'">{{ lanMap[item] }}</span>
-                            <input type="text" v-if="key === 'erate'" v-model="port_data[key]">
+                            <input type="text" v-if="key === 'erate'" v-model.number="port_data[key]">
                             <span v-if="key === 'erate'">Kbps</span>
-                            <input type="text" v-if="key === 'irate'" v-model="port_data[key]">
+                            <input type="text" v-if="key === 'irate'" v-model.number="port_data[key]">
                             <span v-if="key === 'irate'">Kbps</span>
                         </li>
                     </ul>
@@ -93,7 +93,7 @@
                     <ul>
                         <li v-for="(item,key) in stormctrl_data.data" :key="key" v-if="key !== 'port_id'" class="swich-item">
                             <span>{{ lanMap[key] }}</span>
-                            <input type="text" v-model="storm_data[key]">
+                            <input type="text" v-model.number="storm_data[key]">
                             pps
                         </li>
                     </ul>

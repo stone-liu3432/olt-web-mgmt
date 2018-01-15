@@ -26,6 +26,11 @@
 import { mapState } from 'vuex'
     export default {
         name: 'upgrade',
+        data(){
+            return {
+                isLoading: false
+            }
+        },
         computed: mapState(['lanMap']),
         methods: {
             changeFile(fileid,fnameid){
@@ -42,15 +47,29 @@ import { mapState } from 'vuex'
                 var formData = new FormData();
                 var file = document.getElementById('file1');
                 var files = file.files[0];
-                if(!files) {
+                if(!files){
                     var fileName = document.getElementById('fileName1');
                     fileName.innerText = '点击选择文件';
+                    this.$message({
+                        type: 'error',
+                        text: '当前未选择任何文件'
+                    })
                     return
                 }
                 formData.append('file',files);
-                this.$http.post('/upgrade?type=firmware', formData,{headers: {'Content-Type': 'multipart/form-data'}}).then( (res) => {
-                    // alert(res);
-                }).catch((error) =>{
+                this.isLoading = true;
+                document.body.addEventListener('keydown',this.preventRefresh,false);
+                document.body.addEventListener('contextmenu',this.preventMouse,false);
+                this.$http.post('/upgrade?type=firmware', formData,{
+                    headers: {'Content-Type': 'multipart/form-data'},
+                    timeout: 0
+                }).then(res=>{
+                    if(res.data.code === 1){
+                        document.body.removeEventListener('keydown',this.preventRefresh);
+                        document.body.removeEventListener('contextmenu',this.preventMouse);
+                        this.isLoading = false;
+                    }
+                }).catch(error=>{
                     // to do
                 });
             },
@@ -61,14 +80,40 @@ import { mapState } from 'vuex'
                 if(!files) {
                     var fileName = document.getElementById('fileName2');
                     fileName.innerText = '点击选择文件';
+                    this.$message({
+                        type: 'error',
+                        text: '当前未选择任何文件'
+                    })
                     return
                 }
                 formData.append('file',files);
-                this.$http.post('/upgrade?type=system', formData,{headers: {'Content-Type': 'multipart/form-data'}}).then( (res) => {
-                    // alert(res);
-                }).catch((error) =>{
+                this.isLoading = true;
+                document.body.addEventListener('keydown',this.preventRefresh,false);
+                document.body.addEventListener('contextmenu',this.preventMouse,false);
+                this.$http.post('/upgrade?type=system', formData,{
+                    headers: {'Content-Type': 'multipart/form-data'},
+                    timeout: 0
+                }).then(res=>{
+                    if(res.data.code === 1){
+                        document.body.removeEventListener('keydown',this.preventRefresh);
+                        document.body.removeEventListener('contextmenu',this.preventMouse);
+                        this.isLoading = false;
+                    }
+                }).catch(error=>{
                     // to do
                 });
+            },
+            //  固件或系统升级期间，禁用F5刷新浏览器
+            preventRefresh(e){
+                e.preventDefault();
+                e.stopPropagation();
+                if(e.keyCode === 116){
+                    return false
+                }
+            },
+            //  阻止鼠标右键刷新
+            preventMouse(e){
+                e.returnValue = false
             }
         }
     }

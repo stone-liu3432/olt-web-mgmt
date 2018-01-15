@@ -7,14 +7,14 @@
                 <!-- <a href="javascript:;" @click="addPort">添加端口</a>
                 <a href="javascript:;" @click="removePort">移除端口</a> -->
             </div>
-            <div class="add-vlan" v-if="create_vlan">
+            <!-- <div class="add-vlan" v-if="create_vlan">
                 <span>VLAN ID：</span>
                 <span>
                     <input type="text" placeholder="VLAN ID 1-4094" v-model="new_vlan" :style="{ 'border-color' : (new_vlan != '' && (isNaN(new_vlan) || new_vlan > 4094 || new_vlan < 1)) ? 'red' : '' }">
                 </span>
                 <a href="javascript:;" @click="handle_create(true)">{{ lanMap['apply'] }}</a>
                 <a href="javascript:;" @click="handle_create(false)">{{ lanMap['cancel'] }}</a>
-            </div>
+            </div> -->
         </div>
         <div class="search">
             <p class="lf">{{  lanMap['vlan_list'] }}</p>
@@ -61,8 +61,19 @@
             <div class="cover"></div>
             <div class="modal-content">
                 <div class="modal-title">
-                    <span>VLAN ID:</span>
-                    <span>{{ vlanid }}</span>
+                    <div v-if="!create_vlan">
+                        <span>VLAN ID:</span>
+                        <span>{{ vlanid }}</span>
+                    </div>
+                    <div class="add-vlan" v-if="create_vlan">
+                        <span>VLAN ID：</span>
+                        <span>
+                            <input type="text" placeholder="VLAN ID 1-4094" v-model.number="new_vlan" :style="{ 'border-color' : (new_vlan != '' && (isNaN(new_vlan) || new_vlan > 4094 || new_vlan < 1)) ? 'red' : '' }">
+                            <span class="tips">
+                                VLAN ID取值范围应该为1-4094之间的数字
+                            </span>
+                        </span>
+                    </div>
                 </div>
                 <div class="modal-body">
                     <div class="vlan-mode">
@@ -101,9 +112,13 @@
                             </div>
                         </div>
                     </div>
-                    <div class="vlan-mode">
+                    <div class="vlan-mode" v-if="!create_vlan">
                         <a href="javascript:;" class="rt" @click="handle_cfg(false)">{{ lanMap['cancel'] }}</a>
                         <a href="javascript:;" class="rt" @click="handle_cfg(true)">{{ lanMap['apply'] }}</a>
+                    </div>
+                    <div class="vlan-mode" v-if="create_vlan">
+                        <a href="javascript:;" class="rt" @click="handle_create(false)">{{ lanMap['cancel'] }}</a>
+                        <a href="javascript:;" class="rt" @click="handle_create(true)">{{ lanMap['apply'] }}</a>
                     </div>
                 </div>
                 <div class="close" @click="closeModal"></div>
@@ -160,7 +175,7 @@ import confirm from '@/components/common/confirm'
             getData(){
                 // 请求url: /switch_vlan?count=0
                 var url;
-                if(this.change_url.vlancfg[this.change_url.vlancfg.length - 1] != '='){
+                if(this.change_url.beta === 'test'){
                     url = this.change_url.vlancfg;
                 }else{
                     url = this.change_url.vlancfg + this.count;
@@ -223,7 +238,8 @@ import confirm from '@/components/common/confirm'
             },
             //  创建VLAN
             createVlan(){
-                this.create_vlan = !this.create_vlan;
+                this.modalDialog = true;
+                this.create_vlan = true;
             },
             //  删除VLAN
             deleteVlan(vlanid){
@@ -259,6 +275,7 @@ import confirm from '@/components/common/confirm'
                 },0)
             },
             closeModal(){
+                this.create_vlan = false;
                 this.modalDialog = false;
             },
             //  模态框控件 => 删除VLAN
@@ -298,39 +315,53 @@ import confirm from '@/components/common/confirm'
             //  配置模态框的按钮动作，根据用户选择进行操作
             handle_cfg(bool){
                 if(bool){
-                    var tagged = document.querySelectorAll('span.tagged>input');
-                    var untagged = document.querySelectorAll('span.untagged>input');
-                    var tag_str = '',untag_str = ''
-                    for(var i=0,len=tagged.length;i<len;i++){
-                        if(tagged[i].checked){
-                            tag_str += tagged[i].name;
-                            tag_str += ',';
-                        }
-                    }
-                    for(var i=0,len=untagged.length;i<len;i++){
-                        if(untagged[i].checked){
-                            untag_str += untagged[i].name;
-                            untag_str += ',';
-                        }
-                    }
-                    var post_param = {
-                        "method":"set",
-                        "param":{
-                            "vlan_id": this.vlanid,
-                            "tagged_portlist": tag_str.replace(/\,$/,''),
-                            "untagged_portlist": untag_str.replace(/\,$/,'')
-                        }
-                    }
-                    this.$http.post('/switch_vlan',post_param).then(res=>{
-                        // do sth
-                        if(res.data.code == 1){
-                            this.getData();
-                        }
-                    }).catch(err=>{
-                        // to do
-                    })
+                    this.set_vlan(this.vlanid);
                 }
+                this.create_vlan = false;
                 this.modalDialog = false;
+            },
+            //  配置VLAN ID 的端口
+            set_vlan(vid){
+                var tagged = document.querySelectorAll('span.tagged>input');
+                var untagged = document.querySelectorAll('span.untagged>input');
+                var tag_str = '',untag_str = ''
+                for(var i=0,len=tagged.length;i<len;i++){
+                    if(tagged[i].checked){
+                        tag_str += tagged[i].name;
+                        tag_str += ',';
+                    }
+                }
+                for(var i=0,len=untagged.length;i<len;i++){
+                    if(untagged[i].checked){
+                        untag_str += untagged[i].name;
+                        untag_str += ',';
+                    }
+                }
+                var post_param = {
+                    "method":"set",
+                    "param":{
+                        "vlan_id": vid,
+                        "tagged_portlist": tag_str.replace(/\,$/,''),
+                        "untagged_portlist": untag_str.replace(/\,$/,'')
+                    }
+                }
+                this.$http.post('/switch_vlan',post_param).then(res=>{
+                    // do sth
+                    if(res.data.code == 1){
+                        this.$message({
+                            type: 'success',
+                            text: '设置成功'
+                        })
+                        this.getData();
+                    }else{
+                        this.$message({
+                            type: 'error',
+                            text: res.data.msg
+                        })
+                    }
+                }).catch(err=>{
+                    // to do
+                })
             },
             //  添加VLAN时的动作，根据用户选择进行操作
             handle_create(bool){
@@ -342,20 +373,30 @@ import confirm from '@/components/common/confirm'
                     var post_param = {
                         "method":"create",
                         "param":{
-                            "type":1,
+                            "type": 1,
                             "vlan_id": vid
                         }
                     }
                     this.$http.post('/switch_vlan',post_param).then(res=>{
                         // do sth
                         if(res.data.code == 1){
-                            this.getData();
+                            this.$message({
+                                type: 'success',
+                                text: '创建VLAN成功，正在应用VLAN配置'
+                            })
+                            this.set_vlan(vid);
+                        }else{
+                            this.$message({
+                                type: 'error',
+                                text: res.data.msg
+                            })
                         }
                     }).catch(err=>{
                         // to do
                     })
                 }
                 this.create_vlan = false;
+                this.modalDialog = false;
                 this.new_vlan = '';
             },
             //  解析后台返回的字符串
@@ -411,7 +452,6 @@ import confirm from '@/components/common/confirm'
 
 <style scoped>
 div.vlan-mgmt{
-    /* margin: 10px 50px 20px 10px; */
     min-width: 1020px;
 }
 div>h2{
@@ -428,9 +468,6 @@ div.search{
 div.search>div{
     margin-left: 50px;
     position: relative;
-}
-div.search input{
-    height: 36px;
 }
 i.icon-search{
     display: inline-block;
@@ -461,7 +498,7 @@ h2+div:after{
     clear: both;
 }
 div.add-vlan{
-    margin-left: 50px;
+    margin-bottom: 30px;
 }
 p{
     font-size: 20px;
@@ -525,7 +562,7 @@ span.vlan-cfg-title{
 }
 div.cover+div{
     width:850px;
-    height:360px;
+    height:330px;
     position: absolute;
     left: 0;
     right: 0;
@@ -538,6 +575,7 @@ div.cover+div{
 }
 div.modal-content{
     padding: 20px;
+    border-radius: 10px;
 }
 div.modal-title{
     margin: 20px 20px;
@@ -607,5 +645,10 @@ li.paginations:after{
     content: "";
     display: table;
     clear: both;
+}
+span.tips{
+    font-size: 14px;
+    color: #67AEF7;
+    margin-left: 20px;
 }
 </style>

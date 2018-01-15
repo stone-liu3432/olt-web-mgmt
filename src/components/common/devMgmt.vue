@@ -96,7 +96,8 @@
                                     if(res.data.code === 1){
                                         clearInterval(timer);
                                         this.isLoading = false;
-                                        this.$route.push('/main');
+                                        sessionStorage.clear();
+                                        this.$router.push('/login');
                                     }
                                 })
                             },5000)
@@ -148,9 +149,9 @@
                     return
                 }
                 formData.append('file',files);
-                this.$http.post('/system_restore', formData,{headers: {'Content-Type': 'multipart/form-data'}}).then( (res) => {
+                this.$http.post('/system_restore', formData,{headers: {'Content-Type': 'multipart/form-data'}}).then(res =>{
                     // alert(res);
-                }).catch((error) =>{
+                }).catch(error=>{
                     // to do
                 });
             }

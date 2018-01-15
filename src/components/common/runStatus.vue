@@ -393,7 +393,8 @@ div.pon-detail:hover div.pon-modal{
 div.pon-modal>span{
     font-size: 14px;
     color: #3390e6;
-    padding: 5px;
+    display: inline-block;
+    padding: 0 5px;
 }
 .container>h2{
     height:30px;
