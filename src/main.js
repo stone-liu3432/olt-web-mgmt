@@ -11,13 +11,11 @@ import VueMessage from '@/components/common/message'
 Vue.use(VueMessage)
 Vue.use(Vuex)
 
-axios.interceptors.request.use(
-  config => {
+axios.interceptors.request.use(config=>{
     var xtoken = sessionStorage.getItem('x-token');
     config.headers['X-Token'] = xtoken
     return config
-  },
-  err => {
+  },err=>{
     return Promise.reject(err)
   }
 )

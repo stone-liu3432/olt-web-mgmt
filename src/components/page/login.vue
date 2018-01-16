@@ -44,14 +44,19 @@ import md5 from 'md5'
             return {
                 userName: '',
                 userPwd: '',
+                //  验证用户名
                 verify_uname: false,
+                //  验证密码
                 verify_upwd: false,
+                //  用户名或密码服务器验证未通过
                 login_failed: false,
+                //  密码可见或不可见
                 visible: false
             }
         },
         methods: {
             userLogin(){
+                this.login_failed = false;
                 if(this.verify_uname || this.verify_upwd || this.userName === '' || this.userPwd === ''){
                     return 
                 }
@@ -59,18 +64,25 @@ import md5 from 'md5'
                 this.$http({
                     url: '/userlogin',
                     method: 'POST',
-                    data: self.userName + ':' + self.userPwd,
-                    transformRequest: function (data) {
-                        data = md5(data);
-                        return data;
+                    data: {
+                        "method":"set",
+                        "param":{
+                            "name": this.userName,
+                            "key": md5(self.userName + ':' + self.userPwd)
+                        }
                     },
+                    // transformRequest: function (data) {
+                    //     data = md5(data);
+                    //     return data;
+                    // },
                     timeout: 5000
                 }).then(res=>{
+                    this.userPwd = '';
                     if(res.data.code === 1){
                         sessionStorage.setItem('x-token',res.headers['x-token']);
                         this.$message({
                             type: 'success',
-                            text: '登录成功'
+                            text: '登录成功,欢迎使用'
                         })
                         this.$router.push('/main');
                     }else{
@@ -82,7 +94,10 @@ import md5 from 'md5'
                     }
                 }).catch(err=>{
                     // 登录超时时的处理，默认为5秒无响应超时
-                    this.login_failed = true;
+                    this.$message({
+                        type: 'error',
+                        text: '登录超时，请重试'
+                    })
                 })
             },
             changeVisible(){
@@ -97,7 +112,7 @@ import md5 from 'md5'
         },
         watch: {
             userName(){
-                var reg = /^\w{4,20}$/;
+                var reg = /^\w{4,16}$/;
                 if(!reg.test(this.userName)){
                     this.verify_uname = true;
                 }else{
@@ -109,7 +124,7 @@ import md5 from 'md5'
                 this.login_failed = false;
             },
             userPwd(){
-                var reg = /^[^\s]{5,20}$/;
+                var reg = /^[^\s]{5,16}$/;
                 if(!reg.test(this.userPwd)){
                     this.verify_upwd = true;
                 }else{

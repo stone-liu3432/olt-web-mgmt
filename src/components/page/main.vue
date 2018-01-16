@@ -31,7 +31,7 @@ import topBanner from '@/components/page/header'
             }
         },
         created(){
-            //  http拦截器，如返回登录超时或登录信息异常时进行强制跳转
+            //  http响应拦截器，如返回登录超时或登录信息异常时进行强制跳转
             
             // this.$http.interceptors.response.use(response=>{
             //     if(response.data.code === 0){
@@ -57,7 +57,7 @@ import topBanner from '@/components/page/header'
             //根组件创建之前，初始化vuex部分数据
             this.$http.get(this.change_url.system).then(res=>{
                 if(res.data.code === 1){
-                this.systemInfo(res.data);
+                    this.systemInfo(res.data);
                 }
             }).catch(err=>{
             // to do 

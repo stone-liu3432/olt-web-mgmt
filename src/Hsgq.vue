@@ -12,12 +12,9 @@ export default {
   name: "hsgq",
   components: { loading },
   created() {
-    this.$http
-      .get("./lang-zh.json")
-      .then(res => {
+    this.$http.get("./lang-zh.json").then(res => {
         this.lanMap(res.data);
-      })
-      .catch(err => {
+      }).catch(err => {
         // to do
       });
     if (sessionStorage.getItem("x-token") !== null) {

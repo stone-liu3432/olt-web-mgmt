@@ -19,6 +19,17 @@
             <span class="updateFile" id="fileName2">点击选择文件</span>
             <a href="javascript:;" @click="system">{{ lanMap["system"] }}</a>
         </form>
+        <div class="modal-dialog" v-if="isLoading">
+            <div class="cover"></div>
+            <div class="load-body">
+                <h3>loading...</h3>
+                <div class="progress">
+                    <div class="progress-content"></div>
+                    <div class="progress-cover" :style="{ 'width': width + 'px' }"></div>
+                    <div>{{ parseInt(width*100/400) + '%' }}</div>
+                </div>
+            </div>
+        </div>
     </div>
 </template>
 
@@ -28,7 +39,9 @@ import { mapState } from 'vuex'
         name: 'upgrade',
         data(){
             return {
-                isLoading: false
+                isLoading: false,
+                width: 0,
+                timer: null
             }
         },
         computed: mapState(['lanMap']),
@@ -47,14 +60,22 @@ import { mapState } from 'vuex'
                 var formData = new FormData();
                 var file = document.getElementById('file1');
                 var files = file.files[0];
+                var fileName = document.getElementById('fileName1');
+                var reg = /\.img$/;
                 if(!files){
-                    var fileName = document.getElementById('fileName1');
                     fileName.innerText = '点击选择文件';
                     this.$message({
                         type: 'error',
                         text: '当前未选择任何文件'
                     })
                     return
+                }
+                if(!reg.test(fileName.innerText)){
+                    this.$message({
+                        type: 'error',
+                        text: '文件格式不正确'
+                    })
+                    return 
                 }
                 formData.append('file',files);
                 this.isLoading = true;
@@ -64,11 +85,25 @@ import { mapState } from 'vuex'
                     headers: {'Content-Type': 'multipart/form-data'},
                     timeout: 0
                 }).then(res=>{
+                    document.body.removeEventListener('keydown',this.preventRefresh);
+                    document.body.removeEventListener('contextmenu',this.preventMouse);
                     if(res.data.code === 1){
-                        document.body.removeEventListener('keydown',this.preventRefresh);
-                        document.body.removeEventListener('contextmenu',this.preventMouse);
+                        this.width = 400;
+                        clearInterval(this.timer);
                         this.isLoading = false;
+                        this.$message({
+                            type: 'success',
+                            text: '固件升级成功，重启设备后生效'
+                        })
+                    }else{
+                        clearInterval(this.timer);
+                        this.isLoading = false;
+                        this.$message({
+                            type: 'error',
+                            text: '固件升级失败'
+                        })
                     }
+                    this.width = 0;
                 }).catch(error=>{
                     // to do
                 });
@@ -77,14 +112,22 @@ import { mapState } from 'vuex'
                 var formData = new FormData();
                 var file = document.getElementById('file2');
                 var files = file.files[0];
+                var fileName = document.getElementById('fileName2');
+                var reg = /\.img$/;
                 if(!files) {
-                    var fileName = document.getElementById('fileName2');
                     fileName.innerText = '点击选择文件';
                     this.$message({
                         type: 'error',
                         text: '当前未选择任何文件'
                     })
                     return
+                }
+                if(!reg.test(fileName.innerText)){
+                    this.$message({
+                        type: 'error',
+                        text: '文件格式不正确'
+                    })
+                    return 
                 }
                 formData.append('file',files);
                 this.isLoading = true;
@@ -94,11 +137,25 @@ import { mapState } from 'vuex'
                     headers: {'Content-Type': 'multipart/form-data'},
                     timeout: 0
                 }).then(res=>{
+                    document.body.removeEventListener('keydown',this.preventRefresh);
+                    document.body.removeEventListener('contextmenu',this.preventMouse);
                     if(res.data.code === 1){
-                        document.body.removeEventListener('keydown',this.preventRefresh);
-                        document.body.removeEventListener('contextmenu',this.preventMouse);
+                        this.width = 400;
+                        clearInterval(this.timer);
                         this.isLoading = false;
+                        this.$message({
+                            type: 'success',
+                            text: '系统升级成功，重启设备后生效'
+                        })
+                    }else{
+                        clearInterval(this.timer);
+                        this.isLoading = false;
+                        this.$message({
+                            type: 'error',
+                            text: '系统升级失败'
+                        })
                     }
+                    this.width = 0;
                 }).catch(error=>{
                     // to do
                 });
@@ -115,11 +172,21 @@ import { mapState } from 'vuex'
             preventMouse(e){
                 e.returnValue = false
             }
+        },
+        watch:{
+            isLoading(){
+                if(this.isLoading){
+                    this.timer = setInterval(()=>{
+                        this.width += parseInt(Math.random()*20);
+                        (this.width > 380) && (this.width = 380);
+                    },1000)
+                }
+            }
         }
     }
 </script>
 
-<style scoped>
+<style scoped lang="less">
 div.upgrade{
     margin: 30px 50px 30px 10px;
 }
@@ -179,5 +246,54 @@ a{
 }
 input{
     font-size: 16px;
+}
+div.load-body{
+    width: 500px;
+    height: 300px;
+    background: #666;
+    position: absolute;
+    left: 0;
+    right: 0;
+    top: 0;
+    bottom: 0;
+    margin: auto;
+    border-radius: 10px;
+    >h3{
+        font-size: 18px;
+        text-align: center;
+        color: #fff;
+        font-weight: 600;
+        margin-top: 30px;
+    }
+    >div.progress{
+        width: 404px;
+        height: 22px;
+        margin: 30px auto;
+        background: #ddd;
+        position: relative;
+        border-radius: 15px;
+        padding: 4px;
+    }
+}
+div.progress{
+    >div.progress-content{
+        width: 404px;
+        height: 22px;
+        background: #666;
+        border-radius: 11px;
+    }
+    >div.progress-cover{
+        position: absolute;
+        left: 6px;
+        top: 6px;
+        height: 18px;
+        border-radius: 11px;
+        background: #ddd;
+        &+div{
+            margin: 15px;
+            text-align: center;
+            color: #fff;
+        }
+    }
 }
 </style>
