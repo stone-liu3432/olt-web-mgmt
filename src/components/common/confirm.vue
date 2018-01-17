@@ -3,11 +3,11 @@
         <div class="cover"></div>
         <div>
             <div class="tool-tips">
-                {{ this.toolTips ? this.toolTips : '是否确认？' }}
+                {{ this.toolTips ? this.toolTips : lanMap['if_sure'] + '?' }}
             </div>
             <div>
-                <a href="javascript:;" @click="choose(true)">确定</a>
-                <a href="javascript:;" @click="choose(false)">取消</a>
+                <a href="javascript:;" @click="choose(true)">{{ lanMap['apply'] }}</a>
+                <a href="javascript:;" @click="choose(false)">{{ lanMap['cancel'] }}</a>
             </div>
         </div>
     </div>
@@ -52,6 +52,7 @@ div.cover+div{
     font-size: 16px;
     line-height: 20px;
     text-align: center;
+    color: #333;
 }
 .tool-tips+div{
     display: flex;

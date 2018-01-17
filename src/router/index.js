@@ -18,7 +18,6 @@ import vlanMgmt from '../components/common/vlanMgmt'
 import time from '../components/common/time'
 import devMgmt from "../components/common/devMgmt"
 import Router from 'vue-router'
-import store from '../vuex/store'
 
 Vue.use(Router)
 
@@ -148,30 +147,21 @@ const router = new Router({
 })
 
 router.beforeEach((to, from, next) => {
-  store.commit('updateLoading',true)
-  // 判断该路由是否需要登录权限
-  if (to.meta.requireAuth) {
-    // if (sessionStorage.getItem('x-token') !== null) {
-    //     next();
-    // } else {
-    //     next({path: '/login'})
-    // }
-    next(); 
-  }else if(to.path === '/login'){
-  //  正常登录状态下手动输入url跳转Login页面时，强制跳转main页面
-  //  正常登录状态下，只能通过点击 退出 按钮，跳转到login页面
-      if(sessionStorage.getItem('x-token') !== null){
-          next({path: './main'})
-      }else{
-          next();
-      }
-  }else{
-      next();
-  }
-})
-
-router.afterEach((to,from)=>{
-    store.commit('updateLoading',false);
+    // 判断该路由是否需要登录权限
+    if (to.meta.requireAuth) {
+        // if (sessionStorage.getItem('x-token')) {
+        //     next();
+        // } else {
+        //     next({path: '/login'})
+        // }
+        next(); 
+    }else{
+        if(!sessionStorage.getItem('x-token')){
+            next()
+        }else{
+            next('/main')
+        }
+    }
 })
 
 export default router

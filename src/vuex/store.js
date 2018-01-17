@@ -18,10 +18,10 @@ export default new Vuex.Store({
     menu: {},
     // onu列表
     onu_list: {},
-    //  加载中
-    isLoading: false,
     //  是否登陆
     accessToken: '',
+    //  切换语言
+    language: 'en',
     //  全局替换url  testUrl => 开发版本   betaUrl => 测试版本
     change_url: change_url.testUrl
   },
@@ -47,8 +47,8 @@ export default new Vuex.Store({
     updateLogin(state,data){
         state.accessToken = data;
     },
-    updateLoading(state,data){
-        state.isLoading = data;
+    updateLang(state,data){
+        state.language = data;
     }
   }
 })

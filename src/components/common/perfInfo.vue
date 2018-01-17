@@ -33,17 +33,19 @@ import { mapState } from 'vuex'
         created(){
             this.portid = this.port_info.data[0].port_id;
             //请求url: /switch_port?form=statistic&port_id=1   //  打包时删除
-            var url;
-            if(this.change_url.perf[this.change_url.perf.length - 1] != '='){
-                url = this.change_url.perf;
-            }else{
-                url = this.change_url.perf + this.portid;
+            if(this.change_url.beta === 'test'){
+                var url;
+                if(this.change_url.perf[this.change_url.perf.length - 1] != '='){
+                    url = this.change_url.perf;
+                }else{
+                    url = this.change_url.perf + this.portid;
+                }
+                this.$http.get(url).then(res=>{
+                    this.data = res.data;
+                }).catch(err=>{
+                    // to do 
+                })
             }
-            this.$http.get(url).then(res=>{
-                this.data = res.data;
-            }).catch(err=>{
-                // to do 
-            })
         },
         watch:{
             portid(){

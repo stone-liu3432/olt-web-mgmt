@@ -25,11 +25,11 @@
                 </span>
             </li>
         </ul>
-        <div v-else>当前端口下暂无ONU带宽信息</div>
+        <div v-else>{{ lanMap['onu_bw_fail_info'] }}</div>
         <div class="modal-dialog" v-if="isConfig">
             <div class="cover"></div>
             <div class="dialog" v-if="onu_detail.data">
-                <h2>ONU配置</h2>
+                <h2>{{ lanMap['onu_cfg'] }}</h2>
                 <div class="dialog-item">
                     <span>{{ lanMap['onu_id'] }}</span>
                     <span>{{ 'ONU0'+onu_detail.data.port_id +'/'+onu_detail.data.onu_id }}</span>
@@ -71,7 +71,7 @@
                 <div class="close" @click="closeModal"></div>
             </div>
             <div v-else class="failed">
-                <p>获取数据失败，请刷新或稍后再试...</p>
+                <p>{{ lanMap['get_data_fail'] }}</p>
                 <div class="close" @click="closeModal"></div>
             </div>
         </div>

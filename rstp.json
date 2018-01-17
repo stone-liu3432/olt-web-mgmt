@@ -3,7 +3,7 @@
     "msg":"success",
     "data":{
         "status":1,
-        "mode":2,
+        "rstp_mode":2,
         "rb_priority":4096,
         "rb_address":"00:00:00:00:00:11",
         "db_priority":1,

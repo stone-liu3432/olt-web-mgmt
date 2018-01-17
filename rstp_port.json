@@ -3,7 +3,7 @@
     "msg":"success",
     "data":[{
         "port_id":9,
-        "priority":0,
+        "port_priority":0,
         "port_path_cost":1,
         "edge_status":1,
         "admin_link_type":"auto",

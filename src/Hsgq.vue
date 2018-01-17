@@ -12,25 +12,44 @@ export default {
   name: "hsgq",
   components: { loading },
   created() {
-    this.$http.get("./lang-zh.json").then(res => {
-        this.lanMap(res.data);
-      }).catch(err => {
-        // to do
-      });
-    if (sessionStorage.getItem("x-token") !== null) {
-      this.$router.push("/main");
-    } else {
-      //this.$router.push("/login");
-      this.$router.push("/main");
+    if(this.language === 'zh'){
+        this.set_lang_zh();
+    }
+    if(this.language === 'en'){
+        this.set_lang_en();
     }
   },
   methods: {
     ...mapMutations({
-      lanMap: "updateLanMap",
-      loading: "updateLoading"
-    })
+        lanMap: "updateLanMap",
+        loading: "updateLoading"
+    }),
+    set_lang_zh(){
+        this.$http.get("./lang-zh.json").then(res=>{
+            this.lanMap(res.data);
+        }).catch(err=>{
+            // to do
+        });
+    },
+    set_lang_en(){
+        this.$http.get("./lang-en.json").then(res=>{
+            this.lanMap(res.data);
+        }).catch(err=>{
+            // to do
+        });
+    }
   },
-  computed: mapState(["port_info", "system", "isLoading"])
+  computed: mapState(["port_info", "system", "isLoading",'language']),
+  watch: {
+      language(){
+          if(this.language === 'zh'){
+              this.set_lang_zh();
+          }
+          if(this.language === 'en'){
+              this.set_lang_en();
+          }
+      }
+  }
 };
 </script>
 

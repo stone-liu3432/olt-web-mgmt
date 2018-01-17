@@ -50,7 +50,7 @@
         </div> -->
         <div class="contianer">
             <div class="config" v-if="swich_port_info.data">
-                <h3>交换端口基本配置</h3>
+                <h3>{{ lanMap['sw_port_cfg'] }}</h3>
                 <div class="swich-basic-config">
                     <ul>
                         <li v-for="(item,key) in swich_port_info.data" :key="key" class="swich-item">
@@ -86,7 +86,7 @@
                     </div>
                 </div>
             </div>
-            <div v-else class="warning">获取基本交换信息失败，请刷新页面或稍后再试...</div>
+            <div v-else class="warning">{{ lanMap['flush_page_retry'] }}</div>
             <div class="config" v-if="stormctrl_data.data">
                 <h3>{{ lanMap['stormctrl'] }}</h3>
                 <div class="storm-config">
@@ -102,7 +102,7 @@
                     </div>
                 </div>
             </div>
-            <div v-else class="warning">获取风暴控制信息失败，请刷新页面或稍后再试...</div>
+            <div v-else class="warning">{{ lanMap['flush_page_retry'] }}</div>
             <div class="config" v-if="mirror_data.data">
                 <h3>{{ lanMap['mirror'] }}</h3>
                 <div class="port-mirror">
@@ -127,11 +127,11 @@
                     <a href="javascript:void(0);" class="rt" @click="mirror_cfg">{{ lanMap['apply'] }}</a>
                 </div>
             </div>
-            <div v-else class="warning">获取端口镜像信息失败，请刷新页面或稍后再试...</div>
+            <div v-else class="warning">{{ lanMap['flush_page_retry'] }}</div>
         </div>    
-        <confirm tool-tips="是否确认?" @choose="result" v-if="userChoose"></confirm>
-        <confirm tool-tips="是否确认?" @choose="storm_result" v-if="stormCfg"></confirm>
-        <confirm tool-tips="是否确认?" @choose="mirror_result" v-if="mirrorCfg"></confirm>
+        <confirm :tool-tips="lanMap['if_sure']" @choose="result" v-if="userChoose"></confirm>
+        <confirm :tool-tips="lanMap['if_sure']" @choose="storm_result" v-if="stormCfg"></confirm>
+        <confirm :tool-tips="lanMap['if_sure']" @choose="mirror_result" v-if="mirrorCfg"></confirm>
     </div>
 </template>
 

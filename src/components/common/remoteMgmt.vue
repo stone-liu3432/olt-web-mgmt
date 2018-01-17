@@ -7,7 +7,7 @@
        <div class="remote-content" v-if="outbound.data">
            <p>
                 <span>{{ lanMap['outbound'] }}</span>
-                <a href="javascript:;" class="clear-btn" @click="clear_statistic(outbound.data)">{{ lanMap["flush"] }}{{ lanMap['statistic']}}</a>
+                <!-- <a href="javascript:;" class="clear-btn" @click="clear_statistic(outbound.data)">{{ lanMap["flush"] }}{{ lanMap['statistic']}}</a> -->
            </p>
            <div>
                <span>{{ lanMap['ipaddr'] }}</span>
@@ -33,13 +33,13 @@
                <span>{{ lanMap['outbound'] }}</span>
            </p>
            <p>
-               <span>带外接口连接失败</span>
+               <span>{{ lanMap['oub_con_fail'] }}</span>
            </p>
        </div>
        <div class="remote-content" v-if="inbound.data" v-for="(item,index) in inbound.data" :key="index">
            <p>
                 <span>{{ item.interface }}</span>
-                <a href="javascript:;" class="clear-btn" @click="clear_statistic(item)">{{ lanMap["flush"] }}{{ lanMap['statistic']}}</a>
+                <!-- <a href="javascript:;" class="clear-btn" @click="clear_statistic(item)">{{ lanMap["flush"] }}{{ lanMap['statistic']}}</a> -->
            </p>
            <div>
                <span>{{ lanMap['ipaddr'] }}</span>
@@ -67,7 +67,7 @@
                <span>{{ lanMap['inbound'] }}</span>
            </p>
            <p style="border-bottom:none;">
-               <span>当前没有带内接口</span>
+               <span>{{ lanMap['no_inb_info'] }}</span>
            </p>
        </div>
        <div class="modal-dialog" v-if="modalDialog && interface_data">

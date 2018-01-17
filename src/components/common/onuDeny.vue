@@ -1,5 +1,5 @@
 <template>
-    <div class="onu-deny" v-if="onu_deny_list.code === 1">
+    <div class="onu-deny">
         <div>
             <select @change="changePon($event)">
                 <option v-for="(item,key) in port_name.pon" :key="key" :value="item.id">
@@ -22,7 +22,7 @@
                 <a href="javascript:;" @click="handle(false)">{{ lanMap['cancel'] }}</a>
             </span>
         </div>
-        <ul v-if="onu_deny_list.code === 1">
+        <ul v-if="onu_deny_list.data">
             <li>
                 <span v-for="(item,key) in onu_deny_list.data[0]" :key="key" v-if="key != 'port_id'">
                     {{ lanMap[key] }}
@@ -38,9 +38,9 @@
                 </span>
             </li>
         </ul>
-        <div v-else>没有更多的数据了...</div>
+        <div v-else class="data-failed">{{ lanMap['no_more_data'] }}</div>
         <!-- tool-tips => 自定义的消息内容   confirm => 确认框组件 -->
-        <confirm tool-tips="是否确定？" @choose="result" v-if="userChoose"></confirm>
+        <confirm :tool-tips="lanMap['if_sure']" @choose="result" v-if="userChoose"></confirm>
     </div>
 </template>
 
@@ -70,17 +70,21 @@ export default {
     created(){
         // 请求 url: /onu_deny_list?port_id=1
         this._portid = this.port_name.pon['1'].id;
-        var url;
-        if(this.change_url.onu_allow[this.change_url.onu_allow.length - 1] != '='){
-                url = this.change_url.onu_deny;
-            }else{
-                url = this.change_url.onu_deny + this._portid;
-            }
-        this.$http.get(url).then(res=>{
-            this.onu_deny_list = res.data;
-        }).catch(err=>{
-            // to do
-        })
+        if(this.change_url.beta === 'test'){
+            var url;
+            if(this.change_url.onu_allow[this.change_url.onu_allow.length - 1] != '='){
+                    url = this.change_url.onu_deny;
+                }else{
+                    url = this.change_url.onu_deny + this._portid;
+                }
+            this.$http.get(url).then(res=>{
+                if(res.data.code ===1){
+                    this.onu_deny_list = res.data;
+                }
+            }).catch(err=>{
+                // to do
+            })
+        }
     },
     methods: {
         // 切换pon口时，进行的操作
@@ -125,7 +129,7 @@ export default {
             this.userChoose = false;
             if(bool){
                 // 确认框中用户点击确认时的操作
-                this.$http.post('/onu_allow_list',this.post_param).then(res=>{
+                this.$http.post('/onu_allow_list',this.post_param.delete).then(res=>{
                     // to do
                 }).catch(err=>{
                     // to do 
@@ -164,10 +168,15 @@ export default {
     border: 1px solid #ddd;
     line-height: 40px;
     vertical-align: middle;
+    line-height: 40px;
 }
 .add-item>span{
     width: 15%;
-    vertical-align: middle;
+    line-height: 32px;
+    display: inline-block;
+    height: 32px;
+    text-align: center;
+    font-size: 16px;
 }
 ul{
     border:1px solid #ddd;
@@ -187,7 +196,7 @@ ul>li:last-child{
 ul+div{
     margin-left: 30px;
 }
-span{
+ul span{
     display: inline-block;
     vertical-align: middle;
     height: 32px;
@@ -209,7 +218,7 @@ a{
     display: inline-block;
     width: 120px;
     height: 32px;
-    line-height: 36px;
+    line-height: 32px;
     border-radius: 5px;
     background: #ddd;
     text-align: center;
@@ -224,5 +233,9 @@ i.icon-delete{
     width: 32px;
     height: 32px;
     background: url('../../assets/delete-normal.png') no-repeat;
+}
+div.data-failed{
+    margin: 20px 10px;
+    color: red;
 }
 </style>

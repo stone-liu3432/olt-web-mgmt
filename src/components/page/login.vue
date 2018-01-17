@@ -2,11 +2,18 @@
     <div class="login">
         <div class="login-banner">
             <div class="lf"></div>
-            <h1 class="lf" style="fontSize:36px;">标题栏,设备型号等</h1> 
+            <h1 class="lf" style="fontSize:36px;"></h1>
+            <div class="rt change-lang">
+                <span>{{ lanMap['lang'] }}</span>
+                <select v-model="lang">
+                    <option value="zh">简体中文</option>
+                    <option value="en">English</option>
+                </select>
+            </div>
         </div>
         <div class="login-body">
-            <h2>登录</h2>
-            <h3>登录以管理此设备</h3>
+            <h2>{{ lanMap['login_user'] }}</h2>
+            <h3>{{ lanMap['login_page_login_hit'] }}</h3>
             <form>
                 <div>
                     <span>USER</span>
@@ -21,15 +28,15 @@
                 </div>
                 <div class="login-tips">
                     <h4 :style="{'opacity': verify_uname ? 1 : 0}">
-                        请输入符合规范的4-20位用户名，不能输入中文、空格和特殊字符
+                        {{ lanMap['username_length_fail'] }}
                     </h4>
                     <h4 :style="{'opacity': verify_upwd ? 1 : 0}">
-                        密码限定长度为6-20位,且不能使用空格
+                        {{ lanMap['password_length_fail'] }}
                     </h4>
-                    <h4 :style="{'opacity': login_failed ? 1 : 0}">用户名或密码不正确</h4>
+                    <h4 :style="{'opacity': login_failed ? 1 : 0}">{{ lanMap['service_user_password_fail'] }}</h4>
                 </div>
                 <div>
-                    <a href="javascript:;" @click="userLogin">登录</a>
+                    <a href="javascript:;" @click="userLogin">{{ lanMap['login_user'] }}</a>
                 </div>
             </form>
         </div>
@@ -38,6 +45,7 @@
 
 <script>
 import md5 from 'md5'
+import { mapState,mapMutations } from "vuex"
     export default {
         name: 'login',
         data(){
@@ -51,10 +59,16 @@ import md5 from 'md5'
                 //  用户名或密码服务器验证未通过
                 login_failed: false,
                 //  密码可见或不可见
-                visible: false
+                visible: false,
+                //  语言选项
+                lang: 'zh'
             }
         },
+        computed: mapState(['lanMap']),
         methods: {
+            ...mapMutations({
+                language: 'updateLang'
+            }),
             userLogin(){
                 this.login_failed = false;
                 if(this.verify_uname || this.verify_upwd || this.userName === '' || this.userPwd === ''){
@@ -62,7 +76,7 @@ import md5 from 'md5'
                 }
                 var self = this;
                 this.$http({
-                    url: '/userlogin',
+                    url: '/userlogin?form=login',
                     method: 'POST',
                     data: {
                         "method":"set",
@@ -80,15 +94,16 @@ import md5 from 'md5'
                     this.userPwd = '';
                     if(res.data.code === 1){
                         sessionStorage.setItem('x-token',res.headers['x-token']);
+                        sessionStorage.setItem('uname',this.userName);
                         this.$message({
                             type: 'success',
-                            text: '登录成功,欢迎使用'
+                            text: this.lanMap['login_success']
                         })
                         this.$router.push('/main');
                     }else{
                         this.$message({
                             type: 'error',
-                            text: '用户名或密码验证失败'
+                            text: this.lanMap['service_user_password_fail']
                         })
                         this.login_failed = true;
                     }
@@ -96,7 +111,7 @@ import md5 from 'md5'
                     // 登录超时时的处理，默认为5秒无响应超时
                     this.$message({
                         type: 'error',
-                        text: '登录超时，请重试'
+                        text: this.lanMap['http_login_timeout']
                     })
                 })
             },
@@ -134,12 +149,20 @@ import md5 from 'md5'
                     this.verify_upwd = false;
                 }
                 this.login_failed = false;
+            },
+            lang(){
+                if(this.lang === 'zh'){
+                    this.language('zh');
+                }
+                if(this.lang === 'en'){
+                    this.language('en');
+                }
             }
         }
     }
 </script>
 
-<style scoped>
+<style scoped lang="less">
 div.login{
     width: 100%;
     min-width: 1280px;
@@ -148,7 +171,7 @@ div.login{
 }
 div.login-banner{
     height: 150px;
-    background: rgb(73, 44, 44);
+    background: rgb(87, 84, 84);
 }
 div.login-body{
     width: 700px;
@@ -244,5 +267,19 @@ input{
 }
 input:focus{
     border: 1px solid #1E90FF;
+}
+div.change-lang{
+    margin: 30px 50px 0 0;
+    >span{
+        margin-right: 10px;
+        padding: 5px;
+        color: #fff;
+    }
+    >select{
+        width: 120px;
+        height: 30px;
+        font-size: 14px;
+        text-indent: 15px;
+    }
 }
 </style>

@@ -6,18 +6,18 @@
                     {{ item.name }}
                 </option>
             </select>
-            <a href="javascript:;" @click="add_onu()">增加</a>
-            <a href="javascript:;" @click="onu_bandwieth()">带宽</a>
-            <a href="javascript:;" @click="reboot()">重启ONU</a>
+            <a href="javascript:;" @click="add_onu()">{{ lanMap['add'] }}</a>
+            <a href="javascript:;" @click="onu_bandwieth()">{{ lanMap['sla_cfg'] }}</a>
+            <a href="javascript:;" @click="reboot()">{{ lanMap['reboot_onu'] }}</a>
         </div>
         <div class="modal-dialog" v-if="add_dialog">
             <div class="cover"></div>
             <div class="modal-content">
-                <h3>手动添加ONU</h3>
+                <h3>{{ lanMap['manual_bind'] }}</h3>
                 <div class="modal-item">
                     <span>{{ lanMap['onu_id'] }}</span>
                     <input type="text" v-model="add_onuid" placeholder="1-64">
-                    <span class="tips">为0时，表示自动分配</span>
+                    <span class="tips">{{ lanMap['zero_auto_'] }}</span>
                 </div>
                 <div class="modal-item">
                     <span>{{ lanMap['macaddr'] }}</span>
@@ -38,7 +38,7 @@
                 <div class="modal-item">
                     <span>{{ lanMap['desc'] }}</span>
                     <input type="text" v-model="add_onudesc">
-                    <span class="tips">输入描述信息</span>
+                    <span class="tips">{{ lanMap['input_desc'] }}</span>
                 </div>
                 <div class="modal-btn">
                     <a href="javascript:;" @click="add_onuitem(true)">{{ lanMap['apply'] }}</a>
@@ -60,18 +60,18 @@
                 <span>{{ item.status }}</span>
                 <span>
                     <span>{{ item.auth_state ? 'true' : 'false' }}</span>
-                    <i :class="[item.auth_state ? 'verified-actived' : 'verified']" @click="authstate_on(item)" title="点此认证"></i>
-                    <i :class="[item.auth_state ? 'unverified' : 'unverified-actived']" @click="authstate_off(item)" title="点此取消认证"></i>
+                    <i :class="[item.auth_state ? 'verified-actived' : 'verified']" @click="authstate_on(item)" :title="lanMap['clk_cfrm']"></i>
+                    <i :class="[item.auth_state ? 'unverified' : 'unverified-actived']" @click="authstate_off(item)" :title="lanMap['clk_cancel_cfrm']"></i>
                 </span>
                 <span>{{ item.register_time }}</span>
                 <span>
-                    <i title="查看详情" class="onu-detail" @click="onu_detail(item.port_id,item.onu_id)"></i>
-                    <i title="删除ONU" class="onu-delete" @click="delete_onu(item)"></i>
-                    <i title="添加到阻止列表" class="onu-remove" @click="remove_onu(item)"></i>
+                    <i :title="lanMap['detail']" class="onu-detail" @click="onu_detail(item.port_id,item.onu_id)"></i>
+                    <i :title="lanMap['del_onu']" class="onu-delete" @click="delete_onu(item)"></i>
+                    <i :title="lanMap['add_to_deny']" class="onu-remove" @click="remove_onu(item)"></i>
                 </span>
             </li>
         </ul>
-        <p v-else>没有更多的数据了...</p>
+        <p v-else>{{ lanMap['no_more_data'] }}</p>
     </div>
 </template>
 
@@ -97,21 +97,23 @@ import { mapState,mapMutations } from 'vuex'
             // '/onu_allow_list?port_id=' + ( this.$route.query.port_id || 1 )
             this.portid = this.$route.query.port_id || 1;
             if(this.change_url.beta === 'test'){
-                var url;
-                if(this.change_url.onu_allow[this.change_url.onu_allow.length - 1] != '='){
-                    url = this.change_url.onu_allow;
-                }else{
-                    url = this.change_url.onu_allow + this.portid;
-                }
-                this.$http.get(url).then(res=>{
-                    if(res.data.code === 1){
-                        this.onu_allow_list = res.data;
+                if(this.change_url.beta === 'test'){
+                    var url;
+                    if(this.change_url.onu_allow[this.change_url.onu_allow.length - 1] != '='){
+                        url = this.change_url.onu_allow;
                     }else{
-                        this.onu_allow_list = {};
+                        url = this.change_url.onu_allow + this.portid;
                     }
-                }).catch(err=>{
-                    // to do 
-                })
+                    this.$http.get(url).then(res=>{
+                        if(res.data.code === 1){
+                            this.onu_allow_list = res.data;
+                        }else{
+                            this.onu_allow_list = {};
+                        }
+                    }).catch(err=>{
+                        // to do 
+                    })
+                }
             }
         },
         methods:{
@@ -354,7 +356,7 @@ ul>li:last-child{
 }
 span{
     display: inline-block;
-    width: 16%;
+    width: 20%;
     text-align: center;
     font-size: 16px;
 }
@@ -417,7 +419,7 @@ i.onu-remove:hover{
     background: url('../../assets/remove-hover.png') no-repeat;
 }
 div.modal-content{
-    width: 500px;
+    width: 600px;
     height: 300px;
     background: #fff;
     position: absolute;

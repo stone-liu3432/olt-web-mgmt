@@ -2,20 +2,20 @@
     <div class="rstp">
         <h2>{{ lanMap['protocol_mgmt'] }}</h2>
         <div>
-            <span>rstp桥信息</span>
+            <span>{{ lanMap['rstp_b_info'] }}</span>
             <a href="javascript:;" @click="open_modal" v-if="rstp.data">{{ lanMap['config'] }}</a>
         </div>
         <ul v-if="rstp.data">
             <li v-for="(item,key) in rstp.data" :key="key">
                 <span>{{ lanMap[key] }}</span>
-                <span v-if="key !== 'status' && key !== 'mode'">{{ item }}</span>
-                <span v-if=" key === 'status'">{{ item === 1 ? lanMap['enable'] : lamMap['disabled'] }}</span>
-                <span v-if=" key === 'mode'">{{ item === 0 ? 'stp' : 'rstp'  }}</span>
+                <span v-if="key !== 'status' && key !== 'rstp_mode'">{{ item }}</span>
+                <span v-if=" key === 'status'">{{ item === 1 ? lanMap['enable'] : lanMap['disabled'] }}</span>
+                <span v-if=" key === 'rstp_mode'">{{ item === 0 ? 'stp' : 'rstp'  }}</span>
             </li>
         </ul>
         <div>
-            <span>rstp端口信息</span>
-            <a href="javascript:;" @click="open_priority" v-if="rstp_port.data">设置端口优先级</a>
+            <span>{{ lanMap['rstp_p_info'] }}</span>
+            <a href="javascript:;" @click="open_priority" v-if="rstp_port.data">{{ lanMap['rstp_p_pri_b'] }}</a>
         </div>
         <ul class="rstp-port-info" v-if="rstp_port.data">
             <li>
@@ -23,7 +23,7 @@
             </li>
             <li v-for="(item,key) in rstp_port.data" :key="key">
                 <span>{{ port_name.ge[item.port_id].name }}</span>
-                <span>{{ item.priority }}</span>
+                <span>{{ item.port_priority }}</span>
                 <span>{{ item.port_path_cost }}</span>
                 <span>{{ item.edge_status === 1 ? 'Edge' : 'NEdge' }}</span>
                 <span>{{ item.admin_link_type }}</span>
@@ -35,7 +35,7 @@
         <div class="modal-dialog" v-if="modal">
             <div class="cover"></div>
             <div class="modal-body">
-                <h2>设置rstp全局信息</h2>
+                <h2>{{ lanMap['rstp_global_info'] }}</h2>
                 <div>
                     <span>{{ lanMap['status'] }}</span>
                     <select v-model="bridge_info.status">
@@ -44,7 +44,7 @@
                     </select>
                 </div>
                 <div>
-                    <span>{{ lanMap['mode'] }}</span>
+                    <span>{{ lanMap['rstp_mode'] }}</span>
                     <select v-model="bridge_info.mode">
                         <option value="0">stp</option>
                         <option value="2">rstp</option>
@@ -103,7 +103,7 @@
         <div class="modal-dialog" v-if="modal_priority">
             <div class="cover"></div>
             <div class="modal-content">
-                <h2>设置rstp端口优先级</h2>
+                <h2>{{ lanMap['rstp_port_pri'] }}</h2>
                 <div>
                     <span>{{ lanMap['port_id'] }}</span>
                     <select v-model="priority_info.port_id">
@@ -111,7 +111,7 @@
                     </select>
                 </div>
                 <div>
-                    <span>{{ lanMap['priority'] }}</span>
+                    <span>{{ lanMap['port_priority'] }}</span>
                     <select v-model="priority_info.priority">
                         <option value="0">0</option>
                         <option value="16">16</option>
@@ -385,7 +385,7 @@ div.rstp{
         color: #67AEF7;
     }
     >div{
-        margin: 20px 0 20px 10px;
+        margin: 30px 0 20px 10px;
         >span{
             font-size: 18px;
             color: #67aef7;
@@ -401,6 +401,7 @@ div.rstp{
             border-radius: 3px;
             color: #fff;
             margin-left: 100px;
+            vertical-align: middle;
         }
     }
     >ul{
@@ -415,7 +416,7 @@ div.rstp{
             }
             span{
                 display: inline-block;
-                width: 20%;
+                width: 30%;
                 text-indent: 20px;
                 &:first-child{
                     border-right: 1px solid #ccc;

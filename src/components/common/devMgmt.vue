@@ -7,7 +7,7 @@
                     <a href="javascript:;" @click="reboot()">{{ lanMap["reboot"] }}</a>
                 </div>
                 <p>
-                    设备的部分配置修改需要重启设备才能生效，您可以通过点击&lt;{{ lanMap["reboot"] }}&gt;按钮来重启设备。重启过程中请不要断电。
+                    {{ lanMap['reboot_olt'] }}
                 </p>
             </div>
         </div>
@@ -18,7 +18,7 @@
                     <a href="javascript:;" @click="backup_cfg">{{ lanMap["backup_config"] }}</a>
                 </div>
                 <p>
-                    我们建议您在升级软件或进行修改配置之前保存原有配置，点击&lt;备份&gt;按钮可以对当前配置进行备份
+                    {{ lanMap['bkup_cfg_info'] }}
                 </p>
             </div>
         </div>
@@ -28,12 +28,12 @@
                 <div>
                     <form> 
                         <input type="file" name="file1" size="80" class="hide" id="file" @change="changeFile()"/>
-                        <span class="updateFile" id="fileName">点击选择文件</span>
+                        <span class="updateFile" id="fileName">{{ lanMap['file_click'] }}</span>
                         <a href="javascript:;" @click="restore_cfg">{{ lanMap["restore_config"] }}</a>
                     </form>
                 </div>
                 <p>
-                    您可以通过导入配置文件来恢复您备份的配置。
+                    {{ lanMap['res_cfg_info'] }}
                 </p>
             </div>
         </div>
@@ -44,12 +44,12 @@
                     <a href="javascript:;" @click="default_cfg">{{ lanMap["default_config"] }}</a>
                 </div>
                 <p>
-                    请注意，恢复出厂设置后，设备将恢复至出厂时的状态，所有自定义的设置将会丢失，如您需要保存现有配置，请备份当前配置。
+                    {{ lanMap['def_cfg_info'] }}
                 </p>
             </div>
         </div>
-        <confirm tool-tips="是否确认恢复出厂设置?恢复出厂设置后，设备将会重启" @choose="result" v-if="userChoose"></confirm>
-        <confirm tool-tips="是否确认重启设备?" @choose="reboot_result" v-if="rebootChoose"></confirm>
+        <confirm :tool-tips="lanMap['def_cfg_hit']" @choose="result" v-if="userChoose"></confirm>
+        <confirm :tool-tips="lanMap['reboot_olt_hit']" @choose="reboot_result" v-if="rebootChoose"></confirm>
         <loading class="load" v-if="isLoading"></loading>
         <div class="modal-dialog" v-if="isProgress">
             <div class="cover"></div>
@@ -91,7 +91,7 @@
                 var fileName = document.getElementById('fileName');
                 var files = file.files[0];
                 if(!files) {
-                    fileName.innerText = '点击选择文件';
+                    fileName.innerText = this.lanMap['file_click'];
                     return
                 }
                 fileName.innerText = file.value.substring(file.value.lastIndexOf('\\')+1);
@@ -131,13 +131,13 @@
                         if(res.data.code === 1){
                             this.$message({
                                 type: 'success',
-                                text: '恢复出厂设置成功，即将重启设备'
+                                text: this.lanMap['def_cfg_succ']
                             })
                             this.reboot_result(true);
                         }else{
                             this.$message({
                                 type: 'error',
-                                text: '恢复出厂设置失败'
+                                text: this.lanMap['default_config_fail']
                             })
                         }
                     }).catch(err=>{
@@ -171,17 +171,17 @@
                 var fileName = document.getElementById('fileName');
                 var reg = /\.txt$/;
                 if(!files) {
-                    fileName.innerText = '点击选择文件';
+                    fileName.innerText = this.lanMap['file_click'];
                     this.$message({
                         type: 'error',
-                        text: '当前未选择任何文件'
+                        text: this.lanMap['file_not_select']
                     })
                     return
                 }
                 if(!reg.test(fileName.innerText)){
                     this.$message({
                         type: 'error',
-                        text: '文件格式不正确'
+                        text: this.lanMap['restore_file_nr']
                     })
                     return
                 }
@@ -199,12 +199,12 @@
                         this.width = 400;
                         this.$message({
                             type: 'success',
-                            text: '导入配置成功，重启设备后生效'
+                            text: this.lanMap['restore_config_succ']
                         })
                     }else{
                         this.$message({
                             type: 'error',
-                            text: '导入配置失败'
+                            text: this.lanMap['restore_config_fail']
                         })
                     }
                     clearInterval(this.timer2);

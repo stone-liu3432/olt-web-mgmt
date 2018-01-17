@@ -3,12 +3,12 @@
       <topBanner></topBanner>
       <leftAside></leftAside>
       <detail v-if="port_info && system"></detail>
-      <div class="modal-dialog" v-if="modal">
+      <!-- <div class="modal-dialog" v-if="modal">
           <div class="cover"></div>
           <div class="tips-body">
               <div>登录超时，将于 {{ count }} 秒后跳转到登录页面</div>
           </div>
-      </div>
+      </div> -->
   </div>
 </template>
 
@@ -37,7 +37,7 @@ import topBanner from '@/components/page/header'
             //     if(response.data.code === 0){
             //         this.$message({
             //             type: 'error',
-            //             text: '非法登录信息'
+            //             text: this.lanMap['illegal_login_info']
             //         })
             //         sessionStorage.clear();
             //         this.$router.push('/login');
@@ -45,7 +45,7 @@ import topBanner from '@/components/page/header'
             //     if(response.data.code === -1){
             //         this.$message({
             //             type: 'error',
-            //             text: '登录超时，请重新登录'
+            //             text: this.lanMap['login_timeout']
             //         })
             //         sessionStorage.clear();
             //         this.$router.push('/login');
@@ -54,6 +54,7 @@ import topBanner from '@/components/page/header'
             // },err=>{
             //     return Promise.reject(err);
             // });
+            
             //根组件创建之前，初始化vuex部分数据
             this.$http.get(this.change_url.system).then(res=>{
                 if(res.data.code === 1){
@@ -77,7 +78,7 @@ import topBanner from '@/components/page/header'
                 addmenu: 'updateMenu'
             })
         },
-        computed: mapState(['port_info','system','change_url'])
+        computed: mapState(['port_info','system','change_url','lanMap'])
     }
 </script>
 

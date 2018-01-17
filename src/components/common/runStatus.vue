@@ -2,7 +2,7 @@
     <div class="running-status">
         <div class="container"  v-if="ponInfo.data">
             <h2>
-                PON口信息
+                {{ lanMap['pon_info'] }}
             </h2>
             <div class="pon-detail" v-for="(item,index) in this.ponInfo.data" :key="index" @click="jump_onu_allow(item.port_id)">
                 <!-- <p>{{ item.port_id < 10 ? 'PON0' + item.port_id : 'PON' + item.port_id }}</p> -->
@@ -14,15 +14,15 @@
                     {{ item.port_id < 10 ? 'PON0' + item.port_id : 'PON' + item.port_id }} : {{ item.status >= 1 ? lanMap['online'] : lanMap['offline'] }}
                 </p>
                 <div class="pon-modal">
-                    <p>已注册设备数:{{ item.online + item.offline }}</p>
+                    <p>{{ lanMap['registered_onu'] }}:{{ item.online + item.offline }}</p>
                     <p>{{ lanMap['online'] }}：{{ item.online }}</p>
                     <p class="tips">{{ lanMap['offline'] }}：{{ item.offline }}</p>
-                    <span>点击图片可进入onu允许列表</span>
+                    <span>{{ lanMap['clk_onu_allow'] }}</span>
                 </div>
             </div>
         </div>
         <div class="container"  v-if="this.geInfo[0]">
-            <h2>GE信息</h2>
+            <h2>{{ lanMap['ge_port_info'] }}</h2>
             <div class="pon-detail" v-for="(item,index) in this.geInfo" :key="index" @click="jump_port_cfg(item.port_id)">
                 <div :class="[ item.admin_status >= 1 ? item.link_status >= 1 ? 'bg-online' : 'bg-offline' :'bg-disabled' ]">
                     <img src="../../assets/uplink-fiber-blue.png" v-if="item.media == 'fiber' &&item.admin_status >=1 && item.link_status >=1 ">
@@ -39,12 +39,12 @@
                     <p :style="{'color' : item.admin_status >=1 ? item.link_status >=1 ? '#29BDFA' : '#aaa' : 'red'}" class="tips">
                         {{ lanMap['admin_status'] }}：{{ item.admin_status >= 1 ? item.link_status >= 1 ? lanMap['enable'] : lanMap['disable'] : lanMap['disable'] }}
                     </p>
-                    <span>点击图片可进入端口配置</span>
+                    <span>{{ lanMap['clk_port_cfg'] }}</span>
                 </div>
             </div>
         </div>
         <div class="system-info" v-if="this.system.data">
-            <h2>系统信息</h2>
+            <h2>{{ lanMap['sys_info'] }}</h2>
             <div v-for="(item,key) of this.system.data" :key="key" class="system-info-detail"  v-if="key !== 'bl_ver'">
                 <!-- 根据key值，取出映射的lanMap字符 -->
                 <span>{{ lanMap[key] }}</span>
@@ -52,7 +52,7 @@
             </div>
         </div>
         <div class="cpu-info" v-if="this.cpuInfo.data">
-            <h2>硬件状态</h2>
+            <h2>{{ lanMap['hw_status'] }}</h2>
             <div>
                 <p>{{ lanMap['cpu_usage'] }}</p>
                 <canvas width="200" height="200" id="cpu-detail"></canvas>
@@ -62,7 +62,7 @@
                 <canvas width="200" height="200" id="memory-detail"></canvas>
             </div>
             <div class="container" v-if="this.timer.data">
-                <h2>系统运行时间</h2>
+                <h2>{{ lanMap['sys_run_time'] }}</h2>
                 <div class="time-info">
                     <span>{{ lanMap['current_time'] + ' :' }}</span>
                     <span>{{ new Date(this.timer.data.time_sec).toLocaleString().replace(/\//g,'-') }}</span>
@@ -363,7 +363,7 @@
 }
 .time-info>span:first-child{
     display: inline-block;
-    width:100px;
+    width:110px;
     text-align: right;
     margin-right: 20px;
 }

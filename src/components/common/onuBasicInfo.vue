@@ -14,7 +14,7 @@
 					<option v-for="(item,index) in onu_list.data" :value="item">{{ 'ONU'+ onu_list.port_id + '/' + item }}</option>
 				</select>
 			</div>
-            <div v-else class="error-msg">当前PON口下暂无ONU信息...</div>
+            <div v-else class="error-msg">{{ lanMap['no_onu_info'] }}</div>
 		</div>
 		<hr>
         <div v-for="(item,key) in onu_basic_info.data" :key="key" v-if=" key != 'port_id' && onu_basic_info.data && (onu_basic_info.data.length !== 0)" class="onu-info-item">

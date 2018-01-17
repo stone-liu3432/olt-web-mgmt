@@ -8,16 +8,16 @@
         </div>
         <form class="upload-form"> 
             <input type="file" class="hide" id="file1" @change="changeFile('file1','fileName1')"/>
-            <span class="updateFile" id="fileName1">点击选择文件</span>
-            <a href="javascript:;" @click="firmware">{{ lanMap["firmware"] }}</a>
+            <span class="updateFile" id="fileName1">{{ lanMap['file_click'] }}</span>
+            <a href="javascript:;" @click="firmware">{{ lanMap["upgrade"] }}</a>
         </form>
         <div class="upgrade">
             <h3>{{ lanMap['system'] }}</h3>
         </div>
         <form class="upload-form">
             <input type="file" class="hide" id="file2" @change="changeFile('file2','fileName2')"/>
-            <span class="updateFile" id="fileName2">点击选择文件</span>
-            <a href="javascript:;" @click="system">{{ lanMap["system"] }}</a>
+            <span class="updateFile" id="fileName2">{{ lanMap['file_click'] }}</span>
+            <a href="javascript:;" @click="system">{{ lanMap["upgrade"] }}</a>
         </form>
         <div class="modal-dialog" v-if="isLoading">
             <div class="cover"></div>
@@ -52,7 +52,7 @@ import { mapState } from 'vuex'
                 var files = file.files[0];
                 fileName.innerText = file.value.substring(file.value.lastIndexOf('\\')+1);
                 if(!files) {
-                    fileName.innerText = '点击选择文件';
+                    fileName.innerText = this.lanMap['file_click'];
                     return
                 }
             },
@@ -63,17 +63,17 @@ import { mapState } from 'vuex'
                 var fileName = document.getElementById('fileName1');
                 var reg = /\.img$/;
                 if(!files){
-                    fileName.innerText = '点击选择文件';
+                    fileName.innerText = this.lanMap['file_click'];
                     this.$message({
                         type: 'error',
-                        text: '当前未选择任何文件'
+                        text: this.lanMap['file_not_select']
                     })
                     return
                 }
                 if(!reg.test(fileName.innerText)){
                     this.$message({
                         type: 'error',
-                        text: '文件格式不正确'
+                        text: this.lanMap['restore_file_nr']
                     })
                     return 
                 }
@@ -93,14 +93,14 @@ import { mapState } from 'vuex'
                         this.isLoading = false;
                         this.$message({
                             type: 'success',
-                            text: '固件升级成功，重启设备后生效'
+                            text: this.lanMap['fw_upgrade_succ']
                         })
                     }else{
                         clearInterval(this.timer);
                         this.isLoading = false;
                         this.$message({
                             type: 'error',
-                            text: '固件升级失败'
+                            text: this.lanMap['fw_upgrade_fail']
                         })
                     }
                     this.width = 0;
@@ -115,17 +115,17 @@ import { mapState } from 'vuex'
                 var fileName = document.getElementById('fileName2');
                 var reg = /\.img$/;
                 if(!files) {
-                    fileName.innerText = '点击选择文件';
+                    fileName.innerText = this.lanMap['file_click'];
                     this.$message({
                         type: 'error',
-                        text: '当前未选择任何文件'
+                        text: this.lanMap['file_not_select']
                     })
                     return
                 }
                 if(!reg.test(fileName.innerText)){
                     this.$message({
                         type: 'error',
-                        text: '文件格式不正确'
+                        text: this.lanMap['restore_file_nr']
                     })
                     return 
                 }
@@ -145,14 +145,14 @@ import { mapState } from 'vuex'
                         this.isLoading = false;
                         this.$message({
                             type: 'success',
-                            text: '系统升级成功，重启设备后生效'
+                            text: this.lanMap['sys_upgrade_succ']
                         })
                     }else{
                         clearInterval(this.timer);
                         this.isLoading = false;
                         this.$message({
                             type: 'error',
-                            text: '系统升级失败'
+                            text: this.lanMap['sys_upgrade_fail']
                         })
                     }
                     this.width = 0;

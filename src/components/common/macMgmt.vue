@@ -18,7 +18,7 @@
         <div class="query-select">
             <p>{{ lanMap['detail'] }}</p>
             <div class="query-frame">
-                <span>{{ lanMap['inquery_mode'] }}：</span>
+                <span>{{ lanMap['query_method'] }}：</span>
                 <select v-model="flag">
                     <option value="1">{{ lanMap['mac_type'] }}</option>
                     <option value="2">{{ lanMap['port_id'] }}</option>
@@ -53,7 +53,7 @@
         </div>
         <ul class="mac-table" v-if="this.mac_table[0]">
             <li>
-                <span>{{ lanMap['CDkey'] }}</span>
+                <span>{{ lanMap['mac_index'] }}</span>
                 <span v-for="(item,key) in mac_table[0]" :key="key">{{ lanMap[key] }}</span>
                 <span>{{ lanMap['delete'] }}</span>
             </li>
@@ -87,9 +87,9 @@
             </li>
         </ul>
         <div v-else class="nomore-data">
-            <p>没有更多的数据了...</p>
+            <p>{{ lanMap['no_more_data'] }}</p>
         </div>
-        <confirm tool-tips="是否确认删除？" @choose="result" v-if="userChoose"></confirm> 
+        <confirm :tool-tips="lanMap['if_sure']" @choose="result" v-if="userChoose"></confirm> 
     </div>
 </template>
 
@@ -472,7 +472,7 @@ div.query-frame{
     line-height: 40px;
 }
 div.query-select select{
-    width: 150px;
+    width: 180px;
     height: 30px;
     font-size: 15px;
     text-indent: 10px;

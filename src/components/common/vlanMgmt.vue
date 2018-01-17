@@ -24,7 +24,7 @@
             </div>
         </div>
         <div v-if="not_found_vlan">
-            <p>没有找到指定的VLAN</p>
+            <p>{{ lanMap['not_find_vlan'] }}</p>
         </div>
         <ul v-if="vlan_tab[0]">
             <li>
@@ -70,7 +70,7 @@
                         <span>
                             <input type="text" placeholder="VLAN ID 1-4094" v-model.number="new_vlan" :style="{ 'border-color' : (new_vlan != '' && (isNaN(new_vlan) || new_vlan > 4094 || new_vlan < 1)) ? 'red' : '' }">
                             <span class="tips">
-                                VLAN ID取值范围应该为1-4094之间的数字
+                                {{ lanMap['vlanid_range_hit'] }}
                             </span>
                         </span>
                     </div>
@@ -124,7 +124,7 @@
                 <div class="close" @click="closeModal"></div>
             </div>
         </div>
-        <confirm tool-tips="是否确认删除此VLAN?" @choose="result" v-if="userChoose"></confirm>
+        <confirm :tool-tips="lanMap['delete_vlan_hit']" @choose="result" v-if="userChoose"></confirm>
     </div>
 </template>
 
@@ -350,7 +350,7 @@ import confirm from '@/components/common/confirm'
                     if(res.data.code == 1){
                         this.$message({
                             type: 'success',
-                            text: '设置成功'
+                            text: this.lanMap['setting_ok']
                         })
                         this.getData();
                     }else{
@@ -382,7 +382,7 @@ import confirm from '@/components/common/confirm'
                         if(res.data.code == 1){
                             this.$message({
                                 type: 'success',
-                                text: '创建VLAN成功，正在应用VLAN配置'
+                                text: this.lanMap['create_vlan_info']
                             })
                             this.set_vlan(vid);
                         }else{
