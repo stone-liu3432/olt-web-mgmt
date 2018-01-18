@@ -66,7 +66,6 @@ div.loading-content{
 }
 div.loading-content>div{
     position: relative;
-    left: -100px;
     top: 200px;
     width: 120px;
     height: 120px;

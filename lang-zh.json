@@ -171,7 +171,7 @@
 	"port_state": "状态",
 	"auto": "Auto",
 	"p2p": "P2P",
-	"Shared": "Shared",
+	"shared": "Shared",
 	
 	"http_login_timeout":"登录超时，请重试",
 	"service_user_password_fail":"用户名或密码验证失败",
@@ -185,7 +185,8 @@
 	"illegal_login_info":"非法登录信息",
 	"logout":"退出登录",
 	"company_info":"公司信息&版权信息等",
-	"setting_ok": "设置成功",
+    "setting_ok": "设置成功",
+    "setting_fail": "设置失败",
 	"create_vlan_info":"创建VLAN成功，正在应用VLAN配置",
 	"delete_vlan_hit":"是否确认删除此VLAN?",
 	"vlanid_range_hit":"VLAN ID取值范围应该为1-4094之间的数字",
@@ -245,9 +246,13 @@
 	"clk_cfrm":"点此认证",
 	"input_desc":"输入描述信息",
 	
-	"zero_auto_":"为0时，表示自动分配",
+	"zero_auto_":"为0或为空时，表示自动分配",
 	"manual_bind":"手动添加ONU",
 	"reboot_onu":"重启ONU",
 	
-	"lang" : "语言"
+    "lang" : "语言",
+    "modify_tips": "未进行任何修改",
+    "param_mac":"MAC地址格式不正确",
+    "param_onuid":"非法ONU ID"
+
 }

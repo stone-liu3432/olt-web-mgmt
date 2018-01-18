@@ -172,21 +172,22 @@
 	"port_state": "Status",
 	"auto": "Auto",
 	"p2p": "P2P",
-	"Shared": "Shared",
+	"shared": "Shared",
 	
 	"http_login_timeout":"Login timeout, Please again login the device",
 	"service_user_password_fail":"The username or password check failed",
 	"login_success":"Welcome",
-	"login_user":"Login",
+	"login_user":"Sign in",
 	"password_length_fail":"the range of the length of the password is 5-16 and it can't be use space charactor, Please check!",
 	"username_length_fail":"the range of the length of the username is 5-16 and it can't be use special charactior, Please check!",
 	
 	"login_page_login_hit":"Please Login EPON OLT for Management",
 	"login_timeout":"Login timeout, Please Login",
 	"illegal_login_info":"Illegal Login Information",
-	"logout":"Logout",
+	"logout":"Sign out",
 	"company_info":"Company information & Copyright information",
-	"setting_ok": "Setting success",
+    "setting_ok": "Setting success",
+    "setting_fail": "Setting failed",
 	"create_vlan_info":"Create vlan success，Please waiting for apply",
 	"delete_vlan_hit":"It will delete this vlan, please check",
 	"vlanid_range_hit":"The range of VLAN ID is 1-4094",
@@ -199,7 +200,7 @@
 	"default_config_fail":"Default the OLT configuration failed",
 	"def_cfg_succ":"Default the OLT configuration sucess, the system is reboot now...",
 	"reboot_olt_hit":"Please assure to reboot OLT",
-	"def_cfg_hit":"Defualt the OLT configuration, the system will be reboot",
+	"def_cfg_hit":"Defualt the OLT configuration, the system will discard the configuration and auto reboot",
 	"def_cfg_info":"Notice: After default the OLT configuration, device will be the factory config",
 	
 	"res_cfg_info":"Notice: You can restore the configuration file",
@@ -246,9 +247,13 @@
 	"clk_cfrm":"Click to confirm",
 	"input_desc":"Description",
 	
-	"zero_auto_":"Auto assign",
+	"zero_auto_":"if 0 or none: Auto assign",
 	"manual_bind":"Manual add ONU",
 	"reboot_onu":"Reboot ONU",
 	
-	"lang" : "Language"
+    "lang" : "Language",
+    "modify_tips": "There's none modify",
+    "param_mac": "MAC address parameter error",
+    "param_onuid":"ONU ID illegal"
+
 }

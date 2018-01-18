@@ -18,7 +18,7 @@ import vlanMgmt from '../components/common/vlanMgmt'
 import time from '../components/common/time'
 import devMgmt from "../components/common/devMgmt"
 import Router from 'vue-router'
-
+import store from '../vuex/store'
 Vue.use(Router)
 
 const router = new Router({
@@ -147,6 +147,7 @@ const router = new Router({
 })
 
 router.beforeEach((to, from, next) => {
+    store.commit('updateLoad',true);
     // 判断该路由是否需要登录权限
     if (to.meta.requireAuth) {
         // if (sessionStorage.getItem('x-token')) {
@@ -162,6 +163,10 @@ router.beforeEach((to, from, next) => {
             next('/main')
         }
     }
+})
+
+router.afterEach((to,from)=>{
+    store.commit('updateLoad',false);
 })
 
 export default router

@@ -368,6 +368,10 @@ import confirm from '@/components/common/confirm'
                 if(bool){
                     var vid = Number(this.new_vlan);
                     if(isNaN(vid) || vid > 4094 || vid < 1) {
+                        this.$message({
+                            type: 'error',
+                            text: this.lanMap['vlanid_range_hit']
+                        })
                         return
                     }
                     var post_param = {
@@ -498,7 +502,7 @@ h2+div:after{
     clear: both;
 }
 div.add-vlan{
-    margin-bottom: 30px;
+    /* margin-bottom: 30px; */
 }
 p{
     font-size: 20px;
@@ -605,7 +609,7 @@ div.vlan-mode:after{
     clear: both;
 }
 label{
-    margin-right: 20px;
+    margin-right: 18px;
 }
 div.vlan-mode{
     margin: 20px 0;

@@ -21,7 +21,7 @@
                 </div>
                 <div class="user-pwd">
                     <span>password</span>
-                    <input type="text" onfocus="this.type='password'" 
+                    <input type="password" 
                     v-model="userPwd" id="userPwd" :style="{ 'border-color' : verify_upwd ? 'red' : '#aaa' }" 
                     autocomplete="off" @keyup.enter="userLogin">
                     <i :class="[ visible ? 'visible' : 'invisible']" @click="changeVisible"></i>
@@ -61,13 +61,16 @@ import { mapState,mapMutations } from "vuex"
                 //  密码可见或不可见
                 visible: false,
                 //  语言选项
-                lang: 'zh'
+                lang: ''
             }
         },
-        computed: mapState(['lanMap']),
+        computed: mapState(['lanMap','language']),
+        created(){
+            this.lang = this.language;
+        },
         methods: {
             ...mapMutations({
-                language: 'updateLang'
+                set_language: 'updateLang'
             }),
             userLogin(){
                 this.login_failed = false;
@@ -152,10 +155,10 @@ import { mapState,mapMutations } from "vuex"
             },
             lang(){
                 if(this.lang === 'zh'){
-                    this.language('zh');
+                    this.set_language('zh');
                 }
                 if(this.lang === 'en'){
-                    this.language('en');
+                    this.set_language('en');
                 }
             }
         }
@@ -280,6 +283,10 @@ div.change-lang{
         height: 30px;
         font-size: 14px;
         text-indent: 15px;
+        border-radius: 5px;
+        &:focus{
+            border-radius: 5px;
+        }
     }
 }
 </style>

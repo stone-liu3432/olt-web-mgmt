@@ -146,9 +146,16 @@ import { mapState,mapMutations } from 'vuex'
                 }
                 this.$http.post('/onu_allow_list',post_params).then(res=>{
                     if(res.data.code === 1){
-                        this.getData()
+                        this.$message({
+                            type: 'success',
+                            text: this.lanMap['setting_ok']
+                        })
+                        this.getData();
                     }else{
-                        this.onu_allow_list = {}
+                        this.$message({
+                            type: 'error',
+                            text: this.lanMap['setting_fail']
+                        })
                     }
                 }).catch(err=>{
                     // to do
@@ -168,8 +175,18 @@ import { mapState,mapMutations } from 'vuex'
                     if(this.add_onuid === ''){
                         this.add_onuid = 0;
                     }
-                    if(this.testMacaddr || this.add_macaddr === '' || isNaN(Number(this.add_onuid)) || Number(this.add_onuid) > 64 || Number(this.add_onuid) < 0 ) {
+                    if(this.testMacaddr || this.add_macaddr === '') {
+                        this.$message({
+                            type: 'error',
+                            text: this.lanMap['param_mac']
+                        })
                         return
+                    }
+                    if( isNaN(Number(this.add_onuid)) || Number(this.add_onuid) > 64 || Number(this.add_onuid) < 0 ){
+                        this.$message({
+                            type: 'error',
+                            text: this.lanMap['param_onuid']
+                        })
                     }
                     var post_params = {
                         "method":"add",
@@ -184,9 +201,16 @@ import { mapState,mapMutations } from 'vuex'
                     }
                     this.$http.post('/onu_allow_list',post_params).then(res=>{
                         if(res.data.code === 1){
+                            this.$message({
+                                type: 'success',
+                                text: this.lanMap['setting_ok']
+                            })
                             this.getData()
                         }else{
-                            this.onu_allow_list = {}
+                            this.$message({
+                                type: 'error',
+                                text: this.lanMap['setting_fail']
+                            })
                         }
                     }).catch(err=>{
                         // to do
@@ -210,14 +234,22 @@ import { mapState,mapMutations } from 'vuex'
                 }
                 this.$http.post('/onu_allow_list',post_params).then(res=>{
                     if(res.data.code === 1){
-                        this.getData()
+                        this.$message({
+                            type: 'success',
+                            text: this.lanMap['setting_ok']
+                        })
+                        this.getData();
                     }else{
-                        this.onu_allow_list = {}
+                        this.$message({
+                            type: 'error',
+                            text: this.lanMap['setting_fail']
+                        })
                     }
                 }).catch(err=>{
                     // to do
                 })
             },
+            //  onu取消认证
             authstate_off(node){
                 if(!node.auth_state) return
                 var post_params = {
@@ -233,9 +265,16 @@ import { mapState,mapMutations } from 'vuex'
                 }
                 this.$http.post('/onu_allow_list',post_params).then(res=>{
                     if(res.data.code === 1){
+                        this.$message({
+                            type: 'success',
+                            text: this.lanMap['setting_ok']
+                        })
                         this.getData()
                     }else{
-                        this.onu_allow_list = {}
+                        this.$message({
+                            type: 'error',
+                            text: this.lanMap['setting_fail']
+                        })
                     }
                 }).catch(err=>{
                     // to do
@@ -253,9 +292,16 @@ import { mapState,mapMutations } from 'vuex'
                 }
                 this.$http.post('/onu_allow_list',post_params).then(res=>{
                     if(re.data.code === 1){
-                        this.getData()
+                        this.$message({
+                            type: 'success',
+                            text: this.lanMap['setting_ok']
+                        })
+                        this.getData();
                     }else{
-                        this.onu_allow_list = {}
+                        this.$message({
+                            type: 'error',
+                            text: this.lanMap['setting_fail']
+                        })
                     }
                 }).catch(err=>{
                     // to do
@@ -463,7 +509,7 @@ div.modal-btn{
     margin: 15px;
 }
 div.modal-btn>a{
-    margin-left: 80px;
+    margin-left: 120px;
 }
 i.verified{
     background: url('../../assets/authstatus-normal.png') no-repeat;

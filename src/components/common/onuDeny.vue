@@ -12,7 +12,7 @@
         </div>
         <div class="add-item" v-if="addItem.isShow">
             <span>{{ lanMap['macaddr'] }}</span>
-            <input type="text" v-model="addItem.macaddr">
+            <input type="text" v-model="addItem.macaddr" :style="{ 'border-color': test_macaddr ? 'red' : '#ddd' }">
             <span>{{ lanMap['desc'] }}</span>
             <input type="text" v-model="addItem.desc">
             <span>
@@ -56,6 +56,7 @@ export default {
             onu_deny_list:{},
             _portid: 1,
             userChoose: false,
+            test_macaddr: false,
             addItem: {
                 isShow: false,
                 desc: '',
@@ -92,15 +93,25 @@ export default {
             this._portid = event.target.value;
             // 请求 url: /onu_deny_list?port_id=1
             this.$http.get('/onu_deny_list?port_id='+this._portid).then(res=>{
-                this.onu_deny_list = res.data;
+                if(res.data.code === 1){
+                    this.onu_deny_list = res.data;
+                }else{
+                    this.onu_deny_list = {}
+                }
             }).catch(err=>{
                 // to do
             })
         },
         //  点击 确认/取消 时进行的操作
         handle(bool){
-            this.addItem.isShow = false;
             if(bool){
+                if(this.test_macaddr || this.addItem.macaddr === ''){
+                    this.$message({
+                        type: 'error',
+                        text: this.lanMap['param_mac']
+                    })
+                    return
+                }
                 this.post_param.add = {
                     "method":"add",
                     "param":{
@@ -110,36 +121,52 @@ export default {
                     }
                 }
                 this.$http.post('/onu_deny_list',this.post_param.add).then(res=>{
-                    // to do
+                    if(res.data.code === 1){
+                        this.$message({
+                            type: 'success',
+                            text: this.lanMap['setting_ok']
+                        })
+                    }else{
+                        this.$message({
+                            type: 'error',
+                            text: this.lanMap['setting_fail']
+                        })
+                    }
                 }).catch(err=>{
                     // to do 
                 })
-                this.post_param = {};
-            }else{
-                this.post_param = {};
-                return 
             }
+            this.addItem.isShow = false;
+            this.post_param.add = {};
         },
         //  点击添加按钮时，显示添加模板
         add(){
-            this.addItem.isShow = true;
+            this.addItem.isShow = !this.addItem.isShow;
+            this.addItem.macaddr = '';
+            this.addItem.desc = '';
         },
         // 根据确认框返回结果，进行操作
         result(bool){
-            this.userChoose = false;
             if(bool){
                 // 确认框中用户点击确认时的操作
                 this.$http.post('/onu_allow_list',this.post_param.delete).then(res=>{
-                    // to do
+                    if(res.data.code === 1){
+                        this.$message({
+                            type: 'success',
+                            text: this.lanMap['setting_ok']
+                        })
+                    }else{
+                        this.$message({
+                            type: 'error',
+                            text: this.lanMap['setting_fail']
+                        })
+                    }
                 }).catch(err=>{
                     // to do 
                 })
-                this.post_param = {};
-            }else{
-                // 确认框中用户点击取消时的操作
-                this.post_param = {};
-                return 
             }
+            this.userChoose = false;
+            this.post_param.delete = {};
         },
         // 用户点击删除按钮时，弹出确认框
         deleteOnuDeny(port_id,onu_id,macaddr){
@@ -151,6 +178,20 @@ export default {
                     "onu_id": onu_id,
                     "macaddr": macaddr
                 }
+            }
+        }
+    },
+    watch: {
+        'addItem.macaddr'(){
+            var reg = /^[0-9a-zA-Z]{2}\:[0-9a-zA-Z]{2}\:[0-9a-zA-Z]{2}\:[0-9a-zA-Z]{2}\:[0-9a-zA-Z]{2}\:[0-9a-zA-Z]{2}$/;
+            if(this.addItem.macaddr === ''){
+                this.test_macaddr = false;
+                return
+            }
+            if(!reg.test(this.addItem.macaddr)){
+                this.test_macaddr = true;
+            }else{
+                this.test_macaddr = false;
             }
         }
     }

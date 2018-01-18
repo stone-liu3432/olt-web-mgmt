@@ -32,20 +32,21 @@
                 <span>{{ item.port_state }}</span>
             </li>
         </ul>
+        <!-- 设置rstp全局信息模态框 -->
         <div class="modal-dialog" v-if="modal">
             <div class="cover"></div>
             <div class="modal-body">
                 <h2>{{ lanMap['rstp_global_info'] }}</h2>
                 <div>
                     <span>{{ lanMap['status'] }}</span>
-                    <select v-model="bridge_info.status">
+                    <select v-model.number="bridge_info.status">
                         <option value="0">{{ lanMap['disable'] }}</option>
                         <option value="1">{{ lanMap['enable'] }}</option>
                     </select>
                 </div>
                 <div>
                     <span>{{ lanMap['rstp_mode'] }}</span>
-                    <select v-model="bridge_info.mode">
+                    <select v-model.number="bridge_info.mode">
                         <option value="0">stp</option>
                         <option value="2">rstp</option>
                         <!-- 暂未实现 -->
@@ -54,7 +55,7 @@
                 </div>
                 <div>
                     <span>{{ lanMap['rb_priority'] }}</span>
-                    <select v-model="bridge_info.rb_priority">
+                    <select v-model.number="bridge_info.rb_priority">
                         <option value="0">0</option>
                         <option value="4096">4096</option>
                         <option value="8192">8192</option>
@@ -100,6 +101,7 @@
                 <div class="close" @click="close_modal"></div>
             </div>
         </div>
+        <!-- 设置rstp端口优先级模态框 -->
         <div class="modal-dialog" v-if="modal_priority">
             <div class="cover"></div>
             <div class="modal-content">
@@ -112,7 +114,7 @@
                 </div>
                 <div>
                     <span>{{ lanMap['port_priority'] }}</span>
-                    <select v-model="priority_info.priority">
+                    <select v-model.number="priority_info.port_priority">
                         <option value="0">0</option>
                         <option value="16">16</option>
                         <option value="32">32</option>
@@ -138,7 +140,7 @@
                 </div>
                 <div>
                     <span>{{ lanMap['edge_status'] }}</span>
-                    <select v-model="priority_info.edge_status">
+                    <select v-model.number="priority_info.edge_status">
                         <option value="0">NEdge</option>
                         <option value="1">Edge</option>
                     </select>
@@ -146,9 +148,9 @@
                 <div>
                     <span>{{ lanMap['admin_link_type'] }}</span>
                     <select v-model="priority_info.admin_link_type">
-                        <option value="auto">auto</option>
-                        <option value="force_true">force_true</option>
-                        <option value="force_false">force_false</option>
+                        <option value="auto">{{ lanMap['auto'] }}</option>
+                        <option value="force_true">{{ lanMap['p2p'] }}</option>
+                        <option value="force_false">{{ lanMap['shared'] }}</option>
                     </select>
                 </div>
                 <div>
@@ -170,10 +172,13 @@ import { mapState } from 'vuex'
             return {
                 rstp: {},
                 rstp_port: {},
+                //  控制rstp全局信息模态框打开关闭
                 modal: false,
+                //  控制rstp端口优先级设置模态框撕开关闭
                 modal_priority: false,
+                //  有变更的设置项统计,post数据时使用
                 flags: 0,
-                //  表单绑定
+                //  表单绑定 -->  rstp桥设置页
                 bridge_info: {
                     status: 0,
                     mode: 0,
@@ -183,7 +188,7 @@ import { mapState } from 'vuex'
                     forward_delay: '',
                     transmit_hold_count: ''
                 },
-                //  验证输入是否在正确的范围内
+                //  验证输入是否在指定的范围内
                 verify_input: {
                     max_age: false,
                     hello_time: false,
@@ -191,9 +196,10 @@ import { mapState } from 'vuex'
                     transmit_hold_count: false,
                     port_path_cost: false
                 },
+                //  表单绑定  -->  rstp端口优先级设置页
                 priority_info: {
                     port_id: 0,
-                    priority: 0,
+                    port_priority: 0,
                     port_path_cost: 0,
                     edge_status: 0,
                     admin_link_type: ""
@@ -201,7 +207,7 @@ import { mapState } from 'vuex'
             }
         },
         created(){
-            this.getData();
+            this.getData(); 
             this.getPortData();
         },
         methods: {
@@ -251,23 +257,38 @@ import { mapState } from 'vuex'
                 }
                 if(this.flags === 0){
                     this.modal = false;
+                    this.$message({
+                        type: 'info',
+                        text: this.lanMap['modify_tips']
+                    })
                     return 
                 }
                 var post_params = {
-                    "flags": this.flags,
-                    "status": this.bridge_info.status,
-                    "mode": this.bridge_info.mode,
-                    "rb_priority": this.bridge_info.rb_priority,
-                    "max_age": this.bridge_info.max_age,
-                    "hello_time": this.bridge_info.hello_time,
-                    "forward_delay": this.bridge_info.forward_delay,
-                    "transmit_hold_count": this.bridge_info.transmit_hold_count
+                    "method":"set",
+                    "param":{
+                        "flags": this.flags,
+                        "status": this.bridge_info.status,
+                        "mode": this.bridge_info.mode,
+                        "rb_priority": this.bridge_info.rb_priority,
+                        "max_age": this.bridge_info.max_age,
+                        "hello_time": this.bridge_info.hello_time,
+                        "forward_delay": this.bridge_info.forward_delay,
+                        "transmit_hold_count": this.bridge_info.transmit_hold_count
+                    }
                 }
                 this.$http.post('/switch_rstp?form=bridge',post_params).then(res=>{
                     if(res.data.code === 1){
                         this.getData();
+                        this.$message({
+                            type: 'success',
+                            text: this.lanMap['setting_ok']
+                        })
                     }else{
                         // to do
+                        this.$message({
+                            type: 'success',
+                            text: this.lanMap['setting_fail']
+                        })
                     }
                 }).catch(err=>{
                     // to do
@@ -300,20 +321,31 @@ import { mapState } from 'vuex'
             },
             //  设置端口优先级内的提交按钮
             set_priority(){
-                if(this.priority_info.port_id !== this.rstp_port.data[0].port_id){
+                var data;
+                for(var key in this.rstp_port.data){
+                    if(this.priority_info.port_id === this.rstp_port.data[key].port_id){
+                        data = this.rstp_port.data[key];
+                    }
+                }
+                if(!data) return
+                if(this.priority_info.port_priority !== data.port_priority){
                     this.flags += 4;
                 }
-                if(this.priority_info.port_path_cost !== this.rstp_port.data[0].port_path_cost){
+                if(this.priority_info.port_path_cost !== data.port_path_cost){
                     this.flags += 2;
                 }
-                if(this.priority_info.edge_status !== this.rstp_port.data[0].edge_status){
+                if(this.priority_info.edge_status !== data.edge_status){
                     this.flags += 16;
                 }
-                if(this.priority_info.admin_link_type !== this.rstp_port.data[0].admin_link_type){
+                if(this.priority_info.admin_link_type !== data.admin_link_type){
                     this.flags += 8;
                 }
                 if(this.flags === 0){
                     this.modal_priority = false;
+                    this.$message({
+                        type: 'info',
+                        text: this.lanMap['modify_tips']
+                    })
                     return
                 }
                 var post_params = {
@@ -321,7 +353,7 @@ import { mapState } from 'vuex'
                     "param":{
                         "flags": this.flags,
                         "port_id": this.priority_info.port_id,
-                        "priority": this.priority_info.priority,
+                        "priority": this.priority_info.port_priority,
                         "port_path_cost": this.priority_info.port_path_cost,
                         "edge_status": this.priority_info.edge_status,
                         "admin_link_type": this.priority_info.admin_link_type
@@ -329,9 +361,18 @@ import { mapState } from 'vuex'
                 }
                 this.$http.post('/switch_rstp?form=port',post_params).then(res=>{
                     if(res.data.code === 1){
+                        this.modal_priority = false;
                         this.getPortData();
+                        this.$message({
+                            type: 'success',
+                            text: this.lanMap['setting_ok']
+                        })
                     }else{
                         // to do
+                        this.$message({
+                            type: 'error',
+                            text: this.lanMap['setting_fail']
+                        })
                     }
                 }).catch(err=>{
                     // to do
@@ -372,6 +413,16 @@ import { mapState } from 'vuex'
                     this.verify_input.port_path_cost = true;
                 }else{
                     this.verify_input.port_path_cost = false;
+                }
+            },
+            'priority_info.port_id'(){
+                for(var key in this.rstp_port.data){
+                    if(this.priority_info.port_id === this.rstp_port.data[key].port_id){
+                        var data = this.rstp_port.data[key];
+                        for(var _key in this.priority_info){
+                            this.priority_info[_key] = data[_key];
+                        }
+                    }
                 }
             }
         }

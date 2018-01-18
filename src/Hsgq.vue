@@ -12,32 +12,32 @@ export default {
   name: "hsgq",
   components: { loading },
   created() {
-    if(this.language === 'zh'){
-        this.set_lang_zh();
-    }
-    if(this.language === 'en'){
-        this.set_lang_en();
-    }
+        if(this.language === 'zh'){
+            this.set_lang_zh();
+        }
+        if(this.language === 'en'){
+            this.set_lang_en();
+        }
   },
   methods: {
-    ...mapMutations({
-        lanMap: "updateLanMap",
-        loading: "updateLoading"
-    }),
-    set_lang_zh(){
-        this.$http.get("./lang-zh.json").then(res=>{
-            this.lanMap(res.data);
-        }).catch(err=>{
-            // to do
-        });
-    },
-    set_lang_en(){
-        this.$http.get("./lang-en.json").then(res=>{
-            this.lanMap(res.data);
-        }).catch(err=>{
-            // to do
-        });
-    }
+        ...mapMutations({
+            lanMap: "updateLanMap",
+            loading: "updateLoading"
+        }),
+        set_lang_zh(){
+            this.$http.get("./lang-zh.json").then(res=>{
+                this.lanMap(res.data);
+            }).catch(err=>{
+                // to do
+            });
+        },
+        set_lang_en(){
+            this.$http.get("./lang-en.json").then(res=>{
+                this.lanMap(res.data);
+            }).catch(err=>{
+                // to do
+            });
+        }
   },
   computed: mapState(["port_info", "system", "isLoading",'language']),
   watch: {
@@ -62,6 +62,7 @@ export default {
   width: 100%;
   min-width: 1280px;
   max-width: 1980px;
+  font-size: 16px;
 }
 .global-load {
   display: none;
@@ -174,6 +175,7 @@ input[type="text"] {
 }
 input[type="text"]:focus {
   border: 1px solid #1e90ff;
+  border-radius: 5px;
 }
 a {
   border: 1px solid transparent;

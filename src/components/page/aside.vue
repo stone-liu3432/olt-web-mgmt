@@ -9,7 +9,7 @@
                 <!-- 二级菜单 -->
                 <transition name="bounce">
                     <ul class="sub-menu" v-if="item.children" :class="{ hide: item.isHidden }">
-                        <li v-for="(_item,_index) in item.children" :key="_index" @click="selectEvent($event)">
+                        <li v-for="(_item,_index) in item.children" :key="_index" @click="selectEvent($event)" v-if="_item.name !== 'diagonose'">
                             <p class="sub-item" @click="selectItem(_item)">
                                 {{ lanMap[_item.name] }}
                             </p>
