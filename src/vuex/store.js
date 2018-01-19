@@ -18,12 +18,12 @@ export default new Vuex.Store({
     menu: {},
     // onu列表
     onu_list: {},
+    //  系统时间  --> 13位时间戳
+    system_time: 0,
     //  loading状态
     isLoading: false,
-    //  是否登陆
-    accessToken: '',
     //  切换语言
-    language: 'en',
+    language: '',
     //  全局替换url  testUrl => 开发版本   betaUrl => 测试版本
     change_url: change_url.testUrl
   },
@@ -46,14 +46,14 @@ export default new Vuex.Store({
     updateOnuList(state,data){
         state.onu_list = data;
     },
-    updateLogin(state,data){
-        state.accessToken = data;
-    },
     updateLang(state,data){
         state.language = data;
     },
     updateLoad(state,data){
         state.isLoading = data;
+    },
+    updateTime(state,data){
+        state.system_time = data;
     }
   }
 })

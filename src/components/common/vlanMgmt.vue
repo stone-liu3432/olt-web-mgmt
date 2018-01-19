@@ -153,6 +153,8 @@ import confirm from '@/components/common/confirm'
                 new_vlan: '',
                 // 分页数据(懒加载)
                 count: 0,
+                //  是否提示创建VLAN成功的tips
+                create_tips: false,
                 // vlan映射
                 vlan_map: {},
                 // 分页插件数据
@@ -240,6 +242,7 @@ import confirm from '@/components/common/confirm'
             createVlan(){
                 this.modalDialog = true;
                 this.create_vlan = true;
+                this.vlanid = 0;
             },
             //  删除VLAN
             deleteVlan(vlanid){
@@ -274,6 +277,7 @@ import confirm from '@/components/common/confirm'
                     }
                 },0)
             },
+            //  关闭创建/配置 VLAN 模态框
             closeModal(){
                 this.create_vlan = false;
                 this.modalDialog = false;
@@ -290,15 +294,24 @@ import confirm from '@/components/common/confirm'
                     }
                     this.$http.post('/switch_vlan',post_param).then(res=>{
                         // do sth
-                        this.getData();
+                        if(res.data.code === 1){
+                            this.$message({
+                                type: 'success',
+                                text: this.lanMap['setting_ok']
+                            })
+                            this.getData();
+                        }else{
+                            this.$message({
+                                type: 'error',
+                                text: this.lanMap['setting_fail']
+                            })
+                        }
                     }).catch(err=>{
                         // to do
                     })
-                    this.userChoose = false;
-                }else{
-                    this.userChoose = false;
-                    this.vlanid = 0;
                 }
+                this.vlanid = 0;
+                this.userChoose = false;
             },
             //  分页切换
             changeIndex(n){
@@ -317,8 +330,6 @@ import confirm from '@/components/common/confirm'
                 if(bool){
                     this.set_vlan(this.vlanid);
                 }
-                this.create_vlan = false;
-                this.modalDialog = false;
             },
             //  配置VLAN ID 的端口
             set_vlan(vid){
@@ -346,12 +357,13 @@ import confirm from '@/components/common/confirm'
                     }
                 }
                 this.$http.post('/switch_vlan',post_param).then(res=>{
-                    // do sth
-                    if(res.data.code == 1){
-                        this.$message({
-                            type: 'success',
-                            text: this.lanMap['setting_ok']
-                        })
+                    if(res.data.code === 1){
+                        if(!this.tip_flag){
+                            this.$message({
+                                type: 'success',
+                                text: this.lanMap['setting_ok']
+                            })
+                        }
                         this.getData();
                     }else{
                         this.$message({
@@ -359,6 +371,10 @@ import confirm from '@/components/common/confirm'
                             text: res.data.msg
                         })
                     }
+                    this.create_vlan = false;
+                    this.modalDialog = false;
+                    this.new_vlan = '';
+                    this.tip_flag = false;
                 }).catch(err=>{
                     // to do
                 })
@@ -382,12 +398,12 @@ import confirm from '@/components/common/confirm'
                         }
                     }
                     this.$http.post('/switch_vlan',post_param).then(res=>{
-                        // do sth
-                        if(res.data.code == 1){
+                        if(res.data.code === 1){
                             this.$message({
                                 type: 'success',
                                 text: this.lanMap['create_vlan_info']
                             })
+                            this.tip_flag = true;
                             this.set_vlan(vid);
                         }else{
                             this.$message({
@@ -398,10 +414,12 @@ import confirm from '@/components/common/confirm'
                     }).catch(err=>{
                         // to do
                     })
+                }else{
+                    this.create_vlan = false;
+                    this.modalDialog = false;
+                    this.new_vlan = '';
+                    this.tip_flag = false;
                 }
-                this.create_vlan = false;
-                this.modalDialog = false;
-                this.new_vlan = '';
             },
             //  解析后台返回的字符串
             analysis(str){

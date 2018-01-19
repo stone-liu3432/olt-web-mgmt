@@ -12,6 +12,7 @@
         <div class="mac-age" v-if="cfg_age">
             <span>{{ lanMap['age'] }} : </span>
             <input type="text" v-model.number="macage" placeholder="secends">
+            <span class="tips">range: 0 , 10-1000000</span>
             <a href="javascript:;" @click="macage_choose(true)">{{ lanMap['apply'] }}</a>
             <a href="javascript:;" @click="macage_choose(false)">{{ lanMap['cancel'] }}</a>
         </div>
@@ -259,10 +260,23 @@ import loading from '@/components/common/loading'
             },
             //  老化时间编辑框内  提交按钮
             macage_choose(bool){
+                if(bool && (!this.mac_age || isNaN(this.mac_age) || this.mac_age < 10 || this.mac_age > 1000000)){
+                    if(this.mac_age !== 0){
+                        this.$message({
+                            type: 'error',
+                            text: this.lanMap['param_error']
+                        })
+                        return 
+                    }
+                }
                 if(bool && this.macage){
                     this.$http.get('/switch_mac?form=age&value=' + this.macage).then(res=>{
                         //  do sth
                         if(res.data.code == 1){
+                            this.$message({
+                                type: 'success',
+                                text: 'setting_ok'
+                            })
                             this.$http.get(this.change_url.macage).then(res=>{
                                 this.mac_age = res.data;
                             })
@@ -476,5 +490,10 @@ div.query-select select{
     height: 30px;
     font-size: 15px;
     text-indent: 10px;
+}
+div.mac-age>span.tips{
+    width: 180px;
+    font-size: 14px;
+    color: #666;
 }
 </style>

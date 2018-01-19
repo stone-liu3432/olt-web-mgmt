@@ -1,55 +1,56 @@
 <template>
-  <div id="hsgq">
-    <router-view></router-view>
-    <loading v-if="isLoading"></loading>
-  </div>
+    <div id="hsgq">
+        <router-view></router-view>
+        <loading v-if="isLoading"></loading>
+    </div>
 </template>
 
 <script>
 import { mapState, mapMutations } from "vuex";
 import loading from "@/components/common/loading";
 export default {
-  name: "hsgq",
-  components: { loading },
-  created() {
-        if(this.language === 'zh'){
-            this.set_lang_zh();
+    name: "hsgq",
+    components: { loading },
+    data(){
+        return {
+            lang: {
+                zh: {},
+                en: {}
+            }
         }
-        if(this.language === 'en'){
-            this.set_lang_en();
-        }
-  },
-  methods: {
+    },
+    created() {
+        this.$http.get('./lang-en.json').then(res=>{
+            this.lang.en = res.data;
+            this.$http.get('./lang-zh.json').then(res=>{
+                this.lang.zh = res.data;
+                this.$http.get(this.change_url.get_lang).then(res => {
+                    if (res.data.code === 1) {
+                        this.set_language(res.data.data.lang);
+                    }
+                }).catch(err => {
+                    // to do
+                });
+            }).catch(err=>{
+                // to do
+            })
+        }).catch(err=>{
+            // to do
+        })
+    },
+     methods: {
         ...mapMutations({
             lanMap: "updateLanMap",
-            loading: "updateLoading"
-        }),
-        set_lang_zh(){
-            this.$http.get("./lang-zh.json").then(res=>{
-                this.lanMap(res.data);
-            }).catch(err=>{
-                // to do
-            });
-        },
-        set_lang_en(){
-            this.$http.get("./lang-en.json").then(res=>{
-                this.lanMap(res.data);
-            }).catch(err=>{
-                // to do
-            });
+            loading: "updateLoading",
+            set_language: "updateLang"
+        })
+    },
+    computed: mapState(["port_info","system","isLoading","language","change_url"]),
+    watch: {
+        language(){
+            this.lanMap(this.lang[this.language]);
         }
-  },
-  computed: mapState(["port_info", "system", "isLoading",'language']),
-  watch: {
-      language(){
-          if(this.language === 'zh'){
-              this.set_lang_zh();
-          }
-          if(this.language === 'en'){
-              this.set_lang_en();
-          }
-      }
-  }
+    }
 };
 </script>
 
@@ -157,7 +158,7 @@ body,
   float: right;
 }
 select {
-  border: 1px solid #c8cccf;
+  border: 1px solid #ccc;
 }
 .flex-box {
   display: flex;

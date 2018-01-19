@@ -22,7 +22,8 @@ var change_url = {
         swich_port_info: './swich_port_info.json',
         beta: 'test',
         rstp: './rstp.json',
-        rstp_port: './rstp_port.json'
+        rstp_port: './rstp_port.json',
+        get_lang: 'get_lang.json'
     },
     betaUrl: {
         menu: "/board?info=menu",
@@ -47,7 +48,8 @@ var change_url = {
         swich_port_info: '/switch_port?form=port_info&port_id=',
         beta: 'beta',
         rstp: '/switch_rstp?form=bridge',
-        rstp_port: '/switch_rstp?form=port'
+        rstp_port: '/switch_rstp?form=port',
+        get_lang: '/system_lang'
     }
 }
 

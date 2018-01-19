@@ -43,6 +43,7 @@ export default {
     min-width: 300px;
     border-radius: 4px;
     position: fixed;
+    z-index: 9999;
     left: 50%;
     top: 90px;
     height: 40px;

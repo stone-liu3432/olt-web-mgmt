@@ -109,7 +109,9 @@
 	"auth_state" : "认证状态",
 	"register_time" : "注册时间",
 	"rtt" : "注册往返时间",
-	"retry" : "重复次数",
+    "retry" : "重复次数",
+    "sn_model" : "SN型号",
+	"chip_model":"芯片型号",
 	
 	"sla_type" : "带宽类型",
 	"fix" : "固定带宽",
@@ -253,6 +255,7 @@
     "lang" : "语言",
     "modify_tips": "未进行任何修改",
     "param_mac":"MAC地址格式不正确",
-    "param_onuid":"非法ONU ID"
+    "param_onuid":"非法ONU ID",
+    "param_error":"非法参数"
 
 }

@@ -47,8 +47,8 @@ export default {
        }
    },
    created(){
-       this.lang = this.language;
        this.uName = sessionStorage.getItem('uname');
+       this.lang = this.language;
    },
    methods: {
         ...mapMutations({
@@ -77,13 +77,11 @@ export default {
         }
    },
    watch: {
+       language(){
+           this.lang = this.language;
+       },
        lang(){
-            if(this.lang === 'zh'){
-                this.change_lang('zh');
-            }
-            if(this.lang === 'en'){
-                this.change_lang('en');
-            }
+            this.change_lang(this.lang);
         }
    }
 }

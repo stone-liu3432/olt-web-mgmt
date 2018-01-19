@@ -19,7 +19,7 @@
 	},{
 	    "macaddr":"00:00:25:00:00:03",
 	    "vlan_id":13,
-	    "port_id":1,
+	    "port_id":11,
 	    "mac_type":1
 	},{
 	    "macaddr":"00:00:25:00:00:04",
@@ -29,12 +29,12 @@
 	},{
 	    "macaddr":"00:00:25:00:00:05",
 	    "vlan_id":15,
-	    "port_id":1,
+	    "port_id":4,
 	    "mac_type":1
 	},{
 	    "macaddr":"00:00:25:00:00:06",
 	    "vlan_id":16,
-	    "port_id":1,
+	    "port_id":8,
 	    "mac_type":1
 	},{
 	    "macaddr":"00:00:25:00:00:07",

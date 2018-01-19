@@ -2,7 +2,7 @@
 	"advanced" : "advanced",
 	"running_status" : "Running Status",
 	"system_mgmt" : "System",
-	  "dev_mgmt" : "Device Management",
+	  "dev_mgmt" : "Device",
 		"default_config" : "Default Factory Config",
 		"backup_config" : "Backup Config",
 		"restore_config" : "Restore Config",
@@ -108,7 +108,9 @@
 	"onu_id" : "ONU ID",
 	"auth_state" : "Auth State",
 	"register_time" : "Register Time",
-	"rtt" : "Round Trap Time",
+    "rtt" : "Round Trap Time",
+    "sn_model" : "SN model",
+	"chip_model":"Chip model",
 	
 	"retry" : "Retry Counts",
 	
@@ -232,7 +234,7 @@
 	"rstp_p_info":"Rstp port",
 	"rstp_b_info":"Rstp bridge",
 	
-	"no_inb_info":"None outbound interface",
+	"no_inb_info":"None iutbound interface",
 	"oub_con_fail":"Connect outbound interface failed",
 	
 	"if_sure":"Confirm",
@@ -254,6 +256,7 @@
     "lang" : "Language",
     "modify_tips": "There's none modify",
     "param_mac": "MAC address parameter error",
-    "param_onuid":"ONU ID illegal"
+    "param_onuid":"ONU ID illegal",
+    "param_error":"illegal parameter"
 
 }

@@ -65,7 +65,7 @@
                 <h2>{{ lanMap['sys_run_time'] }}</h2>
                 <div class="time-info">
                     <span>{{ lanMap['current_time'] + ' :' }}</span>
-                    <span>{{ new Date(this.timer.data.time_sec).toLocaleString().replace(/\//g,'-') }}</span>
+                    <span>{{ new Date(timer.data.time_sec).toLocaleString().replace(/\//g,'-') }}</span>
                 </div>
                 <div class="time-info">
                     <span>{{ lanMap['run_time']+' :' }}</span>
@@ -91,7 +91,8 @@
                 ponInfo: {},
                 geInfo: {},
                 timer: {},
-                interval: null
+                interval: null,
+                time_interval: null
             }
         },
         created(){
@@ -105,9 +106,6 @@
             // 请求url: '/board?info=cpu'
             this.$http.get(this.change_url.cpu).then(res=>{
                 this.cpuInfo = res.data;
-                // setTimeout(()=>{
-                //     this.drawing(this.cpuInfo.data.cpu_usage,this.cpuInfo.data.memory_usage);
-                // },0)
                 this.$nextTick(()=>{
                     this.drawing(this.cpuInfo.data.cpu_usage,this.cpuInfo.data.memory_usage)
                 });
@@ -116,29 +114,32 @@
             })
             //  请求url: /time?form=info
             this.$http.get(this.change_url.time).then(res=>{
-                this.timer = res.data;
-                if(this.timer.data){
-                    setInterval(()=>{
-                        if(this.timer.data.secs < 60){
-                            this.timer.data.secs += 1;
-                            if(this.timer.data.secs > 59){
-                                this.timer.data.secs = 0;
-                                this.timer.data.mins += 1;
-                                if(this.timer.data.mins > 59){
+                if(res.data.code === 1){
+                    this.timer = res.data;
+                    this.sys_time(res.data);
+                    if(this.timer.data){
+                        this.time_interval = setInterval(()=>{
+                            if(this.timer.data.secs < 60){
+                                this.timer.data.secs += 1;
+                                if(this.timer.data.secs > 59){
                                     this.timer.data.secs = 0;
-                                    this.timer.data.mins = 0;
-                                    this.timer.data.hours += 1;
-                                    if(this.timer.data.nours > 23){
+                                    this.timer.data.mins += 1;
+                                    if(this.timer.data.mins > 59){
                                         this.timer.data.secs = 0;
                                         this.timer.data.mins = 0;
-                                        this.timer.data.hours = 0;
-                                        this.timer.data.days += 1;
+                                        this.timer.data.hours += 1;
+                                        if(this.timer.data.nours > 23){
+                                            this.timer.data.secs = 0;
+                                            this.timer.data.mins = 0;
+                                            this.timer.data.hours = 0;
+                                            this.timer.data.days += 1;
+                                        }
                                     }
                                 }
                             }
-                        }
-                        this.timer.data.time_sec += 1000;
-                    },1000)
+                            this.timer.data.time_sec += 1000;
+                        },1000)
+                    }
                 }
             }).catch(err=>{
                 // to do
@@ -150,13 +151,15 @@
         },
         beforeDestroy(){
             clearInterval(this.interval);
+            clearInterval(this.time_interval);
         },
         methods: {
             ...mapMutations({
                 systemInfo: 'updateSysData',
                 portInfo: 'updatePortData',
                 portName: 'updatePortName',
-                update_menu: 'updateMenu'
+                update_menu: 'updateMenu',
+                sys_time: 'updateTime'
             }),
             //  点击跳转到 onu允许列表
             jump_onu_allow(portid){

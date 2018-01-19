@@ -9,7 +9,7 @@
             <li v-for="(item,key) in rstp.data" :key="key">
                 <span>{{ lanMap[key] }}</span>
                 <span v-if="key !== 'status' && key !== 'rstp_mode'">{{ item }}</span>
-                <span v-if=" key === 'status'">{{ item === 1 ? lanMap['enable'] : lanMap['disabled'] }}</span>
+                <span v-if=" key === 'status'">{{ item === 1 ? lanMap['enable'] : lanMap['disable'] }}</span>
                 <span v-if=" key === 'rstp_mode'">{{ item === 0 ? 'stp' : 'rstp'  }}</span>
             </li>
         </ul>

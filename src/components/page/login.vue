@@ -100,7 +100,7 @@ import { mapState,mapMutations } from "vuex"
                         sessionStorage.setItem('uname',this.userName);
                         this.$message({
                             type: 'success',
-                            text: this.lanMap['login_success']
+                            text: this.lanMap['login_success'] + ',' + this.userName
                         })
                         this.$router.push('/main');
                     }else{
@@ -154,12 +154,10 @@ import { mapState,mapMutations } from "vuex"
                 this.login_failed = false;
             },
             lang(){
-                if(this.lang === 'zh'){
-                    this.set_language('zh');
-                }
-                if(this.lang === 'en'){
-                    this.set_language('en');
-                }
+                this.set_language(this.lang);
+            },
+            language(){
+                this.lang = this.language;
             }
         }
     }
