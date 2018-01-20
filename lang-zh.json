@@ -50,6 +50,8 @@
 	"type" : "类型",
 	"using" : "启用",
 	"forbidden" : "禁用",
+	"st_success":"成功",
+	"st_fail":"失败",
 	
 	"macaddr" : "MAC地址",
 	"ponports" : "PON口数量",
@@ -109,9 +111,7 @@
 	"auth_state" : "认证状态",
 	"register_time" : "注册时间",
 	"rtt" : "注册往返时间",
-    "retry" : "重复次数",
-    "sn_model" : "SN型号",
-	"chip_model":"芯片型号",
+	"retry" : "重复次数",
 	
 	"sla_type" : "带宽类型",
 	"fix" : "固定带宽",
@@ -121,8 +121,13 @@
 	"auth_mode" : "认证模式",
 	"onu_type" : "ONU类型",
 	"vendor" : "厂商",
-	"onu_model" : "型号",
+	"sn_model" : "SN型号",
+	"chip_model":"芯片型号",
 	"onu_chip" : "芯片",
+	
+	"tips_del_onu":"是否确认删除该onu",
+	"tips_add_deny_onu":"是否确认添加到阻止列表",
+	
 	
 	"port_type" : "端口类型",
 	"vlan_mode" : "VLAN模式",
@@ -144,6 +149,7 @@
 	"static" : "静态",
     "dynamic" : "动态",
     "vlan_id" : "VLAN ID",
+    "tips_del_mac":"是否确认删除该MAC地址表项",
 	
 	"flush" : "清除",
     "desc" : "描述信息",
@@ -173,7 +179,7 @@
 	"port_state": "状态",
 	"auto": "Auto",
 	"p2p": "P2P",
-	"shared": "Shared",
+	"Shared": "Shared",
 	
 	"http_login_timeout":"登录超时，请重试",
 	"service_user_password_fail":"用户名或密码验证失败",
@@ -187,8 +193,8 @@
 	"illegal_login_info":"非法登录信息",
 	"logout":"退出登录",
 	"company_info":"公司信息&版权信息等",
-    "setting_ok": "设置成功",
-    "setting_fail": "设置失败",
+	"setting_ok": "设置成功",
+	"setting_fail": "设置失败",
 	"create_vlan_info":"创建VLAN成功，正在应用VLAN配置",
 	"delete_vlan_hit":"是否确认删除此VLAN?",
 	"vlanid_range_hit":"VLAN ID取值范围应该为1-4094之间的数字",
@@ -252,10 +258,24 @@
 	"manual_bind":"手动添加ONU",
 	"reboot_onu":"重启ONU",
 	
-    "lang" : "语言",
-    "modify_tips": "未进行任何修改",
-    "param_mac":"MAC地址格式不正确",
-    "param_onuid":"非法ONU ID",
-    "param_error":"非法参数"
-
+	"lang" : "语言",
+	"modify_tips": "未进行任何修改",
+	"param_mac":"MAC地址格式不正确",
+	"param_onuid":"非法ONU ID",
+	"param_error":"非法参数",
+	
+	"time_set":"时间",
+	"manual_s": "手动",
+	"time_days":"日期",
+	"time_year":"年",
+	"time_month":"月",
+	"time_day":"日",
+	"time_hour":"时",
+	"time_min":"分",
+	"time_sec":"秒",
+	"time_get_serv":"获取服务器时间",
+	"time_set_local":"更新本地时间",
+	"notice_time_sync": "请注意，页面时间可能与服务器时间存在差异，可以点击按钮将本页面时间与服务器时间同步",
+	"update_time":"更新时间",
+	"diff_type_cfg":"不同type时的可配置选项"
 }

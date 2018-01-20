@@ -45,24 +45,72 @@
                             <option value="type5">type5</option>
                         </select> 
                     </span>
+                    <!-- 提示框，鼠标移入弹出 -->
+                    <span class="dialog-tips">
+                        <i class="icon-tips"></i>
+                        <div class="slc-type-tips">
+                            <p>{{ lanMap['diff_type_cfg'] }}</p>
+                            <div>
+                                 <div>
+                                    <span>type</span>
+                                    <span>{{ this.lanMap['fix'] }}</span>
+                                    <span>{{this.lanMap['assure'] }}</span>
+                                    <span>{{ this.lanMap['max'] }}</span>
+                                </div>
+                                <div>
+                                    <span>type1</span>
+                                    <span>&radic;</span>
+                                    <span></span>
+                                    <span></span>
+                                </div>
+                                <div>
+                                    <span>type2</span>
+                                    <span></span>
+                                    <span>&radic;</span>
+                                    <span></span>
+                                </div>
+                                <div>
+                                    <span>type3</span>
+                                    <span></span>
+                                    <span>&radic;</span>
+                                    <span>&radic;</span>
+                                </div>
+                                <div>
+                                    <span>type4</span>
+                                    <span></span>
+                                    <span></span>
+                                    <span>&radic;</span>
+                                </div>
+                                <div>
+                                    <span>type5</span>
+                                    <span>&radic;</span>
+                                    <span>&radic;</span>
+                                    <span>&radic;</span>
+                                </div>
+                            </div>
+                        </div>
+                    </span>
                 </div>
                 <div class="dialog-item">
                     <span>{{ lanMap['fix'] }}</span>
                     <span>
-                        <input type="text" placeholder="0-1024 Mbps" class="sla-fix" v-model="post_params.fix">
+                        <input type="text" placeholder="0-1024 Mbps" class="sla-fix" v-model.number="post_params.fix">
                     </span>
+                    <span class="tips">range: 1-1000000kbs</span>
                 </div>
                 <div class="dialog-item">
                     <span>{{ lanMap['assure'] }}</span>
                     <span>
-                        <input type="text" placeholder="0-1024 Mbps" class="sla-assure" v-model="post_params.assure" disabled>
+                        <input type="text" placeholder="0-1024 Mbps" class="sla-assure" v-model.number="post_params.assure" disabled>
                     </span>
+                    <span class="tips">range: 1-1000000kbs</span>
                 </div>
                 <div class="dialog-item">
                     <span>{{ lanMap['max'] }}</span>
                     <span>
-                        <input type="text" placeholder="0-1024 Mbps" class="sla-max" v-model="post_params.max" disabled>
+                        <input type="text" placeholder="0-1024 Mbps" class="sla-max" v-model.number="post_params.max" disabled>
                     </span>
+                    <span class="tips">range: 1-1000000kbs</span>
                 </div>
                 <div class="dialog-item">
                     <a href="javascript:;" @click="isChange(true)">{{ lanMap['apply'] }}</a>
@@ -75,16 +123,13 @@
                 <div class="close" @click="closeModal"></div>
             </div>
         </div>
-        <loading v-if="false"></loading>
     </div>
 </template>
 
 <script>
-import loading from '@/components/common/loading'
 import { mapState } from 'vuex'
     export default {
         name: 'slaCfg',
-        components: { loading },
         data(){
             return {
                 band_width: {},
@@ -101,7 +146,6 @@ import { mapState } from 'vuex'
             }
         },
         created(){
-            // 请求 url: /onu_bandwidth?port_id=1  //  port_id =  this.$route.query.port_id
             //  '/onu_bandwidth?port_id=' + (this.$route.query.port_id || 1)  
             this.portid = this.$route.query.port_id || this.port_info.data[0].port_id;
             if(this.change_url.beta === 'test'){
@@ -159,7 +203,7 @@ import { mapState } from 'vuex'
             isChange(bool){
                 if(bool){
                     // 点击确定时，收集数据，发送POST请求
-                    var postData = {
+                    var post_data = {
                         "method":"set",
                         "param":{
                             "port_id": this.portid,
@@ -170,9 +214,14 @@ import { mapState } from 'vuex'
                             "max": this.post_params.max
                         }
                     }
-                    this.$http.post('/onu_bandwidth',postData).then(res=>{
+                    this.$http.post('/onu_bandwidth',post_data).then(res=>{
                         if(res.data.code === 1){
                            this.getData();
+                        }else{
+                            this.$message({
+                                type: 'error',
+                                text: this.lanMap['setting_fail']
+                            })
                         }
                     }).catch(err=>{
                         // to do
@@ -220,7 +269,7 @@ import { mapState } from 'vuex'
     }
 </script>
 
-<style scoped>
+<style scoped lang="less">
 .onu-bandwidth{
     margin-top: 30px;
 }
@@ -258,8 +307,8 @@ select{
 a{
     display: inline-block;
     width: 120px;
-    height: 26px;
-    line-height: 26px;
+    height: 30px;
+    line-height: 30px;
     border-radius: 5px;
     background: #ddd;
     text-align: center;
@@ -272,8 +321,8 @@ div.dialog{
     bottom : 0;
     left: 0;
     margin: auto;
-    width: 500px;
-    height: 370px;
+    width: 600px;
+    height: 380px;
     background: #fff;
     border-radius: 5px;
 }
@@ -285,17 +334,24 @@ div.dialog>h2{
 }
 div.dialog-item{
     margin: 10px;
+    height: 36px;
+    line-height: 36px;
 }
 div.dialog-item input{
     width: 140px;
 }
 div.dialog-item>span{
     display: inline-block;
-    width: 40%;
+    width: 30%;
+}
+div.dialog-item>span.tips{
+    text-align: left;
+    font-size: 14px;
+    color: #666;
 }
 div.dialog-item>a{
-    margin-left: 75px;
-    margin-top: 15px;
+    margin-left: 115px;
+    margin-top: 20px;
 }
 div.failed{
     position: absolute;
@@ -315,5 +371,61 @@ div.failed>p{
 }
 input[disabled]{
     cursor: not-allowed;
+}
+div.dialog-item>span.dialog-tips{
+    position: relative;
+    vertical-align: middle;
+    height: 36px;
+    text-align: left;
+    width: 32px;
+}
+i.icon-tips{
+    display: inline-block;
+    width: 32px;
+    height: 32px;
+    background: url('../../assets/tips.png') no-repeat;
+}
+span.dialog-tips:hover div.slc-type-tips{
+    display: block;
+}
+div.slc-type-tips{
+    display: none;
+    position: absolute;
+    left: 40px;
+    top: 10px;
+    width: 300px;
+    background: #eee;
+    border: 1px solid #67aef7;
+    color: #555;
+    border-radius: 3px;
+    >p{
+        text-align: center;
+        color: #67aef7;
+    }
+    >div{
+        margin: 5px;
+        border: 1px solid #aaa;
+        >div{
+            font-size: 0;
+            height: 24px;
+            border-bottom: 1px solid #aaa;
+            vertical-align: middle;
+            &:last-child{
+                border-bottom: 0;
+            }
+            >span{
+                width: 24%;
+                font-size: 16px;
+                display: inline-block;
+                height: 24px;
+                line-height: 24px;
+                vertical-align: top;
+                border-right: 1px solid #aaa;
+                &:last-child{
+                    border-right: 0;
+                }
+            }
+        }
+    }
 }
 </style>

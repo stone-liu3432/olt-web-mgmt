@@ -25,6 +25,7 @@
                 {{ item }}
             </span>
         </div>
+        <div v-else></div>
     </div>
 </template>
 

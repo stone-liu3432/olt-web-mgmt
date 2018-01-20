@@ -330,6 +330,7 @@ import confirm from '@/components/common/confirm'
                 if(bool){
                     this.set_vlan(this.vlanid);
                 }
+                this.modalDialog = false;
             },
             //  配置VLAN ID 的端口
             set_vlan(vid){

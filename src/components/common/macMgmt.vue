@@ -90,7 +90,11 @@
         <div v-else class="nomore-data">
             <p>{{ lanMap['no_more_data'] }}</p>
         </div>
-        <confirm :tool-tips="lanMap['if_sure']" @choose="result" v-if="userChoose"></confirm> 
+        <confirm :tool-tips="lanMap['tips_del_mac']" @choose="result" v-if="userChoose"></confirm>
+        <div class="modal-dialog">
+            <div class="cover"></div>
+            <div class="content"></div>
+        </div>
     </div>
 </template>
 
@@ -152,19 +156,6 @@ import loading from '@/components/common/loading'
             }).catch(err=>{
                 // to do 
             })
-            var post_param = {
-                    "method":"get",
-                    "param":{
-                        "flags": 1,
-                        "count": 0,
-                        "mac_type": 3,
-                        "port_id": 1,
-                        "vlan_id": 0,
-                        "vlan_id_e": 0,
-                        "macaddr": "00:00:00:00:00:11",
-                        "macmask": "00:00:00:00:00:ff"
-                    }
-            }
             if(this.change_url.beta === 'test'){
                 this.$http.get(this.change_url.mactab).then(res=>{
                     this.tab = res.data.data;
@@ -227,6 +218,7 @@ import loading from '@/components/common/loading'
                 //  将要删除的节点的数据缓存
                 this.delete_mac_data = data;
             },
+            //  删除mac地址表
             result(bool){
                 if(bool){
                     var post_params = {
@@ -234,12 +226,23 @@ import loading from '@/components/common/loading'
                         "param":{
                             "mac_type": this.delete_mac_data.mac_type,
                             "macaddr": this.delete_mac_data.macaddr,
-                            "vlan_id": this.delete_mac_data.vlan_id
+                            "vlan_id": this.delete_mac_data.vlan_id,
+                            "port_id": this.delete_mac_data.port_id
                         }
                     }
                     this.$http.post('/switch_mac?form=table',post_params).then(res=>{
-                        // do sth
-                        this.getData();
+                        if(res.data.code === 1){
+                            this.$message({
+                                type: 'success',
+                                text: this.lanMap['st_success']
+                            })
+                            this.getData();
+                        }else{
+                            this.$message({
+                                type: 'error',
+                                text: this.lanMap['st_fail']
+                            })
+                        }
                     }).catch(err=>{
                         // to do
                     })
@@ -260,18 +263,15 @@ import loading from '@/components/common/loading'
             },
             //  老化时间编辑框内  提交按钮
             macage_choose(bool){
-                if(bool && (!this.mac_age || isNaN(this.mac_age) || this.mac_age < 10 || this.mac_age > 1000000)){
-                    if(this.mac_age !== 0){
+                if(bool){
+                    if(this.macage !== 0 && (isNaN(this.macage) || this.macage < 10 || this.macage > 1000000)){
                         this.$message({
                             type: 'error',
                             text: this.lanMap['param_error']
                         })
-                        return 
+                        return
                     }
-                }
-                if(bool && this.macage){
                     this.$http.get('/switch_mac?form=age&value=' + this.macage).then(res=>{
-                        //  do sth
                         if(res.data.code == 1){
                             this.$message({
                                 type: 'success',
@@ -281,8 +281,11 @@ import loading from '@/components/common/loading'
                                 this.mac_age = res.data;
                             })
                         }
+                    }).catch(err=>{
+                        // to do
                     })
                 }
+                this.macage = '';
                 this.cfg_age = false;
             },
             //  计算分页中当前显示页面的数据
@@ -359,7 +362,7 @@ import loading from '@/components/common/loading'
     }
 </script>
 
-<style scoped>
+<style scoped lang="less">
 ul.mac-table{
     border: 1px solid #ddd;
 }
@@ -466,7 +469,7 @@ ul.pagination>li.disabled{
     opacity: .65;
 }
 div.query-select{
-    margin: 20px 0 20px 30px;
+    margin: 20px 0 10px 30px;
     vertical-align: middle;
 }
 div.query-select>p{
@@ -495,5 +498,18 @@ div.mac-age>span.tips{
     width: 180px;
     font-size: 14px;
     color: #666;
+}
+div.content{
+    position: absolute;
+    left: 0;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    margin: auto;
+    width: 500px;
+    height: 350px;
+    background: #ddd;
+    border-radius: 10px;
+    background: #fff;
 }
 </style>

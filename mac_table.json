@@ -4,7 +4,7 @@
     "data":[{
 	    "macaddr":"00:00:25:00:00:00",
 	    "vlan_id":10,
-	    "port_id":0,
+	    "port_id":2,
 	    "mac_type":1
 	},{
 	    "macaddr":"00:00:25:00:00:76",
@@ -19,7 +19,7 @@
 	},{
 	    "macaddr":"00:00:25:00:00:03",
 	    "vlan_id":13,
-	    "port_id":11,
+	    "port_id":1,
 	    "mac_type":1
 	},{
 	    "macaddr":"00:00:25:00:00:04",

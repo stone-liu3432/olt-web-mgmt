@@ -271,6 +271,7 @@ a{
 }
 i.icon-delete{
     display: inline-block;
+    cursor: pointer;
     width: 32px;
     height: 32px;
     background: url('../../assets/delete-normal.png') no-repeat;

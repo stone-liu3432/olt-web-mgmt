@@ -88,10 +88,6 @@ import { mapState,mapMutations } from "vuex"
                             "key": md5(self.userName + ':' + self.userPwd)
                         }
                     },
-                    // transformRequest: function (data) {
-                    //     data = md5(data);
-                    //     return data;
-                    // },
                     timeout: 5000
                 }).then(res=>{
                     this.userPwd = '';

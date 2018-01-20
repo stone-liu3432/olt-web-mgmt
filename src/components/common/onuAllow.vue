@@ -27,8 +27,8 @@
                 <div class="modal-item">
                     <span>{{ lanMap['auth_state'] }}</span>
                     <select v-model="add_onustate">
-                        <option value="1">true</option>
-                        <option value="0">false</option>
+                        <option value="1">{{ lanMap['true'] }}</option>
+                        <option value="0">{{ lanMap['false'] }}</option>
                     </select>
                 </div>
                 <!-- <div class="modal-item">
@@ -59,7 +59,7 @@
                 <span>{{ item.macaddr }}</span>
                 <span>{{ item.status }}</span>
                 <span>
-                    <span>{{ item.auth_state ? 'true' : 'false' }}</span>
+                    <span>{{ item.auth_state ? lanMap['true'] : lanMap['false'] }}</span>
                     <i :class="[item.auth_state ? 'verified-actived' : 'verified']" @click="authstate_on(item)" :title="lanMap['clk_cfrm']"></i>
                     <i :class="[item.auth_state ? 'unverified' : 'unverified-actived']" @click="authstate_off(item)" :title="lanMap['clk_cancel_cfrm']"></i>
                 </span>
@@ -72,13 +72,17 @@
             </li>
         </ul>
         <p v-else>{{ lanMap['no_more_data'] }}</p>
+        <confirm :tool-tips="lanMap['tips_del_onu']" @choose="result_delete" v-if="delete_confirm"></confirm>
+        <confirm :tool-tips="lanMap['tips_add_deny_onu']" @choose="result_deny" v-if="deny_confirm"></confirm>
     </div>
 </template>
 
 <script>
 import { mapState,mapMutations } from 'vuex'
+import confirm from '@/components/common/confirm'
     export default {
         name: 'onuAllow',
+        components: { confirm },
         data(){
             return {
                 onu_allow_list: {},
@@ -88,7 +92,10 @@ import { mapState,mapMutations } from 'vuex'
                 add_onuid: '',
                 add_macaddr: '',
                 add_onustate: 0,
-                add_onudesc: ''
+                add_onudesc: '',
+                delete_confirm: false,
+                deny_confirm: false,
+                post_params: {}
             }
         },
         computed: mapState(['lanMap','port_name','menu','change_url']),
@@ -136,7 +143,7 @@ import { mapState,mapMutations } from 'vuex'
             },
             // 删除onu
             delete_onu(node){
-                var post_params = {
+                this.post_params = {
                     "method":"delete",
                     "param":{
                         "port_id": node.port_id,
@@ -144,22 +151,7 @@ import { mapState,mapMutations } from 'vuex'
                         "macaddr": node.macaddr
                     }
                 }
-                this.$http.post('/onu_allow_list',post_params).then(res=>{
-                    if(res.data.code === 1){
-                        this.$message({
-                            type: 'success',
-                            text: this.lanMap['setting_ok']
-                        })
-                        this.getData();
-                    }else{
-                        this.$message({
-                            type: 'error',
-                            text: this.lanMap['setting_fail']
-                        })
-                    }
-                }).catch(err=>{
-                    // to do
-                })
+                this.delete_confirm = true;
             },
             //  手动添加 onu
             add_onu(){
@@ -282,30 +274,15 @@ import { mapState,mapMutations } from 'vuex'
             },
             //  移动ONU到阻止列表
             remove_onu(node){
-                var post_params = {
+                this.post_params = {
                     "method":"reject",
                     "param":{
                         "port_id": node.port_id,
                         "onu_id": node.onu_id,
                         "macaddr": node.macaddr
                     }
-                }
-                this.$http.post('/onu_allow_list',post_params).then(res=>{
-                    if(re.data.code === 1){
-                        this.$message({
-                            type: 'success',
-                            text: this.lanMap['setting_ok']
-                        })
-                        this.getData();
-                    }else{
-                        this.$message({
-                            type: 'error',
-                            text: this.lanMap['setting_fail']
-                        })
-                    }
-                }).catch(err=>{
-                    // to do
-                })
+                };
+                this.deny_confirm = true;
             },
             //  跳转带宽管理
             onu_bandwieth(){
@@ -363,6 +340,52 @@ import { mapState,mapMutations } from 'vuex'
                 }
                 // 调用 vuex Mutations方法，更新 store 状态
                 this.update_menu(_menu);
+            },
+            //  删除确认框
+            result_delete(bool){
+                if(bool){
+                    this.$http.post('/onu_allow_list',this.post_params).then(res=>{
+                        if(res.data.code === 1){
+                            this.$message({
+                                type: 'success',
+                                text: this.lanMap['setting_ok']
+                            })
+                            this.getData();
+                        }else{
+                            this.$message({
+                                type: 'error',
+                                text: this.lanMap['setting_fail']
+                            })
+                        }
+                    }).catch(err=>{
+                        // to do
+                    })
+                }
+                this.post_params = {};
+                this.delete_confirm = false;
+            },
+            //  加入黑名单确认框
+            result_deny(bool){
+                if(bool){
+                    this.$http.post('/onu_allow_list',this.post_params).then(res=>{
+                        if(re.data.code === 1){
+                            this.$message({
+                                type: 'success',
+                                text: this.lanMap['setting_ok']
+                            })
+                            this.getData();
+                        }else{
+                            this.$message({
+                                type: 'error',
+                                text: this.lanMap['setting_fail']
+                            })
+                        }
+                    }).catch(err=>{
+                        // to do
+                    })
+                }
+                this.post_params = {};
+                this.deny_confirm = false;
             }
         },
         watch: {
