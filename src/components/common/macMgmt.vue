@@ -16,8 +16,13 @@
             <a href="javascript:;" @click="macage_choose(true)">{{ lanMap['apply'] }}</a>
             <a href="javascript:;" @click="macage_choose(false)">{{ lanMap['cancel'] }}</a>
         </div>
+        <hr>
         <div class="query-select">
             <p>{{ lanMap['detail'] }}</p>
+            <div>
+                <a href="javascript:;" @click="add_mac_dialog">{{ lanMap['add_mac'] }}</a>
+                <a href="javascript:;" @click="flush_mac_dialog">{{ lanMap['flush_mac'] }}</a>
+            </div>
             <div class="query-frame">
                 <span>{{ lanMap['query_method'] }}：</span>
                 <select v-model="flag">
@@ -29,9 +34,9 @@
             </div>
             <div v-if="choose_macaddr" class="query-frame">
                 <span>{{ lanMap['macaddr'] }}</span>
-                <input type="text" placeholder="mac addr" v-model="macaddr">
+                <input type="text" placeholder="ex: 00:00:00:00:00:00" v-model="macaddr" :style="{ 'border-color' : check_mac.test(macaddr) || macaddr === '' ? '#ddd' : 'red' }">
                 <span>{{ lanMap['ipmask'] }}</span>
-                <input type="text" placeholder="mac mask" v-model="macmask">
+                <input type="text" placeholder="ex: 00:00:00:00:00:00" v-model="macmask" :style="{ 'border-color' : check_mac.test(macmask) || macmask === '' ? '#ddd' : 'red' }">
                 <a href="javascript:;" @click="query_macaddr">{{ lanMap['apply'] }}</a>
             </div>
             <div v-if="choose_mactype" class="query-frame">
@@ -43,11 +48,13 @@
                 </select>
             </div>
             <div v-if="choose_port" class="query-frame">
-                <input type="text" placeholder="port id" v-model.number="port_id">
-                <a href="javascript:;" @click="query_portid">{{ lanMap['apply'] }}</a>
+                <select v-model="port_id">
+                    <option :value="item.id" v-for="(item,key) in port_name.pon" :key="key">{{ item.name }}</option>
+                    <option :value="item.id" v-for="(item,key) in port_name.ge" :key="key">{{ item.name }}</option>
+                </select>
             </div>
             <div v-if="choose_vlan" class="query-frame">
-                <input type="text" placeholder="VLAN ID" v-model.number="vlan_id">
+                <input type="text" placeholder="range: 1 - 4094" v-model.number="vlan_id">
                 <!-- <input type="text" placeholder="max"> -->
                 <a href="javascript:;" @click="query_vlanid">{{ lanMap['apply'] }}</a>
             </div>
@@ -67,7 +74,8 @@
                     {{ item.mac_type === 0 ? lanMap['dynamic'] : item.mac_type === 1 ? lanMap['static'] : lanMap['blackhole'] }}
                 </span>
                 <span>
-                    <a href="javascript:;" @click="delete_mac(item)">{{ lanMap['delete'] }}</a>
+                    <!-- <a href="javascript:;" @click="delete_mac(item)">{{ lanMap['delete'] }}</a> -->
+                    <i class="delete" @click="delete_mac(item)"></i>
                 </span>
             </li>
             <li v-if="mac_table.length%200 === 0">
@@ -90,11 +98,95 @@
         <div v-else class="nomore-data">
             <p>{{ lanMap['no_more_data'] }}</p>
         </div>
-        <confirm :tool-tips="lanMap['tips_del_mac']" @choose="result" v-if="userChoose"></confirm>
-        <div class="modal-dialog">
+        <div class="modal-dialog" v-if="add_dialog">
             <div class="cover"></div>
-            <div class="content"></div>
+            <div class="content">
+                <h3>{{ lanMap['add_mac'] }}</h3>
+                <div class="add-mac-item">
+                    <span>{{ lanMap['mac_type'] }}</span>
+                    <select v-model="add_param.mac_type">
+                        <option value="1">{{ lanMap['static'] }}</option>
+                        <option value="2">{{ lanMap['blackhole'] }}</option>
+                    </select>
+                </div>
+                <div class="add-mac-item">
+                    <span>{{ lanMap['macaddr'] }}</span>
+                    <input type="text" v-model="add_param.macaddr" :style="{ 'border-color' : this.check_mac.test(this.add_param.macaddr) || !this.add_param.macaddr ? '#ccc' : 'red' }">
+                    <span>ex: 00:00:00:00:00:00</span>
+                </div>
+                <div class="add-mac-item">
+                    <span>{{ lanMap['vlan_id'] }}</span>
+                    <input type="text" v-model.number="add_param.vlan_id" :style="{ 'border-color' : !isNaN(this.add_param.vlan_id) ? '#ccc' : 'red' }">
+                    <span>range: 1-4094</span>
+                </div>
+                <div class="add-mac-item">
+                    <span>{{ lanMap['port_id'] }}</span>
+                    <select v-model="add_param.port_id">
+                        <option :value="item.id" v-for="(item,key) in port_name.pon" :key="key">{{ item.name }}</option>
+                        <option :value="item.id" v-for="(item,key) in port_name.ge" :key="key">{{ item.name }}</option>
+                    </select>
+                </div>
+                <div class="add-mac-item">
+                    <a href="javascript:;" @click="add_mac_table">{{ lanMap['apply'] }}</a>
+                    <a href="javascript:;" @click="add_mac_close_dialog">{{ lanMap['cancel'] }}</a>
+                </div>
+                <div class="close" @click="add_mac_close_dialog"></div>
+            </div>
         </div>
+        <div class="modal-dialog" v-if="flush_dialog">
+            <div class="cover"></div>
+            <div class="content self-align">
+                <h3>{{ lanMap['flush_mac'] }}</h3>
+                <div class="add-mac-item">
+                    <span>{{ lanMap['flush_way'] }}</span>
+                    <select v-model.number="flush_param.flags">
+                        <option value="1">{{ lanMap['mac_type'] }}</option>
+                        <option value="2">{{ lanMap['port_id'] }}</option>
+                        <option value="4">{{ lanMap['vlan_id'] }}</option>
+                    </select>
+                </div>
+                <div class="add-mac-item">
+                    <span>{{ lanMap['mac_type'] }}</span>
+                    <select v-model.number="flush_param.mac_type">
+                        <option value="0">{{ lanMap['dynamic'] }}</option>
+                        <option value="1">{{ lanMap['static'] }}</option>
+                        <option value="2" v-if="flush_param.flags !== 2">{{ lanMap['blackhole'] }}</option>
+                        <option value="3">all</option>
+                    </select>
+                </div>
+                <div class="add-mac-item" v-if = "flush_param.flags === 4">
+                    <span>{{ lanMap['vlan_id'] }}</span>
+                    <input type="text" v-model.number="flush_param.vlan_id" placeholder="VLAN ID" 
+                    :style="{ 'border-color' : flush_param.vlan_id && ( isNaN(flush_param.vlan_id) || flush_param.vlan_id < 1 || flush_param.vlan_id > 4094) ? 'red' : '#ccc' }">
+                    <span>range: 1-4094</span>
+                </div>
+                <div class="add-mac-item" v-if="flush_param.flags !== 2 && flush_param.flags !== 4"></div>
+                <div class="add-mac-item item-align" v-if=" flush_param.flags === 2 ">
+                    <span>{{ lanMap['port_id'] }}</span>
+                    <div>
+                        <div v-for="(item,key) in port_name.pon" class="lf">
+                            <input type="checkbox" :id="item.name" v-model="flush_param.port_id" :value="item.id" name="port_list">
+                            <label :for="item.name">{{ item.name }}</label>
+                        </div>
+                        <div v-for="(item,key) in port_name.ge" class="lf">
+                            <input type="checkbox" :id="item.name" v-model="flush_param.port_id" :value="item.id" name="port_list">
+                            <label :for="item.name">{{ item.name }}</label>
+                        </div>
+                        <!-- 测试用 -->
+                        <!-- <div v-for="(item,key) in port_name.pon" class="lf">
+                            <input type="checkbox" :id="item.name" v-model="flush_param.port_id" :value="item.id" name="port_list">
+                            <label :for="item.name">{{ item.name }}</label>
+                        </div> -->
+                    </div>
+                </div>
+                <div class="add-mac-item">
+                    <a href="javascript:;" @click="flush_mac_submit">{{ lanMap['apply'] }}</a>
+                    <a href="javascript:;" @click="flush_mac_close_dialog">{{ lanMap['cancel'] }}</a>
+                </div>
+                <div class="close" @click="flush_mac_close_dialog"></div>
+            </div>
+        </div>
+        <confirm :tool-tips="lanMap['tips_del_mac']" @choose="result" v-if="userChoose"></confirm>
     </div>
 </template>
 
@@ -120,7 +212,7 @@ import loading from '@/components/common/loading'
                 cfg_age: false,
                 // 加载方式(查询条件)
                 flag: 1,
-                // 懒加载
+                // 分页加载
                 count: 0,
                 // 分页插件数据
                 pagination: {
@@ -131,23 +223,43 @@ import loading from '@/components/common/loading'
                     // 每页显示的数据数量
                     display: 20
                 },
+                //  添加mac地址的数据
+                add_param: {
+                    mac_type: 1,
+                    macaddr: '',
+                    vlan_id: '',
+                    port_id: 1
+                },
+                //  清除mac地址表的数据
+                flush_param: {
+                    flags: 1,
+                    mac_type: 3,
+                    port_id: [],
+                    vlan_id: ''
+                },
+                //  添加mac地址模态框打开或关闭
+                add_dialog: false,
+                //  清除mac地址模态框打开或关闭
+                flush_dialog: false,
                 //  查询条件*4
                 choose_macaddr: false,
                 choose_mactype: true,
                 choose_port: false,
                 choose_vlan: false,
-                //  初始化参数
+                //  初始化参数 --> 首次进入页面时的初始数据
                 flag: 1,
                 mac_type: 3,
-                port_id: 0,
+                port_id: 1,
                 vlan_id: 0,
                 vlan_id_e: 0,
-                macaddr: '00:00:00:00:00:00',
-                macmask: '00:00:00:00:00:00',
+                macaddr: '',
+                macmask: '',
                 //  用户确认框
                 userChoose: false,
                 //  将要删除的mac地址数据
-                delete_mac_data: {}
+                delete_mac_data: {},
+                //  用户输入的mac地址和mac掩码格式检查
+                check_mac: /^[0-9a-zA-Z]{2}\:[0-9a-zA-Z]{2}\:[0-9a-zA-Z]{2}\:[0-9a-zA-Z]{2}\:[0-9a-zA-Z]{2}\:[0-9a-zA-Z]{2}$/
             }
         },
         created(){
@@ -275,7 +387,7 @@ import loading from '@/components/common/loading'
                         if(res.data.code == 1){
                             this.$message({
                                 type: 'success',
-                                text: 'setting_ok'
+                                text: this.lanMap['setting_ok']
                             })
                             this.$http.get(this.change_url.macage).then(res=>{
                                 this.mac_age = res.data;
@@ -300,6 +412,20 @@ import loading from '@/components/common/loading'
                 this.choose_macaddr = false;
             },
             query_macaddr(){
+                if(!this.check_mac.test(this.macaddr)){
+                    this.$message({
+                        type: 'error',
+                        text: this.lanMap['param_mac']
+                    })
+                    return 
+                }
+                if( this.macaddr === 'ff:ff:ff:ff:ff:ff' || this.macaddr === '00:00:00:00:00:00' || this.macaddr === '01:00:5e:00:00:00'){
+                    this.$message({
+                        type: 'error',
+                        text: this.lanMap['param_error']
+                    })
+                    return 
+                }
                 this.tab = [];
                 this.count = 0;
                 this.mac_type = 3;
@@ -314,38 +440,169 @@ import loading from '@/components/common/loading'
                 this.mac_type = 3;
                 this.vlan_id = 0;
                 this.vlan_id_e = 0;
-                this.macaddr = '00:00:00:00:00:00';
-                this.macmask = '00:00:00:00:00:00';
+                this.macaddr = '';
+                this.macmask = '';
                 this.getData();
             },
             query_vlanid(){
+                if(this.vlan_id === '' || this.vlan_id < 1 || this.vlan_id > 4094){
+                    this.$message({
+                        type: 'error',
+                        text: this.lanMap['param_error']
+                    })
+                    return 
+                }
                 this.tab = [];
                 this.count = 0;
                 this.mac_type = 3;
                 this.port_id = 0;
-                this.macaddr = '00:00:00:00:00:00';
-                this.macmask = '00:00:00:00:00:00';
+                this.macaddr = '';
+                this.macmask = '';
                 this.getData();
+            },
+            //  点击添加mac地址模态框内 确定 按钮时的动作
+            add_mac_table(){
+                //  mac地址格式检验
+                if(!this.check_mac.test(this.add_param.macaddr)){
+                    this.$message({
+                        type: 'error',
+                        text: this.lanMap['param_mac']
+                    })
+                    return
+                }
+                //  vlanid 范围检验
+                if(!this.add_param.vlan_id || isNaN(this.add_param.vlan_id) || this.add_param.vlan_id < 1 || this.add_param.vlan_id > 4094){
+                    this.$message({
+                        type: 'error',
+                        text: this.lanMap['vlanid_range_hit']
+                    })
+                    return 
+                }
+                var post_params = {
+                    "method":"add",
+                    "param":{
+                        "mac_type": this.add_param.mac_type,
+                        "macaddr": this.add_param.macaddr,
+                        "vlan_id": this.add_param.vlan_id,
+                        "port_id": this.add_param.port_id
+                    }
+                }
+                this.$http.post('/switch_mac?form=table',post_params).then(res=>{
+                    if(res.data.code === 1){
+                        this.$message({
+                            type: 'success',
+                            text: this.lanMap['setting_ok']
+                        })
+                        this.add_mac_close_dialog();
+                    }else{
+                        this.$message({
+                            type: 'error',
+                            text: this.lanMap['setting_fail']
+                        })
+                    }
+                }).catch(err=>{
+                    // to do
+                })
+            },
+            //  点击添加mac地址时的动作
+            add_mac_dialog(){
+                this.add_param.mac_type = 1;
+                this.add_param.macaddr = '';
+                this.add_param.vlan_id = '';
+                this.add_param.port_id = 1;
+                this.add_dialog = true;
+            },
+            //  点击添加mac地址模态框内 取消 或 关闭 按钮时的动作
+            add_mac_close_dialog(){
+                this.add_param.mac_type = 1;
+                this.add_param.macaddr = '';
+                this.add_param.vlan_id = '';
+                this.add_param.port_id = 1;
+                this.add_dialog = false;
+            },
+            //  点击清除mac地址按钮时的动作
+            flush_mac_dialog(){
+                this.flush_param.flags = 1;
+                this.flush_param.mac_type = 3;
+                this.flush_param.port_id = [];
+                this.flush_param.vlan_id = '';
+                this.flush_dialog = true;
+            },
+            //  点击清除mac地址模态框内 取消 或 关闭 按钮时的动作
+            flush_mac_close_dialog(){
+                this.flush_param.flags = 1;
+                this.flush_param.mac_type = 3;
+                this.flush_param.port_id = [];
+                this.flush_param.vlan_id = '';
+                this.flush_dialog = false;
+            },
+            // 清除mac地址模态框内，点击确定按钮时的动作
+            flush_mac_submit(){
+                //  vlanid 范围检验
+                if(this.flush_param.flags === 4 && (!this.flush_param.vlan_id || isNaN(this.flush_param.vlan_id) || this.flush_param.vlan_id < 1 || this.flush_param.vlan_id > 4094)){
+                    this.$message({
+                        type: 'error',
+                        text: this.lanMap['vlanid_range_hit']
+                    })
+                    return 
+                }
+                //  port_id 检验
+                var port_list = this.flush_param.port_id.sort((a,b)=>a-b).join(',').replace(/,$/,'');
+                if(this.flush_param.flags === 2 && port_list === ''){
+                    this.$message({
+                        type: 'info',
+                        text: this.lanMap['modify_tips']
+                    })
+                    this.flush_mac_close_dialog();
+                    return
+                }
+                var post_params = {
+                    "method":"clear",
+                    "param":{
+                        "flags": this.flush_param.flags,
+                        "mac_type": this.flush_param.mac_type,
+                        "vlan_id": this.flush_param.vlan_id,
+                        "port_list": port_list
+                    }
+                }
+                this.$http.post('/switch_mac?form=table',post_params).then(res=>{
+                    if(res.data.code === 1){
+                        this.$meaasge({
+                            type: 'success',
+                            text: this.lanMap['flush'] + this.lanMap['st_success']
+                        })
+                        this.flush_mac_close_dialog();
+                    }else{
+                        this.$message({
+                            type: 'error',
+                            text: this.lanMap['flush'] + this.lanMap['st_fail']
+                        })
+                    }
+                }).catch(err=>{
+                    // to do
+                })
             }
         },
         watch: {
             flag(){
-                if(this.flag==8){
+                if(this.flag == 8){
                     this.hide_query_select();
                     this.choose_macaddr = true;
                 }
-                if(this.flag==1){
+                if(this.flag == 1){
                     this.hide_query_select();
                     this.choose_mactype = true;
                     this.getData();
                 }
-                if(this.flag==2){
+                if(this.flag == 2){
                     this.hide_query_select();
                     this.choose_port = true;
+                    this.getData();
                 }
-                if(this.flag==4){
+                if(this.flag == 4){
                     this.hide_query_select();
                     this.choose_vlan = true;
+                    this.vlan_id = '';
                 }
             },
             mac_type(){
@@ -354,9 +611,12 @@ import loading from '@/components/common/loading'
                 this.port_id = 0;
                 this.vlan_id = 0;
                 this.vlan_id_e = 0;
-                this.macaddr = '00:00:00:00:00:00';
-                this.macmask = '00:00:00:00:00:00';
+                this.macaddr = '';
+                this.macmask = '';
                 this.getData();
+            },
+            port_id(){
+                this.query_portid();
             }
         }
     }
@@ -378,7 +638,7 @@ div>h2{
     margin: 10px 0 20px 10px;
 }
 div.mac-age{
-    margin-top: 20px;
+    margin: 20px 0;
     vertical-align: middle;
     line-height: 42px;
 }
@@ -406,7 +666,6 @@ a{
     border-radius: 5px;
     background: #ddd;
     transition: all .1s linear;
-    vertical-align: middle;
     margin: 5px;
 }
 a:active{
@@ -422,7 +681,7 @@ ul.mac-table>li{
 }
 ul.mac-table>li>span{
     display: inline-block;
-    width: 15%;
+    width: 16%;
     font-size: 16px;
     text-align: center;
     padding: 5px 0;
@@ -484,20 +743,41 @@ div.query-select:after{
 }
 div.query-frame{
     float: left;
-    margin: 10px;
+    margin: 20px 10px 10px 10px;
     height: 40px;
     line-height: 40px;
+    vertical-align: middle;
 }
 div.query-select select{
     width: 180px;
     height: 30px;
     font-size: 15px;
     text-indent: 10px;
+    vertical-align: middle;
 }
 div.mac-age>span.tips{
     width: 180px;
     font-size: 14px;
     color: #666;
+}
+p+div{
+    margin-top: 20px;
+}
+i{
+    display: inline-block;
+    cursor: pointer;
+    width: 32px;
+    height: 32px;
+    vertical-align: middle;
+}
+i.delete{
+    background: url('../../assets/delete-normal.png') no-repeat;
+}
+i.delete:hover{
+    background: url('../../assets/delete-hover.png') no-repeat;
+}
+div.cover+div.self-align{
+    height: 340px;
 }
 div.content{
     position: absolute;
@@ -506,10 +786,64 @@ div.content{
     right: 0;
     bottom: 0;
     margin: auto;
-    width: 500px;
+    width: 550px;
     height: 350px;
     background: #ddd;
     border-radius: 10px;
     background: #fff;
+    padding: 10px;
+    >h3{
+        height: 30px;
+        font-size: 20px;
+        color: #67AEF7;
+        margin: 30px 0 30px 20px;
+    }
+    div.add-mac-item{
+        height: 32px;
+        margin: 10px 0 0 30px;
+        &:nth-child(4){
+            height: 90px;
+            margin-top: 20px;
+        }
+        >span:first-child{
+            display: inline-block;
+            width: 120px;
+            font-size: 16px;
+            color: #000;
+        }
+        >input{
+            border-radius: 3px;
+        }
+        >select{
+            width: 150px;
+            height: 30px;
+            font-size: 16px;
+            text-indent: 10px;
+        }
+        >span{
+            font-size: 14px;
+            color: #aaa;
+            margin-left: 10px;
+        }
+        >div{
+            display: inline-block;
+        }
+        >a{
+            margin-left: 85px;
+        }
+    }
 }
+div.add-mac-item+div.item-align{
+        height: 72px;
+        vertical-align: middle;
+        >div{
+            width: 380px;
+            vertical-align: middle;
+            >div{
+                display: flex;
+                width: 25%;
+                height: 24px;
+            }
+        }
+    }
 </style>

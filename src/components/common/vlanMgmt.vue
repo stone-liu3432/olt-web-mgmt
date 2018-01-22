@@ -2,19 +2,10 @@
     <div class="vlan-mgmt">
         <div>
             <h2>{{ lanMap['vlan_cfg'] }}</h2>
-            <div>
-                <a href="javascript:;" @click="createVlan">{{ lanMap['create'] }}VLAN</a>
-                <!-- <a href="javascript:;" @click="addPort">添加端口</a>
-                <a href="javascript:;" @click="removePort">移除端口</a> -->
-            </div>
-            <!-- <div class="add-vlan" v-if="create_vlan">
-                <span>VLAN ID：</span>
-                <span>
-                    <input type="text" placeholder="VLAN ID 1-4094" v-model="new_vlan" :style="{ 'border-color' : (new_vlan != '' && (isNaN(new_vlan) || new_vlan > 4094 || new_vlan < 1)) ? 'red' : '' }">
-                </span>
-                <a href="javascript:;" @click="handle_create(true)">{{ lanMap['apply'] }}</a>
-                <a href="javascript:;" @click="handle_create(false)">{{ lanMap['cancel'] }}</a>
-            </div> -->
+        </div>
+        <div>
+            <a href="javascript:;" @click="createVlan">{{ lanMap['create'] }}VLAN</a>
+            <span>{{ lanMap['tips_create_vlan'] }}</span>
         </div>
         <div class="search">
             <p class="lf">{{  lanMap['vlan_list'] }}</p>
@@ -203,7 +194,13 @@ import confirm from '@/components/common/confirm'
             },
             //  查找某一个vlan
             searchVlan(){
-                if(!this.search_id) return 
+                if(!this.search_id){
+                    this.$message({
+                        type: 'error',
+                        text: this.lanMap['param_onuid']
+                    })
+                    return
+                }
                 var list = this.vlan_list.data;
                 var tab = [];
                 this.pagination.page = 0;
@@ -477,12 +474,19 @@ import confirm from '@/components/common/confirm'
 div.vlan-mgmt{
     min-width: 1020px;
 }
+div.vlan-mgmt>div:nth-child(2){
+    margin: 0 0 0 30px;
+}
+a+span{
+    font-size: 14px;
+    margin-left: 10px;
+    color: #666;
+}
 div>h2{
-    float: left;
-    font-size: 24px;
+    font-size: 20px;
     font-weight: 600;
     color: #67AEF7;
-    margin-right: 50px;
+    margin: 10px 0 20px 10px;
 }
 div.search{
     margin: 20px 10px;
