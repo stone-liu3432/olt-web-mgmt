@@ -46,7 +46,7 @@
                 </div>
                 <div>
                     <span>{{ lanMap['rstp_mode'] }}</span>
-                    <select v-model.number="bridge_info.mode">
+                    <select v-model.number="bridge_info.rstp_mode">
                         <option value="0">stp</option>
                         <option value="2">rstp</option>
                         <!-- 暂未实现 -->
@@ -181,7 +181,7 @@ import { mapState } from 'vuex'
                 //  表单绑定 -->  rstp桥设置页
                 bridge_info: {
                     status: 0,
-                    mode: 0,
+                    rstp_mode: 0,
                     rb_priority: '',
                     max_age: '',
                     hello_time: '',
@@ -233,11 +233,19 @@ import { mapState } from 'vuex'
                     // to do
                 })
             },
+            //  设置全局rstp信息内的提交动作
             set_bridge(){
+                if(this.verify_input.max_age || this.verify_input.hello_time || this.verify_input.forward_delay || this.verify_input.transmit_hold_count){
+                    this.$message({
+                        type: 'error',
+                        text: this.lanMap['param_error']
+                    })
+                    return
+                }
                 if(this.bridge_info.status !== this.rstp.data.status){
                     this.flags += 1;
                 }
-                if(this.bridge_info.mode !== this.rstp.data.mode){
+                if(this.bridge_info.rstp_mode !== this.rstp.data.rstp_mode){
                     this.flags += 32;
                 }
                 if(this.bridge_info.rb_priority !== this.rstp.data.rb_priority){
@@ -268,7 +276,7 @@ import { mapState } from 'vuex'
                     "param":{
                         "flags": this.flags,
                         "status": this.bridge_info.status,
-                        "mode": this.bridge_info.mode,
+                        "rstp_mode": this.bridge_info.rstp_mode,
                         "rb_priority": this.bridge_info.rb_priority,
                         "max_age": this.bridge_info.max_age,
                         "hello_time": this.bridge_info.hello_time,
@@ -328,6 +336,13 @@ import { mapState } from 'vuex'
                     }
                 }
                 if(!data) return
+                if(this.verify_input.port_path_cost){
+                    this.$message({
+                        type: 'error',
+                        text: this.lanMap['param_error']
+                    })
+                    return
+                }
                 if(this.priority_info.port_priority !== data.port_priority){
                     this.flags += 4;
                 }
@@ -348,12 +363,15 @@ import { mapState } from 'vuex'
                     })
                     return
                 }
+                if(this.priority_info.port_path_cost === ''){
+                    this.priority_info.port_path_cost = 0;
+                }
                 var post_params = {
                     "method":"set",
                     "param":{
                         "flags": this.flags,
                         "port_id": this.priority_info.port_id,
-                        "priority": this.priority_info.port_priority,
+                        "port_priority": this.priority_info.port_priority,
                         "port_path_cost": this.priority_info.port_path_cost,
                         "edge_status": this.priority_info.edge_status,
                         "admin_link_type": this.priority_info.admin_link_type
@@ -368,7 +386,6 @@ import { mapState } from 'vuex'
                             text: this.lanMap['setting_ok']
                         })
                     }else{
-                        // to do
                         this.$message({
                             type: 'error',
                             text: this.lanMap['setting_fail']
@@ -415,6 +432,7 @@ import { mapState } from 'vuex'
                     this.verify_input.port_path_cost = false;
                 }
             },
+            //  设置端口模态框内，检测到port_id变化时，实时更新页面数据
             'priority_info.port_id'(){
                 for(var key in this.rstp_port.data){
                     if(this.priority_info.port_id === this.rstp_port.data[key].port_id){

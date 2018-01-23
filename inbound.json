@@ -9,7 +9,7 @@
         "mtu":1500,
         "macaddr":"38:3A:21:F0:01:B0",
         "rcvpkt":1231,
-        "rcvbytes":1423,
+        "rcvbytes": "",
         "transpkt":1234,
         "transbytes":1500
     },{

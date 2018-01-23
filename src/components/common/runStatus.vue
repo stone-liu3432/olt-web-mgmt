@@ -65,7 +65,7 @@
                 <h2>{{ lanMap['sys_run_time'] }}</h2>
                 <div class="time-info">
                     <span>{{ lanMap['current_time'] + ' :' }}</span>
-                    <span>{{ new Date(timer.data.time_sec).toLocaleString().replace(/\//g,'-') }}</span>
+                    <span>{{ new Date(timer.data.time_sec*1000).toLocaleString().replace(/\//g,'-') }}</span>
                 </div>
                 <div class="time-info">
                     <span>{{ lanMap['run_time']+' :' }}</span>
@@ -137,7 +137,7 @@
                                     }
                                 }
                             }
-                            this.timer.data.time_sec += 1000;
+                            this.timer.data.time_sec += 1;
                         },1000)
                     }
                 }

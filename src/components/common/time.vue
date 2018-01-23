@@ -4,7 +4,7 @@
         <div>
             <div v-if="timer.data" class="time-item">
                 <span>{{ lanMap['current_time'] }}</span>
-                <span>{{ new Date(timer.data.time_sec).toLocaleString({hour12:false}).replace(/\//g,'-') }}</span>
+                <span>{{ new Date(timer.data.time_sec*1000).toLocaleString({hour12:false}).replace(/\//g,'-') }}</span>
             </div>
             <div class="time-item">
                 <span>{{ lanMap['config'] + lanMap['time_set'] }}</span>
@@ -89,7 +89,7 @@ import { mapState } from "vuex"
                 this.$http.get(this.change_url.time).then(res=>{
                     if(res.data.code === 1){
                         this.timer = res.data;
-                        var date = new Date(this.timer.data.time_sec);
+                        var date = new Date(this.timer.data.time_sec*1000);
                         this.set_time.year = date.getFullYear();
                         this.set_time.month = date.getMonth() + 1;
                         this.set_time.day = date.getDate();

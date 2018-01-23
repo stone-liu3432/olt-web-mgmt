@@ -330,6 +330,7 @@ p>span{
 }
 .remote-content>div>span{
     display: inline-block;
+    vertical-align: top;
     width: 15%;
     height: 50px;
     line-height: 50px;

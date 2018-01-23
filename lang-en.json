@@ -182,7 +182,7 @@
 	"port_state": "Status",
 	"auto": "Auto",
 	"p2p": "P2P",
-	"Shared": "Shared",
+	"shared": "Shared",
 	
 	"http_login_timeout":"Login timeout, Please again login the device",
 	"service_user_password_fail":"The username or password check failed",
@@ -280,5 +280,7 @@
 	"time_set_local":"Update local time",
 	"notice_time_sync": "Notice: WebGUI's time display maybe different from server, you can press this button for synchronization",
 	"update_time":"Update time",
-	"diff_type_cfg":"the options of different type"
+	"diff_type_cfg":"the options of different type",
+    "select_all": "Select All",
+    "clear_all": "Clear All"
 }

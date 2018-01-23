@@ -27,8 +27,8 @@
                 <div class="modal-item">
                     <span>{{ lanMap['auth_state'] }}</span>
                     <select v-model="add_onustate">
-                        <option value="1">{{ lanMap['true'] }}</option>
-                        <option value="0">{{ lanMap['false'] }}</option>
+                        <option value="1">true</option>
+                        <option value="0">false</option>
                     </select>
                 </div>
                 <!-- <div class="modal-item">
@@ -59,7 +59,7 @@
                 <span>{{ item.macaddr }}</span>
                 <span>{{ item.status }}</span>
                 <span>
-                    <span>{{ item.auth_state ? lanMap['true'] : lanMap['false'] }}</span>
+                    <span>{{ item.auth_state ? 'true' : 'false' }}</span>
                     <i :class="[item.auth_state ? 'verified-actived' : 'verified']" @click="authstate_on(item)" :title="lanMap['clk_cfrm']"></i>
                     <i :class="[item.auth_state ? 'unverified' : 'unverified-actived']" @click="authstate_off(item)" :title="lanMap['clk_cancel_cfrm']"></i>
                 </span>

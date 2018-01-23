@@ -57,6 +57,7 @@ export default {
         login_out(){
             this.login_out_modal = true;
         },
+        //  退出登录
         result(bool){
             if(bool){
                 var post_params = {
@@ -66,12 +67,17 @@ export default {
                     }
                 }
                 this.$http.post('/userlogin?form=logout',post_params).then(res=>{
-                    // do sth
+                    if(res.data.code === 1){
+                        this.$message({
+                            type: 'success',
+                            text: '成功退出登录'
+                        })
+                        sessionStorage.clear();
+                        this.$router.push('/login');
+                    }
                 }).catch(err=>{
                     // to do
                 })
-                sessionStorage.clear();
-                this.$router.push('/login');
             }
             this.login_out_modal = false;
         }

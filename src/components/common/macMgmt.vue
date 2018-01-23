@@ -114,7 +114,7 @@
                     <input type="text" v-model="add_param.macaddr" :style="{ 'border-color' : this.check_mac.test(this.add_param.macaddr) || !this.add_param.macaddr ? '#ccc' : 'red' }">
                     <span>ex: 00:00:00:00:00:00</span>
                 </div>
-                <div class="add-mac-item">
+                <div class="add-mac-item place-holder">
                     <span>{{ lanMap['vlan_id'] }}</span>
                     <input type="text" v-model.number="add_param.vlan_id" :style="{ 'border-color' : !isNaN(this.add_param.vlan_id) ? '#ccc' : 'red' }">
                     <span>range: 1-4094</span>
@@ -162,7 +162,13 @@
                 </div>
                 <div class="add-mac-item" v-if="flush_param.flags !== 2 && flush_param.flags !== 4"></div>
                 <div class="add-mac-item item-align" v-if=" flush_param.flags === 2 ">
-                    <span>{{ lanMap['port_id'] }}</span>
+                    <span>
+                        <span class="lf">{{ lanMap['port_id'] }}</span>
+                        <div class="lf">
+                            <input type="checkbox" id="selectAll" v-model="select_all" @click="select_all_port">
+                            <label for="selectAll">{{ select_all_text }}</label>
+                        </div>
+                    </span>
                     <div>
                         <div v-for="(item,key) in port_name.pon" class="lf">
                             <input type="checkbox" :id="item.name" v-model="flush_param.port_id" :value="item.id" name="port_list">
@@ -173,10 +179,10 @@
                             <label :for="item.name">{{ item.name }}</label>
                         </div>
                         <!-- 测试用 -->
-                        <!-- <div v-for="(item,key) in port_name.pon" class="lf">
+                        <div v-for="(item,key) in port_name.pon" class="lf">
                             <input type="checkbox" :id="item.name" v-model="flush_param.port_id" :value="item.id" name="port_list">
                             <label :for="item.name">{{ item.name }}</label>
-                        </div> -->
+                        </div>
                     </div>
                 </div>
                 <div class="add-mac-item">
@@ -197,7 +203,16 @@ import loading from '@/components/common/loading'
     export default {
         name: 'macMgmt',
         components: { confirm,loading },
-        computed: mapState(['lanMap','change_url','port_name']),
+        computed: {
+            ...mapState(['lanMap','change_url','port_name','port_info']),
+            select_all_text(){
+                if(!this.select_all){
+                    return this.lanMap['select_all']
+                }else{
+                    return this.lanMap['clear_all']
+                }
+            }    
+        },
         data(){
             return {
                 //  mac地址老化时间 
@@ -259,7 +274,9 @@ import loading from '@/components/common/loading'
                 //  将要删除的mac地址数据
                 delete_mac_data: {},
                 //  用户输入的mac地址和mac掩码格式检查
-                check_mac: /^[0-9a-zA-Z]{2}\:[0-9a-zA-Z]{2}\:[0-9a-zA-Z]{2}\:[0-9a-zA-Z]{2}\:[0-9a-zA-Z]{2}\:[0-9a-zA-Z]{2}$/
+                check_mac: /^[0-9a-zA-Z]{2}\:[0-9a-zA-Z]{2}\:[0-9a-zA-Z]{2}\:[0-9a-zA-Z]{2}\:[0-9a-zA-Z]{2}\:[0-9a-zA-Z]{2}$/,
+                select_all: false,
+                select_text: ''
             }
         },
         created(){
@@ -275,13 +292,7 @@ import loading from '@/components/common/loading'
                     this.getPage();
                 })
             }else{
-                this.$http.post(this.change_url.mactab,post_param).then(res=>{
-                    this.tab = res.data.data;
-                    this.pagination.page = Math.ceil(this.tab.length/this.pagination.display);
-                    this.getPage();
-                }).catch(err=>{
-                    // to do
-                })
+                this.getData();
             }
         },
         methods: {
@@ -581,7 +592,22 @@ import loading from '@/components/common/loading'
                 }).catch(err=>{
                     // to do
                 })
-            }
+            },
+            //  全选按钮
+            select_all_port(){
+                this.select_all = !this.select_all;
+                if(this.select_all){
+                    this.flush_param.port_id = [];
+                    for(var key in this.port_name.pon){
+                        this.flush_param.port_id.push(this.port_name.pon[key].id);
+                    }
+                    for(var key in this.port_name.ge){
+                        this.flush_param.port_id.push(this.port_name.ge[key].id);
+                    }
+                }else{
+                    this.flush_param.port_id = [];
+                }
+            },
         },
         watch: {
             flag(){
@@ -617,6 +643,13 @@ import loading from '@/components/common/loading'
             },
             port_id(){
                 this.query_portid();
+            },
+            'flush_param.port_id'(){
+                if(this.flush_param.port_id.length === this.port_info.data.length){
+                    this.select_all = true;
+                }else{
+                    this.select_all = false;
+                }
             }
         }
     }
@@ -779,6 +812,14 @@ i.delete:hover{
 div.cover+div.self-align{
     height: 340px;
 }
+input[type="checkbox"]{
+    vertical-align: middle;
+}
+input[type="checkbox"]+label{
+    vertical-align: middle;
+    cursor: pointer;
+    user-select: none;
+}
 div.content{
     position: absolute;
     left: 0;
@@ -786,7 +827,7 @@ div.content{
     right: 0;
     bottom: 0;
     margin: auto;
-    width: 550px;
+    width: 580px;
     height: 350px;
     background: #ddd;
     border-radius: 10px;
@@ -807,15 +848,18 @@ div.content{
         }
         >span:first-child{
             display: inline-block;
-            width: 120px;
+            width: 160px;
             font-size: 16px;
             color: #000;
+            >div{
+                margin-left: 10px;
+            }
         }
         >input{
             border-radius: 3px;
         }
         >select{
-            width: 150px;
+            width: 200px;
             height: 30px;
             font-size: 16px;
             text-indent: 10px;
@@ -832,15 +876,19 @@ div.content{
             margin-left: 85px;
         }
     }
+    >div.place-holder{
+        &:nth-child(4){
+            height: 32px;
+        }
+    }
 }
 div.add-mac-item+div.item-align{
         height: 72px;
         vertical-align: middle;
         >div{
-            width: 380px;
+            width: 360px;
             vertical-align: middle;
             >div{
-                display: flex;
                 width: 25%;
                 height: 24px;
             }

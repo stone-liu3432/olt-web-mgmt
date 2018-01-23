@@ -182,7 +182,7 @@
 	"port_state": "状态",
 	"auto": "Auto",
 	"p2p": "P2P",
-	"Shared": "Shared",
+	"shared": "Shared",
 	
 	"http_login_timeout":"登录超时，请重试",
 	"service_user_password_fail":"用户名或密码验证失败",
@@ -281,5 +281,7 @@
 	"time_set_local":"更新本地时间",
 	"notice_time_sync": "请注意，页面时间可能与服务器时间存在差异，可以点击按钮将本页面时间与服务器时间同步",
 	"update_time":"更新时间",
-	"diff_type_cfg":"不同type时的可配置选项"
+    "diff_type_cfg":"不同type时的可配置选项",
+    "select_all": "全选",
+    "clear_all": "反选"
 }
