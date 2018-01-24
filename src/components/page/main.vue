@@ -54,7 +54,8 @@ import topBanner from '@/components/page/header'
             // },err=>{
             //     return Promise.reject(err);
             // });
-            
+
+
             //根组件创建之前，初始化vuex部分数据
             this.$http.get(this.change_url.system).then(res=>{
                 if(res.data.code === 1){

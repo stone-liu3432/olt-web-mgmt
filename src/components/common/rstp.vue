@@ -148,9 +148,9 @@
                 <div>
                     <span>{{ lanMap['admin_link_type'] }}</span>
                     <select v-model="priority_info.admin_link_type">
-                        <option value="auto">{{ lanMap['auto'] }}</option>
-                        <option value="force_true">{{ lanMap['p2p'] }}</option>
-                        <option value="force_false">{{ lanMap['shared'] }}</option>
+                        <option value="auto">Auto</option>
+                        <option value="force_true">P2P</option>
+                        <option value="force_false">Shared</option>
                     </select>
                 </div>
                 <div>

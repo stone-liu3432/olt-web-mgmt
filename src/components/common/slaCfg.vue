@@ -94,21 +94,24 @@
                 <div class="dialog-item">
                     <span>{{ lanMap['fix'] }}</span>
                     <span>
-                        <input type="text" placeholder="0-1024 Mbps" class="sla-fix" v-model.number="post_params.fix">
+                        <input type="text" placeholder="1-1000 Mbps" class="sla-fix" v-model.number="post_params.fix"
+                        :style="{ 'border-color': (post_params.fix <1 || post_params.fix > 1000000 || isNaN(post_params.fix)) ? 'red' : '#ccc' }">
                     </span>
                     <span class="tips">range: 1-1000000kbs</span>
                 </div>
                 <div class="dialog-item">
                     <span>{{ lanMap['assure'] }}</span>
                     <span>
-                        <input type="text" placeholder="0-1024 Mbps" class="sla-assure" v-model.number="post_params.assure" disabled>
+                        <input type="text" placeholder="1-1000 Mbps" class="sla-assure" v-model.number="post_params.assure" disabled
+                        :style="{ 'border-color': (post_params.assure <1 || post_params.assure > 1000000 || isNaN(post_params.assure)) ? 'red' : '#ccc' }">
                     </span>
                     <span class="tips">range: 1-1000000kbs</span>
                 </div>
                 <div class="dialog-item">
                     <span>{{ lanMap['max'] }}</span>
                     <span>
-                        <input type="text" placeholder="0-1024 Mbps" class="sla-max" v-model.number="post_params.max" disabled>
+                        <input type="text" placeholder="1-1000 Mbps" class="sla-max" v-model.number="post_params.max" disabled
+                        :style="{ 'border-color': (post_params.max <1 || post_params.max > 1000000 || isNaN(post_params.max)) ? 'red' : '#ccc' }">
                     </span>
                     <span class="tips">range: 1-1000000kbs</span>
                 </div>
@@ -202,8 +205,43 @@ import { mapState } from 'vuex'
             },
             isChange(bool){
                 if(bool){
+                    if(this.post_params.fix < 1 || this.post_params.fix > 1000000 || isNaN(this.post_params.fix)){
+                        this.$message({
+                            type: 'error',
+                            text: this.lanMap['fix_range_err']
+                        })
+                        return
+                    }
+                    if(this.post_params.assure < 1 || this.post_params.assure > 1000000 || isNaN(this.post_params.assure)){
+                        this.$message({
+                            type: 'error',
+                            text: this.lanMap['assure_range_err']
+                        })
+                        return
+                    }
+                    if(this.post_params.max < 1 || this.post_params.max > 1000000 || isNaN(this.post_params.max)){
+                        this.$message({
+                            type: 'error',
+                            text: this.lanMap['max_range_err']
+                        })
+                        return
+                    }
+                    if(this.post_params.fix > this.post_params.assure || this.post_params.fix > this.post_params.max){
+                        this.$message({
+                            type: 'error',
+                            text: this.lanMap['fix_param_err']
+                        })
+                        return 
+                    }
+                    if(this.post_params.assure > this.post_params.max){
+                        this.$message({
+                            type: 'error',
+                            text: this.lanMap['assure_param_err']
+                        })
+                        return
+                    }
                     // 点击确定时，收集数据，发送POST请求
-                    var post_data = {
+                    var post_param = {
                         "method":"set",
                         "param":{
                             "port_id": this.portid,
@@ -214,7 +252,7 @@ import { mapState } from 'vuex'
                             "max": this.post_params.max
                         }
                     }
-                    this.$http.post('/onu_bandwidth',post_data).then(res=>{
+                    this.$http.post('/onu_bandwidth',post_param).then(res=>{
                         if(res.data.code === 1){
                            this.getData();
                         }else{

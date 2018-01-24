@@ -1,7 +1,7 @@
 <template>
     <div class="onu-deny">
         <div>
-            <select @change="changePon($event)">
+            <select v-model="portid">
                 <option v-for="(item,key) in port_name.pon" :key="key" :value="item.id">
                     {{ item.name }}
                 </option>
@@ -54,7 +54,7 @@ export default {
     data(){
         return {
             onu_deny_list:{},
-            _portid: 1,
+            portid: 0,
             userChoose: false,
             test_macaddr: false,
             addItem: {
@@ -70,13 +70,13 @@ export default {
     },
     created(){
         // 请求 url: /onu_deny_list?port_id=1
-        this._portid = this.port_name.pon['1'].id;
+        this.portid = this.port_name.pon['1'].id;
         if(this.change_url.beta === 'test'){
             var url;
             if(this.change_url.onu_allow[this.change_url.onu_allow.length - 1] != '='){
                     url = this.change_url.onu_deny;
                 }else{
-                    url = this.change_url.onu_deny + this._portid;
+                    url = this.change_url.onu_deny + this.portid;
                 }
             this.$http.get(url).then(res=>{
                 if(res.data.code ===1){
@@ -88,21 +88,7 @@ export default {
         }
     },
     methods: {
-        // 切换pon口时，进行的操作
-        changePon(event){
-            this._portid = event.target.value;
-            // 请求 url: /onu_deny_list?port_id=1
-            this.$http.get('/onu_deny_list?port_id='+this._portid).then(res=>{
-                if(res.data.code === 1){
-                    this.onu_deny_list = res.data;
-                }else{
-                    this.onu_deny_list = {}
-                }
-            }).catch(err=>{
-                // to do
-            })
-        },
-        //  点击 确认/取消 时进行的操作
+        //  点击 确认/取消 时进行的操作   -->  增加按钮
         handle(bool){
             if(bool){
                 if(this.test_macaddr || this.addItem.macaddr === ''){
@@ -115,7 +101,7 @@ export default {
                 this.post_param.add = {
                     "method":"add",
                     "param":{
-                        "port_id":this._portid,
+                        "port_id":this.portid,
                         "macaddr": this.addItem.macaddr,
                         "onu_desc" : this.addItem.desc
                     }
@@ -124,16 +110,16 @@ export default {
                     if(res.data.code === 1){
                         this.$message({
                             type: 'success',
-                            text: this.lanMap['setting_ok']
+                            text: this.lanMap['add'] + this.lanMap['st_success']
                         })
                     }else{
                         this.$message({
                             type: 'error',
-                            text: this.lanMap['setting_fail']
+                            text: this.lanMap['add'] + this.lanMap['st_fail']
                         })
                     }
                 }).catch(err=>{
-                    // to do 
+                    // to do
                 })
             }
             this.addItem.isShow = false;
@@ -145,7 +131,7 @@ export default {
             this.addItem.macaddr = '';
             this.addItem.desc = '';
         },
-        // 根据确认框返回结果，进行操作
+        // 根据确认框返回结果，进行操作  -->  删除按钮
         result(bool){
             if(bool){
                 // 确认框中用户点击确认时的操作
@@ -153,12 +139,12 @@ export default {
                     if(res.data.code === 1){
                         this.$message({
                             type: 'success',
-                            text: this.lanMap['setting_ok']
+                            text: this.lanMap['delete'] + this.lanMap['st_success']
                         })
                     }else{
                         this.$message({
                             type: 'error',
-                            text: this.lanMap['setting_fail']
+                            text: this.lanMap['delete'] + this.lanMap['st_fail']
                         })
                     }
                 }).catch(err=>{
@@ -193,6 +179,18 @@ export default {
             }else{
                 this.test_macaddr = false;
             }
+        },
+        //  切换端口的操作
+        portid(){
+            this.$http.get('/onu_deny_list?port_id='+this.portid).then(res=>{
+                if(res.data.code === 1){
+                    this.onu_deny_list = res.data;
+                }else{
+                    this.onu_deny_list = {}
+                }
+            }).catch(err=>{
+                // to do
+            })
         }
     }
 }

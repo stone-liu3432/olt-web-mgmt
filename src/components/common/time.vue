@@ -124,7 +124,7 @@ import { mapState } from "vuex"
                                 }
                             }
                         }
-                        this.timer.data.time_sec += 1000;
+                        this.timer.data.time_sec += 1;
                     },1000)
                 }
             },

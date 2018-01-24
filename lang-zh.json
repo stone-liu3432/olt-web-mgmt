@@ -85,7 +85,6 @@
     "fiber" : "光纤",
     "erate":"出口速率",
     "irate":"入口速率",
-
 	
 	"ipaddr" : "IP地址",
 	"ipmask" : "IP掩码",
@@ -111,12 +110,22 @@
 	"auth_state" : "认证状态",
 	"register_time" : "注册时间",
 	"rtt" : "注册往返时间",
-	"retry" : "重复次数",
+    "retry" : "重复次数",
+    "deregister_onu":"解注册ONU",
+    "set_fec_mode":"更改fec-mode",
+    "confirm_reboot_onu":"是否确认重启该ONU",
+    "confirm_deresgester":"是否确认解注册该ONU",
+    "confirm_change_fecmode":"是否确认更改该ONU的fec mode",
 	
 	"sla_type" : "带宽类型",
 	"fix" : "固定带宽",
 	"assure" : "保证带宽",
-	"max" : "最大带宽",
+    "max" : "最大带宽",
+    "fix_range_err":"固定带宽超出范围",
+    "assure_range_err":"保证带宽超出范围",
+    "max_range_err":"最大带宽超出范围",
+    "fix_param_err":"固定带宽大小不能超过保证带宽或最大带宽",
+    "assure_param_err":"保证带宽大小不能超过最大带宽",
 	
 	"auth_mode" : "认证模式",
 	"onu_type" : "ONU类型",

@@ -109,7 +109,12 @@
 	"onu_id" : "ONU ID",
 	"auth_state" : "Auth State",
 	"register_time" : "Register Time",
-	"rtt" : "Round Trap Time",
+    "rtt" : "Round Trap Time",
+    "deregister_onu":"Deregister ONU",
+    "set_fec_mode":"Change fec mode",
+    "confirm_reboot_onu":"Confirm to reboot onu",
+    "confirm_deresgester":"Confirm to deregister onu",
+    "confirm_change_fecmode":" Confirm to change fec mode",
 	
 	"retry" : "Retry Counts",
 	
@@ -117,6 +122,11 @@
 	"fix" : "Fix",
 	"assure" : "Assure",
 	"max" : "Max",
+    "fix_range_err":"Fixed bandwidth out of range",
+    "assure_range_err":"Assured bandwidth out of range",
+    "max_range_err":"Maximum bandwidth out of range",
+    "fix_param_err":"Fixed bandwidth cannot exceed the assured or maximum bandwidth",
+    "assure_param_err":"Assured bandwidth cannot exceed the maximum bandwidth",
 	
 	"auth_mode" : "Auth Mode",
 	"onu_type" : "ONU Type",

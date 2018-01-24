@@ -18,11 +18,11 @@
 		</div>
 		<hr>
         <div class="handle-btn" v-if="onu_basic_info.data">
-            <h3 class="lf">操作详情</h3>
+            <h3 class="lf">{{ lanMap['onu_mgmt'] }}</h3>
             <div class="lf">
-                <a href="javascript:;" @click="reboot_onu">重启ONU</a>
-                <a href="javascript:;" @click="un_auth_onu" v-if="onu_basic_info.data.auth_state == 'true'">解注册ONU</a>
-                <a href="javascript:;" @click="set_fec_mode">更改fec-mode</a>
+                <a href="javascript:;" @click="open_reboot_onu">{{ lanMap['reboot_onu'] }}</a>
+                <a href="javascript:;" @click="open_un_auth_onu" v-if="onu_basic_info.data.auth_state == 'true'">{{ lanMap['deregister_onu'] }}</a>
+                <a href="javascript:;" @click="open_set_fec_mode">{{ lanMap['set_fec_mode'] }}</a>
             </div>
         </div>
         <div v-for="(item,key) in onu_basic_info.data" :key="key" v-if=" key != 'port_id' && onu_basic_info.data" class="onu-info-item">
@@ -37,20 +37,29 @@
             <span>{{ key.replace(/_/,'-') }}</span>
             <span>{{ item ? 'Enable' : 'Disable' }}</span>
         </div>
+        <confirm :tool-tips="lanMap['confirm_reboot_onu'] + '?'" @choose="reboot_onu" v-if="reboot_onu_confirm"></confirm>
+        <confirm :tool-tips="lanMap['confirm_deresgester'] + '?'" @choose="un_auth_onu" v-if="un_auth_confirm"></confirm>
+        <confirm :tool-tips="lanMap['confirm_change_fecmode'] + '?'" @choose="set_fec_mode" v-if="set_fec_confirm"></confirm>
     </div>
 </template>
 
 <script>
 import { mapState,mapMutations } from 'vuex'
+import confirm from '@/components/common/confirm'
     export default {
         name: 'onuBasicInfo',
+        components: { confirm },
 		computed: mapState(['lanMap','port_name','port_info','change_url','onu_list']),
         data(){
             return {
                 onu_basic_info: {},
                 onu_fec_mode: {},
-				portid: 1,
-				onuid: 1
+				portid: 0,
+                onuid: 0,
+                //  确认模态框 *3
+                reboot_onu_confirm: false,
+                un_auth_confirm: false,
+                set_fec_confirm: false
             }
         },
         created(){
@@ -111,55 +120,87 @@ import { mapState,mapMutations } from 'vuex'
                 }
                 return result
             },
+            open_reboot_onu(){
+                this.reboot_onu_confirm = true;
+            },
             //  重启ONU
-            reboot_onu(){
-                var post_param = {
-                    "method":"set",
-                    "param":{
-                        "port_id": this.portid,
-                        "onu_id": this.onuid,
-                        "flags": 1,
-                        "fec_mode": this.onu_fec_mode.data.fec_mode ? 0 : 1
+            reboot_onu(bool){
+                if(bool){
+                    var post_param = {
+                        "method":"set",
+                        "param":{
+                            "port_id": this.portid,
+                            "onu_id": this.onuid,
+                            "flags": 1,
+                            "fec_mode": this.onu_fec_mode.data.fec_mode ? 0 : 1
+                        }
                     }
+                    this.post_data(post_param);
                 }
-                this.post_data(post_param);
+                this.reboot_onu_confirm = false;
+            },
+            open_un_auth_onu(){
+                this.un_auth_confirm = true;
             },
             //  解注册 ONU
-            un_auth_onu(){
-                var post_param = {
-                    "method":"set",
-                    "param":{
-                        "port_id": this.portid,
-                        "onu_id": this.onuid,
-                        "flags": 2,
-                        "fec_mode": this.onu_fec_mode.data.fec_mode ? 0 : 1
+            un_auth_onu(bool){
+                if(bool){
+                    var post_param = {
+                        "method":"set",
+                        "param":{
+                            "port_id": this.portid,
+                            "onu_id": this.onuid,
+                            "flags": 2,
+                            "fec_mode": this.onu_fec_mode.data.fec_mode ? 0 : 1
+                        }
                     }
+                    this.post_data(post_param);
                 }
-                this.post_data(post_param);
+                this.un_auth_confirm = false;
+            },
+            open_set_fec_mode(){
+                this.set_fec_confirm = true;
             },
             //  fec_mode
-            set_fec_mode(){
-                var post_param = {
-                    "method":"set",
-                    "param":{
-                        "port_id": this.portid,
-                        "onu_id": this.onuid,
-                        "flags": 4,
-                        "fec_mode": this.onu_fec_mode.data.fec_mode ? 0 : 1
+            set_fec_mode(bool){
+                if(bool){
+                    var post_param = {
+                        "method":"set",
+                        "param":{
+                            "port_id": this.portid,
+                            "onu_id": this.onuid,
+                            "flags": 4,
+                            "fec_mode": this.onu_fec_mode.data.fec_mode ? 0 : 1
+                        }
                     }
+                    this.post_data(post_param);
                 }
-                this.post_data(post_param);
+                this.set_fec_confirm = false;
             },
             post_data(data){
                 this.$http.post('/onumgmt?form=config',data).then(res=>{
                     if(res.data.code === 1){
-                        // success
+                        this.$message({
+                            type: 'success',
+                            text: this.lanMap['setting_ok']
+                        })
+                        this.getData();
                     }else{
-                        // error
+                        this.$message({
+                            type: 'error',
+                            text: this.lanMap['setting_fail']
+                        })
                     }
                 }).catch(err=>{
                     // to do
                 })
+            },
+            getData(){
+                this.$http.get('/onumgmt?form=base-info&port_id='+this.portid+'&onu_id='+this.onuid).then(res=>{
+					this.onu_basic_info = res.data;
+				}).catch(err=>{
+					// to do
+				})
             }
 		},
 		watch: {
@@ -170,7 +211,7 @@ import { mapState,mapMutations } from 'vuex'
             //             var _onu_list = this.analysis(res.data.data.resource);
             //             if(!_onu_list){
             //                  this.addonu_list({});
-            //                  this.onu_basic_info = {data: []};
+            //                  this.onu_basic_info = {};
             //                  return
             //             }
             //             var obj = {
@@ -179,9 +220,14 @@ import { mapState,mapMutations } from 'vuex'
             //             }
             //             this.addonu_list(obj);
             //             this.onuid = this.$route.query.onuid || this.onu_list.data[0];
+            //             this.$http.get('/onumgmt?form=config&port_id='+this.portid+'&onu_id='+this.onuid).then(res=>{
+            //                 this.onu_fec_mode = res.data;
+            //             }).catch(err=>{
+            //                 // to do
+            //             })
             //         }else{
             //             this.addonu_list({});
-            //             this.onu_basic_info = {data: []};
+            //             this.onu_basic_info = {};
             //         }
 			// 	}).catch(err=>{
 			// 		// to do

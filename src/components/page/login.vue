@@ -194,6 +194,7 @@ div.login-body>h3{
 div.login-tips{
     position: relative;
     text-align: center;
+    width: auto;
 }
 div.login-tips>h4{
     font-size: 14px;

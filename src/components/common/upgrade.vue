@@ -9,7 +9,7 @@
         <form class="upload-form"> 
             <input type="file" class="hide" id="file1" @change="changeFile('file1','fileName1')"/>
             <span class="updateFile" id="fileName1">{{ lanMap['file_click'] }}</span>
-            <a href="javascript:;" @click="firmware">{{ lanMap["upgrade"] }}</a>
+            <a href="javascript:;" @click="firmware">{{ lanMap["apply"] }}</a>
         </form>
         <div class="upgrade">
             <h3>{{ lanMap['system'] }}</h3>
@@ -17,7 +17,7 @@
         <form class="upload-form">
             <input type="file" class="hide" id="file2" @change="changeFile('file2','fileName2')"/>
             <span class="updateFile" id="fileName2">{{ lanMap['file_click'] }}</span>
-            <a href="javascript:;" @click="system">{{ lanMap["upgrade"] }}</a>
+            <a href="javascript:;" @click="system">{{ lanMap["apply"] }}</a>
         </form>
         <div class="modal-dialog" v-if="isLoading">
             <div class="cover"></div>

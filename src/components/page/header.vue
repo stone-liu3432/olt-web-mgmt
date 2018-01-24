@@ -13,13 +13,13 @@
                     <option value="en">English</option>
                 </select>
         </div>
-        <div class="lf">
+        <div class="lf show-user">
           <i></i>
-          <p>{{ uName }}</p>
+          <span>{{ uName }}</span>
         </div>
-        <div class="lf" @click="login_out">
+        <div class="lf log-out" @click="login_out">
           <i></i>
-          <p>{{ lanMap['logout'] }}</p>
+          <span>{{ lanMap['logout'] }}</span>
         </div>
       </div>
       <div class="modal-dialog" v-if="false">
@@ -67,14 +67,12 @@ export default {
                     }
                 }
                 this.$http.post('/userlogin?form=logout',post_params).then(res=>{
-                    if(res.data.code === 1){
-                        this.$message({
-                            type: 'success',
-                            text: '成功退出登录'
-                        })
-                        sessionStorage.clear();
-                        this.$router.push('/login');
-                    }
+                    this.$message({
+                        type: 'success',
+                        text: '成功退出登录'
+                    })
+                    sessionStorage.clear();
+                    this.$router.push('/login');
                 }).catch(err=>{
                     // to do
                 })
@@ -134,7 +132,7 @@ export default {
     text-align: center;
   }
   div.user-login div{
-    width:120px;
+    width:150px;
     text-align: center;
     height:70px;
     line-height:70px;
@@ -153,6 +151,7 @@ export default {
         padding-right: 10px;
     }
     >select{
+        vertical-align: middle;
         width: 120px;
         height: 30px;
         font-size: 16px;
@@ -171,5 +170,25 @@ div.modal-body{
     bottom: 0;
     margin: auto;
     border-radius: 10px;
+}
+div.log-out{
+    vertical-align: middle;
+    >i{
+        display: inline-block;
+        vertical-align: middle;
+        width: 32px;
+        height: 32px;
+        background: url('../../assets/logout.png') no-repeat;
+    }
+}
+div.show-user{
+    vertical-align: middle;
+    >i{
+        display: inline-block;
+        vertical-align: middle;
+        width: 32px;
+        height: 32px;
+        background: url('../../assets/user.png') no-repeat;
+    }
 }
 </style>

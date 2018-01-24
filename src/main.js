@@ -21,12 +21,14 @@ axios.interceptors.request.use(config => {
 })
 
 //  response拦截器  -->  全局错误处理
-axios.interceptors.response.use(response => {
-    return response;
-    },err => {
+axios.interceptors.response.use(response=>{
+        return response;
+    },
+    err=>{
         console.log(`${err.response.status} ${err.response.statusText}`);
-  return Promise.reject(err);
-});
+        return Promise.reject(err);
+    }
+);
 
 Vue.prototype.$http = axios
 
