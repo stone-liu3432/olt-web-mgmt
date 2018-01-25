@@ -51,7 +51,8 @@
 	"using" : "启用",
 	"forbidden" : "禁用",
 	"st_success":"成功",
-	"st_fail":"失败",
+    "st_fail":"失败",
+    "range": "范围",
 	
 	"macaddr" : "MAC地址",
 	"ponports" : "PON口数量",
@@ -79,7 +80,7 @@
 	"speed"  : "速率",
 	"duplex"  : "双工",
 	"flow_ctrl"  : "流控",
-	"pvid"  : "端口VLAN",
+	"pvid"  : "缺省VLAN",
 	"media" : "端口媒介",
 	"copper" : "RJ45" ,
     "fiber" : "光纤",

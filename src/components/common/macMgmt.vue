@@ -179,10 +179,10 @@
                             <label :for="item.name">{{ item.name }}</label>
                         </div>
                         <!-- 测试用 -->
-                        <div v-for="(item,key) in port_name.pon" class="lf">
+                        <!-- <div v-for="(item,key) in port_name.pon" class="lf">
                             <input type="checkbox" :id="item.name" v-model="flush_param.port_id" :value="item.id" name="port_list">
                             <label :for="item.name">{{ item.name }}</label>
-                        </div>
+                        </div> -->
                     </div>
                 </div>
                 <div class="add-mac-item">

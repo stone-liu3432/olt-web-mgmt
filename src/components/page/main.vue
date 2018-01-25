@@ -31,31 +31,6 @@ import topBanner from '@/components/page/header'
             }
         },
         created(){
-            //  http响应拦截器，如返回登录超时或登录信息异常时进行强制跳转
-            
-            // this.$http.interceptors.response.use(response=>{
-            //     if(response.data.code === 0){
-            //         this.$message({
-            //             type: 'error',
-            //             text: this.lanMap['illegal_login_info']
-            //         })
-            //         sessionStorage.clear();
-            //         this.$router.push('/login');
-            //     }
-            //     if(response.data.code === -1){
-            //         this.$message({
-            //             type: 'error',
-            //             text: this.lanMap['login_timeout']
-            //         })
-            //         sessionStorage.clear();
-            //         this.$router.push('/login');
-            //     }
-            //     return response;
-            // },err=>{
-            //     return Promise.reject(err);
-            // });
-
-
             //根组件创建之前，初始化vuex部分数据
             this.$http.get(this.change_url.system).then(res=>{
                 if(res.data.code === 1){

@@ -88,6 +88,17 @@ export default {
         }
     },
     methods: {
+        getData(){
+            this.$http.get('/onu_deny_list?port_id='+this.portid).then(res=>{
+                if(res.data.code === 1){
+                    this.onu_deny_list = res.data;
+                }else{
+                    this.onu_deny_list = {}
+                }
+            }).catch(err=>{
+                // to do
+            })
+        },
         //  点击 确认/取消 时进行的操作   -->  增加按钮
         handle(bool){
             if(bool){
@@ -135,12 +146,13 @@ export default {
         result(bool){
             if(bool){
                 // 确认框中用户点击确认时的操作
-                this.$http.post('/onu_allow_list',this.post_param.delete).then(res=>{
+                this.$http.post('/onu_deny_list',this.post_param.delete).then(res=>{
                     if(res.data.code === 1){
                         this.$message({
                             type: 'success',
                             text: this.lanMap['delete'] + this.lanMap['st_success']
                         })
+                        this.getData();
                     }else{
                         this.$message({
                             type: 'error',
@@ -182,15 +194,7 @@ export default {
         },
         //  切换端口的操作
         portid(){
-            this.$http.get('/onu_deny_list?port_id='+this.portid).then(res=>{
-                if(res.data.code === 1){
-                    this.onu_deny_list = res.data;
-                }else{
-                    this.onu_deny_list = {}
-                }
-            }).catch(err=>{
-                // to do
-            })
+            this.getData();
         }
     }
 }

@@ -1,5 +1,5 @@
 <template>
-    <div id="hsgq">
+    <div id="hsgq" v-if="lanMap">
         <router-view></router-view>
         <loading v-if="isLoading"></loading>
     </div>
@@ -27,6 +27,7 @@ export default {
                 this.$http.get(this.change_url.get_lang).then(res => {
                     if (res.data.code === 1) {
                         this.set_language(res.data.data.lang);
+                        this.http_interceptors();
                     }
                 }).catch(err => {
                     // to do
@@ -40,15 +41,41 @@ export default {
     },
      methods: {
         ...mapMutations({
-            lanMap: "updateLanMap",
+            add_lanMap: "updateLanMap",
             loading: "updateLoading",
             set_language: "updateLang"
-        })
+        }),
+        //  http响应拦截器，如返回登录超时或登录信息异常时进行强制跳转
+        http_interceptors(){    
+            this.$http.interceptors.response.use(response=>{
+                //  返回 0 ，非法登录信息
+                if(response.data.code === 0){
+                    this.$message({
+                        type: 'error',
+                        text: this.lanMap['illegal_login_info']
+                    })
+                    sessionStorage.clear();
+                    this.$router.push('/login');
+                }
+                //  返回 -1，登录超时
+                if(response.data.code === -1){
+                    this.$message({
+                        type: 'error',
+                        text: this.lanMap['login_timeout']
+                    })
+                    sessionStorage.clear();
+                    this.$router.push('/login');
+                }
+                return response;
+            },err=>{
+                return Promise.reject(err);
+            });
+        }
     },
-    computed: mapState(["port_info","system","isLoading","language","change_url"]),
+    computed: mapState(["port_info","system","isLoading","language","change_url",'lanMap']),
     watch: {
         language(){
-            this.lanMap(this.lang[this.language]);
+            this.add_lanMap(this.lang[this.language]);
         }
     }
 };
@@ -70,29 +97,7 @@ export default {
 }
 
 /**************** RESET STYLE****************/
-body,
-div,
-dl,
-dt,
-dd,
-ul,
-ol,
-li,
-h1,
-h2,
-h3,
-h4,
-h5,
-h6,
-pre,
-form,
-fieldset,
-input,
-textarea,
-p,
-blockquote,
-th,
-td {
+body,div,dl,dt,dd,ul,ol,li,h1,h2,h3,h4,h5,h6,pre,form,fieldset,input,textarea,p,blockquote,th,td{
   padding: 0;
   margin: 0;
 }
@@ -104,51 +109,32 @@ fieldset,
 img {
   border: 0;
 }
-address,
-caption,
-cite,
-code,
-dfn,
-em,
-strong,
-th,
-var {
+address,caption,cite,code,dfn,em,strong,th,var{
   font-weight: normal;
   font-style: normal;
 }
-ol,
-ul {
+ol,ul{
   list-style: none;
 }
-caption,
-th {
+caption,th {
   text-align: left;
 }
-h1,
-h2,
-h3,
-h4,
-h5,
-h6 {
+h1,h2,h3,h4,h5,h6 {
   font-weight: normal;
   font-size: 100%;
 }
-q:before,
-q:after {
+q:before,q:after {
   content: "";
   /*content:none;*/
 }
-abbr,
-acronym {
+abbr,acronym {
   border: 0;
 }
 a {
   text-decoration: none;
   color: #000;
 }
-html,
-body,
-#app {
+html,body,#app {
   height: 100%;
 }
 .lf {

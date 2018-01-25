@@ -21,7 +21,7 @@
             <h3 class="lf">{{ lanMap['onu_mgmt'] }}</h3>
             <div class="lf">
                 <a href="javascript:;" @click="open_reboot_onu">{{ lanMap['reboot_onu'] }}</a>
-                <a href="javascript:;" @click="open_un_auth_onu" v-if="onu_basic_info.data.auth_state == 'true'">{{ lanMap['deregister_onu'] }}</a>
+                <a href="javascript:;" @click="open_un_auth_onu" v-if="onu_basic_info.data.auth_state.toUpperCase() == 'TRUE'">{{ lanMap['deregister_onu'] }}</a>
                 <a href="javascript:;" @click="open_set_fec_mode">{{ lanMap['set_fec_mode'] }}</a>
             </div>
         </div>
@@ -197,10 +197,23 @@ import confirm from '@/components/common/confirm'
             },
             getData(){
                 this.$http.get('/onumgmt?form=base-info&port_id='+this.portid+'&onu_id='+this.onuid).then(res=>{
-					this.onu_basic_info = res.data;
+                    if(res.data.code === 1){
+                        this.onu_basic_info = res.data;
+                    }else{
+                        this.onu_basic_info = {};
+                    }
 				}).catch(err=>{
 					// to do
-				})
+                })
+                this.$http.get('/onumgmt?form=config&port_id='+this.portid+'&onu_id='+this.onuid).then(res=>{
+                    if(res.data.code === 1){
+                        this.onu_fec_mode = res.data;
+                    }else{
+                        this.onu_fec_mode = {};
+                    }
+                }).catch(err=>{
+                    // to do
+                })
             }
 		},
 		watch: {
@@ -220,11 +233,6 @@ import confirm from '@/components/common/confirm'
             //             }
             //             this.addonu_list(obj);
             //             this.onuid = this.$route.query.onuid || this.onu_list.data[0];
-            //             this.$http.get('/onumgmt?form=config&port_id='+this.portid+'&onu_id='+this.onuid).then(res=>{
-            //                 this.onu_fec_mode = res.data;
-            //             }).catch(err=>{
-            //                 // to do
-            //             })
             //         }else{
             //             this.addonu_list({});
             //             this.onu_basic_info = {};
@@ -235,11 +243,7 @@ import confirm from '@/components/common/confirm'
 			// },
 			// onuid(){
 			// 	// 请求url:  请求url: /onumgmt?form=base-info&port_id=1&onu_id=1
-			// 	this.$http.get('/onumgmt?form=base-info&port_id='+this.portid+'&onu_id='+this.onuid).then(res=>{
-			// 		this.onu_basic_info = res.data;
-			// 	}).catch(err=>{
-			// 		// to do
-			// 	})
+			// 	 this.getData();
 			// }
 		}
     }

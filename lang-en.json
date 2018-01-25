@@ -52,6 +52,7 @@
 	"forbidden" : "Disable",
 	"st_success":"success",
 	"st_fail":"failed",
+    "range": "Range",
 	
 	"macaddr" : "MAC Address",
 	"ponports" : "PON Ports",
@@ -79,7 +80,7 @@
 	"speed"  : "Speed",
 	"duplex"  : "Duplex",
 	"flow_ctrl"  : "Flow Control",
-	"pvid"  : "Port Default VLAN",
+	"pvid"  : "Default VLAN",
 	"media" : "Medium",
 	"copper" : "RJ45" ,
 	"fiber" : "Fiber",

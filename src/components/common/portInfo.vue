@@ -42,6 +42,9 @@
             <li>
                 <span>{{ item.media }}</span>
             </li>
+            <li>
+                <span>{{ item.pvid }}</span>
+            </li>
             <li class="cfg-btn"  onselectstart="return false;" @click="jump(item.port_id)">
                 <span>{{ lanMap['config'] }}</span>
             </li>

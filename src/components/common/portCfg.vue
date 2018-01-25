@@ -50,35 +50,58 @@
         </div> -->
         <div class="contianer">
             <div class="config" v-if="swich_port_info.data">
-                <h3>{{ lanMap['sw_port_cfg'] }}</h3>
+                <h3>
+                    {{ lanMap['sw_port_cfg'] }}
+                    <div class="tips rt">
+                        <i></i>
+                        <div>
+                            <p>{{ lanMap['mtu'] }}</p>
+                            <p>{{ lanMap['range'] }} 128-2000</p>
+                            <hr>
+                            <p>{{ lanMap['erate'] }}</p>
+                            <p>{{ lanMap['range'] }} 64-100000</p>
+                            <hr>
+                            <p>{{ lanMap['irate'] }}</p>
+                            <p>{{ lanMap['range'] }} 64-100000</p>
+                            <hr>
+                            <p>{{ lanMap['pvid'] }}</p>
+                            <p>{{ lanMap['range'] }} 1-4094</p>
+                        </div>
+                    </div>
+                </h3>
                 <div class="swich-basic-config">
                     <ul>
-                        <li v-for="(item,key) in swich_port_info.data" :key="key" class="swich-item">
+                        <li v-for="(item,key) in swich_port_info.data" :key="key" class="swich-item" v-if="key !== 'port_id'">
                             <span v-if="key !== 'port_id'">{{ lanMap[key] }}</span>
                             <!-- <span v-if="key === 'port_id'">{{ item }}</span> -->
                             <select v-if="key === 'admin_status' || key === 'auto_neg' || key === 'flow_ctrl'" v-model="port_data[key]">
                                 <option value="0">{{ lanMap['disable'] }}</option>
                                 <option value="1">{{ lanMap['enable'] }}</option>
                             </select>
-                            <select v-if="key === 'link_status'" v-model="port_data[key]">
+                            <select v-if="key === 'link_status'" v-model="port_data.link_status">
                                 <option value="0">{{ lanMap['link_down'] }}</option>
                                 <option value="1">{{ lanMap['link_up'] }}</option>
                             </select>
-                            <select v-if="key === 'duplex'" v-model="port_data[key]">
+                            <select v-if="key === 'duplex'" v-model="port_data.duplex">
                                 <option value="0">{{ lanMap['half'] }}</option>
                                 <option value="1">{{ lanMap['full'] }}</option>
                             </select>
-                            <select v-if="key === 'speed'" v-model="port_data[key]">
+                            <select v-if="key === 'speed'" v-model="port_data.speed">
                                 <option value="10M">10M</option>
                                 <option value="100M">100M</option>
                                 <option value="1000M">1000M</option>
                             </select>
-                            <input type="text" v-if="key === 'mtu'" placeholder="72-2000" v-model.number="port_data[key]">
+                            <input type="text" v-if="key === 'mtu'" placeholder="72-2000" v-model.number="port_data.mtu"
+                            :style="{ 'border-color' : (port_data.mtu < 128 || port_data.mtu > 2000 || isNaN(port_data.mtu)) ? 'red' : '#ccc' }">
                             <span v-if="key === 'media'">{{ lanMap[item] }}</span>
-                            <input type="text" v-if="key === 'erate'" v-model.number="port_data[key]">
-                            <span v-if="key === 'erate'">Kbps</span>
-                            <input type="text" v-if="key === 'irate'" v-model.number="port_data[key]">
-                            <span v-if="key === 'irate'">Kbps</span>
+                            <input type="text" v-if="key === 'erate'" v-model.number="port_data.erate"
+                            :style="{ 'border-color' : (port_data.erate < 64 || port_data.erate > 100000 || isNaN(port_data.erate)) ? 'red' : '#ccc' }">
+                            <span v-if="key === 'erate'" class="units">Kbps</span>
+                            <input type="text" v-if="key === 'irate'" v-model.number="port_data.irate"
+                            :style="{ 'border-color' : (port_data.irate < 64 || port_data.irate > 100000 || isNaN(port_data.irate)) ? 'red' : '#ccc' }">
+                            <span v-if="key === 'irate'" class="units">Kbps</span>
+                            <input type="text" v-if="key === 'pvid'" v-model.number="port_data.pvid"
+                            :style="{ 'border-color' : (port_data.pvid < 1 || port_data.pvid > 4094 || isNaN(port_data.pvid)) ? 'red' : '#ccc' }">
                         </li>
                     </ul>
                     <div class="btn-submit">
@@ -88,12 +111,28 @@
             </div>
             <div v-else class="warning">{{ lanMap['flush_page_retry'] }}</div>
             <div class="config" v-if="stormctrl_data.data">
-                <h3>{{ lanMap['stormctrl'] }}</h3>
+                <h3>
+                    {{ lanMap['stormctrl'] }}
+                    <div class="tips rt">
+                        <i></i>
+                        <div>
+                            <p>{{ lanMap['broadcast'] }}</p>
+                            <p>{{ lanMap['range'] }} 1-1488100</p>
+                            <hr>
+                            <p>{{ lanMap['multicast'] }}</p>
+                            <p>{{ lanMap['range'] }} 1-1488100</p>
+                            <hr>
+                            <p>{{ lanMap['unicast'] }}</p>
+                            <p>{{ lanMap['range'] }} 1-1488100</p>
+                        </div>
+                    </div>
+                </h3>
                 <div class="storm-config">
                     <ul>
                         <li v-for="(item,key) in stormctrl_data.data" :key="key" v-if="key !== 'port_id'" class="swich-item">
                             <span>{{ lanMap[key] }}</span>
-                            <input type="text" v-model.number="storm_data[key]">
+                            <input type="text" v-model.number="storm_data[key]" 
+                            :style="{ 'border-color' : (storm_data[key] < 1 || storm_data[key] > 1488100 || isNaN(storm_data[key])) ? 'red' : '#ccc' }">
                             pps
                         </li>
                     </ul>
@@ -149,7 +188,9 @@ import confirm from '@/components/common/confirm'
                 stormctrl_data: {},
                 mirror_data: {},
                 portid: 0,
+                //  基本配置 confirm 弹出框
                 userChoose: false,
+                //  风暴控制 confirm 弹出框
                 stormCfg: false,
                 //  交换配置更改项统计
                 flags: 0,
@@ -163,7 +204,8 @@ import confirm from '@/components/common/confirm'
                     duplex: 0,
                     mtu: 0,
                     erate: 0,
-                    irate: 0
+                    irate: 0,
+                    pvid: 0
                 },
                 //  风暴控制更改统计项
                 storm_flags: 0,
@@ -173,7 +215,7 @@ import confirm from '@/components/common/confirm'
                     multicast: 0,
                     unicast: 0
                 },
-                //  端口镜像更改统计项
+                //  端口镜像 confirm 弹出框
                 mirrorCfg: false,
                 //  端口镜像数据
                 mirror: {
@@ -227,6 +269,7 @@ import confirm from '@/components/common/confirm'
         methods: {
             //  点击交换基本配置时弹出确认层，并收集数据
             swich_port_cfg(){
+                this.flags = 0;
                 var original = this.swich_port_info.data;
                 if(original.admin_status != this.port_data.admin_status){
                     this.flags += 1;
@@ -252,13 +295,44 @@ import confirm from '@/components/common/confirm'
                 if(original.irate != this.port_data.irate){
                     this.flags += 512;
                 }
+                if(original.pvid != this.port_data.pvid){
+                    this.flags += 1024
+                }
                 this.userChoose = true;
             },
-            //  根据用户点击按钮，执行不同动作
+            //  根据用户点击按钮，执行不同动作  -->  风暴控制
             storm_result(bool){
                 if(bool){
                     if(this.storm_flags === 0){
                         this.stormCfg = false;
+                        this.$message({
+                            type: 'info',
+                            text: this.lanMap['modify_tips']
+                        })
+                        return
+                    }
+                    if(!this.storm_data.broadcast || this.storm_data.broadcast < 1 || this.storm_data.broadcast > 1488100 || isNaN(this.storm_data.broadcast) ){
+                        this.stormCfg = false;
+                        this.$message({
+                            type: 'error',
+                            text: this.lanMap['param_error'] + ':' + this.lanMap['broadcast']
+                        })
+                        return
+                    }
+                    if(!this.storm_data.multicast || this.storm_data.multicast <1 || this.storm_data.multicast > 1488100 || isNaN(this.storm_data.multicast) ){
+                        this.stormCfg = false;
+                        this.$message({
+                            type: 'error',
+                            text: this.lanMap['param_error'] + ':' + this.lanMap['multicast']
+                        })
+                        return
+                    }
+                    if(!this.storm_data.unicast || this.storm_data.unicast <1 || this.storm_data.unicast > 1488100 || isNaN(this.storm_data.unicast) ){
+                        this.stormCfg = false;
+                        this.$message({
+                            type: 'error',
+                            text: this.lanMap['param_error'] + ':' + this.lanMap['unicast']
+                        })
                         return
                     }
                     var post_params = {
@@ -273,7 +347,16 @@ import confirm from '@/components/common/confirm'
                     }
                     this.$http.post('/switch_port?form=stormctrl',post_params).then(res=>{
                         if(res.data.code === 1){
+                            this.$message({
+                                type: 'success',
+                                text: this.lanMap['setting_ok']
+                            })
                             this.getStormData();
+                        }else{
+                            this.$message({
+                                type: 'error',
+                                text: this.lanMap['setting_fail']
+                            })
                         }
                     }).catch(err=>{
                         // to do
@@ -283,6 +366,7 @@ import confirm from '@/components/common/confirm'
             },
             //  点击风暴控制栏的确认按钮时弹出确认层，并收集数据
             storm_cfg(){
+                this.storm_flags = 0;
                 var storm_cfg_data = this.stormctrl_data.data;
                 if(storm_cfg_data.broadcast != this.storm_data.broadcast){
                     this.storm_flags += 4;
@@ -295,12 +379,48 @@ import confirm from '@/components/common/confirm'
                 }
                 this.stormCfg = true;
             },
-            //  根据用户点击按钮，执行不同动作
+            //  根据用户点击按钮，执行不同动作  -->  交换基本配置
             result(bool){
                 if(bool){
                     if(this.flags === 0){
                         this.userChoose = false;
+                        this.$message({
+                            type: 'info',
+                            text: this.lanMap['modify_tips']
+                        })
                         return 
+                    }
+                    if(!this.port_data.mtu || this.port_data.mtu < 128 || this.port_data.mtu > 2000 || isNaN(this.port_data.mtu)){
+                        this.userChoose = false;
+                        this.$message({
+                            type: 'error',
+                            text: this.lanMap['param_error'] + ':' + this.lanMap['mtu']
+                        })
+                        return
+                    }
+                    if(!this.port_data.erate || this.port_data.erate < 64 || this.port_data.erate > 100000 || isNaN(this.port_data.erate) ){
+                        this.userChoose = false;
+                        this.$message({
+                            type: 'error',
+                            text: this.lanMap['param_error'] + ':' + this.lanMap['erate']
+                        })
+                        return
+                    }
+                    if(!this.port_data.irate || this.port_data.irate < 64 || this.port_data.irate > 100000 || isNaN(this.port_data.irate) ){
+                        this.userChoose = false;
+                        this.$message({
+                            type: 'error',
+                            text: this.lanMap['param_error'] + ':' + this.lanMap['irate']
+                        })
+                        return
+                    }
+                    if(!this.port_data.pvid || this.port_data.pvid < 1 || this.port_data.pvid > 4094 || isNaN(this.port_data.pvid) ){
+                        this.userChoose = false;
+                        this.$message({
+                            type: 'error',
+                            text: this.lanMap['param_error'] + ':' + this.lanMap['pvid']
+                        })
+                        return
                     }
                     var post_params = {
                         "method":"set",
@@ -314,12 +434,22 @@ import confirm from '@/components/common/confirm'
                             "flow_ctrl": this.port_data.flow_ctrl,
                             "mtu": Number(this.port_data.mtu),
                             "erate": Number(this.port_data.erate),
-                            "irate": Number(this.port_data.irate)
+                            "irate": Number(this.port_data.irate),
+                            "pvid": Number(this.port_data.pvid)
                         }
                     }
                     this.$http.post('/switch_port?form=port_info',post_params).then(res=>{
                         if(res.data.code === 1){
+                            this.$message({
+                                type: 'success',
+                                text: this.lanMap['setting_ok']
+                            })
                             this.getPortData();
+                        }else{
+                            this.$message({
+                                type: 'error',
+                                text: this.lanMap['setting_fail']
+                            })
                         }
                     }).catch(err=>{
                         // to do
@@ -330,11 +460,16 @@ import confirm from '@/components/common/confirm'
             mirror_cfg(){
                 this.mirrorCfg = true;
             },
+            //  端口镜像框内确认/取消按钮
             mirror_result(bool){
                 if(bool){
                     var data = this.mirror_data.data;
                     if(data.dst_port === this.mirror.dst_port){
                         this.mirrorCfg = false;
+                        this.$message({
+                            type: 'info',
+                            text: this.lanMap['modify_tips']
+                        })
                         return
                     }
                     var post_params = {
@@ -347,7 +482,16 @@ import confirm from '@/components/common/confirm'
                     }
                     this.$http.post('/switch_port?form=mirror',post_params).then(res=>{
                         if(res.data.code ===1){
+                            this.$message({
+                                type: 'success',
+                                text: this.lanMap['setting_ok']
+                            })
                             this.getMirrorData();
+                        }else{
+                            this.$message({
+                                type: 'error',
+                                text: this.lanMap['setting_fail']
+                            })
                         }
                     }).catch(err=>{
                         // to do
@@ -405,17 +549,12 @@ import confirm from '@/components/common/confirm'
                 this.getPortData();
                 this.getStormData();
                 this.getMirrorData();
-            },
-            'port_data.mtu'(val,oldVal){
-                if(typeof val === 'string'){
-                    this.port_data.mtu = val.replace(/[^\d]/g,'');
-                }
             }
         }
     }
 </script>
 
-<style scoped>
+<style scoped lang="less">
 div.contianer{
     width: 100%;
     /* border: 1px solid #ddd; */
@@ -433,7 +572,9 @@ div.config{
     box-shadow: 3px 3px 3px #ddd;
 }
 div.config>h3{
-    padding: 10px 0 10px 10px;
+    height: 40px;
+    line-height: 40px;
+    padding: 0 15px;
 }
 div.config>div{
     border-top: 1px solid #ddd;
@@ -445,6 +586,7 @@ div.config>div{
 }
 input{
     width: 120px;
+    border-radius: 3px;
 }
 h2{
     width: 200px;
@@ -531,8 +673,9 @@ a:active{
     width: 72px;
 }
 li.swich-item{
-    height: 30px;
-    line-height: 30px;
+    height: 32px;
+    line-height: 32px;
+    vertical-align: middle;
 }
 li.swich-item select{
     width: 100px;
@@ -545,6 +688,7 @@ li.swich-item input{
 }
 li.swich-item>span:first-child{
     display: inline-block;
+    vertical-align: top;
     width: 120px;
     height: 30px;
     line-height: 30px;
@@ -553,5 +697,51 @@ li.swich-item>span:first-child{
 .warning{
     color: red;
     margin-left: 20px;
+}
+span.units{
+    display: inline-block;
+    vertical-align: top;
+    font-size: 14px;
+    color: #333;
+}
+div.tips{
+    height: 40px;
+    line-height: 40px;
+    vertical-align: middle;
+    position: relative;
+    &:hover{
+        div{
+            display: block;
+        }
+    }
+    i{
+        display: inline-block;
+        vertical-align: middle;
+        cursor: pointer;
+        width: 32px;
+        height: 32px;
+        background: url('../../assets/tips.png') no-repeat;
+    }
+    >div{
+        display: none;
+        position: absolute;
+        top: 32px;
+        left: 32px;
+        width: 200px;
+        background: #67AEF7;
+        border: 1px solid #ddd;
+        border-radius: 5px;
+        padding: 10px;
+        >P{
+            font-size: 16px;
+            color: #333;
+            height: 20px;
+            line-height: 20px;
+        }
+        >hr{
+            border: none;
+            border-top: 1px solid #333;
+        }
+    }
 }
 </style>

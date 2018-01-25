@@ -11,7 +11,8 @@
         "flow_ctrl":1,
         "mtu":1500,
         "media":"fiber",
-        "erate":72,
-        "irate":1500
+        "erate":1500,
+        "irate":1500,
+        "pvid":1
     }
 }

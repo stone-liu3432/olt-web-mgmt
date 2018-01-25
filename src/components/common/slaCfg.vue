@@ -215,7 +215,7 @@ import { mapState } from 'vuex'
                     if(this.post_params.assure < 1 || this.post_params.assure > 1000000 || isNaN(this.post_params.assure)){
                         this.$message({
                             type: 'error',
-                            text: this.lanMap['assure_range_err']
+                            text: this.lanMap['assure_range_err'] 
                         })
                         return
                     }

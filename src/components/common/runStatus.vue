@@ -288,8 +288,10 @@
             },
             drawing(cpuNum,memoryNum){
                 var cpu = document.getElementById('cpu-detail');
+                if(!cpu) return
                 var cpuCtx = cpu.getContext('2d');
                 var memory = document.getElementById('memory-detail');
+                if(!memory) return
                 var memoryCtx = memory.getContext('2d');
                 //起始一条路径   cpu
                 cpuCtx.beginPath();

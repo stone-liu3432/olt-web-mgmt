@@ -19,6 +19,7 @@ import time from '../components/common/time'
 import devMgmt from "../components/common/devMgmt"
 import Router from 'vue-router'
 import store from '../vuex/store'
+
 Vue.use(Router)
 
 const router = new Router({
