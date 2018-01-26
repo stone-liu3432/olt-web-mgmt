@@ -158,6 +158,11 @@
                         a.href = "./";
                         a.download = res.data.data.filename;
                         a.click();
+                    }else{
+                        this.$message({
+                            type: 'error',
+                            text: this.lanMap['st_fail']
+                        })
                     }
                 }).catch(err=>{
                     // to do
@@ -219,7 +224,7 @@
             isProgress(){
                 if(this.isProgress){
                     this.timer2 = setInterval(()=>{
-                        this.width += parseInt(Math.random()*20);
+                        this.width += parseInt(Math.random()*10);
                         (this.width > 380) && (this.width = 380);
                     },1000)
                 }

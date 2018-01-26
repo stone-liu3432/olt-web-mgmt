@@ -192,7 +192,11 @@
 	"port_state": "状态",
 	"auto": "Auto",
 	"p2p": "P2P",
-	"shared": "Shared",
+    "shared": "Shared",
+    
+    "interface_cfg": "接口项不同时的可配置选项",
+    "bound_tips": "带外接口和带内接口可配置IP地址和IP掩码，须为有效的IP地址和IP掩码",
+    "add_inbound_tips": "增加只能增加带内接口，须配置IP地址，IP掩码和VLAN ID",
 	
 	"http_login_timeout":"登录超时，请重试",
 	"service_user_password_fail":"用户名或密码验证失败",
@@ -276,7 +280,9 @@
 	"modify_tips": "未进行任何修改",
 	"param_mac":"MAC地址格式不正确",
 	"param_onuid":"非法ONU ID",
-	"param_error":"非法参数",
+    "param_error":"非法参数",
+    "ipaddr_error":"IP地址格式错误",
+    "ipmask_error":"IP掩码格式错误",
 	
 	"time_set":"时间",
 	"manual_s": "手动",

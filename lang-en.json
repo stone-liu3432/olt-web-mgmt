@@ -194,6 +194,10 @@
 	"auto": "Auto",
 	"p2p": "P2P",
 	"shared": "Shared",
+    
+    "interface_cfg": "Configurable options for different interface",
+    "bound_tips": "Outbound or inbound interface can be configured the IP address and IP mask",
+    "add_inbound_tips": "Add only add inbound, the IP address,IP mask and VLAN ID must be configured",
 	
 	"http_login_timeout":"Login timeout, Please again login the device",
 	"service_user_password_fail":"The username or password check failed",
@@ -271,7 +275,9 @@
 	
 	"zero_auto_":"if 0 or none: Auto assign",
 	"manual_bind":"Manual add ONU",
-	"reboot_onu":"Reboot ONU",
+    "reboot_onu":"Reboot ONU",
+    "ipaddr_error": "IP address format error",
+    "ipmask_error":"IP mask format error",
 	
 	"lang" : "Language",
 	"modify_tips": "There's none modify",

@@ -20,24 +20,36 @@ export default {
         }
     },
     created() {
-        this.$http.get('./lang-en.json').then(res=>{
-            this.lang.en = res.data;
-            this.$http.get('./lang-zh.json').then(res=>{
-                this.lang.zh = res.data;
-                this.$http.get(this.change_url.get_lang).then(res => {
-                    if (res.data.code === 1) {
-                        this.set_language(res.data.data.lang);
-                        this.http_interceptors();
-                    }
-                }).catch(err => {
+        var get_lang = sessionStorage.getItem('lang_data');
+        var def_lang = sessionStorage.getItem('def_lang');
+        if(get_lang && def_lang){
+            this.lang = JSON.parse(get_lang);
+            this.set_language(def_lang);
+            this.add_lanMap(this.lang[def_lang]);
+        }else{
+            this.$http.get('./lang-en.json').then(res=>{
+                this.lang.en = res.data;
+                this.$http.get('./lang-zh.json').then(res=>{
+                    this.lang.zh = res.data;
+                    //  缓存language文件，防止用户手动刷新时数据丢失
+                    sessionStorage.setItem('lang_data',JSON.stringify(this.lang));
+                    this.$http.get(this.change_url.get_lang).then(res => {
+                        if (res.data.code === 1) {
+                            this.set_language(res.data.data.lang);
+                            //  缓存用户选择的语言类型，防止用户手动刷新数据消失
+                            sessionStorage.setItem('def_lang',res.data.data.lang);
+                        }
+                    }).catch(err => {
+                        // to do
+                    });
+                }).catch(err=>{
                     // to do
-                });
+                })
             }).catch(err=>{
                 // to do
             })
-        }).catch(err=>{
-            // to do
-        })
+        }
+        this.http_interceptors();
     },
      methods: {
         ...mapMutations({
@@ -54,7 +66,7 @@ export default {
                         type: 'error',
                         text: this.lanMap['illegal_login_info']
                     })
-                    sessionStorage.clear();
+                    sessionStorage.removeItem('x-token');
                     this.$router.push('/login');
                 }
                 //  返回 -1，登录超时
@@ -63,7 +75,7 @@ export default {
                         type: 'error',
                         text: this.lanMap['login_timeout']
                     })
-                    sessionStorage.clear();
+                    sessionStorage.removeItem('x-token');
                     this.$router.push('/login');
                 }
                 return response;
@@ -76,6 +88,7 @@ export default {
     watch: {
         language(){
             this.add_lanMap(this.lang[this.language]);
+            sessionStorage.setItem('def_lang',this.language);
         }
     }
 };
@@ -155,6 +168,7 @@ input[type="text"] {
   height: 30px;
   line-height: 30px;
   border: 1px solid #c8cccf;
+  border-radius: 5px;
   color: #000;
   appearance: none;
   outline: 0;

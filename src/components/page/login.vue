@@ -17,12 +17,12 @@
             <form>
                 <div>
                     <span>USER</span>
-                    <input type="text" v-model="userName" :style="{ 'border-color' : verify_uname ? 'red' : '#aaa' }">
+                    <input type="text" v-model="userName" :class="[ verify_uname ? 'input-error' : '' ]" id="uName">
                 </div>
                 <div class="user-pwd">
                     <span>password</span>
                     <input type="password" 
-                    v-model="userPwd" id="userPwd" :style="{ 'border-color' : verify_upwd ? 'red' : '#aaa' }" 
+                    v-model="userPwd" id="userPwd" :class="[ verify_upwd ? 'input-error' : '' ]" 
                     autocomplete="off" @keyup.enter="userLogin">
                     <i :class="[ visible ? 'visible' : 'invisible']" @click="changeVisible"></i>
                 </div>
@@ -67,6 +67,12 @@ import { mapState,mapMutations } from "vuex"
         computed: mapState(['lanMap','language']),
         created(){
             this.lang = this.language;
+        },
+        mounted(){
+            this.$nextTick(()=>{
+                var nName = document.getElementById('uName');
+                uName.focus();
+            })
         },
         methods: {
             ...mapMutations({
@@ -262,6 +268,12 @@ input{
     font-size: 16px;
     border-radius: 3px;
     outline: none;
+}
+input.input-error{
+    border-color: red;
+}
+input.input-error:focus{
+    border-color: red;
 }
 input:focus{
     border: 1px solid #1E90FF;

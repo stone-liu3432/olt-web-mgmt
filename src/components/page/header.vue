@@ -71,7 +71,7 @@ export default {
                         type: 'success',
                         text: '成功退出登录'
                     })
-                    sessionStorage.clear();
+                    sessionStorage.removeItem('x-token');
                     this.$router.push('/login');
                 }).catch(err=>{
                     // to do

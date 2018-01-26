@@ -14,7 +14,7 @@ Vue.use(Vuex)
 //  request拦截器  -->  全局request添加请求头
 axios.interceptors.request.use(config => {
   var xtoken = sessionStorage.getItem('x-token');
-  config.headers['X-Token'] = xtoken
+  config.headers['X-Token'] = xtoken;
   return config
 }, err => {
   return Promise.reject(err)

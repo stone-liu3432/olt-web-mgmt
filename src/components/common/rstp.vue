@@ -148,9 +148,9 @@
                 <div>
                     <span>{{ lanMap['admin_link_type'] }}</span>
                     <select v-model="priority_info.admin_link_type">
-                        <option value="auto">Auto</option>
-                        <option value="force_true">P2P</option>
-                        <option value="force_false">Shared</option>
+                        <option value="Auto">Auto</option>
+                        <option value="P2P">P2P</option>
+                        <option value="Shared">Shared</option>
                     </select>
                 </div>
                 <div>
@@ -366,6 +366,11 @@ import { mapState } from 'vuex'
                 if(this.priority_info.port_path_cost === ''){
                     this.priority_info.port_path_cost = 0;
                 }
+                var type_map = {
+                    'P2P': 'force_true',
+                    'Auto': 'auto',
+                    'Shared': 'force_false'
+                }
                 var post_params = {
                     "method":"set",
                     "param":{
@@ -374,7 +379,7 @@ import { mapState } from 'vuex'
                         "port_priority": this.priority_info.port_priority,
                         "port_path_cost": this.priority_info.port_path_cost,
                         "edge_status": this.priority_info.edge_status,
-                        "admin_link_type": this.priority_info.admin_link_type
+                        "admin_link_type": type_map[this.priority_info.admin_link_type]
                     }
                 }
                 this.$http.post('/switch_rstp?form=port',post_params).then(res=>{

@@ -357,13 +357,13 @@ import loading from '@/components/common/loading'
                         if(res.data.code === 1){
                             this.$message({
                                 type: 'success',
-                                text: this.lanMap['st_success']
+                                text: this.lanMap['delete'] + this.lanMap['st_success']
                             })
                             this.getData();
                         }else{
                             this.$message({
                                 type: 'error',
-                                text: this.lanMap['st_fail']
+                                text: this.lanMap['delete'] + this.lanMap['st_fail']
                             })
                         }
                     }).catch(err=>{
@@ -440,7 +440,7 @@ import loading from '@/components/common/loading'
                 this.tab = [];
                 this.count = 0;
                 this.mac_type = 3;
-                this.port_id = 0;
+                this.port_id = 1;
                 this.vlan_id = 0;
                 this.vlan_id_e = 0;
                 this.getData();
@@ -466,7 +466,7 @@ import loading from '@/components/common/loading'
                 this.tab = [];
                 this.count = 0;
                 this.mac_type = 3;
-                this.port_id = 0;
+                this.port_id = 1;
                 this.macaddr = '';
                 this.macmask = '';
                 this.getData();
@@ -578,11 +578,12 @@ import loading from '@/components/common/loading'
                 }
                 this.$http.post('/switch_mac?form=table',post_params).then(res=>{
                     if(res.data.code === 1){
-                        this.$meaasge({
+                        this.$message({
                             type: 'success',
                             text: this.lanMap['flush'] + this.lanMap['st_success']
                         })
                         this.flush_mac_close_dialog();
+                        this.getData();
                     }else{
                         this.$message({
                             type: 'error',
@@ -634,7 +635,7 @@ import loading from '@/components/common/loading'
             mac_type(){
                 this.tab = [];
                 this.count = 0;
-                this.port_id = 0;
+                this.port_id = 1;
                 this.vlan_id = 0;
                 this.vlan_id_e = 0;
                 this.macaddr = '';

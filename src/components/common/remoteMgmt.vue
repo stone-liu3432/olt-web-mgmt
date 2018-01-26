@@ -74,11 +74,22 @@
             <div class="cover"></div>
             <div class="modal-content">
                 <div class="modal-item">
-                    <h2> {{ lanMap['remote_mgmt'] }} </h2>
+                    <h2 class="lf"> {{ lanMap['remote_mgmt'] }} </h2>
+                    <div class="tool-tips rt">
+                        <i></i>
+                        <div>
+                            <p>{{ lanMap['interface_cfg'] }}</p>
+                            <hr>
+                            <p>{{ lanMap['outbound'] }}</p>
+                            <p>{{ lanMap['bound_tips'] }}</p>
+                            <p>{{ lanMap['add'] }}</p>
+                            <p>{{ lanMap['add_inbound_tips'] }}</p>
+                        </div>
+                    </div>
                 </div>
                 <div class="modal-item">
                     <span>{{ lanMap['interface'] }}</span>
-                    <select @change="isSelected($event)">
+                    <select v-model="click_interface">
                         <option v-for="(item,index) in interface_data" :key="index" :value="item.interface">
                             {{ lanMap[item.interface] ? lanMap[item.interface] : item.interface }}
                         </option>
@@ -87,11 +98,11 @@
                 </div>
                 <div class="modal-item">
                     <span>{{ lanMap['ipaddr'] }}</span>
-                    <input type="text" placeholder="192.168.1.1" v-model="ipaddr">
+                    <input type="text" placeholder="192.168.1.1" v-model="ipaddr" :style="{ 'border-color' : ipaddr === '' || reg_ip.test(ipaddr) ? '#ccc' : 'red' }">
                 </div>
                 <div class="modal-item">
                     <span>{{ lanMap['ipmask'] }}</span>
-                    <input type="text" placeholder="255.255.255.0" v-model="ipmask">
+                    <input type="text" placeholder="255.255.255.0" v-model="ipmask" :style="{ 'border-color' : ipmask === '' || reg_ipmask.test(ipmask) ? '#ccc' : 'red' }">
                 </div>
                 <div class="modal-item">
                     <span>VLAN</span>
@@ -131,10 +142,18 @@ import { mapState } from 'vuex'
                 modalDialog: false,
                 // 模态框所需要的所有数据
                 interface_map: {},
-                // 模态框内按钮状态
+                // 模态框内下拉框绑定
                 click_interface: '',
+                //  IP地址
                 ipaddr: '',
+                test_ipaddr: false,
+                //  IP掩码
                 ipmask: '',
+                test_ipmask: false,
+                //  IP验证正则
+                reg_ip: /^(([1-9]|[1-9]\d|1\d\d|2[0-4]\d|25[0-5])\.){1}((\d|[1-9]\d|1\d\d|2[0-4]\d|25[0-5])\.){2}([1-9]|[1-9]\d|1\d\d|2[0-4]\d|25[0-4]){1}$/,
+                //  IP掩码验证正则
+                reg_ipmask: /^(([1-9]|[1-9]\d|1\d\d|2[0-4]\d|25[0-5])\.){1}((\d|[1-9]\d|1\d\d|2[0-4]\d|25[0-5])\.){2}(\d|[1-9]\d|1\d\d|2[0-4]\d|25[0-5]){1}$/,
                 vlan: ' - '
             }
         },
@@ -142,16 +161,15 @@ import { mapState } from 'vuex'
             this.$http.get(this.change_url.outbound).then(res=>{
                 this.outbound = res.data;
                 if(res.data.code == 1){
-                        this.interface_data.push(res.data.data);
-                        this.ipaddr = res.data.data.ipaddr;
-                        this.ipmask = res.data.data.ipmask;
-                    }
+                    this.interface_data.push(res.data.data);
+                    this.ipaddr = res.data.data.ipaddr;
+                    this.ipmask = res.data.data.ipmask;
+                }
                 this.$http.get(this.change_url.inbound).then(res=>{
                     if(res.data.code == 1){
                         this.inbound = res.data;
                         this.interface_data = this.interface_data.concat(res.data.data);
                     }
-                    this.click_interface = this.interface_data[0].interface;
                 }).catch(err=>{
                     // to do
                 })
@@ -171,9 +189,25 @@ import { mapState } from 'vuex'
                 for(var i=0;i<this.interface_data.length;i++){
                     this.interface_map[this.interface_data[i].interface] = this.interface_data[i];
                 }
+                this.click_interface = this.interface_data[0].interface;
             },
+            //  增加按钮
             isAdd(){
                 if(this.click_interface === 'add'){
+                    if(!this.reg_ip.test(this.ipaddr)){
+                        this.$message({
+                            type: 'error',
+                            text: this.lanMap['ipaddr_error']
+                        })
+                        return
+                    }
+                    if(!this.reg_ipmask.test(this.ipmask)){
+                        this.$message({
+                            type: 'error',
+                            text: this.lanMap['ipmask_error']
+                        })
+                        return
+                    }
                     var post_params = {
                         "method":"add",
                         "param":{
@@ -189,8 +223,8 @@ import { mapState } from 'vuex'
                         // to do
                     })
                 }
-                return;
             },
+            //  删除按钮
             isDelete(){
                 if(this.click_interface === 'outbound'){
                     return
@@ -211,11 +245,33 @@ import { mapState } from 'vuex'
                     })
                 }
             },
+            //  确认按钮
             isApply(){
                 if(this.click_interface === 'add'){
                     return
                 }else if(this.click_interface === 'outbound'){
-                    // to do
+                    var data = this.interface_map['outbound'];
+                    if(data.ipaddr === this.ipaddr && data.ipmask === this.ipmask){
+                        this.$message({
+                            type: 'info',
+                            text: this.lanMap['modify_tips']
+                        })
+                        return
+                    }
+                    if(!this.reg_ip.test(this.ipaddr)){
+                        this.$message({
+                            type: 'error',
+                            text: this.lanMap['ipaddr_error']
+                        })
+                        return
+                    }
+                    if(!this.reg_ipmask.test(this.ipmask)){
+                        this.$message({
+                            type: 'error',
+                            text: this.lanMap['ipmask_error']
+                        })
+                        return
+                    }
                     var post_params = {
                         "method":"set",
                         "param":{
@@ -231,6 +287,28 @@ import { mapState } from 'vuex'
                         // to do 
                     })
                 }else{
+                    var data = this.interface_map[this.click_interface];
+                    if(data.ipaddr === this.ipaddr && data.ipmask === this.ipmask){
+                        this.$message({
+                            type: 'error',
+                            text: this.lanMap['modify_tips']
+                        })
+                        return
+                    }
+                    if(!this.reg_ip.test(this.ipaddr)){
+                        this.$message({
+                            type: 'error',
+                            text: this.lanMap['ipaddr_error']
+                        })
+                        return
+                    }
+                    if(!this.reg_ipmask.test(this.ipmask)){
+                        this.$message({
+                            type: 'error',
+                            text: this.lanMap['ipmask_error']
+                        })
+                        return
+                    }
                     var post_params = {
                         "method":"set",
                         "param":{
@@ -248,7 +326,9 @@ import { mapState } from 'vuex'
                     })
                 }
             },
+            //  清除统计按钮  -->  暂未使用
             clear_statistic(data){
+                return
                 if(data.interface === 'outbound'){
                     var post_data = {
                         "method": "set",
@@ -281,29 +361,31 @@ import { mapState } from 'vuex'
                         // to do
                     })   
                 }
-            },
-            // 手动触发change事件时，更新当前组件的data值，触发页面自动更新
-            isSelected(node){
-                this.click_interface = node.target.value;
-                if(node.target.value === 'add'){
-                    this.ipaddr = '';
-                    this.ipmask = '';
-                    this.vlan = '';
+            }
+        },
+        watch: {
+            click_interface(){
+                this.$nextTick(()=>{
+                    if(this.click_interface === 'add'){
+                        this.ipaddr = '';
+                        this.ipmask = '255.255.255.0';
+                        this.vlan = '';
+                        var vlanid = document.getElementById('vlanid');
+                        vlanid.disabled = false;
+                        return 
+                    }
+                    this.ipaddr = this.interface_map[this.click_interface].ipaddr;
+                    this.ipmask = this.interface_map[this.click_interface].ipmask;
+                    this.vlan = this.interface_map[this.click_interface].vlan_id || ' - ';
                     var vlanid = document.getElementById('vlanid');
-                    vlanid.disabled = false;
-                    return
-                }
-                this.ipaddr = this.interface_map[node.target.value].ipaddr;
-                this.ipmask = this.interface_map[node.target.value].ipmask;
-                this.vlan = this.interface_map[node.target.value].vlan_id || ' - ';
-                var vlanid = document.getElementById('vlanid');
-                vlanid.disabled = true;
+                    vlanid.disabled = true;
+                })
             }
         }
     }
 </script>
 
-<style scoped>
+<style scoped lang="less">
 select{
     height: 30px;
     font-size: 16px;
@@ -393,7 +475,7 @@ p>span{
     background: #fff;
     z-index: 600;
     padding: 0 30px 20px;
-    overflow: hidden;
+    border-radius: 10px;
 }
 .modal-item{
     padding: 0 20px;
@@ -428,5 +510,45 @@ p>span{
 .flex-box{
     display: flex;
     justify-content: space-around;
+}
+div.tool-tips{
+    margin: 15px 20px 0 0;
+    position: relative;
+    >i{
+        display: inline-block;
+        width: 32px;
+        height: 32px;
+        vertical-align: middle;
+        cursor: pointer;
+        background: url('../../assets/tips.png') no-repeat;
+        &:hover{
+            &+div{
+                display: block;
+            }
+        }
+    }
+    >div{
+        display: none;
+        background: #67AEF7;
+        border-radius: 5px;
+        width: 300px;
+        height: 200px;
+        position: absolute;
+        left: 28px;
+        top: 28px;
+        padding: 10px;
+        z-index: inherit;
+        >P{
+            border: none;
+            height: auto;
+            line-height: 28px;
+            padding: 0;
+        }
+        >hr{
+            margin: 3px 0;
+            border: none;
+            border-bottom: 1px solid #000;
+        }
+    }
 }
 </style>

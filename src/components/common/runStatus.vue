@@ -99,16 +99,20 @@
             this.get_ge();
             //获取 PON 口信息
             this.$http.get(this.change_url.pon).then(res=>{
-                this.ponInfo = res.data;
+                if(res.data.code === 1){
+                    this.ponInfo = res.data;
+                }
             }).catch(err=>{
                 // to do
             })
             // 请求url: '/board?info=cpu'
             this.$http.get(this.change_url.cpu).then(res=>{
-                this.cpuInfo = res.data;
-                this.$nextTick(()=>{
-                    this.drawing(this.cpuInfo.data.cpu_usage,this.cpuInfo.data.memory_usage)
-                });
+                if(res.data.code === 1){
+                    this.cpuInfo = res.data;
+                    this.$nextTick(()=>{
+                        this.drawing(this.cpuInfo.data.cpu_usage,this.cpuInfo.data.memory_usage)
+                    });
+                }
             }).catch(err=>{
                 // to do
             })
