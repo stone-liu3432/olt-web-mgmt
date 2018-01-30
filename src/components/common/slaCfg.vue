@@ -95,7 +95,7 @@
                     <span>{{ lanMap['fix'] }}</span>
                     <span>
                         <input type="text" placeholder="1-1000 Mbps" class="sla-fix" v-model.number="post_params.fix"
-                        :style="{ 'border-color': (post_params.fix <1 || post_params.fix > 1000000 || isNaN(post_params.fix)) ? 'red' : '#ccc' }">
+                        :style="{ 'border-color': post_params.fix !== '' && (post_params.fix <1 || post_params.fix > 1000000 || isNaN(post_params.fix)) ? 'red' : '' }">
                     </span>
                     <span class="tips">range: 1-1000000kbs</span>
                 </div>
@@ -103,7 +103,7 @@
                     <span>{{ lanMap['assure'] }}</span>
                     <span>
                         <input type="text" placeholder="1-1000 Mbps" class="sla-assure" v-model.number="post_params.assure" disabled
-                        :style="{ 'border-color': (post_params.assure <1 || post_params.assure > 1000000 || isNaN(post_params.assure)) ? 'red' : '#ccc' }">
+                        :style="{ 'border-color': post_params.assure !== '' && (post_params.assure <1 || post_params.assure > 1000000 || isNaN(post_params.assure)) ? 'red' : '' }">
                     </span>
                     <span class="tips">range: 1-1000000kbs</span>
                 </div>
@@ -111,7 +111,7 @@
                     <span>{{ lanMap['max'] }}</span>
                     <span>
                         <input type="text" placeholder="1-1000 Mbps" class="sla-max" v-model.number="post_params.max" disabled
-                        :style="{ 'border-color': (post_params.max <1 || post_params.max > 1000000 || isNaN(post_params.max)) ? 'red' : '#ccc' }">
+                        :style="{ 'border-color': post_params.max !== '' && (post_params.max <1 || post_params.max > 1000000 || isNaN(post_params.max)) ? 'red' : '' }">
                     </span>
                     <span class="tips">range: 1-1000000kbs</span>
                 </div>
@@ -203,6 +203,7 @@ import { mapState } from 'vuex'
                     // to do
                 })
             },
+            //  带宽配置
             isChange(bool){
                 if(bool){
                     if(this.post_params.fix < 1 || this.post_params.fix > 1000000 || isNaN(this.post_params.fix)){

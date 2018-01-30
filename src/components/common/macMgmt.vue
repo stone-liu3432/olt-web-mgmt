@@ -34,9 +34,9 @@
             </div>
             <div v-if="choose_macaddr" class="query-frame">
                 <span>{{ lanMap['macaddr'] }}</span>
-                <input type="text" placeholder="ex: 00:00:00:00:00:00" v-model="macaddr" :style="{ 'border-color' : check_mac.test(macaddr) || macaddr === '' ? '#ddd' : 'red' }">
+                <input type="text" placeholder="ex: 00:00:00:00:00:00" v-model="macaddr" :style="{ 'border-color' : check_mac.test(macaddr) || macaddr === '' ? '' : 'red' }">
                 <span>{{ lanMap['ipmask'] }}</span>
-                <input type="text" placeholder="ex: 00:00:00:00:00:00" v-model="macmask" :style="{ 'border-color' : check_mac.test(macmask) || macmask === '' ? '#ddd' : 'red' }">
+                <input type="text" placeholder="ex: 00:00:00:00:00:00" v-model="macmask" :style="{ 'border-color' : check_mac.test(macmask) || macmask === '' ? '' : 'red' }">
                 <a href="javascript:;" @click="query_macaddr">{{ lanMap['apply'] }}</a>
             </div>
             <div v-if="choose_mactype" class="query-frame">
@@ -54,7 +54,7 @@
                 </select>
             </div>
             <div v-if="choose_vlan" class="query-frame">
-                <input type="text" placeholder="range: 1 - 4094" v-model.number="vlan_id">
+                <input type="text" placeholder="range: 1 - 4094" v-model.number="vlan_id" :style="{'border-color' : vlan_id != '' && (vlan_id < 1 || vlan_id > 4094 || isNaN(vlan_id)) ? 'red' : '' }">
                 <!-- <input type="text" placeholder="max"> -->
                 <a href="javascript:;" @click="query_vlanid">{{ lanMap['apply'] }}</a>
             </div>
@@ -111,12 +111,12 @@
                 </div>
                 <div class="add-mac-item">
                     <span>{{ lanMap['macaddr'] }}</span>
-                    <input type="text" v-model="add_param.macaddr" :style="{ 'border-color' : this.check_mac.test(this.add_param.macaddr) || !this.add_param.macaddr ? '#ccc' : 'red' }">
+                    <input type="text" v-model="add_param.macaddr" :style="{ 'border-color' : this.check_mac.test(this.add_param.macaddr) || !this.add_param.macaddr ? '' : 'red' }">
                     <span>ex: 00:00:00:00:00:00</span>
                 </div>
                 <div class="add-mac-item place-holder">
                     <span>{{ lanMap['vlan_id'] }}</span>
-                    <input type="text" v-model.number="add_param.vlan_id" :style="{ 'border-color' : !isNaN(this.add_param.vlan_id) ? '#ccc' : 'red' }">
+                    <input type="text" v-model.number="add_param.vlan_id" :style="{ 'border-color' : !isNaN(this.add_param.vlan_id) ? '' : 'red' }">
                     <span>range: 1-4094</span>
                 </div>
                 <div class="add-mac-item">
@@ -157,7 +157,7 @@
                 <div class="add-mac-item" v-if = "flush_param.flags === 4">
                     <span>{{ lanMap['vlan_id'] }}</span>
                     <input type="text" v-model.number="flush_param.vlan_id" placeholder="VLAN ID" 
-                    :style="{ 'border-color' : flush_param.vlan_id && ( isNaN(flush_param.vlan_id) || flush_param.vlan_id < 1 || flush_param.vlan_id > 4094) ? 'red' : '#ccc' }">
+                    :style="{ 'border-color' : flush_param.vlan_id && ( isNaN(flush_param.vlan_id) || flush_param.vlan_id < 1 || flush_param.vlan_id > 4094) ? 'red' : '' }">
                     <span>range: 1-4094</span>
                 </div>
                 <div class="add-mac-item" v-if="flush_param.flags !== 2 && flush_param.flags !== 4"></div>
@@ -456,7 +456,7 @@ import loading from '@/components/common/loading'
                 this.getData();
             },
             query_vlanid(){
-                if(this.vlan_id === '' || this.vlan_id < 1 || this.vlan_id > 4094){
+                if(this.vlan_id === '' || this.vlan_id < 1 || this.vlan_id > 4094 || isNaN(this.vlan_id)){
                     this.$message({
                         type: 'error',
                         text: this.lanMap['param_error']
@@ -756,7 +756,6 @@ li>span>a{
     margin: 0;
 }
 ul.pagination>li.disabled{
-    /* pointer-events: none; */
     cursor: not-allowed;
     box-shadow: none;
     opacity: .65;

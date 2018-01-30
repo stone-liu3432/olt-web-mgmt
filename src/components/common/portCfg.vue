@@ -91,17 +91,17 @@
                                 <option value="100M">100M</option>
                                 <option value="1000M">1000M</option>
                             </select>
-                            <input type="text" v-if="key === 'mtu'" placeholder="72-2000" v-model.number="port_data.mtu"
-                            :style="{ 'border-color' : (port_data.mtu < 128 || port_data.mtu > 2000 || isNaN(port_data.mtu)) ? 'red' : '#ccc' }">
+                            <input type="text" v-if="key === 'mtu'" placeholder="128-2000" v-model.number="port_data.mtu"
+                            :style="{ 'border-color' : port_data.mtu && (port_data.mtu < 128 || port_data.mtu > 2000 || isNaN(port_data.mtu)) ? 'red' : '' }">
                             <span v-if="key === 'media'">{{ lanMap[item] }}</span>
                             <input type="text" v-if="key === 'erate'" v-model.number="port_data.erate"
-                            :style="{ 'border-color' : (port_data.erate < 64 || port_data.erate > 100000 || isNaN(port_data.erate)) ? 'red' : '#ccc' }">
+                            :style="{ 'border-color' : port_data.erate && (port_data.erate < 64 || port_data.erate > 100000 || isNaN(port_data.erate)) ? 'red' : '' }">
                             <span v-if="key === 'erate'" class="units">Kbps</span>
                             <input type="text" v-if="key === 'irate'" v-model.number="port_data.irate"
-                            :style="{ 'border-color' : (port_data.irate < 64 || port_data.irate > 100000 || isNaN(port_data.irate)) ? 'red' : '#ccc' }">
+                            :style="{ 'border-color' : port_data.irate && (port_data.irate < 64 || port_data.irate > 100000 || isNaN(port_data.irate)) ? 'red' : '' }">
                             <span v-if="key === 'irate'" class="units">Kbps</span>
                             <input type="text" v-if="key === 'pvid'" v-model.number="port_data.pvid"
-                            :style="{ 'border-color' : (port_data.pvid < 1 || port_data.pvid > 4094 || isNaN(port_data.pvid)) ? 'red' : '#ccc' }">
+                            :style="{ 'border-color' : port_data.pvid && (port_data.pvid < 1 || port_data.pvid > 4094 || isNaN(port_data.pvid)) ? 'red' : '' }">
                         </li>
                     </ul>
                     <div class="btn-submit">
@@ -132,7 +132,7 @@
                         <li v-for="(item,key) in stormctrl_data.data" :key="key" v-if="key !== 'port_id'" class="swich-item">
                             <span>{{ lanMap[key] }}</span>
                             <input type="text" v-model.number="storm_data[key]" 
-                            :style="{ 'border-color' : (storm_data[key] < 1 || storm_data[key] > 1488100 || isNaN(storm_data[key])) ? 'red' : '#ccc' }">
+                            :style="{ 'border-color' : storm_data[key] && (storm_data[key] < 1 || storm_data[key] > 1488100 || isNaN(storm_data[key])) ? 'red' : '' }">
                             pps
                         </li>
                     </ul>
@@ -149,6 +149,7 @@
                         <li class="swich-item">
                             <span>{{ lanMap['dst_port'] }}</span>
                             <select v-model="mirror.dst_port">
+                                <option value="0">{{ lanMap['choose'] }}</option>
                                 <option v-for="(item,key) in port_name.ge" :key="key" :value="item.id">{{ item.name }}</option>
                             </select>
                         </li>

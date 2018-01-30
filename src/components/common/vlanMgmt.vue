@@ -524,9 +524,6 @@ h2+div:after{
     display: table;
     clear: both;
 }
-div.add-vlan{
-    /* margin-bottom: 30px; */
-}
 p{
     font-size: 20px;
     font-weight: 600;
@@ -555,12 +552,6 @@ li>span{
 li>a{
     margin: 5px;
 }
-/* li>span:nth-child(2){
-    width: 9%;
-}
-li>span:nth-child(3),li>span:nth-child(4){
-    width: 37%;
-} */
 li>span:first-child{
     width: 9%;
 }
@@ -631,8 +622,12 @@ div.vlan-mode:after{
     display: table;
     clear: both;
 }
+span.tagged,span.untagged{
+    user-select: none;
+}
 label{
     margin-right: 18px;
+    user-select: none;
 }
 div.vlan-mode{
     margin: 20px 0;
@@ -641,7 +636,6 @@ div.vlan-mode>a{
     margin-left: 50px;
 }
 ul.pagination>li.disabled{
-    /* pointer-events: none; */
     cursor: not-allowed;
     box-shadow: none;
     opacity: .65;

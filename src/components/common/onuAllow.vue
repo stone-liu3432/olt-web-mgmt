@@ -8,7 +8,32 @@
             </select>
             <a href="javascript:;" @click="add_onu()">{{ lanMap['add'] }}</a>
             <a href="javascript:;" @click="onu_bandwieth()">{{ lanMap['sla_cfg'] }}</a>
-            <a href="javascript:;" @click="reboot()">{{ lanMap['reboot_onu'] }}</a>
+            <!-- <a href="javascript:;" @click="reboot()">{{ lanMap['reboot_onu'] }}</a> -->
+            <div class="rt tool-tips">
+                <i></i>
+                <div>
+                    <div>
+                        <p>{{ lanMap['auth_state'] }}</p>
+                        <p><i class="verified-actived"></i>{{ lanMap['tips_cfm_onu'] }}</p>
+                        <p><i class="unverified"></i>{{ lanMap['tips_n_cfm_onu'] }}</p>
+                    </div>
+                    <div>
+                        <p>{{ lanMap['config'] }}</p>
+                        <p>
+                            {{ lanMap['click'] }}<i class="onu-detail"></i>{{ lanMap['tips_onu_btn_detail'] }}
+                        </p>
+                        <p>
+                            {{ lanMap['click'] }}<i class="onu-delete"></i>{{ lanMap['tips_onu_btn_del'] }}
+                        </p>
+                        <p>
+                            {{ lanMap['click'] }}<i class="onu-remove"></i>{{ lanMap['tips_onu_btn_rej'] }}
+                        </p>
+                        <p>
+                            {{ lanMap['click'] }}<i class="reset-onu"></i>{{ lanMap['tips_onu_restart'] }}
+                        </p>
+                    </div>
+                </div>
+            </div>
         </div>
         <div class="modal-dialog" v-if="add_dialog">
             <div class="cover"></div>
@@ -60,20 +85,21 @@
                 <span>{{ item.status }}</span>
                 <span>
                     <span>{{ item.auth_state ? 'true' : 'false' }}</span>
-                    <i :class="[item.auth_state ? 'verified-actived' : 'verified']" @click="authstate_on(item)" :title="lanMap['clk_cfrm']"></i>
-                    <i :class="[item.auth_state ? 'unverified' : 'unverified-actived']" @click="authstate_off(item)" :title="lanMap['clk_cancel_cfrm']"></i>
+                    <i :class="[item.auth_state ? 'verified-actived' : 'unverified']" @click="authstate(item)"></i>
                 </span>
                 <span>{{ item.register_time }}</span>
                 <span>
                     <i :title="lanMap['detail']" class="onu-detail" @click="onu_detail(item.port_id,item.onu_id)"></i>
                     <i :title="lanMap['del_onu']" class="onu-delete" @click="delete_onu(item)"></i>
                     <i :title="lanMap['add_to_deny']" class="onu-remove" @click="remove_onu(item)"></i>
+                    <i :title="lanMap['reboot_onu']" class="reset-onu" @click="reboot(item)"></i>
                 </span>
             </li>
         </ul>
         <p v-else>{{ lanMap['no_more_data'] }}</p>
         <confirm :tool-tips="lanMap['tips_del_onu']" @choose="result_delete" v-if="delete_confirm"></confirm>
         <confirm :tool-tips="lanMap['tips_add_deny_onu']" @choose="result_deny" v-if="deny_confirm"></confirm>
+        <confirm :tool-tips="lanMap['confirm_reboot_onu']" @choose="result_reboot" v-if="reboot_confirm"></confirm>
     </div>
 </template>
 
@@ -95,6 +121,7 @@ import confirm from '@/components/common/confirm'
                 add_onudesc: '',
                 delete_confirm: false,
                 deny_confirm: false,
+                reboot_confirm: false,
                 post_params: {}
             }
         },
@@ -104,23 +131,21 @@ import confirm from '@/components/common/confirm'
             // '/onu_allow_list?port_id=' + ( this.$route.query.port_id || 1 )
             this.portid = this.$route.query.port_id || 1;
             if(this.change_url.beta === 'test'){
-                if(this.change_url.beta === 'test'){
-                    var url;
-                    if(this.change_url.onu_allow[this.change_url.onu_allow.length - 1] != '='){
-                        url = this.change_url.onu_allow;
-                    }else{
-                        url = this.change_url.onu_allow + this.portid;
-                    }
-                    this.$http.get(url).then(res=>{
-                        if(res.data.code === 1){
-                            this.onu_allow_list = res.data;
-                        }else{
-                            this.onu_allow_list = {};
-                        }
-                    }).catch(err=>{
-                        // to do 
-                    })
+                var url;
+                if(this.change_url.onu_allow[this.change_url.onu_allow.length - 1] != '='){
+                    url = this.change_url.onu_allow;
+                }else{
+                    url = this.change_url.onu_allow + this.portid;
                 }
+                this.$http.get(url).then(res=>{
+                    if(res.data.code === 1){
+                        this.onu_allow_list = res.data;
+                    }else{
+                        this.onu_allow_list = {};
+                    }
+                }).catch(err=>{
+                    // to do 
+                })
             }
         },
         methods:{
@@ -155,7 +180,6 @@ import confirm from '@/components/common/confirm'
             },
             //  手动添加 onu
             add_onu(){
-                // 待添加功能
                 this.add_macaddr = '';
                 this.add_onuid = '';
                 this.add_onudesc = '';
@@ -210,47 +234,15 @@ import confirm from '@/components/common/confirm'
                 }
                 this.add_dialog = false;
             },
-            //  onu 认证
-            authstate_on(node){
-                if(node.auth_state) return
+            //  onu认证 / 取消认证
+            authstate(node){
                 var post_params = {
                     "method": "set",
                     "param":{
                         "port_id": this.portid,
                         "onu_id": node.onu_id,
                         "macaddr": node.macaddr,
-                        "auth_state": 1,
-                        "onu_type": '',
-                        "onu_desc": ''
-                    }
-                }
-                this.$http.post('/onu_allow_list',post_params).then(res=>{
-                    if(res.data.code === 1){
-                        this.$message({
-                            type: 'success',
-                            text: this.lanMap['setting_ok']
-                        })
-                        this.getData();
-                    }else{
-                        this.$message({
-                            type: 'error',
-                            text: this.lanMap['setting_fail']
-                        })
-                    }
-                }).catch(err=>{
-                    // to do
-                })
-            },
-            //  onu取消认证
-            authstate_off(node){
-                if(!node.auth_state) return
-                var post_params = {
-                    "method": "set",
-                    "param":{
-                        "port_id": this.portid,
-                        "onu_id": node.onu_id,
-                        "macaddr": node.macaddr,
-                        "auth_state": 0,
+                        "auth_state": node.auth_state ? 0 : 1,
                         "onu_type": '',
                         "onu_desc": ''
                     }
@@ -296,9 +288,40 @@ import confirm from '@/components/common/confirm'
                     }
                 }
             },
+            //  重启模态框
+            result_reboot(bool){
+                if(bool){
+                    this.$http.post('/onumgmt?form=config',this.post_params).then(res=>{
+                        if(res.data.code === 1){
+                            this.$message({
+                                type: 'success',
+                                text: this.lanMap['reboot_onu'] + this.lanMap['st_success']
+                            })
+                        }else{
+                            this.$message({
+                                type: 'error',
+                                text: this.lanMap['reboot_onu'] + this.lanMap['st_fail']
+                            })
+                        }
+                    }).catch(err=>{
+                        // to do
+                    })
+                }
+                this.post_params = {};
+                this.reboot_confirm = false;
+            },
             //  重启 onu
-            reboot(){
-                // 待添加
+            reboot(item){
+                this.reboot_confirm = true;
+                this.post_params = {
+                    "method":"set",
+                    "param":{
+                        "port_id": this.portid,
+                        "onu_id": item.onu_id,
+                        "flags": 1,
+                        "fec_mode": 1
+                    }
+                }
             },
             //  跳转到 onu 详情页
             onu_detail(portid,onuid){
@@ -368,7 +391,7 @@ import confirm from '@/components/common/confirm'
             result_deny(bool){
                 if(bool){
                     this.$http.post('/onu_allow_list',this.post_params).then(res=>{
-                        if(re.data.code === 1){
+                        if(res.data.code === 1){
                             this.$message({
                                 type: 'success',
                                 text: this.lanMap['setting_ok']
@@ -404,7 +427,7 @@ import confirm from '@/components/common/confirm'
     }
 </script>
 
-<style scoped>
+<style scoped lang="less">
 .onu-allow{
     margin-top: 30px;
 }
@@ -534,19 +557,60 @@ div.modal-btn{
 div.modal-btn>a{
     margin-left: 120px;
 }
-i.verified{
-    background: url('../../assets/authstatus-normal.png') no-repeat;
-}
 i.verified-actived{
     background: url('../../assets/authstatus-hover.png') no-repeat;
 }
 i.unverified{
     background: url('../../assets/unauthstatus-normal.png') no-repeat;
 }
-i.unverified-actived{
-    background: url('../../assets/unauthstatus-hover.png') no-repeat;
+i.reset-onu{
+    background: url('../../assets/reset-normal.png') no-repeat 2px 2px;
+}
+i.reset-onu:hover{
+    background: url('../../assets/reset-hover.png') no-repeat 2px 2px;
 }
 span>span{
     width: 40px;
+}
+div.tool-tips{
+    margin-right: 30px;
+    height: 38px;
+    vertical-align: middle;
+    line-height: 38px;
+    position: relative;
+    &:hover>div{
+        display: block;
+    }
+    >i{
+        background: url('../../assets/tips.png') no-repeat;
+    }
+    >div{
+        display: none;
+        width: 300px;
+        height: 300px;
+        background: #ddd;
+        border-radius: 10px;
+        padding: 10px;
+        position: absolute;
+        top: 26px;
+        right: 26px;
+        >div{
+            padding: 5px 0;
+            &:first-child{
+                border-bottom: 1px solid #333;
+                margin-top: 5px;
+                margin-bottom: 5px;
+            }
+            >p{
+                color: #333;
+                font-size: 14px;
+                line-height: 20px;
+                margin: 0;
+                &:first-child{
+                    color: #3990E5;
+                }
+            }
+        }
+    }
 }
 </style>

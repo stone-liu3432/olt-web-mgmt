@@ -98,15 +98,15 @@
                 </div>
                 <div class="modal-item">
                     <span>{{ lanMap['ipaddr'] }}</span>
-                    <input type="text" placeholder="192.168.1.1" v-model="ipaddr" :style="{ 'border-color' : ipaddr === '' || reg_ip.test(ipaddr) ? '#ccc' : 'red' }">
+                    <input type="text" placeholder="192.168.1.1" v-model="ipaddr" :style="{ 'border-color' : ipaddr === '' || reg_ip.test(ipaddr) ? '' : 'red' }">
                 </div>
                 <div class="modal-item">
                     <span>{{ lanMap['ipmask'] }}</span>
-                    <input type="text" placeholder="255.255.255.0" v-model="ipmask" :style="{ 'border-color' : ipmask === '' || reg_ipmask.test(ipmask) ? '#ccc' : 'red' }">
+                    <input type="text" placeholder="255.255.255.0" v-model="ipmask" :style="{ 'border-color' : ipmask === '' || reg_ipmask.test(ipmask) ? '' : 'red' }">
                 </div>
                 <div class="modal-item">
                     <span>VLAN</span>
-                    <input type="text" id="vlanid" placeholder="0-4094" v-model="vlan" disabled>
+                    <input type="text" id="vlanid" placeholder="0-4094" v-model="vlan" :style="{'border-color': vlan !== '' && (vlan < 1 || vlan > 4094 || isNaN(vlan)) ? 'red' : '' }" disabled>
                 </div>
                 <div class="modal-item flex-box">
                     <a href="javascript:;" @click="isAdd" :class="[ click_interface !== 'add' ? 'not-allowed' : '' ]"> 
@@ -208,6 +208,13 @@ import { mapState } from 'vuex'
                         })
                         return
                     }
+                    if(this.vlan <1 || this.vlan > 4094 || isNaN(this.vlan)){
+                        this.$message({
+                            type: 'error',
+                            text: this.lanMap['vlanid_range_hit']
+                        })
+                        return
+                    }
                     var post_params = {
                         "method":"add",
                         "param":{
@@ -218,7 +225,17 @@ import { mapState } from 'vuex'
                     }
                     // 请求url: /system?form=inbound
                     this.$http.post('/system?form=inbound',post_params).then(res=>{
-                        // to do
+                        if(res.data.code === 1){
+                            this.$message({
+                                type: 'success',
+                                text: this.lanMap['add'] + this.lanMap['st_success']
+                            })
+                        }else{
+                            this.$message({
+                                type: 'error',
+                                text: this.lanMap['add'] + this.lanMap['st_fail']
+                            })
+                        }
                     }).catch(err=>{
                         // to do
                     })
@@ -239,7 +256,17 @@ import { mapState } from 'vuex'
                     }
                     // 请求url: /system?form=inbound
                     this.$http.post('/system?form=inbound',post_params).then(res=>{
-                        // to do 
+                        if(res.data.code === 1){
+                            this.$message({
+                                type: 'success',
+                                text: this.lanMap['delete'] + this.lanMap['st_success']
+                            })
+                        }else{
+                            this.$message({
+                                type: 'error',
+                                text: this.lanMap['delete'] + this.lanMap['st_fail']
+                            })
+                        }
                     }).catch(err=>{
                         // to do 
                     })
@@ -282,7 +309,17 @@ import { mapState } from 'vuex'
                     }
                     // 请求url: /system?form=outbound
                     this.$http.post('/system?form=outbound',post_params).then(res=>{
-                        // to do 
+                        if(res.data.code === 1){
+                            this.$message({
+                                type: 'success',
+                                text: this.lanMap['setting_ok']
+                            })
+                        }else{
+                            this.$message({
+                                type: 'error',
+                                text: this.lanMap['setting_fail']
+                            })
+                        }
                     }).catch(err=>{
                         // to do 
                     })
@@ -290,7 +327,7 @@ import { mapState } from 'vuex'
                     var data = this.interface_map[this.click_interface];
                     if(data.ipaddr === this.ipaddr && data.ipmask === this.ipmask){
                         this.$message({
-                            type: 'error',
+                            type: 'info',
                             text: this.lanMap['modify_tips']
                         })
                         return
@@ -320,7 +357,17 @@ import { mapState } from 'vuex'
                     }
                     // 请求url: /system?form=inbound
                     this.$http.post('/system?form=inbound',post_params).then(res=>{
-                        // to do 
+                        if(res.data.code === 1){
+                            this.$message({
+                                type: 'success',
+                                text: this.lanMap['setting_ok']
+                            })
+                        }else{
+                            this.$message({
+                                type: 'error',
+                                text: this.lanMap['setting_fail']
+                            })
+                        }
                     }).catch(err=>{
                         // to do 
                     })
@@ -376,7 +423,7 @@ import { mapState } from 'vuex'
                     }
                     this.ipaddr = this.interface_map[this.click_interface].ipaddr;
                     this.ipmask = this.interface_map[this.click_interface].ipmask;
-                    this.vlan = this.interface_map[this.click_interface].vlan_id || ' - ';
+                    this.vlan = this.interface_map[this.click_interface].vlan_id || '';
                     var vlanid = document.getElementById('vlanid');
                     vlanid.disabled = true;
                 })

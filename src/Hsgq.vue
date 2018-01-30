@@ -170,7 +170,6 @@ input[type="text"] {
   border: 1px solid #c8cccf;
   border-radius: 5px;
   color: #000;
-  appearance: none;
   outline: 0;
   text-decoration: none;
 }

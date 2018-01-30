@@ -218,13 +218,15 @@ import confirm from '@/components/common/confirm'
 		},
 		watch: {
 			// portid(){
-			// 	// 请求url:  请求url: /onumgmt?form=base-info&port_id=1&onu_id=1
+            // 	// 请求url:  请求url: /onumgmt?form=base-info&port_id=1&onu_id=1
+            //  var _onuid = this.onuid;
 			// 	this.$http.get('/onu_allow_list?form=resource&port_id='+this.portid).then(res=>{
 			// 		if(res.data.code === 1){
             //             var _onu_list = this.analysis(res.data.data.resource);
             //             if(!_onu_list){
             //                  this.addonu_list({});
             //                  this.onu_basic_info = {};
+            //                  this.onuid = 0;
             //                  return
             //             }
             //             var obj = {
@@ -232,17 +234,25 @@ import confirm from '@/components/common/confirm'
             //                 data: _onu_list
             //             }
             //             this.addonu_list(obj);
-            //             this.onuid = this.$route.query.onuid || this.onu_list.data[0];
+            //             this.onuid = this.$route.query.onu_id || this.onu_list.data[0];
+            //             if(this.$route.query.onu_id){
+            //                 this.$route.query.onu_id = null;
+            //             }
+            //             if(_onuid === this.onuid){
+            //                 this.getData();
+            //             }
             //         }else{
             //             this.addonu_list({});
-            //             this.onu_basic_info = {};
+            //             this.onu_basic_info = {}; 
+            //             this.onuid = 0;
             //         }
 			// 	}).catch(err=>{
 			// 		// to do
 			// 	})
 			// },
 			// onuid(){
-			// 	// 请求url:  请求url: /onumgmt?form=base-info&port_id=1&onu_id=1
+            // 	// 请求url:  请求url: /onumgmt?form=base-info&port_id=1&onu_id=1
+            //   if(this.onuid === 0) return   
 			// 	 this.getData();
 			// }
 		}
@@ -250,9 +260,6 @@ import confirm from '@/components/common/confirm'
 </script>
 
 <style scoped lang="less">
-#detail>div{
-    border-bottom: 1px solid #ccc;
-}
 .onu-basic-info{
 	padding:20px 0 20px 30px; 
 }
@@ -284,7 +291,7 @@ select{
 hr{
 	margin-bottom: 30px;
 }
-.onu-info-item{
+div.onu-info-item{
     border: 1px solid #ccc;
     border-bottom: none;
 }
@@ -307,6 +314,9 @@ div.error-msg{
     height: 30px;
     line-height: 30px;
     color: red;
+}
+div#detail>div>div.onu-info-item:last-child{
+    border: 1px solid #ccc;
 }
 div.handle-btn{
     margin: 20px;

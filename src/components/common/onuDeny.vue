@@ -9,6 +9,19 @@
             <span>
                 <a href="javascript:;" @click="add">{{ lanMap['add'] }}</a>
             </span>
+            <div class="rt tool-tips">
+                <i></i>
+                <div>
+                    <div>
+                        <p>{{ lanMap['add'] }}</p>
+                        <p>{{ lanMap['onudeny_add_tips'] }}</p>
+                    </div>
+                    <div>
+                        <p>{{ lanMap['delete'] }}</p>
+                        <p>{{ lanMap['click'] }}<i class="icon-delete"></i>{{ lanMap['onudeny_del_tips'] }}</p>
+                    </div>
+                </div>
+            </div>
         </div>
         <div class="add-item" v-if="addItem.isShow">
             <span>{{ lanMap['macaddr'] }}</span>
@@ -40,7 +53,7 @@
         </ul>
         <div v-else class="data-failed">{{ lanMap['no_more_data'] }}</div>
         <!-- tool-tips => 自定义的消息内容   confirm => 确认框组件 -->
-        <confirm :tool-tips="lanMap['if_sure']" @choose="result" v-if="userChoose"></confirm>
+        <confirm :tool-tips="lanMap['confirm_del_deny']" @choose="result" v-if="userChoose"></confirm>
     </div>
 </template>
 
@@ -200,7 +213,7 @@ export default {
 }
 </script>
 
-<style scoped>
+<style scoped lang="less">
 .onu-deny{
     margin-top: 30px;
 }
@@ -276,10 +289,54 @@ i.icon-delete{
     cursor: pointer;
     width: 32px;
     height: 32px;
+    vertical-align: middle;
     background: url('../../assets/delete-normal.png') no-repeat;
 }
 div.data-failed{
     margin: 20px 10px;
     color: red;
+}
+div.tool-tips{
+    margin-right: 30px;
+    position: relative;
+    height: 36px;
+    line-height: 36px;
+    &:hover>div{
+        display: block;
+    }
+    >i{
+        display: inline-block;
+        width: 32px;
+        height: 32px;
+        cursor: pointer;
+        vertical-align: middle;
+        background: url('../../assets/tips.png') no-repeat;
+    }
+    >div{
+        display: none;
+        width: 300px;
+        height: 200px;
+        position: absolute;
+        right: 26px;
+        top: 26px;
+        border-radius: 10px;
+        padding: 8px;
+        background: #ddd;
+        >div{
+            padding: 5px 0;
+            &:first-child{
+                border-bottom: 1px solid #333;
+            }
+            >p{
+                color: #333;
+                line-height: 20px;
+                font-size: 14px;
+                &:first-child{
+                    color: #67AEF7;
+                    padding: 5px;
+                }
+            }
+        }
+    }
 }
 </style>
