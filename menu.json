@@ -28,7 +28,8 @@
                 "name":"onu_mgmt",
                 "isHidden":false,
                 "children":[
-                    {"name":"onu_basic_info"}
+                    {"name":"onu_basic_info"},
+                    {"name": "onu_port_cfg"}
                 ]
             },{
                 "name":"swport_mgmt",

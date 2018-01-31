@@ -17,6 +17,7 @@ import portCfg from '../components/common/portCfg'
 import vlanMgmt from '../components/common/vlanMgmt'
 import time from '../components/common/time'
 import devMgmt from "../components/common/devMgmt"
+import onuPortCfg from "../components/common/onuPortCfg"
 import Router from 'vue-router'
 import store from '../vuex/store'
 
@@ -100,6 +101,12 @@ const router = new Router({
             requireAuth: true
           }
         }, {
+          path: "/onu_port_cfg",
+          component: onuPortCfg,
+          meta: {
+            requireAuth: true
+          }
+        }, {
           path: "/perf_info",
           component: perfInfo,
           meta: {
@@ -148,26 +155,26 @@ const router = new Router({
 })
 
 router.beforeEach((to, from, next) => {
-    store.commit('updateLoad',true);
-    // 判断该路由是否需要登录权限
-    if (to.meta.requireAuth) {
-        // if (sessionStorage.getItem('x-token')) {
-        //     next();
-        // } else {
-        //     next({path: '/login'})
-        // }
-        next(); 
-    }else{
-        if(!sessionStorage.getItem('x-token')){
-            next()
-        }else{
-            next('/main')
-        }
+  store.commit('updateLoad', true);
+  // 判断该路由是否需要登录权限
+  if (to.meta.requireAuth) {
+    // if (sessionStorage.getItem('x-token')) {
+    //     next();
+    // } else {
+    //     next({path: '/login'})
+    // }
+    next();
+  } else {
+    if (!sessionStorage.getItem('x-token')) {
+      next()
+    } else {
+      next('/main')
     }
+  }
 })
 
-router.afterEach((to,from)=>{
-    store.commit('updateLoad',false);
+router.afterEach((to, from) => {
+  store.commit('updateLoad', false);
 })
 
 export default router

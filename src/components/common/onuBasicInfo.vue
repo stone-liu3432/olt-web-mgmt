@@ -328,6 +328,7 @@ div.handle-btn{
     h3{
         font-size: 18px;
         height: 30px;
+        font-weight: 500;
         line-height: 30px;
         color: #67AEF7;
     }
