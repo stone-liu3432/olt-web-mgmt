@@ -18,7 +18,7 @@
                 </transition>
             </li>
         </ul>
-        <div class="menu-footer">公司信息<br>版权信息等</div>
+        <!-- <div class="menu-footer">公司信息<br>版权信息等</div> -->
     </div>
 </template>
 
