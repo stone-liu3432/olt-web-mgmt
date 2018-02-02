@@ -36,16 +36,38 @@
                 <h3 class="lf">{{ 'ONU' + port_name.pon[portid].id + '/' + onuid + ' ' + '端口VLAN' }}</h3>
                 <div class="lf">
                     <a href="javascript:;" @click="open_dialog_vlanCfg">ONU端口VLAN模式配置</a>
-                    <!-- <a href="javascript:;" @click="open_dialog_trunk">ONU端口trunk设置</a> -->
                 </div>
             </div>
-            <div>
-                <span v-for="(item,key) in onu_vlan_info.data[0]" :key="key" v-if="key !== 'vlan_list'">{{ key }}</span>
-                <span v-for="(item,index) in onu_vlan_info.data[0].vlan_list" :key="index" v-if="onu_vlan_info.data[0].vlan_list">{{ index }}</span>
-            </div>
-            <div v-for="(item,index) in onu_vlan_info.data" :key="index">
-                <span v-for="(_item,_key) in item" :key="_key" v-if="_key !== 'vlan_list'">{{ _item }}</span>
-                <span v-for="(_item,_key) in item.vlan_list" :key="_key" v-if="item.vlan_list">{{ _item }}</span>
+            <div v-for="(item,index) in onu_vlan_info.data" :key="index" class="port-item-vlan">
+                <div>
+                    <span v-for="(item,key) in onu_vlan_info.data[0]" :key="key" v-if="key !== 'vlan_list' && key !== 'op_vlan_mode'">{{ key }}</span>
+                    <span>op_vlan_mode</span>
+                    <span>{{ lanMap['config'] }}</span>
+                </div>
+                <div>
+                    <span v-for="(_item,_key) in item" :key="_key" v-if="_key !== 'vlan_list' && _key !== 'op_vlan_mode'">{{ _item }}</span>
+                    <span>{{ vlan_mode_map[item.op_vlan_mode] }}</span>
+                    <span v-if="item.op_vlan_mode === 2">
+                        <a href="javascript:;" @click="add_translate(item)">{{ lanMap['add'] }}</a>
+                        <a href="javascript:;" @click="delete_translate(item)">{{ lanMap['delete'] }}</a>
+                    </span>
+                    <span v-if="item.op_vlan_mode === 4">
+                        <a href="javascript:;" @click="add_trunk(item)">{{ lanMap['add'] }}</a>
+                        <a href="javascript:;" @click="delete_trunk(item)">{{ lanMap['delete'] }}</a>
+                    </span>
+                </div>
+                <div v-if="item.vlan_list && item.op_vlan_mode === 2" class="vlan-list">
+                    <span>vlan_list</span>
+                    <span>
+                        <span>{{ translate_str_map(item.vlan_list,' &rarr; ') }}</span>
+                    </span>
+                </div>
+                <div v-if="item.vlan_list && item.op_vlan_mode === 4" class="vlan-list">
+                    <span>vlan_list</span>
+                    <span>
+                        <span>{{ trunk_str_map(item.vlan_list,' - ') }}</span>
+                    </span>
+                </div>
             </div>
         </div>
         <div class="modal-dialog" v-if="onu_vlan_mode">
@@ -128,6 +150,59 @@
                 <b class="close" @click="handle_onu_basicCfg(false)"></b>
             </div>
         </div>
+        <!-- translate模式下的添加/删除vlan按钮 -->
+        <div class="modal-dialog" v-if="is_add_translate || is_delete_translate">
+            <div class="cover"></div>
+            <div class="dialog-content add-vlan-translate">
+                <div>
+                    <h3>ONU下添加转发VLAN</h3>
+                </div>
+                <div>
+                    <span>{{ lanMap['onu_id'] }}</span>
+                    <span>{{ 'ONU' + port_name.pon[portid].id + '/' + onuid }}</span>
+                </div>
+                <div>
+                    <span>op_id</span>
+                    <span>1</span>
+                </div>
+                <div v-if="is_add_translate">
+                    <span>old_vlan_id</span>
+                    <input type="text">
+                </div>
+                <div v-if="is_add_translate">
+                    <span>new_vlan_id</span>
+                    <input type="text">
+                </div>
+                <div v-if="is_delete_translate">
+                    <span>vlan_id</span>
+                    <select>
+                        <option :value="index" v-for="(item,index) in onu_vlan_item" :key="index">{{ translate_str_map(item.vlan_list,' &rarr; ') }}</option>
+                    </select>
+                </div>
+                <div v-if="is_add_translate">
+                    <span>new_vlan_pri</span>
+                    <select>
+                        <option value="0">0</option>
+                        <option value="1">1</option>
+                        <option value="2">2</option>
+                        <option value="3">3</option>
+                        <option value="4">4</option>
+                        <option value="5">5</option>
+                        <option value="6">6</option>
+                        <option value="7">7</option>
+                    </select>
+                </div>
+                <div v-if="is_add_translate">
+                    <a href="javascript:;" @click="confirm_add_translate(true)">{{ lanMap['apply'] }}</a>
+                    <a href="javascript:;" @click="confirm_add_translate(false)">{{ lanMap['cancel'] }}</a>
+                </div>
+                <div v-if="is_delete_translate">
+                    <a href="javascript:;" @click="confirm_delete_translate(true)">{{ lanMap['apply'] }}</a>
+                    <a href="javascript:;" @click="confirm_delete_translate(false)">{{ lanMap['cancel'] }}</a>
+                </div>
+                <b class="close" @click="confirm_close"></b>
+            </div>
+        </div>
     </div>
 </template>
 
@@ -135,21 +210,25 @@
 import { mapState } from 'vuex'
     export default {
         name: 'onuPortCfg',
-        computed: mapState(['port_name','lanMap']),
+        computed: {
+            ...mapState(['port_name','lanMap'])
+        },
         data(){
             return {
                 portid: 0,
                 onuid: 0,
-                //  onu端口ID
-                op_id: 0,
                 //  当前PON口下ONU列表
                 onu_list: {},
-                //  模态框显示/隐藏 *3
+                //  模态框显示/隐藏
                 onu_port_cfg: false,
                 onu_vlan_mode: false,
-                onu_vlan_trunk: false,
+                is_add_translate: false,
+                is_delete_translate: false,
+                is_add_trunk: false,
+                is_delete_trunk: false,
                 //  缓存数据，用于提交时比较变化
                 cache_data: {},
+                vlan_mode_map: ['transparent','tag','translate','aggregation','trunk'],
                 //  ONU下的所有端口列表
                 onu_port_info: {
                     "code":1,	
@@ -189,24 +268,90 @@ import { mapState } from 'vuex'
                         "op_vlan_mode": 2,
                         "def_vlan_id": 1,
                         "def_vlan_pri": 0,
-                        "vlan_list": {
+                        "vlan_list": [{
                             "old_vlan_id": 11,
                             "new_vlan_id": 22,
                             "new_vlan_pri": 1
-                        }
-                    }]
-                },
+                        },{
+                            "old_vlan_id": 11,
+                            "new_vlan_id": 22,
+                            "new_vlan_pri": 1
+                        },{
+                            "old_vlan_id": 11,
+                            "new_vlan_id": 22,
+                            "new_vlan_pri": 1
+                        }]
+                    },{ 
+                        "op_id":2,
+                        "op_vlan_mode": 4,
+                        "def_vlan_id": 1,
+                        "def_vlan_pri": 0,
+                        "vlan_list": [{
+                            "start_vlan_id": 11,
+                            "end_vlan_id": 22,
+                            "vlan_pri":1
+                        }]
+                    }
+                ]},
                 // ONU下某个特定的端口VLAN
                 onu_vlan_item: {
                     "op_id": 1,
                     "op_vlan_mode": 2,
                     "def_vlan_id": 1,
                     "def_vlan_pri": 0,
-                    "vlan_list": {
-                        "old_vlan_id": 11,
-                        "new_vlan_id": 22,
-                        "new_vlan_pri": 1
-                    }
+                    "vlan_list": [{
+                            "old_vlan_id": 11,
+                            "new_vlan_id": 22,
+                            "new_vlan_pri": 1
+                        },{
+                            "old_vlan_id": 11,
+                            "new_vlan_id": 22,
+                            "new_vlan_pri": 1
+                        },{
+                            "old_vlan_id": 11,
+                            "new_vlan_id": 22,
+                            "new_vlan_pri": 1
+                        }]
+                },
+                // // ONU下某个特定的端口VLAN  --> translate
+                // onu_vlan_translate: {
+                //     "op_id": 1,
+                //     "op_vlan_mode": 2,
+                //     "def_vlan_id": 1,
+                //     "def_vlan_pri": 0,
+                //     "vlan_list": [{
+                //         "old_vlan_id": 11,
+                //         "new_vlan_id": 22,
+                //         "new_vlan_pri": 1
+                //     }]
+                // },
+                // // onu下某个特定的端口VLAN  --> trunk
+                // onu_vlan_trunk: {
+                //     "op_id": 2,
+                //     "op_vlan_mode": 4,
+                //     "def_vlan_id": 1,
+                //     "def_vlan_pri": 0,
+                //     "vlan_list":[{
+                //         "start_vlan_id": 11,
+                //         "end_vlan_id": 22,
+                //         "vlan_pri": 1
+                //     }]
+                // },
+                //  translate添加或删除时，缓存的数据
+                translate_post_param: {
+                    "op_id": 0,
+                    "op_vlan_mode": 0,
+                    "old_vlan_id": 0,
+                    "new_vlan_id": 0,
+                    "new_vlan_pri": 0
+                },
+                //  trunk添加或删除时，缓存的数据
+                trunk_post_param: {
+                    "op_id": 0,
+                    "op_vlan_mode": 0,
+                    "start_vlan_id": 0,
+                    "end_vlan_id": 0,
+                    "vlan_pri": 0
                 }
             }
         },
@@ -288,7 +433,18 @@ import { mapState } from 'vuex'
                     })
                 }
                 this.onu_port_cfg = false;
-                this.onu_port_item = {};
+                this.onu_port_item = {
+                    "op_id": 0,
+                    "autoneg": 0,
+                    "flowctrl": 0,
+                    "loopdetect": 0,
+                    "enable": 0,
+                    "rlds_opt": 0,
+                    "rl_cir": 0,
+                    "rl_pir" : 0,
+                    "rlus_opt": 0,
+                    "bandwidth": 0
+                };
                 this.cache_data = {};
             },
             //  打开ONU VLAN模式配置模态框
@@ -350,18 +506,65 @@ import { mapState } from 'vuex'
                     })
                 }
                 this.onu_vlan_mode = false;
-                this.onu_vlan_item = {};
+                this.onu_vlan_item = {
+                    "op_id": 0,
+                    "op_vlan_mode": 0,
+                    "def_vlan_id": 0,
+                    "def_vlan_pri": 0,
+                    "vlan_list": {}
+                };
                 this.cache_data = {};
             },
-            //  打开ONU trunk配置模态框
-            open_dialog_trunk(){
-                this.onu_vlan_trunk = true;
+            add_translate(node){
+                this.is_add_translate = true;
             },
-            handle_onu_trunkCfg(bool){
+            //  添加translate确认框
+            confirm_add_translate(bool){
                 if(bool){
-                    // to do
+                    var post_params = {
+                        "method":"add",
+                        "param":{
+                            "port_id": this.portid,
+                            "onu_id": this.onuid,
+                            "op_id": 0,
+                            "op_vlan_mode":2,
+                            "old_vlan_id":11,
+                            "new_vlan_id":22,
+                            "new_vlan_pri":1
+                        }
+                    }
                 }
-                this.onu_vlan_trunk = false;
+                this.is_add_translate = false;
+            },
+            delete_translate(node){
+                this.is_delete_translate = true;
+            },
+            //  删除translate确认框
+            confirm_delete_translate(bool){
+                if(bool){
+
+                }
+                this.is_delete_translate = false;
+            },
+            add_trunk(node){
+                this.is_add_trunk = true;
+            },
+            //  添加trunk确认框
+            confirm_add_trunk(bool){
+                if(bool){
+
+                }
+                this.is_add_trunk = false;
+            },
+            delete_trunk(node){
+                this.is_delete_trunk = true;
+            },
+            //  删除trunk确认框
+            confirm_delete_trunk(bool){
+                if(bool){
+
+                }
+                this.is_delete_trunk = false;
             },
             getOnuInfo(){
                 this.$http.get('/onumgmt?form=port_cfg&port_id='+this.portid+'&onu_id=' + this.onuid).then(res=>{
@@ -408,6 +611,32 @@ import { mapState } from 'vuex'
                     }
                 }
                 return result
+            },
+            translate_str_map(arr,pre){
+                if(!arr) return ''
+                var str = '';
+                for(var key in arr){
+                    str += arr[key].old_vlan_id + pre + arr[key].new_vlan_id + ',';
+                }
+                var e = document.createElement('div');
+                e.innerHTML = str.replace(/,$/,'');
+                return e.childNodes[0].nodeValue;
+            },
+            trunk_str_map(arr,pre){
+                if(!arr) return ''
+                var str = '';
+                for(var key in arr){
+                    str += arr[key].start_vlan_id + pre + arr[key].end_vlan_id + ',';
+                }
+                var e = document.createElement('div');
+                e.innerHTML = str.replace(/,$/,'');
+                return e.childNodes[0].nodeValue;
+            },
+            confirm_close(){
+                this.is_add_translate = false;
+                this.is_delete_translate = false;
+                this.is_add_trunk = false;
+                this.is_delete_trunk = false;
             }
         },
         watch: {
@@ -457,6 +686,7 @@ import { mapState } from 'vuex'
                         this.onu_vlan_item = this.onu_vlan_info.data[key];
                     }
                 }
+                // 缓存数据，用于提交时对比变化
                 for(var key in this.onu_vlan_item){
                     this.cache_data[key] = this.onu_vlan_item[key];
                 }
@@ -537,7 +767,7 @@ div.onu-port-info{
         >span{
             display: inline-block;
             vertical-align: top;
-            width: 9.8%;
+            width: 9.89%;
             text-align: center;
             border: 1px solid #ccc;
             border-right: none;
@@ -573,13 +803,63 @@ div.onu-vlan-info{
         >span{
             display: inline-block;
             vertical-align: top;
-            width: 14%;
+            box-sizing: border-box;
+            width: 20%;
             text-align: center;
             border: 1px solid #ccc;
             border-right: none;
             font-size: 16px;
             &:last-child{
                 border-right: 1px solid #ccc;
+            }
+        }
+    }
+}
+div.onu-vlan-info>div.port-item-vlan{
+    height: auto;
+    border-top: 1px solid #ccc;
+    margin-top: 20px;
+    >div{
+        >span{
+            box-sizing: border-box;
+            display: inline-block;
+            vertical-align: top;
+            width: 20%;
+            text-align: center;
+            border-left: 1px solid #ccc;
+            border-bottom: 1px solid #ccc;
+            font-size: 16px;
+            &:last-child{
+                border-right: 1px solid #ccc;
+            }
+            >a{
+                width: 80px;
+                height: 25px;
+                line-height: 25px;
+                margin: 0;
+            } 
+        }
+    }
+    >div.vlan-list{
+        border: 1px solid #ccc;
+        border-top: none;
+        height: 36px;
+        line-height: 36px;
+        >span{
+            font-size: 16px;
+            display: inline-block;
+            overflow: hidden;
+            &:first-child{
+                width: 12%;
+                text-align: center;
+                border-left: none;
+                border-right: 1px solid #ccc;
+            }
+            &:last-child{
+                width: auto;
+                text-indent: 10px;
+                text-overflow: ellipsis;
+                border: none;
             }
         }
     }
@@ -713,5 +993,8 @@ div.dialog-content{
             color: #000;
         }
     }
+}
+div.add-vlan-translate{
+    height: 330px;
 }
 </style>
