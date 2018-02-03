@@ -40,13 +40,11 @@
             </div>
             <div v-for="(item,index) in onu_vlan_info.data" :key="index" class="port-item-vlan">
                 <div>
-                    <span v-for="(item,key) in onu_vlan_info.data[0]" :key="key" v-if="key !== 'vlan_list' && key !== 'op_vlan_mode'">{{ key }}</span>
-                    <span>op_vlan_mode</span>
+                    <span v-for="(item,key) in onu_vlan_info.data[0]" :key="key" v-if="key !== 'vlan_list'">{{ key }}</span>
                     <span>{{ lanMap['config'] }}</span>
                 </div>
                 <div>
-                    <span v-for="(_item,_key) in item" :key="_key" v-if="_key !== 'vlan_list' && _key !== 'op_vlan_mode'">{{ _item }}</span>
-                    <span>{{ vlan_mode_map[item.op_vlan_mode] }}</span>
+                    <span v-for="(_item,_key) in item" :key="_key" v-if="_key !== 'vlan_list'">{{ _key !== 'op_vlan_mode' ? _item : vlan_mode_map[item.op_vlan_mode] }}</span>
                     <span v-if="item.op_vlan_mode === 2">
                         <a href="javascript:;" @click="add_translate(item)">{{ lanMap['add'] }}</a>
                         <a href="javascript:;" @click="delete_translate(item)">{{ lanMap['delete'] }}</a>
@@ -59,17 +57,18 @@
                 <div v-if="item.vlan_list && item.op_vlan_mode === 2" class="vlan-list">
                     <span>vlan_list</span>
                     <span>
-                        <span>{{ translate_str_map(item.vlan_list,' &rarr; ') }}</span>
+                        <span :style="{'font-size': item.vlan_list.length > 10 ? '14px' : '16px'}">{{ translate_str_map(item.vlan_list,' &rarr; ') }}</span>
                     </span>
                 </div>
                 <div v-if="item.vlan_list && item.op_vlan_mode === 4" class="vlan-list">
                     <span>vlan_list</span>
                     <span>
-                        <span>{{ trunk_str_map(item.vlan_list,' - ') }}</span>
+                        <span>{{ translate_str_map(item.vlan_list,' - ') }}</span>
                     </span>
                 </div>
             </div>
         </div>
+        <!-- ONU端口VLAN模式配置 -->
         <div class="modal-dialog" v-if="onu_vlan_mode">
             <div class="cover"></div>
             <div class="dialog-content">
@@ -95,11 +94,15 @@
                 </div>
                 <div>
                     <span>def_vlan_id</span>
-                    <input type="text" v-model.number="onu_vlan_item.def_vlan_id" placeholder="1-4094">
+                    <input type="text" v-model.number="onu_vlan_item.def_vlan_id" placeholder="1-4094"
+                    :style="{'border-color': onu_vlan_item.def_vlan_id !== '' && (onu_vlan_item.def_vlan_id < 1 || onu_vlan_item.def_vlan_id > 4094 || isNaN(onu_vlan_item.def_vlan_id)) ? 'red' : ''}">
+                    <span class="tips">{{ lanMap['range'] + ' : 1-4094' }}</span>
                 </div>
                 <div>
                     <span>def_vlan_pri</span>
-                    <input type="text" v-model.number="onu_vlan_item.def_vlan_pri" placeholder="0-7">
+                    <input type="text" v-model.number="onu_vlan_item.def_vlan_pri" placeholder="0-7"
+                    :style="{'border-color': onu_vlan_item.def_vlan_pri !== '' && (onu_vlan_item.def_vlan_pri < 0 || onu_vlan_item.def_vlan_pri > 7 || isNaN(onu_vlan_item.def_vlan_pri)) ? 'red' : ''}">
+                    <span class="tips">{{ lanMap['range'] + ' : 0-7' }}</span>
                 </div>
                 <div>
                     <a href="javascript:;" @click="hanlde_onu_vlanCfg(true)">{{ lanMap['apply'] }}</a>
@@ -108,6 +111,7 @@
                 <b class="close" @click="hanlde_onu_vlanCfg(false)"></b>
             </div>
         </div>
+        <!-- onu端口基本配置 -->
         <div class="modal-dialog" v-if="onu_port_cfg">
             <div class="cover"></div>
             <div class="dialog-body">
@@ -153,9 +157,10 @@
         <!-- translate模式下的添加/删除vlan按钮 -->
         <div class="modal-dialog" v-if="is_add_translate || is_delete_translate">
             <div class="cover"></div>
-            <div class="dialog-content add-vlan-translate">
+            <div class="dialog-content add-vlan-translate" :style="{'height': is_delete_translate ? '260px' : '' }">
                 <div>
-                    <h3>ONU下添加转发VLAN</h3>
+                    <h3 v-if="is_add_translate">ONU下添加转发VLAN</h3>
+                    <h3 v-if="is_delete_translate">ONU下删除转发VLAN</h3>
                 </div>
                 <div>
                     <span>{{ lanMap['onu_id'] }}</span>
@@ -163,25 +168,31 @@
                 </div>
                 <div>
                     <span>op_id</span>
-                    <span>1</span>
+                    <span>{{ cache_port_vlan.op_id }}</span>
                 </div>
                 <div v-if="is_add_translate">
                     <span>old_vlan_id</span>
-                    <input type="text">
+                    <input type="text" v-model.number="translate_post_param.old_vlan_id"
+                    :style="{ 'border-color': translate_post_param.old_vlan_id !== '' && (translate_post_param.old_vlan_id < 1 || translate_post_param.old_vlan_id > 4094 || isNaN(translate_post_param.old_vlan_id)) ? 'red' : '' }">
+                    <span class="tips">{{ lanMap['range'] + ' : 1-4094' }}</span>
                 </div>
                 <div v-if="is_add_translate">
                     <span>new_vlan_id</span>
-                    <input type="text">
+                    <input type="text" v-model.number="translate_post_param.new_vlan_id"
+                    :style="{ 'border-color': translate_post_param.new_vlan_id !== '' && (translate_post_param.new_vlan_id < 1 || translate_post_param.new_vlan_id > 4094 || isNaN(translate_post_param.new_vlan_id)) ? 'red' : '' }">
+                    <span class="tips">{{ lanMap['range'] + ' : 1-4094' }}</span>
                 </div>
                 <div v-if="is_delete_translate">
                     <span>vlan_id</span>
-                    <select>
-                        <option :value="index" v-for="(item,index) in onu_vlan_item" :key="index">{{ translate_str_map(item.vlan_list,' &rarr; ') }}</option>
+                    <select v-model="translate_post_param.vlan_list">
+                        <option :value="index" v-for="(item,index) in cache_port_vlan.vlan_list" :key="index">
+                            {{ item.old_vlan_id }} &rarr; {{ item.new_vlan_id }}
+                        </option>
                     </select>
                 </div>
                 <div v-if="is_add_translate">
                     <span>new_vlan_pri</span>
-                    <select>
+                    <select v-model.number="translate_post_param.new_vlan_pri">
                         <option value="0">0</option>
                         <option value="1">1</option>
                         <option value="2">2</option>
@@ -199,6 +210,66 @@
                 <div v-if="is_delete_translate">
                     <a href="javascript:;" @click="confirm_delete_translate(true)">{{ lanMap['apply'] }}</a>
                     <a href="javascript:;" @click="confirm_delete_translate(false)">{{ lanMap['cancel'] }}</a>
+                </div>
+                <b class="close" @click="confirm_close"></b>
+            </div>
+        </div>
+        <!-- trunk 模式下 添加/删除按钮 -->
+        <div class="modal-dialog" v-if="is_add_trunk || is_delete_trunk">
+            <div class="cover"></div>
+            <div class="dialog-content add-vlan-translate" :style="{'height' : is_delete_trunk ? '260px' : ''}">
+                <div>
+                    <h3 v-if="is_add_trunk">ONU下添加转发VLAN</h3>
+                    <h3 v-if="is_delete_trunk">ONU下删除转发VLAN</h3>
+                </div>
+                <div>
+                    <span>{{ lanMap['onu_id'] }}</span>
+                    <span>{{ 'ONU' + port_name.pon[portid].id + '/' + onuid }}</span>
+                </div>
+                <div>
+                    <span>op_id</span>
+                    <span>{{ cache_port_vlan.op_id }}</span>
+                </div>
+                <div v-if="is_add_trunk">
+                    <span>start_vlan_id</span>
+                    <input type="text" v-model.number="trunk_post_param.start_vlan_id"
+                    :style="{'border-color' : trunk_post_param.start_vlan_id !== '' && ( trunk_post_param.start_vlan_id < 1 || trunk_post_param.start_vlan_id > 4094 || isNaN(trunk_post_param.start_vlan_id) ) ? 'red' : '' }">
+                    <span class="tips">{{ lanMap['range'] + ' : 1-4094' }}</span>
+                </div>
+                <div v-if="is_add_trunk">
+                    <span>end_vlan_id</span>
+                    <input type="text" v-model.number="trunk_post_param.end_vlan_id"
+                    :style="{'border-color' : trunk_post_param.end_vlan_id !== '' && ( trunk_post_param.end_vlan_id < 1 || trunk_post_param.end_vlan_id > 4094 || isNaN(trunk_post_param.end_vlan_id) ) ? 'red' : '' }">
+                    <span class="tips">{{ lanMap['range'] + ' : 1-4094' }}</span>
+                </div>
+                <div v-if="is_delete_trunk">
+                    <span>vlan_id</span>
+                    <select v-model="trunk_post_param.vlan_list">
+                        <option :value="index" v-for="(item,index) in cache_port_vlan.vlan_list" :key="index">
+                            {{ item.start_vlan_id }} - {{ item.end_vlan_id }}
+                        </option>
+                    </select>
+                </div>
+                <div v-if="is_add_trunk">
+                    <span>new_vlan_pri</span>
+                    <select v-model.number="trunk_post_param.vlan_pri">
+                        <option value="0">0</option>
+                        <option value="1">1</option>
+                        <option value="2">2</option>
+                        <option value="3">3</option>
+                        <option value="4">4</option>
+                        <option value="5">5</option>
+                        <option value="6">6</option>
+                        <option value="7">7</option>
+                    </select>
+                </div>
+                <div v-if="is_add_trunk">
+                    <a href="javascript:;" @click="confirm_add_trunk(true)">{{ lanMap['apply'] }}</a>
+                    <a href="javascript:;" @click="confirm_add_trunk(false)">{{ lanMap['cancel'] }}</a>
+                </div>
+                <div v-if="is_delete_trunk">
+                    <a href="javascript:;" @click="confirm_delete_trunk(true)">{{ lanMap['apply'] }}</a>
+                    <a href="javascript:;" @click="confirm_delete_trunk(false)">{{ lanMap['cancel'] }}</a>
                 </div>
                 <b class="close" @click="confirm_close"></b>
             </div>
@@ -226,7 +297,11 @@ import { mapState } from 'vuex'
                 is_delete_translate: false,
                 is_add_trunk: false,
                 is_delete_trunk: false,
-                //  缓存数据，用于提交时比较变化
+                //  打开模态框时缓存当前端口的所有数据
+                cache_port_vlan: {},
+                //  缓存当前端口的vlan_list
+                cache_vlan_list: [],
+                //  缓存数据，用于提交时比较变化 --> 端口VLAN模式配置
                 cache_data: {},
                 vlan_mode_map: ['transparent','tag','translate','aggregation','trunk'],
                 //  ONU下的所有端口列表
@@ -246,7 +321,7 @@ import { mapState } from 'vuex'
                         "bandwidth": 1
                     }]
                 },
-                //  ONU下某个特定的端口的基本信息
+                //  ONU下某个特定的端口的基本信息  --> 配置ONU端口基本信息时使用
                 onu_port_item: {
                     "op_id": 1,
                     "autoneg": 1,
@@ -259,7 +334,7 @@ import { mapState } from 'vuex'
                     "rlus_opt": 1,
                     "bandwidth": 1
                 },
-                //  ONU VLAN信息
+                //  ONU VLAN信息  -->当前ONU下所有的端口信息
                 onu_vlan_info: {
                     "code":1,
                     "msg":"success",
@@ -273,13 +348,13 @@ import { mapState } from 'vuex'
                             "new_vlan_id": 22,
                             "new_vlan_pri": 1
                         },{
-                            "old_vlan_id": 11,
-                            "new_vlan_id": 22,
-                            "new_vlan_pri": 1
+                            "old_vlan_id": 23,
+                            "new_vlan_id": 33,
+                            "new_vlan_pri": 2
                         },{
-                            "old_vlan_id": 11,
+                            "old_vlan_id": 33,
                             "new_vlan_id": 22,
-                            "new_vlan_pri": 1
+                            "new_vlan_pri": 3
                         }]
                     },{ 
                         "op_id":2,
@@ -293,7 +368,7 @@ import { mapState } from 'vuex'
                         }]
                     }
                 ]},
-                // ONU下某个特定的端口VLAN
+                // ONU下某个特定的端口VLAN  -->  配置 ONU下任一端口的 vlan_mode时使用
                 onu_vlan_item: {
                     "op_id": 1,
                     "op_vlan_mode": 2,
@@ -304,53 +379,27 @@ import { mapState } from 'vuex'
                             "new_vlan_id": 22,
                             "new_vlan_pri": 1
                         },{
-                            "old_vlan_id": 11,
-                            "new_vlan_id": 22,
+                            "old_vlan_id": 55,
+                            "new_vlan_id": 66,
                             "new_vlan_pri": 1
                         },{
-                            "old_vlan_id": 11,
-                            "new_vlan_id": 22,
+                            "old_vlan_id": 77,
+                            "new_vlan_id": 88,
                             "new_vlan_pri": 1
                         }]
                 },
-                // // ONU下某个特定的端口VLAN  --> translate
-                // onu_vlan_translate: {
-                //     "op_id": 1,
-                //     "op_vlan_mode": 2,
-                //     "def_vlan_id": 1,
-                //     "def_vlan_pri": 0,
-                //     "vlan_list": [{
-                //         "old_vlan_id": 11,
-                //         "new_vlan_id": 22,
-                //         "new_vlan_pri": 1
-                //     }]
-                // },
-                // // onu下某个特定的端口VLAN  --> trunk
-                // onu_vlan_trunk: {
-                //     "op_id": 2,
-                //     "op_vlan_mode": 4,
-                //     "def_vlan_id": 1,
-                //     "def_vlan_pri": 0,
-                //     "vlan_list":[{
-                //         "start_vlan_id": 11,
-                //         "end_vlan_id": 22,
-                //         "vlan_pri": 1
-                //     }]
-                // },
                 //  translate添加或删除时，缓存的数据
                 translate_post_param: {
-                    "op_id": 0,
-                    "op_vlan_mode": 0,
-                    "old_vlan_id": 0,
-                    "new_vlan_id": 0,
+                    "vlan_list": 0,
+                    "old_vlan_id": '',
+                    "new_vlan_id": '',
                     "new_vlan_pri": 0
                 },
                 //  trunk添加或删除时，缓存的数据
                 trunk_post_param: {
-                    "op_id": 0,
-                    "op_vlan_mode": 0,
-                    "start_vlan_id": 0,
-                    "end_vlan_id": 0,
+                    "vlan_list": 0,
+                    "start_vlan_id": '',
+                    "end_vlan_id": '',
                     "vlan_pri": 0
                 }
             }
@@ -462,7 +511,7 @@ import { mapState } from 'vuex'
                         })
                         return
                     }
-                    if(this.onu_vlan_item.def_vlan_pri < 0 || this.onu_vlan_item.def_vlan_pri > 7 || isNaN(this.onu_vlan_item.def_vlan_pri)){
+                    if(this.onu_vlan_item.def_vlan_pri === '' || this.onu_vlan_item.def_vlan_pri < 0 || this.onu_vlan_item.def_vlan_pri > 7 || isNaN(this.onu_vlan_item.def_vlan_pri)){
                         this.$message({
                             type: 'error',
                             text: 'VLAN优先级参数不正确'
@@ -517,54 +566,234 @@ import { mapState } from 'vuex'
             },
             add_translate(node){
                 this.is_add_translate = true;
+                this.cache_port_vlan = node;
             },
             //  添加translate确认框
             confirm_add_translate(bool){
                 if(bool){
+                    //  已存在的转发
+                    for(var key in this.cache_port_vlan.vlan_list){
+                        var data = this.cache_port_vlan.vlan_list[key];
+                        if(key.old_vlan_id === this.translate_post_param.old_vlan_id && 
+                        data.new_vlan_id === this.translate_post_param.new_vlan_id &&
+                        data.new_vlan_pri === this.translate_post_param.new_vlan_pri){
+                            this.$message({
+                                type: 'info',
+                                text: ''
+                            })
+                            return 
+                        }
+                    }
+                    //  参数相等   非法设置
+                    if(this.translate_post_param.old_vlan_id === this.translate_post_param.new_vlan_id){
+                        this.$message({
+                            type: 'error',
+                            text: ''
+                        })
+                        return
+                    }
+                    //  vlan ID 范围检查
+                    if(this.translate_post_param.old_vlan_id === '' || this.translate_post_param.old_vlan_id < 1 || this.translate_post_param.old_vlan_id > 4094 || isNaN(this.translate_post_param.old_vlan_id)){
+                        this.$message({
+                            type: 'error',
+                            text: this.lanMap['vlanid_range_hit']
+                        })
+                        return
+                    }
+                    if(this.translate_post_param.new_vlan_id === '' || this.translate_post_param.new_vlan_id < 1 || this.translate_post_param.new_vlan_id > 4094 || isNaN(this.translate_post_param.new_vlan_id)){
+                        this.$message({
+                            type: 'error',
+                            text: this.lanMap['vlanid_range_hit']
+                        })
+                        return
+                    }
                     var post_params = {
                         "method":"add",
                         "param":{
                             "port_id": this.portid,
                             "onu_id": this.onuid,
-                            "op_id": 0,
-                            "op_vlan_mode":2,
-                            "old_vlan_id":11,
-                            "new_vlan_id":22,
-                            "new_vlan_pri":1
+                            "op_id": this.cache_port_vlan.op_id,
+                            "op_vlan_mode": this.cache_port_vlan.op_vlan_mode,
+                            "old_vlan_id": this.translate_post_param.old_vlan_id,
+                            "new_vlan_id": this.translate_post_param.new_vlan_id,
+                            "new_vlan_pri": this.translate_post_param.new_vlan_pri
                         }
                     }
+                    this.$http.post('/onumgmt?form=port_vlanlist',post_params).then(res=>{
+                        if(res.data.code === 1){
+                            this.$message({
+                                type: 'success',
+                                text: this.lanMap['add'] + ' ' + this.lanMap['st_success']
+                            })
+                            this.getOnuVlan();
+                        }else{
+                            this.$message({
+                                type: 'error',
+                                text: this.lanMap['add'] + ' ' + this.lanMap['st_fail']
+                            })
+                        }
+                    }).catch(err=>{
+                        // to do
+                    })
                 }
                 this.is_add_translate = false;
+                this.cache_port_vlan = {};
+                this.translate_post_param.vlan_list = 0;
+                this.translate_post_param.old_vlan_id = '';
+                this.translate_post_param.new_vlan_id = '';
+                this.translate_post_param.new_vlan_pri = 0;
             },
             delete_translate(node){
                 this.is_delete_translate = true;
+                this.cache_port_vlan = node;
+                this.cache_vlan_list = node.vlan_list;
             },
             //  删除translate确认框
             confirm_delete_translate(bool){
                 if(bool){
-
+                    var post_params = {
+                        "method": "delete",
+                        "param":{
+                            "port_id": this.portid,
+                            "onu_id": this.onuid,
+                            "op_id": this.cache_port_vlan.op_id,
+                            "op_vlan_mode": this.cache_port_vlan.op_vlan_mode,
+                            "old_vlan_id": this.cache_vlan_list[this.translate_post_param.vlan_list].old_vlan_id,
+                            "new_vlan_id": this.cache_vlan_list[this.translate_post_param.vlan_list].new_vlan_id,
+                            "new_vlan_pri": this.cache_vlan_list[this.translate_post_param.vlan_list].new_vlan_pri
+                        }
+                    }
+                    this.$http.post('/onumgmt?form=port_vlanlist',post_params).then(res=>{
+                        if(res.data.code === 1){
+                            this.$message({
+                                type: 'success',
+                                text: this.lanMap['delete'] + ' ' + this.lanMap['st_success']
+                            })
+                            this.getOnuVlan();
+                        }else{
+                            this.$message({
+                                type: 'error',
+                                text: this.lanMap['delete'] + ' ' + this.lanMap['st_fail']
+                            })
+                        }
+                    }).catch(err=>{
+                        // to do
+                    })
                 }
                 this.is_delete_translate = false;
+                this.cache_port_vlan = {};
+                this.translate_post_param.vlan_list = 0;
+                this.translate_post_param.old_vlan_id = '';
+                this.translate_post_param.new_vlan_id = '';
+                this.translate_post_param.new_vlan_pri = 0;
             },
             add_trunk(node){
                 this.is_add_trunk = true;
+                this.cache_port_vlan = node;
             },
             //  添加trunk确认框
             confirm_add_trunk(bool){
                 if(bool){
-
+                    //  vlan ID 范围  -->  起始和结束范围不能超过15
+                    if(this.trunk_post_param.start_vlan_id > this.trunk_post_param.end_vlan_id || this.trunk_post_param.end_vlan_id - this.trunk_post_param.start_vlan_id > 15){
+                        this.$message({
+                            type: 'error',
+                            text: ''
+                        })
+                        return
+                    }
+                    //  vlan ID 范围  -->  单个VLAN ID是否合法
+                    if(this.trunk_post_param.start_vlan_id === '' || this.trunk_post_param.start_vlan_id < 1 || this.trunk_post_param.start_vlan_id > 4094 || isNaN(this.trunk_post_param.start_vlan_id)){
+                        this.$message({
+                            type: 'error',
+                            text: this.lanMap['vlanid_range_hit']
+                        })
+                        return
+                    }
+                    if(this.trunk_post_param.end_vlan_id === '' || this.translaunk_param.end_vlan_id < 1 || this.trunk_post_param.end_vlan_id > 4094 || isNaN(this.trunk_post_param.end_vlan_id)){
+                        this.$message({
+                            type: 'error',
+                            text: this.lanMap['vlanid_range_hit']
+                        })
+                        return
+                    }
+                    var post_params = {
+                        "method":"add",
+                        "param":{
+                            "port_id": this.portid,
+                            "onu_id": this.onuid,
+                            "op_id": this.cache_port_vlan.op_id,
+                            "op_vlan_mode": this.cache_port_vlan.op_vlan_mode,
+                            "start_vlan_id": this.trunk_post_param.start_vlan_id,
+                            "end_vlan_id": this.trunk_post_param.end_vlan_id,
+                            "vlan_pri": this.trunk_post_param.vlan_pri
+                        }
+                    }
+                    this.$http.post('/onumgmt?form=port_vlanlist',post_params).then(res=>{
+                        if(res.data.code === 1){
+                            this.$message({
+                                type: 'success',
+                                text: this.lanMap['add'] + ' ' + this.lanMap['st_success']
+                            })
+                        }else{
+                            this.$message({
+                                type: 'error',
+                                text: this.lanMap['add'] + ' ' + this.lanMap['st_fail']
+                            })
+                        }
+                    }).catch(err=>{
+                        // to do
+                    })
                 }
                 this.is_add_trunk = false;
+                this.cache_port_vlan = {};
+                this.trunk_post_param.vlan_list = 0;
+                this.trunk_post_param.start_vlan_id = '';
+                this.trunk_post_param.end_vlan_id = '';
+                this.trunk_post_param.vlan_pri = 0;
             },
             delete_trunk(node){
                 this.is_delete_trunk = true;
+                this.cache_port_vlan = node;
+                this.cache_vlan_list = node.vlan_list;
             },
             //  删除trunk确认框
             confirm_delete_trunk(bool){
                 if(bool){
-
+                    var post_params = {
+                        "method": "delete",
+                        "param":{
+                            "port_id": this.portid,
+                            "onu_id": this.onuid,
+                            "op_id": this.cache_port_vlan.op_id,
+                            "op_vlan_mode": this.cache_port_vlan.op_vlan_mode,
+                            "start_vlan_id": this.cache_vlan_list[this.trunk_post_param.vlan_list].start_vlan_id,
+                            "end_vlan_id": this.cache_vlan_list[this.trunk_post_param.vlan_list].end_vlan_id,
+                            "vlan_pri": this.cache_vlan_list[this.trunk_post_param.vlan_list].vlan_pri
+                        }
+                    }
+                    this.$http.post('/onumgmt?form=port_vlanlist',post_params).then(res=>{
+                        if(res.data.code === 1){
+                            this.$message({
+                                type: 'success',
+                                text: this.lanMap['delete'] + ' ' + this.lanMap['st_success']
+                            })
+                        }else{
+                            this.$message({
+                                type: 'error',
+                                text: this.lanMap['delete'] + ' ' + this.lanMap['st_fail']
+                            })
+                        }
+                    }).catch(err=>{
+                        // to do
+                    })
                 }
                 this.is_delete_trunk = false;
+                this.cache_port_vlan = {};
+                this.trunk_post_param.vlan_list = 0;
+                this.trunk_post_param.start_vlan_id = '';
+                this.trunk_post_param.end_vlan_id = '';
+                this.trunk_post_param.vlan_pri = 0;
             },
             getOnuInfo(){
                 this.$http.get('/onumgmt?form=port_cfg&port_id='+this.portid+'&onu_id=' + this.onuid).then(res=>{
@@ -616,27 +845,35 @@ import { mapState } from 'vuex'
                 if(!arr) return ''
                 var str = '';
                 for(var key in arr){
-                    str += arr[key].old_vlan_id + pre + arr[key].new_vlan_id + ',';
-                }
-                var e = document.createElement('div');
-                e.innerHTML = str.replace(/,$/,'');
-                return e.childNodes[0].nodeValue;
-            },
-            trunk_str_map(arr,pre){
-                if(!arr) return ''
-                var str = '';
-                for(var key in arr){
-                    str += arr[key].start_vlan_id + pre + arr[key].end_vlan_id + ',';
+                    if(arr[key].old_vlan_id){
+                        str += arr[key].old_vlan_id + pre + arr[key].new_vlan_id + ',';
+                    }else{
+                        str += arr[key].start_vlan_id + pre + arr[key].end_vlan_id + ',';
+                    }
                 }
                 var e = document.createElement('div');
                 e.innerHTML = str.replace(/,$/,'');
                 return e.childNodes[0].nodeValue;
             },
             confirm_close(){
+                if(this.is_add_translate || this.is_delete_translate){
+                    this.translate_post_param.vlan_list = 0;
+                    this.translate_post_param.old_vlan_id = '';
+                    this.translate_post_param.new_vlan_id = '';
+                    this.translate_post_param.new_vlan_pri = 0;
+                }
+                if(this.is_add_trunk || this.is_delete_trunk){
+                    this.trunk_post_param.vlan_list = 0;
+                    this.trunk_post_param.start_vlan_id = '';
+                    this.trunk_post_param.end_vlan_id = '';
+                    this.trunk_post_param.vlan_pri = 0;
+                }
                 this.is_add_translate = false;
                 this.is_delete_translate = false;
                 this.is_add_trunk = false;
                 this.is_delete_trunk = false;
+                //  关闭模态框时，释放内存
+                this.cache_port_vlan = {};
             }
         },
         watch: {
@@ -996,5 +1233,10 @@ div.dialog-content{
 }
 div.add-vlan-translate{
     height: 330px;
+}
+span.tips{
+    font-size: 14px;
+    color: #333;
+    margin-left: 10px;
 }
 </style>

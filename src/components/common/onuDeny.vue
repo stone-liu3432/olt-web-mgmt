@@ -237,7 +237,7 @@ export default {
 ul{
     border:1px solid #ddd;
     margin-top: 30px;
-    width: 1020px;
+    min-width: 1020px;
 }
 ul>li{
     font-size: 0;
