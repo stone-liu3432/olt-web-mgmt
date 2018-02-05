@@ -145,7 +145,8 @@ import { mapState } from 'vuex'
                     "assure": 0,
                     "max": 0
                 },
-                onu_detail: {}
+                onu_detail: {},
+                cache_onu_detail: {}
             }
         },
         created(){
@@ -187,6 +188,7 @@ import { mapState } from 'vuex'
                     }else{
                         this.onu_detail = {};
                     }
+                    this.cache_onu_detail = Object.assign({},this.onu_detail.data);
                 }).catch(err=>{
                     // to do
                 })
@@ -203,9 +205,17 @@ import { mapState } from 'vuex'
                     // to do
                 })
             },
-            //  带宽配置
+            //  带宽配置  -->  确定按钮
             isChange(bool){
                 if(bool){
+                    if(this.cache_onu_detail.fix === this.post_params.fix && this.cache_onu_detail.assure === this.post_params.assure 
+                    && this.cache_onu_detail.max === this.post_params.max && this.cache_onu_detail.sla_type === this.post_params.sla_type){
+                        this.$message({
+                            type: 'info',
+                            text: this.lanMap['modify_tips']
+                        })
+                        return
+                    }
                     if(this.post_params.fix < 1 || this.post_params.fix > 1000000 || isNaN(this.post_params.fix)){
                         this.$message({
                             type: 'error',
@@ -255,6 +265,10 @@ import { mapState } from 'vuex'
                     }
                     this.$http.post('/onu_bandwidth',post_param).then(res=>{
                         if(res.data.code === 1){
+                            this.$message({
+                                type: 'success',
+                                text: this.lanMap['setting_ok']
+                            })
                            this.getData();
                         }else{
                             this.$message({
@@ -266,6 +280,7 @@ import { mapState } from 'vuex'
                         // to do
                     })
                 }
+                this.cache_onu_detail = {};
                 this.post_params.sla_type = '';
                 this.isConfig = false;
             }

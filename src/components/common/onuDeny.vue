@@ -194,7 +194,7 @@ export default {
     },
     watch: {
         'addItem.macaddr'(){
-            var reg = /^[0-9a-zA-Z]{2}\:[0-9a-zA-Z]{2}\:[0-9a-zA-Z]{2}\:[0-9a-zA-Z]{2}\:[0-9a-zA-Z]{2}\:[0-9a-zA-Z]{2}$/;
+            var reg = /^([0-9abcdefABCDEF]{2}\:){5}[0-9abcdefABCDEF]{2}$/;
             if(this.addItem.macaddr === ''){
                 this.test_macaddr = false;
                 return

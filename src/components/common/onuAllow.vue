@@ -8,7 +8,6 @@
             </select>
             <a href="javascript:;" @click="add_onu()">{{ lanMap['add'] }}</a>
             <a href="javascript:;" @click="onu_bandwieth()">{{ lanMap['sla_cfg'] }}</a>
-            <!-- <a href="javascript:;" @click="reboot()">{{ lanMap['reboot_onu'] }}</a> -->
             <div class="rt tool-tips">
                 <i></i>
                 <div>
@@ -46,7 +45,7 @@
                 </div>
                 <div class="modal-item">
                     <span>{{ lanMap['macaddr'] }}</span>
-                    <input type="text" v-model="add_macaddr" :style="{'borderColor' : testMacaddr ? 'red' : '#ccc'}" placeholder="00:00:00:00:00:00">
+                    <input type="text" v-model="add_macaddr" :style="{'borderColor' : add_macaddr && testMacaddr ? 'red' : '#ccc'}" placeholder="00:00:00:00:00:00">
                     <span class="tips">EX : 00:00:00:00:00:00</span>
                 </div>
                 <div class="modal-item">
@@ -72,14 +71,22 @@
                 <div class="close" @click="closeModal"></div>
             </div>
         </div>
-        <ul v-if="this.onu_allow_list.data">
+        <div class="search-onu">
+            <h3 class="lf">查找ONU</h3>
+            <div class="lf">
+                <input type="text" v-model="search_macaddr">
+                <i></i>
+            </div>
+            <p class="lf">输入mac地址查找ONU,支持部分匹配查找</p>
+        </div>
+        <ul v-if="onu_allow_list.data && onu_allow_list.data.length>0">
             <li class="flex-box">
-                <span v-for="(item,key) in this.onu_allow_list.data[0]" :key="key" v-if=" key != 'port_id' ">
+                <span v-for="(item,key) in onu_allow_list.data[0]" :key="key" v-if=" key != 'port_id' ">
                     {{ lanMap[key] }}
                 </span>
                 <span>{{ lanMap['config'] }}</span>
             </li>
-            <li v-for="(item,index) in this.onu_allow_list.data" :key="index" class="flex-box">
+            <li v-for="(item,index) in onu_allow_list.data" :key="index" class="flex-box">
                 <span>{{ 'ONU0'+item.port_id +'/'+ item.onu_id }}</span>
                 <span>{{ item.macaddr }}</span>
                 <span>{{ item.status }}</span>
@@ -100,6 +107,7 @@
         <confirm :tool-tips="lanMap['tips_del_onu']" @choose="result_delete" v-if="delete_confirm"></confirm>
         <confirm :tool-tips="lanMap['tips_add_deny_onu']" @choose="result_deny" v-if="deny_confirm"></confirm>
         <confirm :tool-tips="lanMap['confirm_reboot_onu']" @choose="result_reboot" v-if="reboot_confirm"></confirm>
+        <confirm :tool-tips="lanMap['confirm_reboot_onu']" @choose="result_authstate" v-if="authstate_confirm"></confirm>
     </div>
 </template>
 
@@ -111,6 +119,7 @@ import confirm from '@/components/common/confirm'
         components: { confirm },
         data(){
             return {
+                onu_arrow: {},
                 onu_allow_list: {},
                 portid: 0,
                 add_dialog: false,
@@ -122,14 +131,16 @@ import confirm from '@/components/common/confirm'
                 delete_confirm: false,
                 deny_confirm: false,
                 reboot_confirm: false,
-                post_params: {}
+                authstate_confirm: false,
+                post_params: {},
+                search_macaddr: ''
             }
         },
         computed: mapState(['lanMap','port_name','menu','change_url']),
         created(){
             // 请求 url: /onu_allow_list?port_id=1
             // '/onu_allow_list?port_id=' + ( this.$route.query.port_id || 1 )
-            this.portid = this.$route.query.port_id || 1;
+            this.portid = this.$route.query.port_id || this.port_name.pon['1'].id;
             if(this.change_url.beta === 'test'){
                 var url;
                 if(this.change_url.onu_allow[this.change_url.onu_allow.length - 1] != '='){
@@ -139,10 +150,11 @@ import confirm from '@/components/common/confirm'
                 }
                 this.$http.get(url).then(res=>{
                     if(res.data.code === 1){
-                        this.onu_allow_list = res.data;
+                        this.onu_arrow = res.data;
                     }else{
-                        this.onu_allow_list = {};
+                        this.onu_arrow = {};
                     }
+                    this.onu_allow_list = Object.assign({},this.onu_arrow);
                 }).catch(err=>{
                     // to do 
                 })
@@ -153,12 +165,14 @@ import confirm from '@/components/common/confirm'
                 update_menu: 'updateMenu'
             }),
             getData(){
+                this.search_macaddr = '';
                 this.$http.get('/onu_allow_list?port_id='+ this.portid).then(res=>{
                     if(res.data.code === 1){
-                        this.onu_allow_list = res.data;
+                        this.onu_arrow = res.data;
                     }else{
-                        this.onu_allow_list = {};
+                        this.onu_arrow = {};
                     }
+                    this.onu_allow_list = Object.assign({},this.onu_arrow);
                 }).catch(err=>{
                     // to do 
                 })
@@ -203,6 +217,7 @@ import confirm from '@/components/common/confirm'
                             type: 'error',
                             text: this.lanMap['param_onuid']
                         })
+                        return
                     }
                     var post_params = {
                         "method":"add",
@@ -221,7 +236,7 @@ import confirm from '@/components/common/confirm'
                                 type: 'success',
                                 text: this.lanMap['setting_ok']
                             })
-                            this.getData()
+                            this.getData();
                         }else{
                             this.$message({
                                 type: 'error',
@@ -234,9 +249,31 @@ import confirm from '@/components/common/confirm'
                 }
                 this.add_dialog = false;
             },
+            result_authstate(bool){
+                if(bool){
+                    this.$http.post('/onu_allow_list',this.post_params).then(res=>{
+                        if(res.data.code === 1){
+                            this.$message({
+                                type: 'success',
+                                text: this.lanMap['setting_ok']
+                            })
+                            this.getData();
+                        }else{
+                            this.$message({
+                                type: 'error',
+                                text: this.lanMap['setting_fail']
+                            })
+                        }
+                    }).catch(err=>{
+                        // to do
+                    })
+                }
+                this.post_params = {};
+                this.authstate_confirm = false;
+            },
             //  onu认证 / 取消认证
             authstate(node){
-                var post_params = {
+                this.post_params = {
                     "method": "set",
                     "param":{
                         "port_id": this.portid,
@@ -247,22 +284,7 @@ import confirm from '@/components/common/confirm'
                         "onu_desc": ''
                     }
                 }
-                this.$http.post('/onu_allow_list',post_params).then(res=>{
-                    if(res.data.code === 1){
-                        this.$message({
-                            type: 'success',
-                            text: this.lanMap['setting_ok']
-                        })
-                        this.getData()
-                    }else{
-                        this.$message({
-                            type: 'error',
-                            text: this.lanMap['setting_fail']
-                        })
-                    }
-                }).catch(err=>{
-                    // to do
-                })
+                this.authstate_confirm = true;
             },
             //  移动ONU到阻止列表
             remove_onu(node){
@@ -297,6 +319,7 @@ import confirm from '@/components/common/confirm'
                                 type: 'success',
                                 text: this.lanMap['reboot_onu'] + this.lanMap['st_success']
                             })
+                            this.getData();
                         }else{
                             this.$message({
                                 type: 'error',
@@ -416,11 +439,24 @@ import confirm from '@/components/common/confirm'
                 this.getData();
             },
             add_macaddr(){
-                var reg = /^[0-9a-zA-Z]{2}\:[0-9a-zA-Z]{2}\:[0-9a-zA-Z]{2}\:[0-9a-zA-Z]{2}\:[0-9a-zA-Z]{2}\:[0-9a-zA-Z]{2}$/;
+                var reg = /^([0-9abcdefABCDEF]{2}\:){5}[0-9abcdefABCDEF]{2}$/;
                 if(!reg.test(this.add_macaddr)){
                     this.testMacaddr = true;
                 }else{
                     this.testMacaddr = false;
+                }
+            },
+            search_macaddr(){
+                if(!this.search_macaddr){
+                    this.onu_allow_list = Object.assign({},this.onu_arrow);
+                }else{
+                    var list = Object.assign({},this.onu_arrow).data,arr = [];
+                    for(var key in list){
+                        if(list[key].macaddr.includes(this.search_macaddr)){
+                            arr.push(list[key]);
+                        }
+                    }
+                    this.onu_allow_list.data = arr;
                 }
             }
         }
@@ -433,7 +469,7 @@ import confirm from '@/components/common/confirm'
 }
 ul{
     border:1px solid #ddd;
-    margin-top: 30px;
+    margin-top: 20px;
     min-width: 1020px;
 }
 ul>li{
@@ -611,6 +647,34 @@ div.tool-tips{
                 }
             }
         }
+    }
+}
+div.search-onu{
+    margin: 20px 0 0 10px;
+    height: 36px;
+    line-height: 36px;
+    &:after{
+        content: "";
+        display: table;
+        clear: both;
+    }
+    >div{
+        position: relative;
+        >input{
+            margin: 0 0 0 20px;
+            width: 280px;
+        }
+        >i{
+            background: url('../../assets/search.png') no-repeat;
+            position: absolute;
+            top: 2px;
+            right: 2px;
+        }
+    }
+    >p{
+        margin: 0 0 0 20px;
+        color: #666;
+        font-size: 14px;
     }
 }
 </style>

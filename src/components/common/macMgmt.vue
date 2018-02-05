@@ -274,7 +274,7 @@ import loading from '@/components/common/loading'
                 //  将要删除的mac地址数据
                 delete_mac_data: {},
                 //  用户输入的mac地址和mac掩码格式检查
-                check_mac: /^[0-9a-zA-Z]{2}\:[0-9a-zA-Z]{2}\:[0-9a-zA-Z]{2}\:[0-9a-zA-Z]{2}\:[0-9a-zA-Z]{2}\:[0-9a-zA-Z]{2}$/,
+                check_mac: /^([0-9abcdefABCDEF]{2}\:){5}[0-9abcdefABCDEF]{2}$/,
                 select_all: false,
                 select_text: ''
             }
