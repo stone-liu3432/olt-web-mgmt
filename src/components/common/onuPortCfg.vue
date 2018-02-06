@@ -460,7 +460,7 @@ import { mapState } from 'vuex'
                                 text: this.lanMap['setting_ok']
                             })
                             this.getOnuInfo();
-                        }else{
+                        }else if(res.data.code >1){
                             this.$message({
                                 type: 'error',
                                 text: this.lanMap['setting_fail']
@@ -525,7 +525,7 @@ import { mapState } from 'vuex'
                                 text: this.lanMap['setting_ok']
                             })
                             this.getOnuVlan();
-                        }else{
+                        }else if(res.data.code >1){
                             this.$message({
                                 type: 'error',
                                 text: this.lanMap['setting_fail']
@@ -603,7 +603,7 @@ import { mapState } from 'vuex'
                                 text: this.lanMap['add'] + ' ' + this.lanMap['st_success']
                             })
                             this.getOnuVlan();
-                        }else{
+                        }else if(res.data.code >1){
                             this.$message({
                                 type: 'error',
                                 text: this.lanMap['add'] + ' ' + this.lanMap['st_fail']
@@ -647,7 +647,7 @@ import { mapState } from 'vuex'
                                 text: this.lanMap['delete'] + ' ' + this.lanMap['st_success']
                             })
                             this.getOnuVlan();
-                        }else{
+                        }else if(res.data.code >1){
                             this.$message({
                                 type: 'error',
                                 text: this.lanMap['delete'] + ' ' + this.lanMap['st_fail']
@@ -713,7 +713,7 @@ import { mapState } from 'vuex'
                                 text: this.lanMap['add'] + ' ' + this.lanMap['st_success']
                             })
                             this.getOnuVlan();
-                        }else{
+                        }else if(res.data.code >1){
                             this.$message({
                                 type: 'error',
                                 text: this.lanMap['add'] + ' ' + this.lanMap['st_fail']
@@ -757,7 +757,7 @@ import { mapState } from 'vuex'
                                 text: this.lanMap['delete'] + ' ' + this.lanMap['st_success']
                             })
                             this.getOnuVlan();
-                        }else{
+                        }else if(res.data.code >1){
                             this.$message({
                                 type: 'error',
                                 text: this.lanMap['delete'] + ' ' + this.lanMap['st_fail']
@@ -778,7 +778,7 @@ import { mapState } from 'vuex'
                 this.$http.get('/onumgmt?form=port_cfg&port_id='+this.portid+'&onu_id=' + this.onuid).then(res=>{
                     if(res.data.code === 1){
                         this.onu_port_info = res.data;
-                    }else{
+                    }else if(res.data.code >1){
                         this.onu_port_info = {};
                     }
                 }).catch(err=>{
@@ -789,7 +789,7 @@ import { mapState } from 'vuex'
                 this.$http.get('/onumgmt?form=port_vlan&port_id='+ this.portid +'&onu_id=' + this.onuid).then(res=>{
                     if(res.data.code === 1){
                         this.onu_vlan_info = res.data;
-                    }else{
+                    }else if(res.data.code >1){
                         this.onu_vlan_info = {}
                     }
                 }).catch(err=>{
@@ -1039,17 +1039,21 @@ div.onu-vlan-info{
 }
 div.onu-vlan-info>div.port-item-vlan{
     height: auto;
-    border-top: 1px solid #ccc;
+    //border-top: 1px solid #ccc;
     margin-top: 20px;
     >div{
+        &:first-child>span{
+            border-top: 1px solid #ccc;
+        }
         >span{
             box-sizing: border-box;
             display: inline-block;
             vertical-align: top;
             width: 20%;
             text-align: center;
-            border-left: 1px solid #ccc;
-            border-bottom: 1px solid #ccc;
+            border: 1px solid #ccc;
+            border-right: none;
+            border-top: none;
             font-size: 16px;
             &:last-child{
                 border-right: 1px solid #ccc;

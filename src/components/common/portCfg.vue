@@ -354,7 +354,7 @@ import confirm from '@/components/common/confirm'
                                 text: this.lanMap['setting_ok']
                             })
                             this.getStormData();
-                        }else{
+                        }else if(res.data.code >1){
                             this.$message({
                                 type: 'error',
                                 text: this.lanMap['setting_fail']
@@ -447,7 +447,7 @@ import confirm from '@/components/common/confirm'
                                 text: this.lanMap['setting_ok']
                             })
                             this.getPortData();
-                        }else{
+                        }else if(res.data.code >1){
                             this.$message({
                                 type: 'error',
                                 text: this.lanMap['setting_fail']
@@ -489,7 +489,7 @@ import confirm from '@/components/common/confirm'
                                 text: this.lanMap['setting_ok']
                             })
                             this.getMirrorData();
-                        }else{
+                        }else if(res.data.code >1){
                             this.$message({
                                 type: 'error',
                                 text: this.lanMap['setting_fail']
@@ -508,7 +508,7 @@ import confirm from '@/components/common/confirm'
                         for(var key in res.data.data){
                             this.port_data[key] = res.data.data[key];
                         }
-                    }else{
+                    }else if(res.data.code >1){
                         this.swich_port_info = {};
                     }
                     this.flags = 0;
@@ -523,7 +523,7 @@ import confirm from '@/components/common/confirm'
                         for(var key in res.data.data){
                             this.storm_data[key] = res.data.data[key];
                         }
-                    }else{
+                    }else if(res.data.code >1){
                         this.stormctrl_data = {};
                     }
                     this.storm_flags = 0;
@@ -538,7 +538,7 @@ import confirm from '@/components/common/confirm'
                         for(var key in res.data.data){
                             this.mirror_data[key] = res.data.data[key];
                         }
-                    }else{
+                    }else if(res.data.code >1){
                         this.mirror_data = {};
                     }
                 }).catch(err=>{

@@ -51,7 +51,11 @@ import { mapState } from 'vuex'
             portid(){
                 //请求url: /switch_port?form=statistic&port_id=1
                 this.$http.get('/switch_port?form=statistic&port_id='+this.portid).then(res=>{
-                    this.data = res.data;
+                    if(res.data.code === 1){
+                        this.data = res.data;
+                    }else if(res.data.code >1){
+                        this.data = {}
+                    }
                 }).catch(err=>{
                     // to do 
                 })

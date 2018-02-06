@@ -158,7 +158,7 @@
                         a.href = "./";
                         a.download = res.data.data.filename;
                         a.click();
-                    }else{
+                    }else if(res.data.code >1){
                         this.$message({
                             type: 'error',
                             text: this.lanMap['st_fail']
@@ -206,7 +206,7 @@
                             type: 'success',
                             text: this.lanMap['restore_config_succ']
                         })
-                    }else{
+                    }else if(res.data.code >1){
                         this.$message({
                             type: 'error',
                             text: this.lanMap['restore_config_fail']
@@ -218,6 +218,18 @@
                 }).catch(err=>{
                     // to do
                 });
+            },
+            //  固件或系统升级期间，禁用F5刷新浏览器
+            preventRefresh(e){
+                e.preventDefault();
+                e.stopPropagation();
+                if(e.keyCode === 116){
+                    return false
+                }
+            },
+            //  阻止鼠标右键刷新
+            preventMouse(e){
+                e.returnValue = false
             }
         },
         watch: {

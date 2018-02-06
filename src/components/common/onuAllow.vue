@@ -6,10 +6,11 @@
                     {{ item.name }}
                 </option>
             </select>
+            <i class="reload" :title="lanMap['tips_page_refresh']" @click="reload"></i>
             <a href="javascript:;" @click="add_onu()">{{ lanMap['add'] }}</a>
             <a href="javascript:;" @click="onu_bandwieth()">{{ lanMap['sla_cfg'] }}</a>
             <div class="rt tool-tips">
-                <i></i>
+                <i class="icon-tips"></i>
                 <div>
                     <div>
                         <p>{{ lanMap['auth_state'] }}</p>
@@ -18,6 +19,9 @@
                     </div>
                     <div>
                         <p>{{ lanMap['config'] }}</p>
+                        <p>
+                            {{ lanMap['click'] }}<i class="reload"></i>{{ lanMap['tips_page_refresh'] }}
+                        </p>
                         <p>
                             {{ lanMap['click'] }}<i class="onu-detail"></i>{{ lanMap['tips_onu_btn_detail'] }}
                         </p>
@@ -141,6 +145,7 @@ import confirm from '@/components/common/confirm'
             // 请求 url: /onu_allow_list?port_id=1
             // '/onu_allow_list?port_id=' + ( this.$route.query.port_id || 1 )
             this.portid = this.$route.query.port_id || this.port_name.pon['1'].id;
+            document.body.addEventListener('keydown',this.preventRefresh,false);
             if(this.change_url.beta === 'test'){
                 var url;
                 if(this.change_url.onu_allow[this.change_url.onu_allow.length - 1] != '='){
@@ -160,10 +165,26 @@ import confirm from '@/components/common/confirm'
                 })
             }
         },
+        beforeDestroy(){
+            document.body.removeEventListener('keydown',this.preventRefresh);
+        },
         methods:{
             ...mapMutations({
                 update_menu: 'updateMenu'
             }),
+            //  接管f5刷新页面
+            preventRefresh(e){
+                if(e.keyCode === 116){
+                    e.preventDefault();
+                    e.stopPropagation();
+                    this.$parent.reload();
+                    return false
+                }
+            },
+            //  手动刷新
+            reload(){
+                this.$parent.reload();
+            },
             getData(){
                 this.search_macaddr = '';
                 this.$http.get('/onu_allow_list?port_id='+ this.portid).then(res=>{
@@ -237,7 +258,7 @@ import confirm from '@/components/common/confirm'
                                 text: this.lanMap['setting_ok']
                             })
                             this.getData();
-                        }else{
+                        }else if(res.data.code >1){
                             this.$message({
                                 type: 'error',
                                 text: this.lanMap['setting_fail']
@@ -258,7 +279,7 @@ import confirm from '@/components/common/confirm'
                                 text: this.lanMap['setting_ok']
                             })
                             this.getData();
-                        }else{
+                        }else if(res.data.code >1){
                             this.$message({
                                 type: 'error',
                                 text: this.lanMap['setting_fail']
@@ -320,7 +341,7 @@ import confirm from '@/components/common/confirm'
                                 text: this.lanMap['reboot_onu'] + this.lanMap['st_success']
                             })
                             this.getData();
-                        }else{
+                        }else if(res.data.code >1){
                             this.$message({
                                 type: 'error',
                                 text: this.lanMap['reboot_onu'] + this.lanMap['st_fail']
@@ -397,7 +418,7 @@ import confirm from '@/components/common/confirm'
                                 text: this.lanMap['setting_ok']
                             })
                             this.getData();
-                        }else{
+                        }else if(res.data.code >1){
                             this.$message({
                                 type: 'error',
                                 text: this.lanMap['setting_fail']
@@ -420,7 +441,7 @@ import confirm from '@/components/common/confirm'
                                 text: this.lanMap['setting_ok']
                             })
                             this.getData();
-                        }else{
+                        }else if(res.data.code >1){
                             this.$message({
                                 type: 'error',
                                 text: this.lanMap['setting_fail']
@@ -605,25 +626,31 @@ i.reset-onu{
 i.reset-onu:hover{
     background: url('../../assets/reset-hover.png') no-repeat 2px 2px;
 }
+i.reload{
+    background: url('../../assets/refresh.png') no-repeat;
+    margin: 0 20px 0;
+}
 span>span{
     width: 40px;
 }
 div.tool-tips{
-    margin-right: 30px;
+    margin-right: 20px;
     height: 38px;
     vertical-align: middle;
     line-height: 38px;
     position: relative;
+    top: -2px;
     &:hover>div{
         display: block;
     }
-    >i{
+    >i.icon-tips{
         background: url('../../assets/tips.png') no-repeat;
+        
     }
     >div{
         display: none;
         width: 300px;
-        height: 300px;
+        height: 330px;
         background: #ddd;
         border-radius: 10px;
         padding: 10px;
@@ -644,6 +671,10 @@ div.tool-tips{
                 margin: 0;
                 &:first-child{
                     color: #3990E5;
+                }
+                >i.reload{
+                    margin: 0;
+                    background-position: 0 -2px;
                 }
             }
         }

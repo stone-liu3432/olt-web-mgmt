@@ -230,7 +230,7 @@ import { mapState } from 'vuex'
                                 type: 'success',
                                 text: this.lanMap['add'] + this.lanMap['st_success']
                             })
-                        }else{
+                        }else if(res.data.code >1){
                             this.$message({
                                 type: 'error',
                                 text: this.lanMap['add'] + this.lanMap['st_fail']
@@ -261,7 +261,7 @@ import { mapState } from 'vuex'
                                 type: 'success',
                                 text: this.lanMap['delete'] + this.lanMap['st_success']
                             })
-                        }else{
+                        }else if(res.data.code >1){
                             this.$message({
                                 type: 'error',
                                 text: this.lanMap['delete'] + this.lanMap['st_fail']
@@ -314,7 +314,7 @@ import { mapState } from 'vuex'
                                 type: 'success',
                                 text: this.lanMap['setting_ok']
                             })
-                        }else{
+                        }else if(res.data.code >1){
                             this.$message({
                                 type: 'error',
                                 text: this.lanMap['setting_fail']
@@ -362,7 +362,7 @@ import { mapState } from 'vuex'
                                 type: 'success',
                                 text: this.lanMap['setting_ok']
                             })
-                        }else{
+                        }else if(res.data.code >1){
                             this.$message({
                                 type: 'error',
                                 text: this.lanMap['setting_fail']

@@ -113,6 +113,7 @@
     "tips_cfm_onu":"the ONU have confirmed, Click to cancel confirm status",
     "tips_n_cfm_onu":"The ONU not confirmed, Click to confirm ONU",
     "tips_onu_btn_detail":"show the ONU detail informations",
+    "tips_page_refresh": "Refresh the current page",
     "click": "Click",
     "onudeny_add_tips": "Click the Add button to manually add the ONU in deny list,need parameters MAC address(required), descriptor(optional)",
     "onudeny_del_tips": "Remove the current ONU from the deny list",

@@ -95,7 +95,7 @@ import { mapState } from 'vuex'
                             type: 'success',
                             text: this.lanMap['fw_upgrade_succ']
                         })
-                    }else{
+                    }else if(res.data.code > 1){
                         clearInterval(this.timer);
                         this.isLoading = false;
                         this.$message({
@@ -147,7 +147,7 @@ import { mapState } from 'vuex'
                             type: 'success',
                             text: this.lanMap['sys_upgrade_succ']
                         })
-                    }else{
+                    }else if(res.data.code >1){
                         clearInterval(this.timer);
                         this.isLoading = false;
                         this.$message({

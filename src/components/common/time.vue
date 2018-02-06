@@ -156,7 +156,7 @@ import { mapState } from "vuex"
                             type: 'success',
                             text: this.lanMap['update_time'] + this.lanMap['st_success']
                         })
-                    }else{
+                    }else if(res.data.code >1){
                         this.$message({
                             type: 'error',
                             text: this.lanMap['update_time'] + this.lanMap['st_fail']
@@ -182,7 +182,7 @@ import { mapState } from "vuex"
                 this.$http.post('/time?form=info',post_params).then(res=>{
                     if(res.data.code === 1){
                         this.handle_update_time();
-                    }else{
+                    }else if(res.data.code >1){
                         this.$message({
                             type: 'error',
                             text: this.lanMap['time_set_local'] + this.lanMap['st_fail']

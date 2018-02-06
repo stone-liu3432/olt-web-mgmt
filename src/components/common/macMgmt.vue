@@ -360,7 +360,7 @@ import loading from '@/components/common/loading'
                                 text: this.lanMap['delete'] + this.lanMap['st_success']
                             })
                             this.getData();
-                        }else{
+                        }else if(res.data.code >1){
                             this.$message({
                                 type: 'error',
                                 text: this.lanMap['delete'] + this.lanMap['st_fail']
@@ -505,7 +505,7 @@ import loading from '@/components/common/loading'
                             text: this.lanMap['setting_ok']
                         })
                         this.add_mac_close_dialog();
-                    }else{
+                    }else if(res.data.code >1){
                         this.$message({
                             type: 'error',
                             text: this.lanMap['setting_fail']
@@ -584,7 +584,7 @@ import loading from '@/components/common/loading'
                         })
                         this.flush_mac_close_dialog();
                         this.getData();
-                    }else{
+                    }else if(res.data.code >1){
                         this.$message({
                             type: 'error',
                             text: this.lanMap['flush'] + this.lanMap['st_fail']

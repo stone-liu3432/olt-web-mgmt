@@ -185,7 +185,7 @@ import { mapState } from 'vuex'
                         for(var key in this.onu_detail.data){
                             this.post_params[key] = this.onu_detail.data[key];
                         }
-                    }else{
+                    }else if(res.data.code >1){
                         this.onu_detail = {};
                     }
                     this.cache_onu_detail = Object.assign({},this.onu_detail.data);
@@ -198,7 +198,7 @@ import { mapState } from 'vuex'
                  this.$http.get('/onu_bandwidth?port_id='+ this.portid).then(res=>{
                     if(res.data.code === 1){
                         this.band_width = res.data;
-                    }else{
+                    }else if(res.data.code >1){
                         this.band_width = {};
                     }
                 }).catch(err=>{
@@ -270,7 +270,7 @@ import { mapState } from 'vuex'
                                 text: this.lanMap['setting_ok']
                             })
                            this.getData();
-                        }else{
+                        }else if(res.data.code >1){
                             this.$message({
                                 type: 'error',
                                 text: this.lanMap['setting_fail']

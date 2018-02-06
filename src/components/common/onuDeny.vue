@@ -136,7 +136,7 @@ export default {
                             type: 'success',
                             text: this.lanMap['add'] + this.lanMap['st_success']
                         })
-                    }else{
+                    }else if(res.data.code >1){
                         this.$message({
                             type: 'error',
                             text: this.lanMap['add'] + this.lanMap['st_fail']
@@ -166,7 +166,7 @@ export default {
                             text: this.lanMap['delete'] + this.lanMap['st_success']
                         })
                         this.getData();
-                    }else{
+                    }else if(res.data.code >1){
                         this.$message({
                             type: 'error',
                             text: this.lanMap['delete'] + this.lanMap['st_fail']

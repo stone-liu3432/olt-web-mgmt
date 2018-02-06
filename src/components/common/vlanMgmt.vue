@@ -297,7 +297,7 @@ import confirm from '@/components/common/confirm'
                                 text: this.lanMap['setting_ok']
                             })
                             this.getData();
-                        }else{
+                        }else if(res.data.code > 1){
                             this.$message({
                                 type: 'error',
                                 text: this.lanMap['setting_fail']
@@ -363,7 +363,7 @@ import confirm from '@/components/common/confirm'
                             })
                         }
                         this.getData();
-                    }else{
+                    }else if(res.data.code > 1){
                         this.$message({
                             type: 'error',
                             text: res.data.msg
@@ -403,7 +403,7 @@ import confirm from '@/components/common/confirm'
                             })
                             this.tip_flag = true;
                             this.set_vlan(vid);
-                        }else{
+                        }else if(res.data.code > 1){
                             this.$message({
                                 type: 'error',
                                 text: res.data.msg

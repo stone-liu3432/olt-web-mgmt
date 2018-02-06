@@ -113,6 +113,7 @@
     "tips_cfm_onu":"表示当前ONU已认证,点击可以取消认证状态",
     "tips_n_cfm_onu":"表示当前ONU未认证,点击可以进行认证",
     "tips_onu_btn_detail":"查看ONU详细信息",
+    "tips_page_refresh": "刷新当前页面",
     "click": "点击",
     "onudeny_add_tips": "点击增加按钮，手动添加ONU到阻止列表，需要参数MAC地址(必填)，描述信息(选填)",
     "onudeny_del_tips": "将当前ONU从阻止列表移除",

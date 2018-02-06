@@ -215,7 +215,7 @@ import { mapState } from 'vuex'
                 this.$http.get(this.change_url.rstp).then(res=>{
                     if(res.data.code === 1){
                         this.rstp = res.data;
-                    }else{
+                    }else if(res.data.code >1){
                         this.rstp = {}
                     }
                 }).catch(err=>{
@@ -226,7 +226,7 @@ import { mapState } from 'vuex'
                 this.$http.get(this.change_url.rstp_port).then(res=>{
                     if(res.data.code === 1){
                         this.rstp_port = res.data;
-                    }else{
+                    }else if(res.data.code >1){
                         this.rstp_port = {};
                     }
                 }).catch(err=>{
@@ -291,7 +291,7 @@ import { mapState } from 'vuex'
                             type: 'success',
                             text: this.lanMap['setting_ok']
                         })
-                    }else{
+                    }else if(res.data.code > 1){
                         // to do
                         this.$message({
                             type: 'success',
@@ -390,7 +390,7 @@ import { mapState } from 'vuex'
                             type: 'success',
                             text: this.lanMap['setting_ok']
                         })
-                    }else{
+                    }else if(res.data.code > 1){
                         this.$message({
                             type: 'error',
                             text: this.lanMap['setting_fail']
