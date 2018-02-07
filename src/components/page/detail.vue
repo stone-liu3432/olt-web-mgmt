@@ -12,13 +12,28 @@
                 isRouterAlive: true
             }
         },
+        created(){
+            document.body.addEventListener('keydown',this.preventRefresh,false);
+        },
         methods: {
             reload(){
                 this.isRouterAlive = false;
                 this.$nextTick(()=>{
                     this.isRouterAlive = true;
                 })
+            },
+            //  接管f5刷新页面
+            preventRefresh(e){
+                if(e.keyCode === 116 || (e.ctrlKey && e.keyCode==82)){
+                    e.preventDefault();
+                    e.stopPropagation();
+                    this.reload();
+                    return false
+                }
             }
+        },
+        beforeDestroy(){
+            document.body.removeEventListener('keydown',this.preventRefresh);
         }
     }
 </script>

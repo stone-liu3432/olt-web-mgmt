@@ -76,12 +76,12 @@
             </div>
         </div>
         <div class="search-onu">
-            <h3 class="lf">查找ONU</h3>
+            <h3 class="lf">{{ lanMap['find'] }} ONU</h3>
             <div class="lf">
                 <input type="text" v-model="search_macaddr">
                 <i></i>
             </div>
-            <p class="lf">输入mac地址查找ONU,支持部分匹配查找</p>
+            <p class="lf">{{ lanMap['search_by_macaddr'] }}</p>
         </div>
         <ul v-if="onu_allow_list.data && onu_allow_list.data.length>0">
             <li class="flex-box">
@@ -111,7 +111,7 @@
         <confirm :tool-tips="lanMap['tips_del_onu']" @choose="result_delete" v-if="delete_confirm"></confirm>
         <confirm :tool-tips="lanMap['tips_add_deny_onu']" @choose="result_deny" v-if="deny_confirm"></confirm>
         <confirm :tool-tips="lanMap['confirm_reboot_onu']" @choose="result_reboot" v-if="reboot_confirm"></confirm>
-        <confirm :tool-tips="lanMap['confirm_reboot_onu']" @choose="result_authstate" v-if="authstate_confirm"></confirm>
+        <confirm :tool-tips="tips_authstate" @choose="result_authstate" v-if="authstate_confirm"></confirm>
     </div>
 </template>
 
@@ -137,7 +137,8 @@ import confirm from '@/components/common/confirm'
                 reboot_confirm: false,
                 authstate_confirm: false,
                 post_params: {},
-                search_macaddr: ''
+                search_macaddr: '',
+                tips_authstate: ''
             }
         },
         computed: mapState(['lanMap','port_name','menu','change_url']),
@@ -145,7 +146,6 @@ import confirm from '@/components/common/confirm'
             // 请求 url: /onu_allow_list?port_id=1
             // '/onu_allow_list?port_id=' + ( this.$route.query.port_id || 1 )
             this.portid = this.$route.query.port_id || this.port_name.pon['1'].id;
-            document.body.addEventListener('keydown',this.preventRefresh,false);
             if(this.change_url.beta === 'test'){
                 var url;
                 if(this.change_url.onu_allow[this.change_url.onu_allow.length - 1] != '='){
@@ -165,22 +165,10 @@ import confirm from '@/components/common/confirm'
                 })
             }
         },
-        beforeDestroy(){
-            document.body.removeEventListener('keydown',this.preventRefresh);
-        },
         methods:{
             ...mapMutations({
                 update_menu: 'updateMenu'
             }),
-            //  接管f5刷新页面
-            preventRefresh(e){
-                if(e.keyCode === 116){
-                    e.preventDefault();
-                    e.stopPropagation();
-                    this.$parent.reload();
-                    return false
-                }
-            },
             //  手动刷新
             reload(){
                 this.$parent.reload();
@@ -306,6 +294,7 @@ import confirm from '@/components/common/confirm'
                     }
                 }
                 this.authstate_confirm = true;
+                this.tips_authstate = node.auth_state ? this.lanMap['tips_unauth_state'] : this.lanMap['tips_auth_state']
             },
             //  移动ONU到阻止列表
             remove_onu(node){

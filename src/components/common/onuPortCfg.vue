@@ -21,26 +21,29 @@
             <div>
                 <h3 class="lf">{{ 'ONU' + port_name.pon[portid].id + '/' + onuid + ' ' + lanMap['port_info'] }}</h3>
                 <div class="lf">
-                    <a href="javascript:;" @click="open_dialog_basicCfg">ONU端口基本配置</a>
+                    <a href="javascript:;" @click="open_dialog_basicCfg">{{ lanMap['onu_port_config'] }}</a>
                 </div>
             </div>
-            <div>
-                <span v-for="(item,index) in onu_port_info.data[0]" :key="index">{{ index }}</span>
-            </div>
+            <ul class="vertical-font">
+                <li v-for="(item,index) in onu_port_info.data[0]" :key="index">
+                    <span>{{ lanMap[index] }}</span> 
+                </li>
+            </ul>
+            <!-- 状态显示，待修改 -->
             <div v-for="(item,key) in onu_port_info.data" :key="key">
                 <span v-for="(_item,_key) in item" :key="_key">{{ _item }}</span>
             </div>
         </div>
         <div class="onu-vlan-info" v-if="onu_vlan_info.data && port_name.pon">
             <div>
-                <h3 class="lf">{{ 'ONU' + port_name.pon[portid].id + '/' + onuid + ' ' + '端口VLAN' }}</h3>
+                <h3 class="lf">{{ 'ONU' + port_name.pon[portid].id + '/' + onuid + ' ' + 'VLAN' }}</h3>
                 <div class="lf">
-                    <a href="javascript:;" @click="open_dialog_vlanCfg">ONU端口VLAN模式配置</a>
+                    <a href="javascript:;" @click="open_dialog_vlanCfg">{{ lanMap['onu_vlan_mode_cfg'] }}</a>
                 </div>
             </div>
             <div v-for="(item,index) in onu_vlan_info.data" :key="index" class="port-item-vlan">
                 <div>
-                    <span v-for="(item,key) in onu_vlan_info.data[0]" :key="key" v-if="key !== 'vlan_list'">{{ key }}</span>
+                    <span v-for="(item,key) in onu_vlan_info.data[0]" :key="key" v-if="key !== 'vlan_list'">{{ lanMap[key] }}</span>
                     <span v-if="item.op_vlan_mode === 2 || item.op_vlan_mode === 4">{{ lanMap['config'] }}</span>
                 </div>
                 <div>
@@ -55,13 +58,13 @@
                     </span>
                 </div>
                 <div v-if="item.vlan_list && item.op_vlan_mode === 2" class="vlan-list">
-                    <span>vlan_list</span>
+                    <span>{{ lanMap['vlan_list'] }}</span>
                     <span>
                         <span :style="{'font-size': item.vlan_list.length > 10 ? '14px' : '16px'}">{{ translate_str_map(item.vlan_list,' &rarr; ') }}</span>
                     </span>
                 </div>
                 <div v-if="item.vlan_list && item.op_vlan_mode === 4" class="vlan-list">
-                    <span>vlan_list</span>
+                    <span>{{ lanMap['vlan_list'] }}</span>
                     <span>
                         <span>{{ translate_str_map(item.vlan_list,' - ') }}</span>
                     </span>
@@ -73,33 +76,33 @@
             <div class="cover"></div>
             <div class="dialog-content">
                 <div>
-                    <h3 class="lf">ONU端口VLAN模式配置</h3>
+                    <h3 class="lf">{{ lanMap['onu_vlan_mode_cfg'] }}</h3>
                     <div class="rt"></div>
                 </div>
                 <div>
-                    <span>ONU端口号</span>
+                    <span>{{ lanMap['onu_port_id'] }}</span>
                     <select v-model="op_id">
                         <option :value="item.op_id" v-for="(item,index) in onu_vlan_info.data" :key="index">{{ item.op_id }}</option>
                     </select>
                 </div>
                 <div>
-                    <span>op_vlan_mode</span>
+                    <span>{{ lanMap['op_vlan_mode'] }}</span>
                     <select v-model.number="onu_vlan_item.op_vlan_mode">
                         <option value="0">transparent</option>
                         <option value="1">tag</option>
                         <option value="2">translate</option>
-                        <option value="3">aggregation</option>
+                        <!-- <option value="3">aggregation</option> -->
                         <option value="4">trunk</option>
                     </select>
                 </div>
                 <div>
-                    <span>def_vlan_id</span>
+                    <span>{{ lanMap['def_vlan_id'] }}</span>
                     <input type="text" v-model.number="onu_vlan_item.def_vlan_id" placeholder="1-4094"
                     :style="{'border-color': onu_vlan_item.def_vlan_id !== '' && (onu_vlan_item.def_vlan_id < 1 || onu_vlan_item.def_vlan_id > 4094 || isNaN(onu_vlan_item.def_vlan_id)) ? 'red' : ''}">
                     <span class="tips">{{ lanMap['range'] + ' : 1-4094' }}</span>
                 </div>
                 <div>
-                    <span>def_vlan_pri</span>
+                    <span>{{ lanMap['def_vlan_pri'] }}</span>
                     <input type="text" v-model.number="onu_vlan_item.def_vlan_pri" placeholder="0-7"
                     :style="{'border-color': onu_vlan_item.def_vlan_pri !== '' && (onu_vlan_item.def_vlan_pri < 0 || onu_vlan_item.def_vlan_pri > 7 || isNaN(onu_vlan_item.def_vlan_pri)) ? 'red' : ''}">
                     <span class="tips">{{ lanMap['range'] + ' : 0-7' }}</span>
@@ -116,30 +119,30 @@
             <div class="cover"></div>
             <div class="dialog-body">
                 <div>
-                    <h3 class="lf">ONU端口基本配置</h3>
+                    <h3 class="lf">{{ lanMap['onu_port_config'] }}</h3>
                     <!-- 提示信息，鼠标移入显示，离开隐藏 -->
                     <div class="rt tool-tips">
                         <i></i>
                         <div>
-                            <p>rl_cir</p>
+                            <p>{{ lanMap['rl_cir'] }}</p>
                             <p>{{ lanMap['range'] }}: 128-1000000</p>
                             <hr>
-                            <p>rl_pir</p>
+                            <p>{{ lanMap['rl_pir'] }}</p>
                             <p>{{ lanMap['range'] }}: 128-1000000</p>
                             <hr>
-                            <p>bandwidth</p>
+                            <p>{{ lanMap['bandwidth'] }}</p>
                             <p>{{ lanMap['range'] }}: 128-1000000</p>
                         </div>
                     </div>
                 </div>
                 <div>
-                    <span>ONU端口号</span>
+                    <span>{{ lanMap['op_id'] }}</span>
                     <select v-model.number="op_id">
                         <option :value="item.op_id" v-for="(item,index) in onu_port_info.data" :key="index">{{ item.op_id }}</option>
                     </select>
                 </div>
                 <div v-for="(item,key) in onu_port_item" :key="key" v-if="key !== 'op_id'">
-                    <span>{{ key }}</span>
+                    <span>{{ lanMap[key] ? lanMap[key] : key.replace(/_/,' ') }}</span>
                     <select v-if="key !== 'rl_cir' && key !== 'rl_pir' && key !== 'bandwidth'" v-model.number="onu_port_item[key]">
                         <option value="0">Disable</option>
                         <option value="1">Enable</option>
@@ -159,31 +162,31 @@
             <div class="cover"></div>
             <div class="dialog-content add-vlan-translate" :style="{'height': is_delete_translate ? '260px' : '' }">
                 <div>
-                    <h3 v-if="is_add_translate">ONU下添加转发VLAN</h3>
-                    <h3 v-if="is_delete_translate">ONU下删除转发VLAN</h3>
+                    <h3 v-if="is_add_translate">{{ lanMap['onu_add_translate'] }}</h3>
+                    <h3 v-if="is_delete_translate">{{ lanMap['onu_del_translate'] }}</h3>
                 </div>
                 <div>
                     <span>{{ lanMap['onu_id'] }}</span>
                     <span>{{ 'ONU' + port_name.pon[portid].id + '/' + onuid }}</span>
                 </div>
                 <div>
-                    <span>op_id</span>
+                    <span>{{ lanMap['op_id'] }}</span>
                     <span>{{ cache_port_vlan.op_id }}</span>
                 </div>
                 <div v-if="is_add_translate">
-                    <span>old_vlan_id</span>
+                    <span>old vlan id</span>
                     <input type="text" v-model.number="translate_post_param.old_vlan_id"
                     :style="{ 'border-color': translate_post_param.old_vlan_id !== '' && (translate_post_param.old_vlan_id < 1 || translate_post_param.old_vlan_id > 4094 || isNaN(translate_post_param.old_vlan_id)) ? 'red' : '' }">
                     <span class="tips">{{ lanMap['range'] + ' : 1-4094' }}</span>
                 </div>
                 <div v-if="is_add_translate">
-                    <span>new_vlan_id</span>
+                    <span>new vlan id</span>
                     <input type="text" v-model.number="translate_post_param.new_vlan_id"
                     :style="{ 'border-color': translate_post_param.new_vlan_id !== '' && (translate_post_param.new_vlan_id < 1 || translate_post_param.new_vlan_id > 4094 || isNaN(translate_post_param.new_vlan_id)) ? 'red' : '' }">
                     <span class="tips">{{ lanMap['range'] + ' : 1-4094' }}</span>
                 </div>
                 <div v-if="is_delete_translate">
-                    <span>vlan_id</span>
+                    <span>{{ lanMap['vlan_list'] }}</span>
                     <select v-model="translate_post_param.vlan_list">
                         <option :value="index" v-for="(item,index) in cache_port_vlan.vlan_list" :key="index">
                             {{ item.old_vlan_id }} &rarr; {{ item.new_vlan_id }}
@@ -191,7 +194,7 @@
                     </select>
                 </div>
                 <div v-if="is_add_translate">
-                    <span>new_vlan_pri</span>
+                    <span>{{ lanMap['new_vlan_pri'] }}</span>
                     <select v-model.number="translate_post_param.new_vlan_pri">
                         <option value="0">0</option>
                         <option value="1">1</option>
@@ -219,31 +222,31 @@
             <div class="cover"></div>
             <div class="dialog-content add-vlan-translate" :style="{'height' : is_delete_trunk ? '260px' : ''}">
                 <div>
-                    <h3 v-if="is_add_trunk">ONU下添加转发VLAN</h3>
-                    <h3 v-if="is_delete_trunk">ONU下删除转发VLAN</h3>
+                    <h3 v-if="is_add_trunk">{{ lanMap['onu_add_translate'] }}</h3>
+                    <h3 v-if="is_delete_trunk">{{ lanMap['onu_del_translate'] }}</h3>
                 </div>
                 <div>
                     <span>{{ lanMap['onu_id'] }}</span>
                     <span>{{ 'ONU' + port_name.pon[portid].id + '/' + onuid }}</span>
                 </div>
                 <div>
-                    <span>op_id</span>
+                    <span>{{ lanMap['op_id'] }}</span>
                     <span>{{ cache_port_vlan.op_id }}</span>
                 </div>
                 <div v-if="is_add_trunk">
-                    <span>start_vlan_id</span>
+                    <span>{{ lanMap['start_vlan_id'] }}</span>
                     <input type="text" v-model.number="trunk_post_param.start_vlan_id"
                     :style="{'border-color' : trunk_post_param.start_vlan_id !== '' && ( trunk_post_param.start_vlan_id < 1 || trunk_post_param.start_vlan_id > 4094 || isNaN(trunk_post_param.start_vlan_id) ) ? 'red' : '' }">
                     <span class="tips">{{ lanMap['range'] + ' : 1-4094' }}</span>
                 </div>
                 <div v-if="is_add_trunk">
-                    <span>end_vlan_id</span>
+                    <span>{{ lanMap['end_vlan_id'] }}</span>
                     <input type="text" v-model.number="trunk_post_param.end_vlan_id"
                     :style="{'border-color' : trunk_post_param.end_vlan_id !== '' && ( trunk_post_param.end_vlan_id < 1 || trunk_post_param.end_vlan_id > 4094 || isNaN(trunk_post_param.end_vlan_id) ) ? 'red' : '' }">
                     <span class="tips">{{ lanMap['range'] + ' : 1-4094' }}</span>
                 </div>
                 <div v-if="is_delete_trunk">
-                    <span>vlan_id</span>
+                    <span>{{ lanMap['vlan_list'] }}</span>
                     <select v-model="trunk_post_param.vlan_list">
                         <option :value="index" v-for="(item,index) in cache_port_vlan.vlan_list" :key="index">
                             {{ item.start_vlan_id }} - {{ item.end_vlan_id }}
@@ -251,7 +254,7 @@
                     </select>
                 </div>
                 <div v-if="is_add_trunk">
-                    <span>new_vlan_pri</span>
+                    <span>{{ lanMap['new_vlan_pri'] }}</span>
                     <select v-model.number="trunk_post_param.vlan_pri">
                         <option value="0">0</option>
                         <option value="1">1</option>
@@ -311,8 +314,8 @@ import { mapState } from 'vuex'
                     "message":"success",
                     "data":[{
                         "op_id": 1,
-                        "autoneg": 1,
-                        "flowctrl": 1,
+                        "auto_neg": 1,
+                        "flow_ctrl": 1,
                         "loopdetect": 1,
                         "enable": 1,
                         "rlds_opt": 1,
@@ -325,8 +328,8 @@ import { mapState } from 'vuex'
                 //  ONU下某个特定的端口的基本信息  --> 配置ONU端口基本信息时使用
                 onu_port_item: {
                     "op_id": 1,
-                    "autoneg": 1,
-                    "flowctrl": 1,
+                    "auto_neg": 1,
+                    "flow_ctrl": 1,
                     "loopdetect": 1,
                     "enable": 1,
                     "rlds_opt": 1,
@@ -494,7 +497,7 @@ import { mapState } from 'vuex'
                     if(this.onu_vlan_item.def_vlan_pri === '' || this.onu_vlan_item.def_vlan_pri < 0 || this.onu_vlan_item.def_vlan_pri > 7 || isNaN(this.onu_vlan_item.def_vlan_pri)){
                         this.$message({
                             type: 'error',
-                            text: 'VLAN优先级参数不正确'
+                            text: this.lanMap['vlan_pri_param_error']
                         })
                         return
                     }
@@ -556,20 +559,11 @@ import { mapState } from 'vuex'
                         data.new_vlan_pri === this.translate_post_param.new_vlan_pri){
                             this.$message({
                                 type: 'info',
-                                text: ''
+                                text: this.lanMap['translate_exits']
                             })
                             return 
                         }
                     }
-                    //  参数相等   非法设置
-                    if(this.translate_post_param.old_vlan_id === this.translate_post_param.new_vlan_id){
-                        this.$message({
-                            type: 'error',
-                            text: ''
-                        })
-                        return
-                    }
-                    //  vlan ID 范围检查
                     if(this.translate_post_param.old_vlan_id === '' || this.translate_post_param.old_vlan_id < 1 || this.translate_post_param.old_vlan_id > 4094 || isNaN(this.translate_post_param.old_vlan_id)){
                         this.$message({
                             type: 'error',
@@ -675,7 +669,7 @@ import { mapState } from 'vuex'
                     if(this.trunk_post_param.start_vlan_id > this.trunk_post_param.end_vlan_id || this.trunk_post_param.end_vlan_id - this.trunk_post_param.start_vlan_id > 15){
                         this.$message({
                             type: 'error',
-                            text: ''
+                            text: this.lanMap['trunk_vlanid_range_error']
                         })
                         return
                     }
@@ -969,8 +963,10 @@ div.onu-port{
 }
 div.onu-port-info{
     >div{
-        height: 36px;
+        height: 40px;
         line-height: 36px;
+        width: 100%;
+        display: table;
         &:first-child{
             margin: 20px;
             >div{
@@ -987,15 +983,34 @@ div.onu-port-info{
             font-weight: 500;
         }
         >span{
-            display: inline-block;
+            display: table-cell;
             vertical-align: top;
             width: 9.89%;
+            height: auto;
+            font-size: 16px;
             text-align: center;
             border: 1px solid #ccc;
             border-right: none;
             &:last-child{
                 border-right: 1px solid #ccc;
             }
+        }
+    }
+}
+ul.vertical-font{
+    width: 100%;
+    display: table;
+    >li{
+        display: table-cell;
+        overflow: hidden;
+        width: 9.89%;
+        text-align: center;
+        height: 40px;
+        vertical-align: middle;
+        border: 1px solid #ccc;
+        border-right: none;
+        &:last-child{
+            border-right: 1px solid #ccc;
         }
     }
 }
@@ -1013,6 +1028,7 @@ div.onu-vlan-info{
         }
         a{
             font-size: 16px;
+            width: 300px;
         }
         &:last-child>span{
             border-top: none;
@@ -1039,7 +1055,6 @@ div.onu-vlan-info{
 }
 div.onu-vlan-info>div.port-item-vlan{
     height: auto;
-    //border-top: 1px solid #ccc;
     margin-top: 20px;
     >div{
         &:first-child>span{
@@ -1091,7 +1106,7 @@ div.onu-vlan-info>div.port-item-vlan{
     }
 }
 div.dialog-body{
-    width: 500px;
+    width: 550px;
     height: 500px;
     background: #fff;
     border-radius: 10px;
@@ -1116,7 +1131,7 @@ div.dialog-body{
         }
         >span:first-child{
             display: inline-block;
-            width: 150px;
+            width: 200px;
             height: 30px;
             text-align: right;
             padding-right: 20px;
@@ -1174,7 +1189,7 @@ div.tool-tips{
     }
 }
 div.dialog-content{
-    width: 500px;
+    width: 550px;
     height: 290px;
     background: #fff;
     border-radius: 10px;
@@ -1200,7 +1215,7 @@ div.dialog-content{
         line-height: 36px;
         >span:first-child{
             display: inline-block;
-            width: 150px;
+            width: 200px;
             text-align: right;
             padding-right: 20px;
         }

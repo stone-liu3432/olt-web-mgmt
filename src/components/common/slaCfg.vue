@@ -7,7 +7,7 @@
                 </option>
             </select>
         </div>
-        <ul v-if="this.band_width.data">
+        <ul v-if="band_width.data">
             <li>
                 <span v-for="(item,key) in this.band_width.data[0]" :key="key" v-if=" key != 'port_id'">
                     {{ lanMap[key] }}
@@ -25,7 +25,7 @@
                 </span>
             </li>
         </ul>
-        <div v-else>{{ lanMap['onu_bw_fail_info'] }}</div>
+        <div v-else class="no-more-data">{{ lanMap['onu_bw_fail_info'] }}</div>
         <div class="modal-dialog" v-if="isConfig">
             <div class="cover"></div>
             <div class="dialog" v-if="onu_detail.data">
@@ -343,6 +343,10 @@ li>div{
     border-top: 1px solid #ddd;
     height: 36px;
     line-height: 36px;
+}
+div.no-more-data{
+    margin: 20px;
+    color: red;
 }
 span{
     display: inline-block;

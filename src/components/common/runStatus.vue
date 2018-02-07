@@ -172,7 +172,8 @@
                 var sub_item = document.querySelectorAll('p.sub-item');
                 for(var i=0;i<sub_item.length;i++){
                     sub_item[i].className = 'sub-item';
-                    if(sub_item[i].innerText.replace(/\s/g,'') == this.lanMap['onu_allow']){
+                    var str = sub_item[i].innerText.replace(/\s/g,'');
+                    if(sub_item[i].innerText == this.lanMap['onu_allow']){
                         sub_item[i].className += ' actived';
                     }
                 }
@@ -212,7 +213,7 @@
                 var sub_item = document.querySelectorAll('p.sub-item');
                 for(var i=0;i<sub_item.length;i++){
                     sub_item[i].className = 'sub-item';
-                    if(sub_item[i].innerText.replace(/\s/g,'') == this.lanMap['port_cfg']){
+                    if(sub_item[i].innerText == this.lanMap['port_cfg']){
                         sub_item[i].className += ' actived';
                     }
                 }
