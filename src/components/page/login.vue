@@ -70,7 +70,7 @@ import { mapState,mapMutations } from "vuex"
         },
         mounted(){
             this.$nextTick(()=>{
-                var nName = document.getElementById('uName');
+                var uName = document.getElementById('uName');
                 uName.focus();
             })
         },

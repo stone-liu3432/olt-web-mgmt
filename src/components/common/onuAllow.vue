@@ -364,7 +364,7 @@ import confirm from '@/components/common/confirm'
                 var sub_item = document.querySelectorAll('p.sub-item');
                 for(var i=0;i<sub_item.length;i++){
                     sub_item[i].className = 'sub-item';
-                    if(sub_item[i].innerText.replace(/\s/g,'') == this.lanMap['onu_basic_info']){
+                    if(sub_item[i].innerText.replace(/(^\s*)|(\s*$)/g, "") == this.lanMap['onu_basic_info']){
                         sub_item[i].className += ' actived';
                     }
                 }
@@ -373,7 +373,7 @@ import confirm from '@/components/common/confirm'
                 for(var i=0;i<menu_item.length;i++){
                     menu_item[i].className = 'menu-item';
                 }
-                // 清除跳转的菜单的选中效果，并给被跳转的菜单添加选中效果
+                // 清除跳转的一级菜单的选中效果，并给被跳转的一级菜单添加选中效果
                 var sub_menu = document.querySelectorAll('ul.sub-menu');
                 for(var i=0;i<sub_menu.length;i++){
                     sub_menu[i].className = 'sub-menu';

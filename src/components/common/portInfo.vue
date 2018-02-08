@@ -68,7 +68,7 @@ import { mapState } from 'vuex'
                 var sub_item = document.querySelectorAll('p.sub-item');
                 for(var i=0;i<sub_item.length;i++){
                     sub_item[i].className = 'sub-item';
-                    if(sub_item[i].innerText.replace(/\s/g,'') == this.lanMap['port_cfg']){
+                    if(sub_item[i].innerText.replace(/(^\s*)|(\s*$)/g, "") == this.lanMap['port_cfg']){
                         sub_item[i].className += ' actived';
                     }
                 }
@@ -103,7 +103,6 @@ ul>li{
     border-right: none;
     height: 40px;
     font-size: 32px;
-    display: table-cell;
     vertical-align: middle;
     overflow: hidden;
 }

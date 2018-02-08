@@ -20,7 +20,7 @@
 	  "onu_deny" : "ONU Deny List",
 	  "sla_cfg" : "Bandwidth",
 	"onu_mgmt" : "ONU Device",
-      "onu_basic_info" : "ONU Base Info",
+      "onu_basic_info" : "ONU Basic Info",
       "onu_port_cfg": "ONU Port Config",
 	"swport_mgmt" : "Switch Port",
 	  "port_info" : "Port Info",
