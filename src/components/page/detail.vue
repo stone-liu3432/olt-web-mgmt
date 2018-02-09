@@ -24,9 +24,13 @@
             },
             //  接管f5刷新页面
             preventRefresh(e){
+                var e = window.event || e;
                 if(e.keyCode === 116 || (e.ctrlKey && e.keyCode==82)){
+                    if(window.event){
+                        try{e.keyCode = 0}catch(e){}
+                        e.returnValue = false;
+                    }
                     e.preventDefault();
-                    e.stopPropagation();
                     this.reload();
                     return false
                 }

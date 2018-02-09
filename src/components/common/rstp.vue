@@ -291,6 +291,9 @@ import { mapState } from 'vuex'
                             type: 'success',
                             text: this.lanMap['setting_ok']
                         })
+                        if(this.bridge_info.status === 1){
+                            this.getPortData();
+                        }
                     }else if(res.data.code > 1){
                         // to do
                         this.$message({
