@@ -90,7 +90,7 @@
                 </span>
                 <span>{{ lanMap['config'] }}</span>
             </li>
-            <li v-for="(item,index) in onu_allow_list.data" :key="index" class="flex-box">
+            <li v-for="(item,index) in onu_allow_list.data" :key="index" class="flex-box" :style="{ 'background-color' : item.status === 'offline' ? '#F3A9A0' : '' }">
                 <span>{{ 'ONU0'+item.port_id +'/'+ item.onu_id }}</span>
                 <span>{{ item.macaddr }}</span>
                 <span>{{ item.status }}</span>
@@ -160,6 +160,9 @@ import confirm from '@/components/common/confirm'
                         this.onu_arrow = {};
                     }
                     this.onu_allow_list = Object.assign({},this.onu_arrow);
+                    this.onu_allow_list.data.sort((a,b)=>{
+                        return a.status === 'online' && b.status === 'offline'
+                    })
                 }).catch(err=>{
                     // to do 
                 })
@@ -345,6 +348,13 @@ import confirm from '@/components/common/confirm'
             },
             //  重启 onu
             reboot(item){
+                if(item.status === 'offline'){
+                    this.$message({
+                        type: 'info',
+                        text: this.lanMap['onu_offline_tips']
+                    })
+                    return
+                }
                 this.reboot_confirm = true;
                 this.post_params = {
                     "method":"set",
@@ -539,10 +549,10 @@ i{
     vertical-align: middle;
 }
 i.onu-detail{
-    background: url('../../assets/detail-normal.png') no-repeat 1px 1px;
+    background: url('../../assets/detail-normals.png') no-repeat 1px 1px;
 }
 i.onu-detail:hover{
-    background: url('../../assets/detail-hover.png') no-repeat 1px 1px;
+    background: url('../../assets/detail-hovers.png') no-repeat 1px 1px;
 }
 i.onu-delete{
     background: url('../../assets/delete-normal.png') no-repeat;

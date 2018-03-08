@@ -28,7 +28,7 @@
                 <span>{{ item.auto_neg >=1 ? "Enable" : "Disable" }}</span>
             </li>
             <li>
-                <span>{{ item.speed }}</span>
+                <span>{{ item.speed === "10/100/1000M" ? "Auto" : item.speed }}</span>
             </li>
             <li>
                 <span>{{ item.duplex >= 1 ? "full" : "half" }}</span>
@@ -40,7 +40,7 @@
                 <span>{{ item.mtu }}</span>
             </li>
             <li>
-                <span>{{ item.media }}</span>
+                <span>{{ lanMap[item.media] }}</span>
             </li>
             <li>
                 <span>{{ item.pvid }}</span>

@@ -90,7 +90,7 @@
                                 <option value="10M">10M</option>
                                 <option value="100M">100M</option>
                                 <option value="1000M">1000M</option>
-                                <option value="10/100/1000M">10/100/1000M</option>
+                                <option value="10/100/1000M">Auto</option>
                             </select>
                             <input type="text" v-if="key === 'mtu'" placeholder="128-2000" v-model.number="port_data.mtu"
                             :style="{ 'border-color' : port_data.mtu && (port_data.mtu < 128 || port_data.mtu > 2000 || isNaN(port_data.mtu)) ? 'red' : '' }">

@@ -83,7 +83,7 @@
 	"flow_ctrl"  : "Flow Control",
 	"pvid"  : "Default VLAN",
 	"media" : "Medium",
-	"copper" : "RJ45" ,
+	"copper" : "Copper" ,
 	"fiber" : "Fiber",
     "erate":"Egress rate",
     "irate":"Ingress rate",
@@ -287,7 +287,8 @@
 	"del_onu":"Delete ONU",
 	"clk_cancel_cfrm":"Click to cancel confirm",
 	"clk_cfrm":"Click to confirm",
-	"input_desc":"Description",
+    "input_desc":"Description",
+    "onu_offline_tips": "The ONU is offline can not be restarted",
 	
 	"zero_auto_":"if 0 or none: Auto assign",
 	"manual_bind":"Manual add ONU",
@@ -338,5 +339,6 @@
     "def_vlan_pri":"default VLAN Priority",
     "new_vlan_pri":"VLAN Priority",
     "vlan_pri":"VLAN priority",
-    "bandwidth": "Band width"
+    "bandwidth": "Band width",
+    "rstp_tips_disable":"Global RSTP bridge is not enabled and can not proceed this setting"
 }

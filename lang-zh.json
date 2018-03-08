@@ -83,8 +83,8 @@
 	"flow_ctrl"  : "流控",
 	"pvid"  : "缺省VLAN",
 	"media" : "端口媒介",
-	"copper" : "RJ45" ,
-    "fiber" : "光纤",
+	"copper" : "Copper" ,
+    "fiber" : "Fiber",
     "erate":"出口速率",
     "irate":"入口速率",
 	
@@ -286,7 +286,8 @@
 	"del_onu":"删除ONU",
 	"clk_cancel_cfrm":"点此取消认证",
 	"clk_cfrm":"点此认证",
-	"input_desc":"输入描述信息",
+    "input_desc":"输入描述信息",
+    "onu_offline_tips": "离线状态的 ONU 无法进行重启操作",
 	
 	"zero_auto_":"为0或为空时，表示自动分配",
 	"manual_bind":"手动添加ONU",
@@ -338,6 +339,7 @@
     "def_vlan_pri": "缺省VLAN优先级",
     "new_vlan_pri": "VLAN优先级",
     "vlan_pri": "VLAN优先级",
-    "bandwidth": "带宽"
+    "bandwidth": "带宽",
+    "rstp_tips_disable":"全局RSTP桥未使能，无法进行此设置"
 
 }

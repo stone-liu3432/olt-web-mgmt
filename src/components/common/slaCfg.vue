@@ -25,7 +25,7 @@
                 </span>
             </li>
         </ul>
-        <div v-else class="no-more-data">{{ lanMap['onu_bw_fail_info'] }}</div>
+        <p v-else class="nodata-bandwidth">{{ lanMap['onu_bw_fail_info'] }}</p>
         <div class="modal-dialog" v-if="isConfig">
             <div class="cover"></div>
             <div class="dialog" v-if="onu_detail.data">
@@ -344,7 +344,7 @@ li>div{
     height: 36px;
     line-height: 36px;
 }
-div.no-more-data{
+div.onu-bandwidth>p.nodata-bandwidth{
     margin: 20px;
     color: red;
 }

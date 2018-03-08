@@ -197,7 +197,7 @@ import confirm from '@/components/common/confirm'
                 if(!this.search_id){
                     this.$message({
                         type: 'error',
-                        text: this.lanMap['param_onuid']
+                        text: this.lanMap['vlanid_range_hit']
                     })
                     return
                 }

@@ -320,6 +320,14 @@ import { mapState } from 'vuex'
             },
             //  打开设置端口优先级模态框
             open_priority(){
+                //  如果全局RSTP桥未使能，则无法应用此设置
+                if(!this.rstp.data.status){
+                    this.$message({
+                        type: 'error',
+                        text: this.lanMap['rstp_tips_disable']
+                    })
+                    return
+                }
                 for(var key in this.rstp_port.data[0]){
                     this.priority_info[key] = this.rstp_port.data[0][key];
                 }

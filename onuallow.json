@@ -5,7 +5,7 @@
 		"port_id":1,
 		"onu_id":1,
 		"macaddr":"38:3a:21:20:22:66",
-		"status":"online",
+		"status":"offline",
 		"auth_state":1,
 		"register_time":"2000/04/06 22:39:24"
     },{
@@ -19,7 +19,7 @@
         "port_id":1,
         "onu_id":3,
         "macaddr":"41:3a:21:20:22:00",
-        "status":"online",
+        "status":"offline",
         "auth_state":0,
         "register_time":"2000/04/06 22:39:25"
     },{
@@ -40,7 +40,7 @@
         "port_id":1,
         "onu_id":6,
         "macaddr":"44:3a:21:20:22:00",
-        "status":"online",
+        "status":"offline",
         "auth_state":0,
         "register_time":"2000/04/06 22:39:25"
     },{
@@ -54,7 +54,7 @@
         "port_id":1,
         "onu_id":8,
         "macaddr":"46:3a:21:20:22:00",
-        "status":"online",
+        "status":"offline",
         "auth_state":1,
         "register_time":"2000/04/06 22:39:25"
     },{
