@@ -50,6 +50,7 @@
         </div>
         <confirm :tool-tips="lanMap['def_cfg_hit']" @choose="result" v-if="userChoose"></confirm>
         <confirm :tool-tips="lanMap['reboot_olt_hit']" @choose="reboot_result" v-if="rebootChoose"></confirm>
+        <confirm :tool-tips="lanMap['restore_succ_reboot'] + '?'" @choose="reboot_result" v-if="restoreChoose"></confirm>
         <loading class="load" v-if="isLoading"></loading>
         <div class="modal-dialog" v-if="isProgress">
             <div class="cover"></div>
@@ -76,6 +77,7 @@
             return {
                 userChoose: false,
                 rebootChoose: false,
+                restoreChoose: false,
                 isLoading: false,
                 isProgress: false,
                 width: 0,
@@ -102,21 +104,18 @@
             },
             reboot_result(bool){
                 if(bool){
-                    var self = this;
                     this.$http.get('/system_reboot').then(res=>{
-                        if(res.data.code === 1){
-                            this.isLoading = true;
-                            this.timer1 = setInterval(()=>{
-                                this.$http.get('/board?info=menu').then(res=>{
-                                    if(res.data.code === 1){
-                                        clearInterval(this.timer1);
-                                        this.isLoading = false;
-                                        sessionStorage.clear();
-                                        this.$router.push('/login');
-                                    }
-                                })
-                            },5000)
-                        }
+                        this.isLoading = true;
+                        this.timer1 = setInterval(()=>{
+                            this.$http.get('/system_start').then(res=>{
+                                if(res.data.code === 1){
+                                    clearInterval(this.timer1);
+                                    this.isLoading = false;
+                                    sessionStorage.clear();
+                                    this.$router.push('/login');
+                                }
+                            })
+                        },5000)
                     }).catch(err=>{
                         // to do
                     })
@@ -168,8 +167,13 @@
                     // to do
                 })
             },
-            //  导入配置
+            //  导入配置        --> 暂未支持，后续添加
             restore_cfg(){
+                this.$message({
+                    type: 'info',
+                    text: this.lanMap['no_support']
+                })
+                return
                 var formData = new FormData();
                 var file = document.getElementById('file');
                 var files = file.files[0];
@@ -202,19 +206,23 @@
                     document.body.removeEventListener('contextmenu',this.preventMouse);
                      if(res.data.code === 1){
                         this.width = 400;
+                        clearInterval(this.timer2);
+                        this.isProgress = false;
                         this.$message({
                             type: 'success',
                             text: this.lanMap['restore_config_succ']
                         })
+                        this.restoreChoose = true;
+                        this.width = 0;
                     }else if(res.data.code >1){
                         this.$message({
                             type: 'error',
                             text: this.lanMap['restore_config_fail']
                         })
+                        clearInterval(this.timer2);
+                        this.isProgress = false;
+                        this.width = 0;
                     }
-                    clearInterval(this.timer2);
-                    this.isProgress = false;
-                    this.width = 0;
                 }).catch(err=>{
                     // to do
                 });

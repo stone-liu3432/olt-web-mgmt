@@ -56,6 +56,7 @@
     "range": "Range",
 	
 	"macaddr" : "MAC Address",
+	"macmask" : "MAC Mask",
 	"ponports" : "PON Ports",
 	"geports" : "GE Ports",
 	"feports" : "FE Ports",
@@ -225,6 +226,7 @@
 	"login_timeout":"Login timeout, Please Login",
 	"illegal_login_info":"Illegal Login Information",
 	"logout":"Sign out",
+    "no_support":"Not support now",
 	"company_info":"Company information & Copyright information",
 	"setting_ok": "Setting success",
     "setting_fail": "Setting failed",
@@ -235,6 +237,7 @@
 	"not_find_vlan":"There's not VLAN",
 	"restore_config_fail":"Restore the OLT configuration failed",
 	"restore_config_succ":"Restore the OLT configuration success, and take it effect as reboot",
+    "restore_succ_reboot":"Restore the OLT configuration success，reboot OLT now",
 	"restore_file_nr":"The file format is incorrect",
 	"file_not_select":"There's no file",
 	"file_click":"Click to select file",
@@ -251,7 +254,10 @@
 	"sys_upgrade_fail":"Upgrade system failed",
 	"sys_upgrade_succ":"Upgrade system success, take it effect as restart OLT",
 	"fw_upgrade_fail":"Upgrade firmware failed",
-	"fw_upgrade_succ":"Upgrade firmware success, take it effect as restart OLT",
+    "fw_upgrade_succ":"Upgrade firmware success, take it effect as restart OLT",
+    "upgrade_buzy":"Upgrade failed, other user upgrading",
+    "file_header_error":"Upgrade failed, the file header is not correct!",
+    "upgrade_success":"Upgrade Success, Rebooting device",
 	
 	"get_data_fail":"Get the data failed",
 	
@@ -340,5 +346,13 @@
     "new_vlan_pri":"VLAN Priority",
     "vlan_pri":"VLAN priority",
     "bandwidth": "Band width",
-    "rstp_tips_disable":"Global RSTP bridge is not enabled and can not proceed this setting"
+    "rstp_tips_disable":"Global RSTP bridge is not enabled and can not proceed this setting",
+
+    "work_temprature":"work temprature",
+    "work_voltage":"work voltage",
+    "transmit_bias": "transmit bias",
+    "transmit_power": "transmit power",
+    "receive_power":"receive power",
+    "refresh": "Refresh",
+    "onu_optical_diagnose":"ONU optical diangose"
 }

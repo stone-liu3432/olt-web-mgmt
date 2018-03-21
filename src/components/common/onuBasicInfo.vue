@@ -25,18 +25,36 @@
                 <a href="javascript:;" @click="open_set_fec_mode">{{ lanMap['set_fec_mode'] }}</a>
             </div>
         </div>
-        <div v-for="(item,key) in onu_basic_info.data" :key="key" v-if=" key != 'port_id' && onu_basic_info.data" class="onu-info-item">
-            <span>
-                {{ lanMap[key] }}
-            </span>
-            <span>
-                {{ item }}
-            </span>
+        <div>
+            <div class="lf onu-info">
+                <div v-for="(item,key) in onu_basic_info.data" :key="key" v-if=" key != 'port_id' && onu_basic_info.data" class="onu-info-item">
+                    <span>
+                        {{ lanMap[key] }}
+                    </span>
+                    <span>
+                        {{ item }}
+                    </span>
+                </div>
+                <div class="onu-info-item" v-for="(item,key) in onu_fec_mode.data" :key="key" v-if="onu_fec_mode.data && onu_basic_info.data">
+                    <span>{{ key.replace(/_/,'-') }}</span>
+                    <span>{{ item ? 'Enable' : 'Disable' }}</span>
+                </div>
+            </div>
+            <div class="lf onu-optical-diagnose">
+                <div>
+                    <div class="onu-optical-title">
+                        <span>{{ lanMap['onu_optical_diagnose'] }}</span>
+                        <a href="javascript:;" class="rt" @click="getOpticalData()">{{ lanMap['refresh'] }}</a>
+                    </div>
+                    <div class="onu-optical" v-for="(item,key) in optical_diagnose.data" :key="key" v-if="key != 'port_id' && key !== 'onu_id' && optical_diagnose.data">
+                        <span>{{ lanMap[key] }}</span>
+                        <span>{{ item }}</span>
+                    </div>
+                    <div v-else class="no-more-data">{{ lanMap['flush_page_retry'] }}</div>
+                </div>
+            </div>
         </div>
-        <div class="onu-info-item" v-for="(item,key) in onu_fec_mode.data" :key="key" v-if="onu_fec_mode.data && onu_basic_info.data">
-            <span>{{ key.replace(/_/,'-') }}</span>
-            <span>{{ item ? 'Enable' : 'Disable' }}</span>
-        </div>
+        
         <confirm :tool-tips="lanMap['confirm_reboot_onu'] + '?'" @choose="reboot_onu" v-if="reboot_onu_confirm"></confirm>
         <confirm :tool-tips="lanMap['confirm_deresgester'] + '?'" @choose="un_auth_onu" v-if="un_auth_confirm"></confirm>
         <confirm :tool-tips="lanMap['confirm_change_fecmode'] + '?'" @choose="set_fec_mode" v-if="set_fec_confirm"></confirm>
@@ -59,7 +77,8 @@ import confirm from '@/components/common/confirm'
                 //  确认模态框 *3
                 reboot_onu_confirm: false,
                 un_auth_confirm: false,
-                set_fec_confirm: false
+                set_fec_confirm: false,
+                optical_diagnose: {}
             }
         },
         created(){
@@ -214,47 +233,59 @@ import confirm from '@/components/common/confirm'
                 }).catch(err=>{
                     // to do
                 })
+            },
+            getOpticalData(){
+                this.$http.get("/onumgmt?form=optical-diagnose&port_id="+this.portid+"&onu_id="+this.onuid).then(res=>{
+                    if(res.data.code === 1){
+                        this.optical_diagnose = res.data;
+                    }else{
+                        this.optical_diagnose = {};
+                    }
+                }).catch(err=>{
+                    // to do
+                })
             }
 		},
 		watch: {
-			// portid(){
-            // 	// 请求url:  请求url: /onumgmt?form=base-info&port_id=1&onu_id=1
-            //  var _onuid = this.onuid;
-			// 	this.$http.get('/onu_allow_list?form=resource&port_id='+this.portid).then(res=>{
-			// 		if(res.data.code === 1){
-            //             var _onu_list = this.analysis(res.data.data.resource);
-            //             if(!_onu_list){
-            //                  this.addonu_list({});
-            //                  this.onu_basic_info = {};
-            //                  this.onuid = 0;
-            //                  return
-            //             }
-            //             var obj = {
-            //                 port_id: res.data.data.port_id,
-            //                 data: _onu_list
-            //             }
-            //             this.addonu_list(obj);
-            //             this.onuid = this.$route.query.onu_id || this.onu_list.data[0];
-            //             if(this.$route.query.onu_id){
-            //                 this.$route.query.onu_id = null;
-            //             }
-            //             if(_onuid === this.onuid){
-            //                 this.getData();
-            //             }
-            //         }else{
-            //             this.addonu_list({});
-            //             this.onu_basic_info = {}; 
-            //             this.onuid = 0;
-            //         }
-			// 	}).catch(err=>{
-			// 		// to do
-			// 	})
-			// },
-			// onuid(){
-            // 	// 请求url:  请求url: /onumgmt?form=base-info&port_id=1&onu_id=1
-            //   if(this.onuid === 0) return   
-			// 	 this.getData();
-			// }
+			portid(){
+            	// 请求url:  请求url: /onumgmt?form=base-info&port_id=1&onu_id=1
+             var _onuid = this.onuid;
+				this.$http.get('/onu_allow_list?form=resource&port_id='+this.portid).then(res=>{
+					if(res.data.code === 1){
+                        var _onu_list = this.analysis(res.data.data.resource);
+                        if(!_onu_list){
+                             this.addonu_list({});
+                             this.onu_basic_info = {};
+                             this.onuid = 0;
+                             return
+                        }
+                        var obj = {
+                            port_id: res.data.data.port_id,
+                            data: _onu_list
+                        }
+                        this.addonu_list(obj);
+                        this.onuid = this.$route.query.onu_id || this.onu_list.data[0];
+                        if(this.$route.query.onu_id){
+                            this.$route.query.onu_id = null;
+                        }
+                        if(_onuid === this.onuid){
+                            this.getData();
+                        }
+                    }else{
+                        this.addonu_list({});
+                        this.onu_basic_info = {}; 
+                        this.onuid = 0;
+                    }
+				}).catch(err=>{
+					// to do
+				})
+			},
+			onuid(){
+            	// 请求url:  请求url: /onumgmt?form=base-info&port_id=1&onu_id=1
+              if(this.onuid === 0) return   
+				 this.getData();
+              this.getOpticalData();
+			}
 		}
     }
 </script>
@@ -291,6 +322,9 @@ select{
 hr{
 	margin-bottom: 30px;
 }
+div.onu-info{
+    width: 60%;
+}
 div.onu-info-item{
     border: 1px solid #ccc;
     border-bottom: none;
@@ -300,8 +334,62 @@ div.onu-info-item>span{
 	vertical-align: middle;
 	height: 30px;
 	line-height: 30px;
-	width: 25%;
+	width: 30%;
 	padding-left: 20px;
+}
+div.onu-optical-diagnose{
+    overflow: hidden;
+    width: 40%;
+    >div{
+        margin-left: 20px;
+        border: 1px solid #ccc;
+    }
+}
+div.onu-optical-title{
+    height: 30px;
+    line-height: 30px;
+    padding: 20px 0;
+    vertical-align: middle;
+    border-bottom: 1px solid #ccc;
+    >span:first-child{
+        margin-left: 40px;
+        font-weight: 600;
+        color: #67AEF7;
+        border: none;
+    }
+    >a{
+        width: 120px;
+        height: 30px;
+        display: inline-block;
+        text-align: center;
+        border-radius: 5px;
+        background: #ddd;
+        margin-right: 20px;
+    }
+}
+div.onu-optical{
+    height: 30px;
+    line-height: 30px;
+    border-bottom: 1px solid #ccc;
+    &:last-child{
+        border: none;
+    }
+    >span{
+        display: inline-block;
+        width: 40%;
+        &:first-child{
+            margin: 0;
+            border: none;
+            border-right: 1px solid #ccc;
+        }
+        &:last-child{
+            padding-left: 10px;
+        }
+    }
+}
+div.no-more-data{
+    margin: 20px;
+    color: red;
 }
 div>span:first-child{
 	text-align: right;
@@ -315,7 +403,7 @@ div.error-msg{
     line-height: 30px;
     color: red;
 }
-div#detail>div>div.onu-info-item:last-child{
+div#detail div.onu-info-item:last-child{
     border: 1px solid #ccc;
 }
 div.handle-btn{
@@ -324,6 +412,9 @@ div.handle-btn{
         content: "";
         display: table;
         clear: both;
+    }
+    &+div{
+        overflow: hidden;
     }
     h3{
         font-size: 18px;

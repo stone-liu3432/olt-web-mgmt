@@ -35,7 +35,7 @@
             <div v-if="choose_macaddr" class="query-frame">
                 <span>{{ lanMap['macaddr'] }}</span>
                 <input type="text" placeholder="ex: 00:00:00:00:00:00" v-model="macaddr" :style="{ 'border-color' : check_mac.test(macaddr) || macaddr === '' ? '' : 'red' }">
-                <span>{{ lanMap['ipmask'] }}</span>
+                <span>{{ lanMap['macmask'] }}</span>
                 <input type="text" placeholder="ex: 00:00:00:00:00:00" v-model="macmask" :style="{ 'border-color' : check_mac.test(macmask) || macmask === '' ? '' : 'red' }">
                 <a href="javascript:;" @click="query_macaddr">{{ lanMap['apply'] }}</a>
             </div>
@@ -780,6 +780,9 @@ div.query-frame{
     height: 40px;
     line-height: 40px;
     vertical-align: middle;
+    >span:nth-child(3){
+        margin-left: 10px;
+    }
 }
 div.query-select select{
     width: 180px;

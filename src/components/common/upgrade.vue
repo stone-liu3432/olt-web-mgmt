@@ -30,22 +30,52 @@
                 </div>
             </div>
         </div>
+        <confirm :tool-tips="lanMap['upgrade_success'] + '?' " @choose="upgrade_result" v-if="reboot_confirm"></confirm>
+        <loading v-if="isReboot"></loading>
     </div>
 </template>
 
 <script>
 import { mapState } from 'vuex'
+import confirm from '@/components/common/confirm'
+import loading from '@/components/common/loading'
     export default {
         name: 'upgrade',
+        components: { confirm,loading },
         data(){
             return {
                 isLoading: false,
+                isReboot: false,
+                reboot_confirm: false,
                 width: 0,
-                timer: null
+                timer: null,
+                interval: null
             }
         },
         computed: mapState(['lanMap']),
         methods: {
+            upgrade_result(bool){
+                if(bool){
+                    this.$http.get("/system_reboot").then(res=>{
+                        // to do
+                    }).catch(err=>{
+                        // to do
+                    })
+                    this.isReboot = true;
+                    this.interval = setInterval(()=>{
+                        this.$http.get('/system_start').then(res=>{
+                            if(res.data.code === 1){
+                                clearInterval(this.interval);
+                                this.isReboot = false;
+                                sessionStorage.clear();
+                                this.$router.push('/login');
+                            }
+                        })
+                    },10000)
+                }
+                this.width = 0;
+                this.reboot_confirm = false;
+            },
             changeFile(fileid,fnameid){
                 var file = document.getElementById(fileid);
                 var fileName = document.getElementById(fnameid);
@@ -88,13 +118,7 @@ import { mapState } from 'vuex'
                     document.body.removeEventListener('keydown',this.preventRefresh);
                     document.body.removeEventListener('contextmenu',this.preventMouse);
                     if(res.data.code === 1){
-                        this.width = 400;
-                        clearInterval(this.timer);
-                        this.isLoading = false;
-                        this.$message({
-                            type: 'success',
-                            text: this.lanMap['fw_upgrade_succ']
-                        })
+                        this.upgrade_callback(this.lanMap['fw_upgrade_succ'],this.lanMap['upgrade_buzy'],this.lanMap['file_header_error'],this.lanMap['fw_upgrade_fail']);
                     }else if(res.data.code > 1){
                         clearInterval(this.timer);
                         this.isLoading = false;
@@ -140,14 +164,8 @@ import { mapState } from 'vuex'
                     document.body.removeEventListener('keydown',this.preventRefresh);
                     document.body.removeEventListener('contextmenu',this.preventMouse);
                     if(res.data.code === 1){
-                        this.width = 400;
-                        clearInterval(this.timer);
-                        this.isLoading = false;
-                        this.$message({
-                            type: 'success',
-                            text: this.lanMap['sys_upgrade_succ']
-                        })
-                    }else if(res.data.code >1){
+                        this.upgrade_callback(this.lanMap['sys_upgrade_succ'],this.lanMap['upgrade_buzy'],this.lanMap['file_header_error'],this.lanMap['sys_upgrade_fail']);
+                    }else if(res.data.code > 1){
                         clearInterval(this.timer);
                         this.isLoading = false;
                         this.$message({
@@ -162,6 +180,7 @@ import { mapState } from 'vuex'
             },
             //  固件或系统升级期间，禁用F5刷新浏览器
             preventRefresh(e){
+                var e = e || window.event;
                 e.preventDefault();
                 e.stopPropagation();
                 if(e.keyCode === 116){
@@ -170,7 +189,56 @@ import { mapState } from 'vuex'
             },
             //  阻止鼠标右键刷新
             preventMouse(e){
+                var e = e || window.event;
                 e.returnValue = false
+            },
+            //  开始升级后的回调处理
+            upgrade_callback(text1,text2,text3,text4){
+                this.interval = setInterval(()=>{
+                    this.$http.get('/upgrade_status').then(_res=>{
+                        if(_res.data.code === 1){                //  触发升级成功
+                            if(_res.data.data.status === 2){     //  升级成功
+                                if(this.timer){
+                                    clearInterval(this.timer);
+                                }
+                                this.width = 400;
+                                this.isLoading = false;
+                                this.$message({
+                                    type: 'success',
+                                    text: text1
+                                })
+                                this.reboot_confirm = true;
+                                clearInterval(this.interval);
+                            }else if(_res.data.data.status === 3){   //  其他用户正在升级
+                                clearInterval(this.timer);
+                                this.isLoading = false;
+                                this.$message({
+                                    type: 'error',
+                                    text: text2
+                                })
+                                clearInterval(this.interval);
+                            }
+                        }else if(_res.data.code === 2){          //  升级文件的文件头检测失败
+                            clearInterval(this.timer);
+                            this.isLoading = false;
+                            this.$message({
+                                type: 'error',
+                                text: text3
+                            })
+                            clearInterval(this.interval);
+                        }else{                                  //  其他原因
+                            clearInterval(this.timer);
+                            this.isLoading = false;
+                            this.$message({
+                                type: 'error',
+                                text: text4
+                            })
+                            clearInterval(this.interval);
+                        }
+                    }).catch(_err=>{
+                        // to do
+                    })
+                },15000)
             }
         },
         watch:{
@@ -182,6 +250,10 @@ import { mapState } from 'vuex'
                     },1000)
                 }
             }
+        },
+        beforeDestroy(){
+            this.interval = null;
+            this.timer = null;
         }
     }
 </script>

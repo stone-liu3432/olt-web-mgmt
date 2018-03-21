@@ -158,17 +158,17 @@ router.beforeEach((to, from, next) => {
   store.commit('updateLoad', true);
   // 判断该路由是否需要登录权限
   if (to.meta.requireAuth) {
-    // if (sessionStorage.getItem('x-token')) {
-    //     next();
-    // } else {
-    //     next({path: '/login'})
-    // }
-    next();
+    if (sessionStorage.getItem('x-token')) {
+        next();
+    } else {
+        next({path: '/login'})
+    }
+    //next();
   } else {
     if (!sessionStorage.getItem('x-token')) {
-      next()
+      next();
     } else {
-      next('/main')
+      next('/main');
     }
   }
 })

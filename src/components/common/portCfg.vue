@@ -313,7 +313,7 @@ import confirm from '@/components/common/confirm'
                         })
                         return
                     }
-                    if(!this.storm_data.broadcast || this.storm_data.broadcast < 1 || this.storm_data.broadcast > 1488100 || isNaN(this.storm_data.broadcast) ){
+                    if(storm_cfg_data.broadcast != this.storm_data.broadcast && (!this.storm_data.broadcast || this.storm_data.broadcast < 1 || this.storm_data.broadcast > 1488100 || isNaN(this.storm_data.broadcast)) ){
                         this.stormCfg = false;
                         this.$message({
                             type: 'error',
@@ -321,7 +321,7 @@ import confirm from '@/components/common/confirm'
                         })
                         return
                     }
-                    if(!this.storm_data.multicast || this.storm_data.multicast <1 || this.storm_data.multicast > 1488100 || isNaN(this.storm_data.multicast) ){
+                    if(storm_cfg_data.multicast != this.storm_data.multicast && (!this.storm_data.multicast || this.storm_data.multicast <1 || this.storm_data.multicast > 1488100 || isNaN(this.storm_data.multicast)) ){
                         this.stormCfg = false;
                         this.$message({
                             type: 'error',
@@ -329,7 +329,7 @@ import confirm from '@/components/common/confirm'
                         })
                         return
                     }
-                    if(!this.storm_data.unicast || this.storm_data.unicast <1 || this.storm_data.unicast > 1488100 || isNaN(this.storm_data.unicast) ){
+                    if(storm_cfg_data.unicast != this.storm_data.unicast && (!this.storm_data.unicast || this.storm_data.unicast <1 || this.storm_data.unicast > 1488100 || isNaN(this.storm_data.unicast)) ){
                         this.stormCfg = false;
                         this.$message({
                             type: 'error',
@@ -392,7 +392,7 @@ import confirm from '@/components/common/confirm'
                         })
                         return 
                     }
-                    if(!this.port_data.mtu || this.port_data.mtu < 128 || this.port_data.mtu > 2000 || isNaN(this.port_data.mtu)){
+                    if(original.mtu !== this.port_data.mtu && (!this.port_data.mtu || this.port_data.mtu < 128 || this.port_data.mtu > 2000 || isNaN(this.port_data.mtu)) ){
                         this.userChoose = false;
                         this.$message({
                             type: 'error',
@@ -400,7 +400,7 @@ import confirm from '@/components/common/confirm'
                         })
                         return
                     }
-                    if(!this.port_data.erate || this.port_data.erate < 64 || this.port_data.erate > 100000 || isNaN(this.port_data.erate) ){
+                    if(original.erate !== this.port_data.erate && (!this.port_data.erate || this.port_data.erate < 64 || this.port_data.erate > 100000 || isNaN(this.port_data.erate)) ){
                         this.userChoose = false;
                         this.$message({
                             type: 'error',
@@ -408,7 +408,7 @@ import confirm from '@/components/common/confirm'
                         })
                         return
                     }
-                    if(!this.port_data.irate || this.port_data.irate < 64 || this.port_data.irate > 100000 || isNaN(this.port_data.irate) ){
+                    if(original.irate !== this.port_data.irate && (!this.port_data.irate || this.port_data.irate < 64 || this.port_data.irate > 100000 || isNaN(this.port_data.irate)) ){
                         this.userChoose = false;
                         this.$message({
                             type: 'error',
@@ -416,7 +416,7 @@ import confirm from '@/components/common/confirm'
                         })
                         return
                     }
-                    if(!this.port_data.pvid || this.port_data.pvid < 1 || this.port_data.pvid > 4094 || isNaN(this.port_data.pvid) ){
+                    if(original.pvid !== this.port_data.pvid && (!this.port_data.pvid || this.port_data.pvid < 1 || this.port_data.pvid > 4094 || isNaN(this.port_data.pvid)) ){
                         this.userChoose = false;
                         this.$message({
                             type: 'error',
@@ -536,7 +536,7 @@ import confirm from '@/components/common/confirm'
                     if(res.data.code === 1){
                         this.mirror_data = res.data;
                         for(var key in res.data.data){
-                            this.mirror_data[key] = res.data.data[key];
+                            this.mirror[key] = res.data.data[key];
                         }
                     }else if(res.data.code >1){
                         this.mirror_data = {};

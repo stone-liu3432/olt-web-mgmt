@@ -849,35 +849,35 @@ import { mapState } from 'vuex'
             }
         },
         watch: {
-            // portid(){
-            //     var _onuid = this.onuid;
-            //     this.$http.get('/onu_allow_list?form=resource&port_id='+this.portid).then(res=>{
-            //         if(res.data.code === 1){
-            //             var _onu_list = this.analysis(res.data.data.resource);
-            //             if(!_onu_list){
-            //                 this.onu_list = {};
-            //                 return
-            //             }
-            //             this.onu_list = {
-            //                 port_id: res.data.data.port_id,
-            //                 data: _onu_list
-            //             }
-            //             this.onuid = this.onu_list.data[0];
-            //             if(_onuid === this.onuid){
-            //                 this.getOnuInfo();
-            //                 this.getOnuVlan();
-            //             }
-            //         }else{
-            //             this.onu_list = {};
-            //         }
-            //     }).catch(err=>{
-            //         // to do
-            //     })
-            // },
-            // onuid(){
-            //     this.getOnuInfo();
-            //     this.getOnuVlan();
-            // },
+            portid(){
+                var _onuid = this.onuid;
+                this.$http.get('/onu_allow_list?form=resource&port_id='+this.portid).then(res=>{
+                    if(res.data.code === 1){
+                        var _onu_list = this.analysis(res.data.data.resource);
+                        if(!_onu_list){
+                            this.onu_list = {};
+                            return
+                        }
+                        this.onu_list = {
+                            port_id: res.data.data.port_id,
+                            data: _onu_list
+                        }
+                        this.onuid = this.onu_list.data[0];
+                        if(_onuid === this.onuid){
+                            this.getOnuInfo();
+                            this.getOnuVlan();
+                        }
+                    }else{
+                        this.onu_list = {};
+                    }
+                }).catch(err=>{
+                    // to do
+                })
+            },
+            onuid(){
+                this.getOnuInfo();
+                this.getOnuVlan();
+            },
             op_id(){
                 if(this.onu_port_cfg){
                     for(var key in this.onu_port_info.data){

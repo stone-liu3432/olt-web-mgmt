@@ -56,6 +56,7 @@
     "range": "范围",
 	
 	"macaddr" : "MAC地址",
+	"macmask" : "MAC Mask",
 	"ponports" : "PON口数量",
 	"geports" : "千兆口数量",
 	"feports" : "百兆口数量",
@@ -223,7 +224,8 @@
 	"login_page_login_hit":"请登录以管理EPON OLT",
 	"login_timeout":"登录超时，请重新登录",
 	"illegal_login_info":"非法登录信息",
-	"logout":"退出登录",
+    "logout":"退出登录",
+    "no_support":"暂未支持",
 	"company_info":"公司信息&版权信息等",
 	"setting_ok": "设置成功",
     "setting_fail": "设置失败",
@@ -233,7 +235,8 @@
 	"vlanid_range_hit":"VLAN ID取值范围应该为1-4094之间的数字",
 	"not_find_vlan":"没有找到指定的VLAN",
 	"restore_config_fail":"导入配置失败",
-	"restore_config_succ":"导入配置成功，重启设备后生效",
+    "restore_config_succ":"导入配置成功，重启设备后生效",
+    "restore_succ_reboot":"导入配置成功，是否现在重启设置",
 	"restore_file_nr":"文件格式不正确",
 	"file_not_select":"当前未选择任何文件",
 	"file_click":"点击选择文件",
@@ -248,9 +251,12 @@
 	"reboot_olt":"设备的部分配置修改需要重启设备才能生效，您可以通过点击重启按钮来重启设备。重启过程中请不要断电",
 	
 	"sys_upgrade_fail":"系统升级失败",
-	"sys_upgrade_succ":"系统升级成功，重启设备后生效",
+    "sys_upgrade_succ":"系统升级成功，重启设备后生效",
+    "upgrade_buzy":"升级失败，当前有其他用户正在升级此设备",
+    "file_header_error":"升级失败，升级文件检测不匹配",
 	"fw_upgrade_fail":"固件升级失败",
-	"fw_upgrade_succ":"固件升级成功，重启设备后生效",
+    "fw_upgrade_succ":"固件升级成功，重启设备后生效",
+    "upgrade_success":"升级成功，是否马上重启此设备",
 	
 	"get_data_fail":"获取数据失败，请刷新或稍后再试...",
 	
@@ -340,6 +346,13 @@
     "new_vlan_pri": "VLAN优先级",
     "vlan_pri": "VLAN优先级",
     "bandwidth": "带宽",
-    "rstp_tips_disable":"全局RSTP桥未使能，无法进行此设置"
+    "rstp_tips_disable":"全局RSTP桥未使能，无法进行此设置",
 
+    "work_temprature":"当前温度",
+    "work_voltage":"工作电压",
+    "transmit_bias":"传输电流",
+    "transmit_power":"发送光功率",
+    "receive_power":"接收光功率",
+    "refresh": "刷新",
+    "onu_optical_diagnose":"ONU光诊断"
 }
