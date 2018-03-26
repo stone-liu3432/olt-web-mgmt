@@ -255,7 +255,7 @@ import confirm from '@/components/common/confirm'
                         var _onu_list = this.analysis(res.data.data.resource);
                         if(!_onu_list){
                              this.addonu_list({});
-                             this.onu_basic_info = {};
+                             this.onu_basic_info = {}; 
                              this.onuid = 0;
                              return
                         }

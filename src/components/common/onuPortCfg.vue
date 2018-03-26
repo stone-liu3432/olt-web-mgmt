@@ -868,7 +868,7 @@ import { mapState } from 'vuex'
                             this.getOnuVlan();
                         }
                     }else{
-                        this.onu_list = {};
+                        this.onu_list = {}; 
                     }
                 }).catch(err=>{
                     // to do
