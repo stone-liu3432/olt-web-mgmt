@@ -3,7 +3,7 @@
         <div>
             <h2>{{ lanMap['port_info'] }}</h2>
         </div>
-        <ul class="port-info-title"  onselectstart="return false;">
+        <ul class="port-info-title"  onselectstart="return false;" v-if="port_info.data">
             <li>
                 <span>{{ lanMap['port_id']}}</span>
             </li>
@@ -57,10 +57,20 @@ import { mapState } from 'vuex'
     export default {
         name: 'portInfo',
         data(){
-            return {}
+            return {
+                port_info: {}
+            }
         },
         created(){
-            // do sth
+             this.$http.get(this.change_url.port).then(res=>{
+                    if(res.data.code === 1){
+                        this.port_info = res.data;
+                    }else{
+                        this.port_info = {};
+                    }
+                }).catch(err=>{
+                    // to do
+                })
         },
         methods:{
             jump(id){
@@ -74,7 +84,7 @@ import { mapState } from 'vuex'
                 }
             }
         },
-        computed: mapState(['lanMap','port_info','port_name','change_url'])
+        computed: mapState(['lanMap','port_name','change_url'])
     }
 </script>
 

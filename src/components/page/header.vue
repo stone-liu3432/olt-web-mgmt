@@ -1,7 +1,7 @@
 <template>
     <div class="top-banner">
-      <div class="top-banner-logo lf">
-        <a href="#">HSGQ</a>
+      <div class="top-banner-logo lf" v-if="system.data">
+        <a href="#">{{ system.data.vendor ? system.data.vendor.length > 16 ? system.data.vendor.substring(0,16) : system.data.vendor : "HSGQ"  }}</a>
       </div>
       <h1 class="lf">|</h1>
       <div class="product-type lf" v-if="system.data">{{ system.data.product_name }}</div>
@@ -114,10 +114,12 @@ export default {
     line-height:70px;
   }
   .top-banner-logo{
-    width:200px;
+    min-width:200px;
+    max-width: 400px;
     height:70px;
     line-height:70px;
     text-align: center;
+    padding: 0 20px;
   }
   .top-banner-logo a{
     font-size:42px;

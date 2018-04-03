@@ -45,7 +45,7 @@
         </div>
         <div class="system-info" v-if="this.system.data">
             <h2>{{ lanMap['sys_info'] }}</h2>
-            <div v-for="(item,key) of this.system.data" :key="key" class="system-info-detail"  v-if="key !== 'bl_ver'">
+            <div v-for="(item,key) of this.system.data" :key="key" class="system-info-detail"  v-if="key !== 'bl_ver' && key !== 'vendor'">
                 <!-- 根据key值，取出映射的lanMap字符 -->
                 <span>{{ lanMap[key] }}</span>
                 <span>{{ item }}</span>
@@ -70,10 +70,10 @@
                 <div class="time-info">
                     <span>{{ lanMap['run_time']+' :' }}</span>
                     <span>
-                        {{ this.timer.data.days + " " + lanMap['days'] }}
-                        {{ this.timer.data.hours + " " + lanMap['hours'] }}
-                        {{ this.timer.data.mins < 10 ? '0' + this.timer.data.mins + " " + lanMap['mins'] : this.timer.data.mins + " " + lanMap['mins'] }}
-                        {{ this.timer.data.secs < 10 ? '0' + this.timer.data.secs + " " + lanMap['secs'] : this.timer.data.secs + " " + lanMap['secs'] }}
+                        {{ timer.data.days + " " + lanMap['days'] }}
+                        {{ timer.data.hours + " " + lanMap['hours'] }}
+                        {{ timer.data.mins < 10 ? '0' + this.timer.data.mins + " " + lanMap['mins'] : this.timer.data.mins + " " + lanMap['mins'] }}
+                        {{ timer.data.secs < 10 ? '0' + this.timer.data.secs + " " + lanMap['secs'] : this.timer.data.secs + " " + lanMap['secs'] }}
                     </span>
                 </div>
             </div>

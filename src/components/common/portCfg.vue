@@ -144,7 +144,10 @@
             </div>
             <div v-else class="warning">{{ lanMap['flush_page_retry'] }}</div>
             <div class="config" v-if="mirror_data.data">
-                <h3>{{ lanMap['mirror'] }}</h3>
+                <h3>
+                    {{ lanMap['mirror'] }}
+                    <!-- <a href="javascript:;" class="delete-mirror rt">{{ lanMap['flush'] }}</a> -->
+                </h3>
                 <div class="port-mirror">
                     <ul>
                         <li class="swich-item">
@@ -157,6 +160,7 @@
                         <li class="swich-item">
                             <span>{{ lanMap['type'] }}</span>
                             <select v-model="mirror.type">
+                                <option value="0">{{ lanMap['choose'] }}</option>
                                 <option value="1">ingress</option>
                                 <option value="2">egress</option>
                                 <option value="3">all</option>
@@ -166,6 +170,7 @@
                 </div>
                 <div class="btn-submit">
                     <a href="javascript:void(0);" class="rt" @click="mirror_cfg">{{ lanMap['apply'] }}</a>
+                    <a href="javascript:;" class="delete-mirror rt" @click="flush_mirror_cfg">{{ lanMap['flush'] }}</a>
                 </div>
             </div>
             <div v-else class="warning">{{ lanMap['flush_page_retry'] }}</div>
@@ -173,6 +178,7 @@
         <confirm :tool-tips="lanMap['if_sure']" @choose="result" v-if="userChoose"></confirm>
         <confirm :tool-tips="lanMap['if_sure']" @choose="storm_result" v-if="stormCfg"></confirm>
         <confirm :tool-tips="lanMap['if_sure']" @choose="mirror_result" v-if="mirrorCfg"></confirm>
+        <confirm :tool-tips="lanMap['if_sure']" @choose="flush_mirror_result" v-if="flush_mirror"></confirm>
     </div>
 </template>
 
@@ -182,7 +188,7 @@ import confirm from '@/components/common/confirm'
     export default {
         name: 'vlanCfg',
         components: { confirm },
-        computed: mapState(['lanMap','port_info','port_name','change_url']),
+        computed: mapState(['lanMap','port_info','port_name','change_url','system']),
         data(){
             return {
                 vlan_data: {},
@@ -217,8 +223,9 @@ import confirm from '@/components/common/confirm'
                     multicast: 0,
                     unicast: 0
                 },
-                //  端口镜像 confirm 弹出框
+                //  端口镜像设置 confirm 弹出框
                 mirrorCfg: false,
+                flush_mirror: false,
                 //  端口镜像数据
                 mirror: {
                     "src_port": 0,
@@ -305,6 +312,7 @@ import confirm from '@/components/common/confirm'
             //  根据用户点击按钮，执行不同动作  -->  风暴控制
             storm_result(bool){
                 if(bool){
+                    var storm_cfg_data = this.stormctrl_data.data;
                     if(this.storm_flags === 0){
                         this.stormCfg = false;
                         this.$message({
@@ -313,7 +321,8 @@ import confirm from '@/components/common/confirm'
                         })
                         return
                     }
-                    if(storm_cfg_data.broadcast != this.storm_data.broadcast && (!this.storm_data.broadcast || this.storm_data.broadcast < 1 || this.storm_data.broadcast > 1488100 || isNaN(this.storm_data.broadcast)) ){
+                    if(storm_cfg_data.broadcast != this.storm_data.broadcast && 
+                    (this.storm_data.broadcast === '' || this.storm_data.broadcast < 0 || this.storm_data.broadcast > 1488100 || isNaN(this.storm_data.broadcast)) ){
                         this.stormCfg = false;
                         this.$message({
                             type: 'error',
@@ -321,7 +330,8 @@ import confirm from '@/components/common/confirm'
                         })
                         return
                     }
-                    if(storm_cfg_data.multicast != this.storm_data.multicast && (!this.storm_data.multicast || this.storm_data.multicast <1 || this.storm_data.multicast > 1488100 || isNaN(this.storm_data.multicast)) ){
+                    if(storm_cfg_data.multicast != this.storm_data.multicast && 
+                    (this.storm_data.multicast === '' || this.storm_data.multicast < 0 || this.storm_data.multicast > 1488100 || isNaN(this.storm_data.multicast)) ){
                         this.stormCfg = false;
                         this.$message({
                             type: 'error',
@@ -329,7 +339,8 @@ import confirm from '@/components/common/confirm'
                         })
                         return
                     }
-                    if(storm_cfg_data.unicast != this.storm_data.unicast && (!this.storm_data.unicast || this.storm_data.unicast <1 || this.storm_data.unicast > 1488100 || isNaN(this.storm_data.unicast)) ){
+                    if(storm_cfg_data.unicast != this.storm_data.unicast && 
+                    (this.storm_data.unicast === '' || this.storm_data.unicast < 0 || this.storm_data.unicast > 1488100 || isNaN(this.storm_data.unicast)) ){
                         this.stormCfg = false;
                         this.$message({
                             type: 'error',
@@ -353,13 +364,13 @@ import confirm from '@/components/common/confirm'
                                 type: 'success',
                                 text: this.lanMap['setting_ok']
                             })
-                            this.getStormData();
                         }else if(res.data.code >1){
                             this.$message({
                                 type: 'error',
                                 text: this.lanMap['setting_fail']
                             })
                         }
+                        this.getStormData();
                     }).catch(err=>{
                         // to do
                     })
@@ -384,15 +395,17 @@ import confirm from '@/components/common/confirm'
             //  根据用户点击按钮，执行不同动作  -->  交换基本配置
             result(bool){
                 if(bool){
+                    var original = this.swich_port_info.data;
                     if(this.flags === 0){
                         this.userChoose = false;
                         this.$message({
                             type: 'info',
                             text: this.lanMap['modify_tips']
                         })
-                        return 
+                        return
                     }
-                    if(original.mtu !== this.port_data.mtu && (!this.port_data.mtu || this.port_data.mtu < 128 || this.port_data.mtu > 2000 || isNaN(this.port_data.mtu)) ){
+                    if(original.mtu !== this.port_data.mtu && 
+                    (!this.port_data.mtu || this.port_data.mtu < 128 || this.port_data.mtu > 2000 || isNaN(this.port_data.mtu)) ){
                         this.userChoose = false;
                         this.$message({
                             type: 'error',
@@ -400,7 +413,8 @@ import confirm from '@/components/common/confirm'
                         })
                         return
                     }
-                    if(original.erate !== this.port_data.erate && (!this.port_data.erate || this.port_data.erate < 64 || this.port_data.erate > 100000 || isNaN(this.port_data.erate)) ){
+                    if(original.erate !== this.port_data.erate && (this.portid > this.system.data.ponports) && 
+                    (this.port_data.erate === '' || (this.port_data.erate !== 0 && (this.port_data.erate < 64 || this.port_data.erate > 100000)) || isNaN(this.port_data.erate)) ){
                         this.userChoose = false;
                         this.$message({
                             type: 'error',
@@ -408,7 +422,8 @@ import confirm from '@/components/common/confirm'
                         })
                         return
                     }
-                    if(original.irate !== this.port_data.irate && (!this.port_data.irate || this.port_data.irate < 64 || this.port_data.irate > 100000 || isNaN(this.port_data.irate)) ){
+                    if(original.irate !== this.port_data.irate && (this.portid > this.system.data.ponports) && 
+                    (this.port_data.irate === '' || (this.port_data.irate !== 0 && (this.port_data.irate < 64 || this.port_data.irate > 100000)) || isNaN(this.port_data.irate)) ){
                         this.userChoose = false;
                         this.$message({
                             type: 'error',
@@ -416,7 +431,8 @@ import confirm from '@/components/common/confirm'
                         })
                         return
                     }
-                    if(original.pvid !== this.port_data.pvid && (!this.port_data.pvid || this.port_data.pvid < 1 || this.port_data.pvid > 4094 || isNaN(this.port_data.pvid)) ){
+                    if(original.pvid !== this.port_data.pvid && 
+                    (!this.port_data.pvid || this.port_data.pvid < 1 || this.port_data.pvid > 4094 || isNaN(this.port_data.pvid)) ){
                         this.userChoose = false;
                         this.$message({
                             type: 'error',
@@ -446,31 +462,79 @@ import confirm from '@/components/common/confirm'
                                 type: 'success',
                                 text: this.lanMap['setting_ok']
                             })
-                            this.getPortData();
                         }else if(res.data.code >1){
                             this.$message({
                                 type: 'error',
                                 text: this.lanMap['setting_fail']
                             })
                         }
+                        this.getPortData();
                     }).catch(err=>{
                         // to do
                     })
                 }
                 this.userChoose = false;
             },
+            //  端口镜像  确认框
             mirror_cfg(){
                 this.mirrorCfg = true;
+            },
+            //  端口镜像  清除按钮
+            flush_mirror_cfg(){
+                this.flush_mirror = true;
+            },
+            flush_mirror_result(bool){
+                if(bool){
+                    var post_param = {
+                        "method":"clear",
+                        "param":{
+                            "src_port": this.portid,
+                        }
+                    }
+                    this.$http.post("/switch_port?form=mirror",post_param).then(res=>{
+                        if(res.data.code === 1){
+                            this.$message({
+                                type: 'success',
+                                text: this.lanMap['setting_ok']
+                            })
+                        }else{
+                            this.$message({
+                                type: 'error',
+                                text: this.lanMap['setting_fail']
+                            })
+                        }
+                        this.getMirrorData();
+                    }).catch(err=>{
+                        // to do
+                    })
+                }
+                this.flush_mirror = false;
             },
             //  端口镜像框内确认/取消按钮
             mirror_result(bool){
                 if(bool){
                     var data = this.mirror_data.data;
-                    if(data.dst_port === this.mirror.dst_port){
+                    if(data.dst_port === this.mirror.dst_port && data.type === this.mirror.type){
                         this.mirrorCfg = false;
                         this.$message({
                             type: 'info',
                             text: this.lanMap['modify_tips']
+                        })
+                        return
+                    }
+                    if(this.mirror.dst_port === 0 && this.mirror.type !== 0){
+                        this.mirrorCfg = false;
+                        this.$message({
+                            type: 'error',
+                            text: this.lanMap['param_error'] + ':' + this.lanMap['dst_port']
+                        })
+                        return
+                    }
+                    if(this.mirror.dst_port !== 0 && this.mirror.type === 0){
+                        this.mirrorCfg = false;
+                        this.$message({
+                            type: 'error',
+                            text: this.lanMap['param_error'] + ':' + this.lanMap['type']
                         })
                         return
                     }
@@ -488,13 +552,13 @@ import confirm from '@/components/common/confirm'
                                 type: 'success',
                                 text: this.lanMap['setting_ok']
                             })
-                            this.getMirrorData();
                         }else if(res.data.code >1){
                             this.$message({
                                 type: 'error',
                                 text: this.lanMap['setting_fail']
                             })
                         }
+                        this.getMirrorData();
                     }).catch(err=>{
                         // to do
                     })
@@ -601,6 +665,16 @@ h3{
     color: #67aef7;
     font-size: 18px;
     font-weight: 500;
+}
+a.delete-mirror{
+    display: inline-block;
+    width: 100px;
+    height: 30px;
+    line-height: 30px;
+    background: #ddd;
+    text-align: center;
+    margin: 4px 15px 0 0;
+    border-radius: 5px;
 }
 .item-align>select{
     width: 100px;

@@ -5,13 +5,13 @@
 			<div>
 				<span>{{ lanMap['port_id'] }}</span>
 				<select v-model.number="portid">
-					<option v-for="(item,index) in port_name.pon" :value="item.id">{{ item.name }}</option>
+					<option v-for="(item,index) in port_name.pon" :key="index" :value="item.id">{{ item.name }}</option>
 				</select>
 			</div>
 			<div v-if="onu_list.data">
 				<span>{{ lanMap['onu_id'] }}</span>
 				<select v-model.number="onuid">
-					<option v-for="(item,index) in onu_list.data" :value="item">{{ 'ONU'+ onu_list.port_id + '/' + item }}</option>
+					<option v-for="(item,index) in onu_list.data" :key="index" :value="item">{{ 'ONU'+ onu_list.port_id + '/' + item }}</option>
 				</select>
 			</div>
             <div v-else class="error-msg">{{ lanMap['no_onu_info'] }}</div>
@@ -40,7 +40,7 @@
                     <span>{{ item ? 'Enable' : 'Disable' }}</span>
                 </div>
             </div>
-            <div class="lf onu-optical-diagnose">
+            <div class="lf onu-optical-diagnose" v-if="onuid">
                 <div>
                     <div class="onu-optical-title">
                         <span>{{ lanMap['onu_optical_diagnose'] }}</span>
@@ -50,7 +50,7 @@
                         <span>{{ lanMap[key] }}</span>
                         <span>{{ item }}</span>
                     </div>
-                    <div v-else class="no-more-data">{{ lanMap['flush_page_retry'] }}</div>
+                    <div v-if="!(optical_diagnose.data)"  class="no-more-data">{{ lanMap['flush_page_retry'] }}</div>
                 </div>
             </div>
         </div>
