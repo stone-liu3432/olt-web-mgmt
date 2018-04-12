@@ -29,12 +29,12 @@
                 <span>{{ analysis(item.tagged_portlist) || '—' }}</span>
                 <span>{{ analysis(item.untagged_portlist) || '—' }}</span>
                 <a href="javascript:;"  @click="config_port(item.vlan_id)">{{ lanMap['config'] }}</a>
-                <a href="javascript:;"  @click="deleteVlan(item.vlan_id)">{{ lanMap['delete'] }}</a>
+                <a href="javascript:;"  @click="deleteVlan(item.vlan_id)" v-if="item.vlan_id !== 1">{{ lanMap['delete'] }}</a>
             </li>
             <li v-if="vlan_list.data && vlan_list.data.length%200 == 0">
                 <a href="javascript:;" @click="loadmore">{{ lanMap['loadmore'] }}</a>
             </li>
-            <li v-if="pagination.page > 2" class="paginations">
+            <li v-if="pagination.page > 1" class="paginations">
                 <ul class="pagination rt">
                     <li :class="pagination.index > 1 ? '' : 'disabled'" @click="changeIndex(1)" title="First">&lt;&lt;</li>
                     <li :class="pagination.index > 1 ? '' : 'disabled'" @click="changeIndex(pagination.index-1)" title="Prev">&lt;</li>
@@ -59,7 +59,7 @@
                     <div class="add-vlan" v-if="create_vlan">
                         <span>VLAN ID：</span>
                         <span>
-                            <input type="text" placeholder="VLAN ID 1-4094" v-model.number="new_vlan" :style="{ 'border-color' : (new_vlan != '' && (isNaN(new_vlan) || new_vlan > 4094 || new_vlan < 1)) ? 'red' : '' }">
+                            <input id="create-vlan" type="text" placeholder="VLAN ID 1-4094" v-model.number="new_vlan" :style="{ 'border-color' : (new_vlan != '' && (isNaN(new_vlan) || new_vlan > 4094 || new_vlan < 1)) ? 'red' : '' }">
                             <span class="tips">
                                 {{ lanMap['vlanid_range_hit'] }}
                             </span>
@@ -240,6 +240,10 @@ import confirm from '@/components/common/confirm'
                 this.modalDialog = true;
                 this.create_vlan = true;
                 this.vlanid = 0;
+                this.$nextTick(()=>{
+                    var input1 = document.getElementById('create-vlan');
+                    input1.focus();
+                })
             },
             //  删除VLAN
             deleteVlan(vlanid){
@@ -388,11 +392,30 @@ import confirm from '@/components/common/confirm'
                         })
                         return
                     }
+
+                    var tagged = document.querySelectorAll('span.tagged>input');
+                    var untagged = document.querySelectorAll('span.untagged>input');
+                    var tag_str = '',untag_str = ''
+                    for(var i=0,len=tagged.length;i<len;i++){
+                        if(tagged[i].checked){
+                            tag_str += tagged[i].name;
+                            tag_str += ',';
+                        }
+                    }
+                    for(var i=0,len=untagged.length;i<len;i++){
+                        if(untagged[i].checked){
+                            untag_str += untagged[i].name;
+                            untag_str += ',';
+                        }
+                    }
+
                     var post_param = {
                         "method":"create",
                         "param":{
                             "type": 1,
-                            "vlan_id": vid
+                            "vlan_id": vid,
+                            "tagged_portlist": tag_str.replace(/\,$/,''),
+                            "untagged_portlist": untag_str.replace(/\,$/,'')
                         }
                     }
                     this.$http.post('/switch_vlan',post_param).then(res=>{
@@ -401,12 +424,18 @@ import confirm from '@/components/common/confirm'
                                 type: 'success',
                                 text: this.lanMap['create_vlan_info']
                             })
-                            this.tip_flag = true;
-                            this.set_vlan(vid);
+                            // this.tip_flag = true;
+                            // this.set_vlan(vid);
+
+                            this.create_vlan = false;
+                            this.modalDialog = false;
+                            this.new_vlan = '';
+                            this.tip_flag = false;
+                            this.getData();
                         }else if(res.data.code > 1){
                             this.$message({
                                 type: 'error',
-                                text: res.data.msg
+                                text: res.data.message
                             })
                         }
                     }).catch(err=>{

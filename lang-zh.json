@@ -34,7 +34,7 @@
 	  "mac_mgmt" : "MAC地址管理",
 	"protocol_mgmt" : "协议管理",
 	"rstp" : "rstp",
-	
+	"tips":"提示",
 	"create" : "创建",
 	"destroy": "删除",
 	"add" : "增加",
@@ -100,7 +100,7 @@
 	"rcvpkt" : "接收包数",
 	"rcvbytes" : "接收包字节数",
 	"transpkt" : "发送包数",
-	"transbytes" : "接收包字节数",
+	"transbytes" : "发送包字节数",
 	
 	"current_time" : "当前时间",
 	"run_time" : "运行时间",
@@ -148,7 +148,7 @@
 	"vendor" : "厂商",
 	"sn_model" : "SN型号",
 	"chip_model":"芯片型号",
-	"onu_chip" : "芯片",
+	"onu_chip" : "芯片厂商",
 	
 	"tips_del_onu":"是否确认删除该onu",
 	"tips_add_deny_onu":"是否确认添加到阻止列表",
@@ -220,7 +220,7 @@
 	"login_user":"登录",
 	"password_length_fail":"密码限定长度为5-16位,且不能使用空格",
 	"username_length_fail":"请输入符合规范的4-16位用户名，不能输入中文、空格和特殊字符",
-	
+	"login_out":"成功退出登陆",
 	"login_page_login_hit":"请登录以管理EPON OLT",
 	"login_timeout":"登录超时，请重新登录",
 	"illegal_login_info":"非法登录信息",
@@ -236,7 +236,9 @@
 	"not_find_vlan":"没有找到指定的VLAN",
 	"restore_config_fail":"导入配置失败",
     "restore_config_succ":"导入配置成功，重启设备后生效",
-    "restore_succ_reboot":"导入配置成功，是否现在重启设置",
+	"restore_succ_reboot":"导入配置成功，是否现在重启设置",
+	"save_succ":"保存配置成功",
+	"save_config":"保存配置",
 	"restore_file_nr":"文件格式不正确",
 	"file_not_select":"当前未选择任何文件",
 	"file_click":"点击选择文件",
@@ -245,7 +247,8 @@
 	"reboot_olt_hit":"是否确认重启设备?",
 	"def_cfg_hit":"恢复出厂设置后，设备将会重启",
 	"def_cfg_info":"请注意，恢复出厂设置后，设备将恢复至出厂时的状态，所有自定义的设置将会丢失，如您需要保存现有配置，请备份当前配置",
-	
+	"save_cfg_confirm":"将会保存当前的所有已进行的设置，是否确认",
+	"save_cfg_info":"将当前的所有已进行的配置进行保存，并写入设备",
 	"res_cfg_info":"您可以通过导入配置文件来恢复您备份的配置",
 	"bkup_cfg_info":"我们建议您在升级软件或进行修改配置之前保存原有配置，点击备份按钮可以对当前配置进行备份",
 	"reboot_olt":"设备的部分配置修改需要重启设备才能生效，您可以通过点击重启按钮来重启设备。重启过程中请不要断电",

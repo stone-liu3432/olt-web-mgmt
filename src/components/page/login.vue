@@ -72,6 +72,7 @@ import { mapState,mapMutations } from "vuex"
             this.$nextTick(()=>{
                 var uName = document.getElementById('uName');
                 uName.focus();
+                
             })
         },
         methods: {
@@ -170,6 +171,7 @@ div.login{
     width: 100%;
     min-width: 1280px;
     height: 100%;
+    min-height: 974px;
     background: #6C6D69;
 }
 div.login-banner{

@@ -2,6 +2,8 @@
     <div class="modal-dialog">
         <div class="cover"></div>
         <div>
+            <div class="confirm-title">{{ lanMap['tips'] }}</div>
+            <hr>
             <div class="tool-tips">
                 {{ this.toolTips ? this.toolTips : lanMap['if_sure'] + '?' }}
             </div>
@@ -33,7 +35,7 @@ import { mapState } from 'vuex'
 <style scoped>
 div.cover+div{
     width:550px;
-    height:180px;
+    height:160px;
     position: absolute;
     left: 0;
     right: 0;
@@ -45,28 +47,45 @@ div.cover+div{
     padding: 20px 30px;
     overflow: hidden;
     border-radius: 5px;
+    box-shadow: 0 0 20px #111;
 }
-.tool-tips{
-    width: 550px;
+div.confirm-title{
+    font-weight: blod;
+    font-size: 22px;
+    margin-left: 20px;
+    color: #67AEF7;
+}
+div.tool-tips{
+    width: 490px;
+    padding: 0 30px;
     margin-top: 20px;
     font-size: 16px;
     line-height: 20px;
-    text-align: center;
-    color: #333;
+    text-align: left;
+    color: #000;
 }
-.tool-tips+div{
-    display: flex;
-    justify-content: space-around;
-    margin-top: 50px;
+hr{
+    color: #ddd;
+}
+div.tool-tips+div{
+    position: absolute;
+    right: 40px;
+    bottom: 30px;
 }
 a{
     display: inline-block;
     width: 120px;
-    height: 36px;
-    line-height: 36px;
+    height: 30px;
+    line-height: 30px;
+    border: 1px solid #ccc;
     border-radius: 5px;
-    background: #ddd;
     text-align: center;
     margin-left: 10px;
+}
+a:hover{
+    color: #67aef7;
+}
+a:active{
+    border: 1px solid #67aef7;
 }
 </style>

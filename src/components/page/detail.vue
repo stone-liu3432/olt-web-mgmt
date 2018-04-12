@@ -48,6 +48,6 @@
     padding:20px;
     width: 81%;
     min-width: 1020px;
-    min-height:764px;
+    min-height:800px;
 }
 </style>

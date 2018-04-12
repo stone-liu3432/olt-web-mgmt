@@ -34,7 +34,7 @@
 	  "mac_mgmt" : "MAC Address Table",
 	"protocol_mgmt" : "Protocol",
 	  "rstp" : "rstp",
-	
+	  "tips":"Notice",
 	"create" : "Create",
 	"destroy": "Delete",
 	"add" : "Add",
@@ -149,7 +149,7 @@
 	"vendor" : "Vendor",
 	"sn_model" : "SN model",
 	"chip_model":"Chip model",
-	"onu_chip" : "Chip",
+	"onu_chip" : "Chip vendor",
 	
 	"tips_del_onu":"Please confirm to delete ONU",
 	"tips_add_deny_onu":"Please confirm to add ONU to onu deny list",
@@ -221,7 +221,7 @@
 	"login_user":"Login",
 	"password_length_fail":"the range of the length of the password is 5-16 and it can't be use space charactor, Please check!",
 	"username_length_fail":"the range of the length of the username is 5-16 and it can't be use special charactior, Please check!",
-	
+	"login_out":"Logout successfully",
 	"login_page_login_hit":"Please Login EPON OLT for Management",
 	"login_timeout":"Login timeout, Please Login",
 	"illegal_login_info":"Illegal Login Information",
@@ -238,6 +238,8 @@
 	"restore_config_fail":"Restore the OLT configuration failed",
 	"restore_config_succ":"Restore the OLT configuration success, and take it effect as reboot",
     "restore_succ_reboot":"Restore the OLT configuration success，reboot OLT now",
+	"save_succ":"Save configuration success",
+	"save_config":"Save configuration",
 	"restore_file_nr":"The file format is incorrect",
 	"file_not_select":"There's no file",
 	"file_click":"Click to select file",
@@ -246,7 +248,8 @@
 	"reboot_olt_hit":"Please assure to reboot OLT",
 	"def_cfg_hit":"Defualt the OLT configuration, the system will discard the configuration and auto reboot",
 	"def_cfg_info":"Notice: After default the OLT configuration, device will be the factory config",
-	
+	"save_cfg_confirm":"All current settings have been saved and confirmed",
+	"save_cfg_info":"Notice: Save all current configurations and write them to the device",
 	"res_cfg_info":"Notice: You can restore the configuration file",
 	"bkup_cfg_info":"Notice: You can backup the configuration file",
 	"reboot_olt":"Notice: Click the button, you can restart the OLT",

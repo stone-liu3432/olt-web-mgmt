@@ -352,7 +352,7 @@ div.onu-optical-title{
     vertical-align: middle;
     border-bottom: 1px solid #ccc;
     >span:first-child{
-        margin-left: 40px;
+        margin-left: 30px;
         font-weight: 600;
         color: #67AEF7;
         border: none;

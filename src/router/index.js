@@ -175,6 +175,9 @@ router.beforeEach((to, from, next) => {
 
 router.afterEach((to, from) => {
   store.commit('updateLoad', false);
+  if(document.documentElement.scrollTop){
+	  document.documentElement.scrollTop = 0;
+  }
 })
 
 export default router

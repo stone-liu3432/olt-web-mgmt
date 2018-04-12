@@ -17,13 +17,13 @@
            </div>
            <div>
                <span>{{ lanMap['rcvpkt'] }}</span>
-               <span class="colspace">{{ this.outbound.data.rcvpkt }}</span>
+               <span class="colspace">{{ outbound.data.rcvpkts }}</span>
                <span>{{ lanMap['rcvbytes'] }}</span>
                <span>{{ outbound.data.rcvbytes }}</span>
            </div>
            <div>
                <span>{{ lanMap['transpkt'] }}</span>
-               <span class="colspace">{{ this.outbound.data.transpkt }}</span>
+               <span class="colspace">{{ outbound.data.transpkts }}</span>
                <span>{{ lanMap['transbytes'] }}</span>
                <span>{{ outbound.data.transbytes }}</span>
            </div>
@@ -51,13 +51,13 @@
            </div>
            <div>
                <span>{{ lanMap['rcvpkt'] }}</span>
-               <span class="colspace">{{ item.rcvpkt }}</span>
+               <span class="colspace">{{ item.rcvpkts }}</span>
                <span>{{ lanMap['rcvbytes'] }}</span>
                <span>{{ item.rcvbytes }}</span>
            </div>
            <div>
                <span>{{ lanMap['transpkt'] }}</span>
-               <span class="colspace">{{ item.transpkt }}</span>
+               <span class="colspace">{{ item.transpkts }}</span>
                <span>{{ lanMap['transbytes'] }}</span>
                <span>{{ item.transbytes }}</span>
            </div>
@@ -130,6 +130,7 @@
 
 <script>
 import { mapState } from 'vuex'
+import axios from 'axios'
     export default {
         name: 'remoteMgmt',
         computed: mapState(['lanMap','change_url']),
@@ -168,7 +169,11 @@ import { mapState } from 'vuex'
                 this.$http.get(this.change_url.inbound).then(res=>{
                     if(res.data.code == 1){
                         this.inbound = res.data;
-                        this.interface_data = this.interface_data.concat(res.data.data);
+                        if(res.data.data){
+                            this.interface_data = this.interface_data.concat(res.data.data);
+                        }
+                    }else{
+                        this.inbound = {};
                     }
                 }).catch(err=>{
                     // to do
@@ -178,6 +183,31 @@ import { mapState } from 'vuex'
             })
         },
         methods:{
+            getData(){
+                this.$http.get(this.change_url.outbound).then(res=>{
+                    this.outbound = res.data || {};
+                    this.interface_data = [];
+                    if(res.data.code == 1){
+                        this.interface_data.push(res.data.data);
+                        this.ipaddr = res.data.data.ipaddr;
+                        this.ipmask = res.data.data.ipmask;
+                    }
+                    this.$http.get(this.change_url.inbound).then(res=>{
+                        if(res.data.code == 1){
+                            this.inbound = res.data;
+                            if(res.data.data){
+                                this.interface_data = this.interface_data.concat(res.data.data);
+                            }
+                        }else{
+                            this.inbound = {};
+                        }
+                    }).catch(err=>{
+                        // to do
+                    })
+                }).catch(err=>{
+                    // to do
+                })
+            },
             closeModal(){
                 this.modalDialog = false;
                 // 关闭模态框时，释放内存
@@ -186,10 +216,12 @@ import { mapState } from 'vuex'
             openModal(){
                 this.modalDialog = true;
                 // 打开模态框时，映射每个 option 的 value 为键，每个option的所有数据为值，保存数据，触发change事件时动态改变页面的值
-                for(var i=0;i<this.interface_data.length;i++){
-                    this.interface_map[this.interface_data[i].interface] = this.interface_data[i];
+                if(this.interface_data.length > 0){
+                    for(var i=0;i<this.interface_data.length;i++){
+                        this.interface_map[this.interface_data[i].interface] = this.interface_data[i];
+                    }
+                    this.click_interface = this.interface_data[0].interface;
                 }
-                this.click_interface = this.interface_data[0].interface;
             },
             //  增加按钮
             isAdd(){
@@ -230,6 +262,7 @@ import { mapState } from 'vuex'
                                 type: 'success',
                                 text: this.lanMap['add'] + this.lanMap['st_success']
                             })
+                            this.getData();
                         }else if(res.data.code >1){
                             this.$message({
                                 type: 'error',
@@ -239,6 +272,7 @@ import { mapState } from 'vuex'
                     }).catch(err=>{
                         // to do
                     })
+                    this.modalDialog = false;
                 }
             },
             //  删除按钮
@@ -261,6 +295,7 @@ import { mapState } from 'vuex'
                                 type: 'success',
                                 text: this.lanMap['delete'] + this.lanMap['st_success']
                             })
+                            this.getData();
                         }else if(res.data.code >1){
                             this.$message({
                                 type: 'error',
@@ -270,6 +305,7 @@ import { mapState } from 'vuex'
                     }).catch(err=>{
                         // to do 
                     })
+                    this.modalDialog = false;
                 }
             },
             //  确认按钮
@@ -307,21 +343,18 @@ import { mapState } from 'vuex'
                             "interface": this.click_interface
                         }
                     }
-                    // 请求url: /system?form=outbound
-                    this.$http.post('/system?form=outbound',post_params).then(res=>{
-                        if(res.data.code === 1){
-                            this.$message({
-                                type: 'success',
-                                text: this.lanMap['setting_ok']
-                            })
-                        }else if(res.data.code >1){
-                            this.$message({
-                                type: 'error',
-                                text: this.lanMap['setting_fail']
-                            })
-                        }
+                    // 请求url: /system?form=outbound   -->  str.substring(str.indexOf("//") + 2,str.indexOf("/#/"));
+                    this.$http.post('/system?form=outbound',post_params,{ timeout : 5000 }).then(res=>{
+                        this.$message({
+                            type: 'error',
+                            text: this.lanMap['setting_fail']
+                        })
                     }).catch(err=>{
-                        // to do 
+                        axios.get('http://' + this.ipaddr + '/system_start').then(res=>{
+                            window.location.href = 'http://' + this.ipaddr;
+                        }).catch(err=>{
+                            window.location.href = 'http://' + this.ipaddr;
+                        })
                     })
                 }else{
                     var data = this.interface_map[this.click_interface];
@@ -356,20 +389,25 @@ import { mapState } from 'vuex'
                         }
                     }
                     // 请求url: /system?form=inbound
-                    this.$http.post('/system?form=inbound',post_params).then(res=>{
+                    this.$http.post('/system?form=inbound',post_params,{ timeout : 5000 }).then(res=>{
                         if(res.data.code === 1){
                             this.$message({
                                 type: 'success',
                                 text: this.lanMap['setting_ok']
                             })
-                        }else if(res.data.code >1){
+                            this.getData();
+                        }else{
                             this.$message({
                                 type: 'error',
                                 text: this.lanMap['setting_fail']
                             })
                         }
                     }).catch(err=>{
-                        // to do 
+                        // axios.get('http://' + this.ipaddr + '/system_start').then(res=>{
+                        //     window.location.href = 'http://' + this.ipaddr;
+                        // }).catch(err=>{
+                        //     window.location.href = 'http://' + this.ipaddr;
+                        // })
                     })
                 }
             },
@@ -488,7 +526,6 @@ p>span{
     border: 1px solid transparent;
 }
 .clear-btn{
-    display: inline-block;
     width: 150px;
     height: 30px;
     line-height: 30px;

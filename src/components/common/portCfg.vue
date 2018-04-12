@@ -78,7 +78,7 @@
                                 <option value="0">{{ lanMap['disable'] }}</option>
                                 <option value="1">{{ lanMap['enable'] }}</option>
                             </select>
-                            <select v-if="key === 'link_status'" v-model="port_data.link_status">
+                            <select v-if="key === 'link_status'" v-model="port_data.link_status" disabled>
                                 <option value="0">{{ lanMap['link_down'] }}</option>
                                 <option value="1">{{ lanMap['link_up'] }}</option>
                             </select>
@@ -298,14 +298,14 @@ import confirm from '@/components/common/confirm'
                 if(original.mtu != this.port_data.mtu){
                     this.flags += 128;
                 }
-                if(original.erate != this.port_data.erate){
+                if(original.erate != this.port_data.erate && (this.portid > this.system.data.ponports)){
                     this.flags += 256;
                 }
-                if(original.irate != this.port_data.irate){
+                if(original.irate != this.port_data.irate && (this.portid > this.system.data.ponports)){
                     this.flags += 512;
                 }
                 if(original.pvid != this.port_data.pvid){
-                    this.flags += 1024
+                    this.flags += 1024;
                 }
                 this.userChoose = true;
             },

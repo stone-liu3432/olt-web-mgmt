@@ -26,7 +26,7 @@ axios.interceptors.response.use(response=>{
         return response;
     },
     err=>{
-        console.log(`${err.response.status} ${err.response.statusText}`);
+        err.response ? console.log(`${err.response.status} ${err.response.statusText}`) : console.log('Unknow error');
         return Promise.reject(err);
     }
 );

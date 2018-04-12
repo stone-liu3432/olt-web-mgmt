@@ -170,11 +170,11 @@
                         </div>
                     </span>
                     <div>
-                        <div v-for="(item,key) in port_name.pon" class="lf">
+                        <div v-for="(item,key) in port_name.pon" :key="key" class="lf">
                             <input type="checkbox" :id="item.name" v-model="flush_param.port_id" :value="item.id" name="port_list">
                             <label :for="item.name">{{ item.name }}</label>
                         </div>
-                        <div v-for="(item,key) in port_name.ge" class="lf">
+                        <div v-for="(item,key) in port_name.ge" :key="key" class="lf">
                             <input type="checkbox" :id="item.name" v-model="flush_param.port_id" :value="item.id" name="port_list">
                             <label :for="item.name">{{ item.name }}</label>
                         </div>
@@ -318,12 +318,15 @@ import loading from '@/components/common/loading'
                     if(res.data.code === 1){
                         if(this.tab.length%200 === 0 && this.count !== 0){
                             this.tab.concat(res.data.data);
-                        }else if(this.count === 0){
+                        }else if(this.count === 0 && res.data.data){
                             this.tab = res.data.data;
+                        }else{
+                            this.tab = [];
                         }
                         this.pagination.page = Math.ceil(this.tab.length/this.pagination.display);
                         this.getPage();
                     }else{
+                        this.tab = [];
                         this.mac_table = [];
                     }
                 }).catch(err=>{
@@ -359,6 +362,7 @@ import loading from '@/components/common/loading'
                                 type: 'success',
                                 text: this.lanMap['delete'] + this.lanMap['st_success']
                             })
+                            this.count = 0;
                             this.getData();
                         }else if(res.data.code >1){
                             this.$message({
@@ -504,6 +508,8 @@ import loading from '@/components/common/loading'
                             type: 'success',
                             text: this.lanMap['setting_ok']
                         })
+                        this.count = 0;
+                        this.getData();
                         this.add_mac_close_dialog();
                     }else if(res.data.code >1){
                         this.$message({
@@ -582,8 +588,9 @@ import loading from '@/components/common/loading'
                             type: 'success',
                             text: this.lanMap['flush'] + this.lanMap['st_success']
                         })
-                        this.flush_mac_close_dialog();
+                        this.count = 0;
                         this.getData();
+                        this.flush_mac_close_dialog();
                     }else if(res.data.code >1){
                         this.$message({
                             type: 'error',

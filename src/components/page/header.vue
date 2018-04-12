@@ -69,7 +69,7 @@ export default {
                 this.$http.post('/userlogin?form=logout',post_params).then(res=>{
                     this.$message({
                         type: 'success',
-                        text: '成功退出登录'
+                        text: this.lanMap['login_out']
                     })
                     sessionStorage.removeItem('x-token');
                     this.$router.push('/login');

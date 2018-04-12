@@ -108,7 +108,9 @@ export default {
 .global-load {
   display: none;
 }
-
+html,body{
+    height: 100%;
+}
 /**************** RESET STYLE****************/
 body,div,dl,dt,dd,ul,ol,li,h1,h2,h3,h4,h5,h6,pre,form,fieldset,input,textarea,p,blockquote,th,td{
   padding: 0;
@@ -146,9 +148,6 @@ abbr,acronym {
 a {
   text-decoration: none;
   color: #000;
-}
-html,body,#app {
-  height: 100%;
 }
 .lf {
   float: left;

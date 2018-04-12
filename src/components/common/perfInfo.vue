@@ -5,17 +5,25 @@
             <div>
                 <span>{{ lanMap['port_id'] }}</span>
                 <select v-model="portid">
-                    <option v-for="(item,index) in port_name.pon" :value="item.id">{{ item.name }}</option>
-                    <option v-for="(item,index) in port_name.ge" :value="item.id">{{ item.name }}</option>
+                    <option v-for="(item,index) in port_name.pon" :key="index" :value="item.id">{{ item.name }}</option>
+                    <option v-for="(item,index) in port_name.ge" :key="index" :value="item.id">{{ item.name }}</option>
                 </select>
             </div>
         </div>
-        <ul v-if="this.data.data">
-            <li v-for="(item,key) in this.data.data" :key="key"  v-if=" key !== 'port_id'">
-                <span>{{ key.replace(/\_/g,' ') }}</span>
-                <span>{{ item }}</span>
-            </li>
-        </ul>
+        <div v-if="data.data">
+            <ul class="lf">
+                <li v-for="(item,key) in this.data.data" :key="key"  v-if=" key !== 'port_id' && key.substring(0,2).indexOf('rx') !== -1">
+                    <span>{{ key.replace(/_/g,' ') }}</span>
+                    <span>{{ item }}</span>
+                </li>
+            </ul>
+            <ul class="lf">
+                <li v-for="(item,key) in this.data.data" :key="key"  v-if=" key !== 'port_id' && key.substring(0,2).indexOf('tx') !== -1">
+                    <span>{{ key.replace(/_/g,' ') }}</span>
+                    <span>{{ item }}</span>
+                </li>
+            </ul>
+        </div>
     </div>
 </template>
 
@@ -83,6 +91,9 @@ import { mapState } from 'vuex'
     display: table;
     clear: both;
 }
+div.perf-info+div{
+    overflow: hidden;
+}
 select{
     width: 120px;
     height: 30px;
@@ -96,8 +107,10 @@ h2{
 	font-weight: 600;
 	color: 	#67AEF7;
 }
+ul{
+    width: 50%;
+}
 li{
-    width: 1020px;
     border: 1px solid #ccc;
     border-bottom: none;
 }
@@ -108,11 +121,12 @@ span{
     display: inline-block;
     border-top: none;
     font-size:16px;
-    width: 300px;
+    width: 30%;
     padding: 5px 20px;
 }
 span:first-child{
     text-align: right;
+    width: 50%;
     border-right: 1px solid #ccc;
 }
 </style>

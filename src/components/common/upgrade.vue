@@ -49,13 +49,15 @@ import loading from '@/components/common/loading'
                 reboot_confirm: false,
                 width: 0,
                 timer: null,
-                interval: null
+                interval: null,
+                reboot_timer: null
             }
         },
         computed: mapState(['lanMap']),
         methods: {
             upgrade_result(bool){
                 if(bool){
+                    clearTimeout(this.reboot_timer);
                     this.$http.get("/system_reboot").then(res=>{
                         // to do
                     }).catch(err=>{
@@ -70,6 +72,8 @@ import loading from '@/components/common/loading'
                                 sessionStorage.clear();
                                 this.$router.push('/login');
                             }
+                        }).catch(err=>{
+                            // to do
                         })
                     },10000)
                 }
@@ -198,9 +202,7 @@ import loading from '@/components/common/loading'
                     this.$http.get('/upgrade_status').then(_res=>{
                         if(_res.data.code === 1){                //  触发升级成功
                             if(_res.data.data.status === 2){     //  升级成功
-                                if(this.timer){
-                                    clearInterval(this.timer);
-                                }
+                                clearInterval(this.timer);
                                 this.width = 400;
                                 this.isLoading = false;
                                 this.$message({
@@ -208,6 +210,9 @@ import loading from '@/components/common/loading'
                                     text: text1
                                 })
                                 this.reboot_confirm = true;
+                                this.reboot_timer = setTimeout(()=>{
+                                    this.upgrade_result(true);
+                                },15000);
                                 clearInterval(this.interval);
                             }else if(_res.data.data.status === 3){   //  其他用户正在升级
                                 clearInterval(this.timer);
@@ -252,8 +257,9 @@ import loading from '@/components/common/loading'
             }
         },
         beforeDestroy(){
-            this.interval = null;
-            this.timer = null;
+            clearInterval(this.interval);
+            clearInterval(this.timer);
+            clearTimeout(this.reboot_timer);
         }
     }
 </script>

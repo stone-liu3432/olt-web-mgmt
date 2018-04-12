@@ -48,9 +48,21 @@
                 </p>
             </div>
         </div>
+        <div class="dev-mgmt">
+            <div>{{ lanMap["save_config"] }}</div>
+            <div>
+                <div>
+                    <a href="javascript:;" @click="save_cfg">{{ lanMap["save_config"] }}</a>
+                </div>
+                <p>
+                    {{ lanMap['save_cfg_info'] }}
+                </p>
+            </div>
+        </div>
         <confirm :tool-tips="lanMap['def_cfg_hit']" @choose="result" v-if="userChoose"></confirm>
         <confirm :tool-tips="lanMap['reboot_olt_hit']" @choose="reboot_result" v-if="rebootChoose"></confirm>
         <confirm :tool-tips="lanMap['restore_succ_reboot'] + '?'" @choose="reboot_result" v-if="restoreChoose"></confirm>
+        <confirm :tool-tips="lanMap['save_cfg_confirm']" @choose="saveCfg_result" v-if="saveChoose"></confirm>
         <loading class="load" v-if="isLoading"></loading>
         <div class="modal-dialog" v-if="isProgress">
             <div class="cover"></div>
@@ -78,6 +90,7 @@
                 userChoose: false,
                 rebootChoose: false,
                 restoreChoose: false,
+                saveChoose: false,
                 isLoading: false,
                 isProgress: false,
                 width: 0,
@@ -105,20 +118,23 @@
             reboot_result(bool){
                 if(bool){
                     this.$http.get('/system_reboot').then(res=>{
-                        this.isLoading = true;
-                        this.timer1 = setInterval(()=>{
-                            this.$http.get('/system_start').then(res=>{
-                                if(res.data.code === 1){
-                                    clearInterval(this.timer1);
-                                    this.isLoading = false;
-                                    sessionStorage.clear();
-                                    this.$router.push('/login');
-                                }
-                            })
-                        },5000)
+                        // to do
                     }).catch(err=>{
                         // to do
                     })
+                    this.isLoading = true;
+                    this.timer1 = setInterval(()=>{
+                        this.$http.get('/system_start').then(res=>{
+                            if(res.data.code === 1){
+                                clearInterval(this.timer1);
+                                this.isLoading = false;
+                                sessionStorage.clear();
+                                this.$router.push('/login');
+                            }
+                        }).catch(err=>{
+                            // to do
+                        })
+                    },10000)
                 }
                 this.rebootChoose = false;
             },
@@ -238,6 +254,29 @@
             //  阻止鼠标右键刷新
             preventMouse(e){
                 e.returnValue = false
+            },
+            save_cfg(){
+                this.saveChoose = true;
+            },
+            saveCfg_result(bool){
+                if(bool){
+                    this.$http.get('/system_save').then(res=>{
+                        if(res.data.code === 1){
+                            this.$message({
+                                type: 'success',
+                                text: this.lanMap['save_succ']
+                            })
+                        }else if(res.data.code > 1){
+                            this.$message({
+                                type: 'error',
+                                text: this.lanMap['st_fail'] + ': ' + res.data.message
+                            })
+                        }
+                    }).catch(err=>{
+                        // to do
+                    })
+                }
+                this.saveChoose = false;
             }
         },
         watch: {
