@@ -38,6 +38,9 @@ export default {
                             this.set_language(res.data.data.lang);
                             //  缓存用户选择的语言类型，防止用户手动刷新数据消失
                             sessionStorage.setItem('def_lang',res.data.data.lang);
+                        }else{
+                            this.set_language('en');
+                            sessionStorage.setItem('def_lang','en');
                         }
                     }).catch(err => {
                         // to do

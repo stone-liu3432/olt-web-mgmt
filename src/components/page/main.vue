@@ -3,12 +3,6 @@
       <topBanner></topBanner>
       <leftAside></leftAside>
       <detail v-if="port_info && system"></detail>
-      <!-- <div class="modal-dialog" v-if="modal">
-          <div class="cover"></div>
-          <div class="tips-body">
-              <div>登录超时，将于 {{ count }} 秒后跳转到登录页面</div>
-          </div>
-      </div> -->
   </div>
 </template>
 
@@ -27,7 +21,11 @@ import topBanner from '@/components/page/header'
         data(){
             return {
                 modal: false,
-                count: 0
+                count: 0,
+                max_time: 300,
+                time: 0,
+                interval: null,
+                uName: ''
             }
         },
         created(){
@@ -47,12 +45,50 @@ import topBanner from '@/components/page/header'
                 // to do
             })
             this.$router.push('/main');
+            this.uName = sessionStorage.getItem('uname');
+        },
+        mounted(){
+            this.time = this.max_time;
+            this.interval = setInterval(()=>{
+                this.time--;
+                if(this.time <= 0){
+                    var post_params = {
+                        "method": "set",
+                        "param": {
+                            "name": this.uName
+                        }
+                    }
+                    this.$http.post('/userlogin?form=logout',post_params).then(res=>{
+                        this.$message({
+                            type: 'success',
+                            text: this.lanMap['login_out']
+                        })
+                        sessionStorage.removeItem('x-token');
+                        this.$router.push('/login');
+                        //window.close();
+                    }).catch(err=>{
+                        // to do
+                    })
+                }
+            },1000)
+            document.body.addEventListener('mousemove',this.user_timeout);
+            document.body.addEventListener('keydown',this.user_timeout);
+            document.body.addEventListener('mousedown',this.user_timeout);
+        },
+        beforeDestroy(){
+            clearInterval(this.interval);
+            document.body.removeEventListener('mousemove',this.user_timeout);
+            document.body.removeEventListener('mousedown',this.user_timeout);
+            document.body.removeEventListener('keydown',this.user_timeout);
         },
         methods: {
             ...mapMutations({
                 systemInfo: 'updateSysData',
                 addmenu: 'updateMenu'
-            })
+            }),
+            user_timeout(e){
+                this.time = this.max_time;
+            }
         },
         computed: mapState(['port_info','system','change_url','lanMap'])
     }

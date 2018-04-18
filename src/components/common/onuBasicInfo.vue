@@ -20,6 +20,7 @@
         <div class="handle-btn" v-if="onu_basic_info.data">
             <h3 class="lf">{{ lanMap['onu_mgmt'] }}</h3>
             <div class="lf">
+                <a href="javascript:;" @click="open_onu_desc">{{ lanMap['config'] + lanMap['onu_info'] }}</a>
                 <a href="javascript:;" @click="open_reboot_onu">{{ lanMap['reboot_onu'] }}</a>
                 <a href="javascript:;" @click="open_un_auth_onu" v-if="onu_basic_info.data.auth_state.toUpperCase() == 'TRUE'">{{ lanMap['deregister_onu'] }}</a>
                 <a href="javascript:;" @click="open_set_fec_mode">{{ lanMap['set_fec_mode'] }}</a>
@@ -54,7 +55,28 @@
                 </div>
             </div>
         </div>
-        
+        <div class="modal-dialog" v-if="onu_cfg_name">
+            <div class="cover"></div>
+            <div class="onu-desc">
+                <div>
+                    <span>{{ lanMap['onu_id'] }}</span>
+                    <span>{{ 'ONU' + portid + '/' + onuid }}</span>
+                </div>
+                <div>
+                    <span>{{ lanMap['onu_name'] }}</span>
+                    <input type="text" v-model="onu_name" :style="{ 'border-color' : onu_name.length > 16 ? 'red' : '' }">
+                </div>
+                <div>
+                    <span>{{ lanMap['onu_desc'] }}</span>
+                    <textarea cols="30" rows="5" v-model="onu_desc" :style="{ 'border-color' : onu_desc.length > 64 ? 'red' : '' }"></textarea>
+                </div>
+                <div>
+                    <a href="javascript:;" @click="onu_cfg_info(true)">{{ lanMap['apply'] }}</a>
+                    <a href="javascript:;" @click="onu_cfg_info(false)">{{ lanMap['cancel'] }}</a>
+                </div>
+                <div class="close" @click="onu_cfg_info(false)"></div>
+            </div>
+        </div>
         <confirm :tool-tips="lanMap['confirm_reboot_onu'] + '?'" @choose="reboot_onu" v-if="reboot_onu_confirm"></confirm>
         <confirm :tool-tips="lanMap['confirm_deresgester'] + '?'" @choose="un_auth_onu" v-if="un_auth_confirm"></confirm>
         <confirm :tool-tips="lanMap['confirm_change_fecmode'] + '?'" @choose="set_fec_mode" v-if="set_fec_confirm"></confirm>
@@ -78,7 +100,11 @@ import confirm from '@/components/common/confirm'
                 reboot_onu_confirm: false,
                 un_auth_confirm: false,
                 set_fec_confirm: false,
-                optical_diagnose: {}
+                optical_diagnose: {},
+                //  ONU配置name和description
+                onu_cfg_name: false,
+                onu_name: '',
+                onu_desc: ''
             }
         },
         created(){
@@ -116,6 +142,50 @@ import confirm from '@/components/common/confirm'
             ...mapMutations({
                 addonu_list: 'updateOnuList'
             }),
+            //  打开onu描述信息模态框
+            open_onu_desc(){
+                this.onu_cfg_name = true;
+            },
+            //  onu描述信息模态框内按钮绑定的事件
+            onu_cfg_info(bool){
+                if(bool){
+                    if(!this.onu_name && !this.onu_desc){
+                        this.onu_name = '';
+                        this.onu_desc = '';
+                        this.onu_cfg_name = false;
+                        return
+                    }
+                    if(this.onu_name.length > 16){
+                        this.$message({
+                            type: 'error',
+                            text: this.lanMap['param_error'] + ': ' + this.lanMap['onu_name']
+                        })
+                        return
+                    }
+                    if(this.onu_desc.length > 64){
+                        this.$message({
+                            type: 'error',
+                            text: this.lanMap['param_error'] + ': ' + this.lanMap['onu_desc']
+                        })
+                        return
+                    }
+                    var post_param = {
+                        "method":"set",
+                        "param":{
+                            "port_id": this.portid,
+                            "onu_id": this.onuid,
+                            "flags": 8,
+                            "fec_mode": this.onu_fec_mode.data.fec_mode ? 0 : 1,
+                            "onu_name": this.onu_name,
+                            "onu_desc": this.onu_desc
+                        }
+                    }
+                    this.post_data(post_param);
+                }
+                this.onu_name = '';
+                this.onu_desc = '';
+                this.onu_cfg_name = false;
+            },
             //  解析后台返回的字符串
             analysis(str){
                 if(!str) return ''
@@ -151,7 +221,9 @@ import confirm from '@/components/common/confirm'
                             "port_id": this.portid,
                             "onu_id": this.onuid,
                             "flags": 1,
-                            "fec_mode": this.onu_fec_mode.data.fec_mode ? 0 : 1
+                            "fec_mode": this.onu_fec_mode.data.fec_mode ? 0 : 1,
+                            "onu_name": '',
+                            "onu_desc": ''
                         }
                     }
                     this.post_data(post_param);
@@ -170,7 +242,9 @@ import confirm from '@/components/common/confirm'
                             "port_id": this.portid,
                             "onu_id": this.onuid,
                             "flags": 2,
-                            "fec_mode": this.onu_fec_mode.data.fec_mode ? 0 : 1
+                            "fec_mode": this.onu_fec_mode.data.fec_mode ? 0 : 1,
+                            "onu_name": '',
+                            "onu_desc": ''
                         }
                     }
                     this.post_data(post_param);
@@ -189,7 +263,9 @@ import confirm from '@/components/common/confirm'
                             "port_id": this.portid,
                             "onu_id": this.onuid,
                             "flags": 4,
-                            "fec_mode": this.onu_fec_mode.data.fec_mode ? 0 : 1
+                            "fec_mode": this.onu_fec_mode.data.fec_mode ? 0 : 1,
+                            "onu_name": "",
+                            "onu_desc": ""
                         }
                     }
                     this.post_data(post_param);
@@ -204,6 +280,7 @@ import confirm from '@/components/common/confirm'
                             text: this.lanMap['setting_ok']
                         })
                         this.getData();
+                        this.getOpticalData();
                     }else if(res.data.code >1){
                         this.$message({
                             type: 'error',
@@ -282,9 +359,9 @@ import confirm from '@/components/common/confirm'
 			},
 			onuid(){
             	// 请求url:  请求url: /onumgmt?form=base-info&port_id=1&onu_id=1
-              if(this.onuid === 0) return   
-				 this.getData();
-              this.getOpticalData();
+                if(this.onuid === 0) return   
+				this.getData();
+                this.getOpticalData();
 			}
 		}
     }
@@ -438,6 +515,64 @@ div.handle-btn{
             &:active{
                 border-color: #67aef7;
             }
+        }
+    }
+}
+div.onu-desc{
+    width: 500px;
+    height: 300px;
+    background: #fff;
+    position: absolute;
+    left: 0;
+    right: 0;
+    top: 0;
+    bottom: 0;
+    margin: auto;
+    border-radius: 10px;
+    >div{
+        line-height: 30px;
+        margin: 20px 0;
+        >span{
+            display: inline-block;
+            width: 150px;
+            height: 30px;
+            padding-right: 20px;
+            border-right: none;
+            &:last-child{
+                font-weight: bold;
+                color: #67aef7;
+            }
+        }
+        >textarea{
+            vertical-align: top;
+            font-size: 14px;
+            line-height: 20px;
+            border: 1px solid #aaa;
+            resize:none;
+            &:focus{
+                border-color: #67aef7;
+                outline: none;
+            }
+        }
+        >input[type="text"]{
+            width: 230px;
+            border-color: #aaa;
+            &:focus{
+                border-color: #67aef7;
+            }
+        }
+        >a{
+            display: inline-block;
+            width: 120px;
+            height: 30px;
+            text-align: center;
+            line-height: 30px;
+            border-radius: 5px;
+            background: #ddd;
+            margin-left: 90px;
+        }
+        &:last-child{
+            margin: 0;
         }
     }
 }

@@ -90,7 +90,7 @@
                 </span>
                 <span>{{ lanMap['config'] }}</span>
             </li>
-            <li v-for="(item,index) in onu_allow_list.data" :key="index" class="flex-box" :style="{ 'background-color' : item.status === 'offline' ? '#F3A9A0' : '' }">
+            <li v-for="(item,index) in onu_allow_list.data" :key="index" class="flex-box" :style="{ 'background-color' : item.status.toLowerCase() !== 'online' ? '#F3A9A0' : '' }">
                 <span>{{ 'ONU0'+item.port_id +'/'+ item.onu_id }}</span>
                 <span>{{ item.macaddr }}</span>
                 <span>{{ item.status }}</span>
@@ -285,6 +285,13 @@ import confirm from '@/components/common/confirm'
             },
             //  onu认证 / 取消认证
             authstate(node){
+                if(node.status.toLowerCase() !== 'online'){
+                    this.$message({
+                        type: 'error',
+                        text: this.lanMap['tips_cfm_onu']
+                    })
+                    return
+                }
                 this.post_params = {
                     "method": "set",
                     "param":{

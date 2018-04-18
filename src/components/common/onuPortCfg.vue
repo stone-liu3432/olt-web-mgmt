@@ -17,7 +17,8 @@
             <div v-else class="no-data lf">{{ lanMap['no_onu_info'] }}</div>
         </div>
         <hr>
-        <div class="onu-port-info" v-if="onu_port_info.data && port_name.pon">
+        <!-- ONU端口信息 -->
+        <div class="onu-port-info" v-if="onu_list.data && onu_port_info.data && port_name.pon">
             <div>
                 <h3 class="lf">{{ 'ONU' + port_name.pon[portid].id + '/' + onuid + ' ' + lanMap['port_info'] }}</h3>
                 <div class="lf">
@@ -31,9 +32,12 @@
             </ul>
             <!-- 状态显示，待修改 -->
             <div v-for="(item,key) in onu_port_info.data" :key="key">
-                <span v-for="(_item,_key) in item" :key="_key">{{ _item }}</span>
+                <span v-for="(_item,_key) in item" :key="_key">
+                    {{ (_key === 'auto_neg' || _key === 'flow_ctrl' || _key === 'loopdetect' || _key === 'enable') ? _item ? 'Enable' : 'Disable' : _item }}
+                </span>
             </div>
         </div>
+        <!-- ONU vlan信息 -->
         <div class="onu-vlan-info" v-if="onu_vlan_info.data && port_name.pon">
             <div>
                 <h3 class="lf">{{ 'ONU' + port_name.pon[portid].id + '/' + onuid + ' ' + 'VLAN' }}</h3>
@@ -57,16 +61,18 @@
                         <a href="javascript:;" @click="delete_trunk(item)">{{ lanMap['delete'] }}</a>
                     </span>
                 </div>
-                <div v-if="item.vlan_list && item.op_vlan_mode === 2" class="vlan-list">
+                <div v-if="item.op_vlan_mode === 2" class="vlan-list">
                     <span>{{ lanMap['vlan_list'] }}</span>
                     <span>
-                        <span :style="{'font-size': item.vlan_list.length > 10 ? '14px' : '16px'}">{{ translate_str_map(item.vlan_list,' &rarr; ') }}</span>
+                        <span :style="{'font-size': item.vlan_list.length > 10 ? '12px' : '14px'}">
+                            {{ translate_str_map(item.vlan_list,' &rarr; ','translate') }}
+                        </span>
                     </span>
                 </div>
-                <div v-if="item.vlan_list && item.op_vlan_mode === 4" class="vlan-list">
+                <div v-if="item.op_vlan_mode === 4" class="vlan-list">
                     <span>{{ lanMap['vlan_list'] }}</span>
                     <span>
-                        <span>{{ translate_str_map(item.vlan_list,' - ') }}</span>
+                        <span>{{ translate_str_map(item.vlan_list,' - ','trunk') }}</span>
                     </span>
                 </div>
             </div>
@@ -95,18 +101,20 @@
                         <option value="4">trunk</option>
                     </select>
                 </div>
-                <div>
+                <div v-if="onu_vlan_item.op_vlan_mode !== 0">
                     <span>{{ lanMap['def_vlan_id'] }}</span>
                     <input type="text" v-model.number="onu_vlan_item.def_vlan_id" placeholder="1-4094"
                     :style="{'border-color': onu_vlan_item.def_vlan_id !== '' && (onu_vlan_item.def_vlan_id < 1 || onu_vlan_item.def_vlan_id > 4094 || isNaN(onu_vlan_item.def_vlan_id)) ? 'red' : ''}">
                     <span class="tips">{{ lanMap['range'] + ' : 1-4094' }}</span>
                 </div>
-                <div>
+                <div v-else></div>
+                <div v-if="onu_vlan_item.op_vlan_mode !== 0">
                     <span>{{ lanMap['def_vlan_pri'] }}</span>
                     <input type="text" v-model.number="onu_vlan_item.def_vlan_pri" placeholder="0-7"
                     :style="{'border-color': onu_vlan_item.def_vlan_pri !== '' && (onu_vlan_item.def_vlan_pri < 0 || onu_vlan_item.def_vlan_pri > 7 || isNaN(onu_vlan_item.def_vlan_pri)) ? 'red' : ''}">
                     <span class="tips">{{ lanMap['range'] + ' : 0-7' }}</span>
                 </div>
+                <div v-else></div>
                 <div>
                     <a href="javascript:;" @click="hanlde_onu_vlanCfg(true)">{{ lanMap['apply'] }}</a>
                     <a href="javascript:;" @click="hanlde_onu_vlanCfg(false)">{{ lanMap['cancel'] }}</a>
@@ -253,7 +261,8 @@
                         </option>
                     </select>
                 </div>
-                <div v-if="is_add_trunk">
+                <div v-else></div>
+                <div v-if="false">
                     <span>{{ lanMap['new_vlan_pri'] }}</span>
                     <select v-model.number="trunk_post_param.vlan_pri">
                         <option value="0">0</option>
@@ -309,69 +318,22 @@ import { mapState } from 'vuex'
                 cache_data: {},
                 vlan_mode_map: ['transparent','tag','translate','aggregation','trunk'],
                 //  ONU下的所有端口列表
-                onu_port_info: {
-                    "code":1,	
-                    "message":"success",
-                    "data":[{
-                        "op_id": 1,
-                        "auto_neg": 1,
-                        "flow_ctrl": 1,
-                        "loopdetect": 1,
-                        "enable": 1,
-                        "rlds_opt": 1,
-                        "rl_cir": 1,
-                        "rl_pir" :1,
-                        "rlus_opt": 1,
-                        "bandwidth": 1
-                    }]
-                },
+                onu_port_info: {},
                 //  ONU下某个特定的端口的基本信息  --> 配置ONU端口基本信息时使用
                 onu_port_item: {
-                    "op_id": 1,
-                    "auto_neg": 1,
-                    "flow_ctrl": 1,
-                    "loopdetect": 1,
-                    "enable": 1,
-                    "rlds_opt": 1,
-                    "rl_cir": 1,
-                    "rl_pir" : 1,
-                    "rlus_opt": 1,
-                    "bandwidth": 1
+                    "op_id": 0,
+                    "auto_neg": 0,
+                    "flow_ctrl": 0,
+                    "loopdetect": 0,
+                    "enable": 0,
+                    "rlds_opt": 0,
+                    "rl_cir": 0,
+                    "rl_pir" : 0,
+                    "rlus_opt": 0,
+                    "bandwidth": 0
                 },
                 //  ONU VLAN信息  -->当前ONU下所有的端口信息
-                onu_vlan_info: {
-                    "code":1,
-                    "msg":"success",
-                    "data":[{
-                        "op_id": 1,
-                        "op_vlan_mode": 2,
-                        "def_vlan_id": 1,
-                        "def_vlan_pri": 0,
-                        "vlan_list": [{
-                            "old_vlan_id": 11,
-                            "new_vlan_id": 22,
-                            "new_vlan_pri": 1
-                        },{
-                            "old_vlan_id": 23,
-                            "new_vlan_id": 33,
-                            "new_vlan_pri": 2
-                        },{
-                            "old_vlan_id": 33,
-                            "new_vlan_id": 22,
-                            "new_vlan_pri": 3
-                        }]
-                    },{ 
-                        "op_id":2,
-                        "op_vlan_mode": 4,
-                        "def_vlan_id": 1,
-                        "def_vlan_pri": 0,
-                        "vlan_list": [{
-                            "start_vlan_id": 11,
-                            "end_vlan_id": 22,
-                            "vlan_pri":1
-                        }]
-                    }
-                ]},
+                onu_vlan_info: {},
                 // ONU下某个特定的端口VLAN  -->  配置 ONU下任一端口的 vlan_mode时使用
                 onu_vlan_item: {
                     "op_id": 0,
@@ -411,10 +373,10 @@ import { mapState } from 'vuex'
                 if(bool){
                     //  输入验证待添加
                     var flags = 0;
-                    if(this.cache_data.autoneg !== this.onu_port_item.autoneg){
+                    if(this.cache_data.auto_neg !== this.onu_port_item.auto_neg){
                         flags += 1;
                     }
-                    if(this.cache_data.flowctrl !== this.onu_port_item.flowctrl){
+                    if(this.cache_data.flow_ctrl !== this.onu_port_item.flow_ctrl){
                         flags += 2;
                     }
                     if(this.cache_data.loopdetect !== this.onu_port_item.loopdetect){
@@ -487,23 +449,26 @@ import { mapState } from 'vuex'
             },
             hanlde_onu_vlanCfg(bool){
                 if(bool){
-                    if(this.onu_vlan_item.def_vlan_id < 1 || this.onu_vlan_item.def_vlan_id > 4094 || isNaN(this.onu_vlan_item.def_vlan_id)){
+                    if( this.onu_vlan_item.op_vlan_mode !== 0 &&
+                        (this.onu_vlan_item.def_vlan_id < 1 || this.onu_vlan_item.def_vlan_id > 4094 || isNaN(this.onu_vlan_item.def_vlan_id))){
                         this.$message({
                             type: 'error',
                             text: this.lanMap['vlanid_range_hit']
                         })
                         return
                     }
-                    if(this.onu_vlan_item.def_vlan_pri === '' || this.onu_vlan_item.def_vlan_pri < 0 || this.onu_vlan_item.def_vlan_pri > 7 || isNaN(this.onu_vlan_item.def_vlan_pri)){
+                    if( this.onu_vlan_item.op_vlan_mode !== 0 &&
+                        (this.onu_vlan_item.def_vlan_pri === '' || this.onu_vlan_item.def_vlan_pri < 0 || this.onu_vlan_item.def_vlan_pri > 7 || isNaN(this.onu_vlan_item.def_vlan_pri))){
                         this.$message({
                             type: 'error',
                             text: this.lanMap['vlan_pri_param_error']
                         })
                         return
                     }
-                    if(this.cache_data.def_vlan_id === this.onu_vlan_item.def_vlan_id && 
-                    this.cache_data.def_vlan_pri === this.onu_vlan_item.def_vlan_pri && 
-                    this.cache_data.op_vlan_mode === this.onu_vlan_item.op_vlan_mode){
+                    if( this.onu_vlan_item.op_vlan_mode !== 0 &&
+                        (this.cache_data.def_vlan_id === this.onu_vlan_item.def_vlan_id && 
+                        this.cache_data.def_vlan_pri === this.onu_vlan_item.def_vlan_pri && 
+                        this.cache_data.op_vlan_mode === this.onu_vlan_item.op_vlan_mode)){
                         this.$message({
                             type: 'info',
                             text: this.lanMap['modify_tips']
@@ -564,14 +529,16 @@ import { mapState } from 'vuex'
                             return 
                         }
                     }
-                    if(this.translate_post_param.old_vlan_id === '' || this.translate_post_param.old_vlan_id < 1 || this.translate_post_param.old_vlan_id > 4094 || isNaN(this.translate_post_param.old_vlan_id)){
+                    if(this.translate_post_param.old_vlan_id === '' || this.translate_post_param.old_vlan_id < 1 || 
+                        this.translate_post_param.old_vlan_id > 4094 || isNaN(this.translate_post_param.old_vlan_id)){
                         this.$message({
                             type: 'error',
                             text: this.lanMap['vlanid_range_hit']
                         })
                         return
                     }
-                    if(this.translate_post_param.new_vlan_id === '' || this.translate_post_param.new_vlan_id < 1 || this.translate_post_param.new_vlan_id > 4094 || isNaN(this.translate_post_param.new_vlan_id)){
+                    if(this.translate_post_param.new_vlan_id === '' || this.translate_post_param.new_vlan_id < 1 ||
+                        this.translate_post_param.new_vlan_id > 4094 || isNaN(this.translate_post_param.new_vlan_id)){
                         this.$message({
                             type: 'error',
                             text: this.lanMap['vlanid_range_hit']
@@ -615,6 +582,7 @@ import { mapState } from 'vuex'
                 this.translate_post_param.new_vlan_pri = 0;
             },
             delete_translate(node){
+                if(!node.vlan_list || node.vlan_list.length === 0) return
                 this.is_delete_translate = true;
                 this.cache_port_vlan = node;
                 this.cache_vlan_list = node.vlan_list;
@@ -666,7 +634,8 @@ import { mapState } from 'vuex'
             confirm_add_trunk(bool){
                 if(bool){
                     //  vlan ID 范围  -->  起始和结束范围不能超过15
-                    if(this.trunk_post_param.start_vlan_id > this.trunk_post_param.end_vlan_id || this.trunk_post_param.end_vlan_id - this.trunk_post_param.start_vlan_id > 15){
+                    if(this.trunk_post_param.start_vlan_id > this.trunk_post_param.end_vlan_id || 
+                        this.trunk_post_param.end_vlan_id - this.trunk_post_param.start_vlan_id > 15){
                         this.$message({
                             type: 'error',
                             text: this.lanMap['trunk_vlanid_range_error']
@@ -674,14 +643,16 @@ import { mapState } from 'vuex'
                         return
                     }
                     //  vlan ID 范围  -->  单个VLAN ID是否合法
-                    if(this.trunk_post_param.start_vlan_id === '' || this.trunk_post_param.start_vlan_id < 1 || this.trunk_post_param.start_vlan_id > 4094 || isNaN(this.trunk_post_param.start_vlan_id)){
+                    if(this.trunk_post_param.start_vlan_id === '' || this.trunk_post_param.start_vlan_id < 1 || 
+                        this.trunk_post_param.start_vlan_id > 4094 || isNaN(this.trunk_post_param.start_vlan_id)){
                         this.$message({
                             type: 'error',
                             text: this.lanMap['vlanid_range_hit']
                         })
                         return
                     }
-                    if(this.trunk_post_param.end_vlan_id === '' || this.translaunk_param.end_vlan_id < 1 || this.trunk_post_param.end_vlan_id > 4094 || isNaN(this.trunk_post_param.end_vlan_id)){
+                    if(this.trunk_post_param.end_vlan_id === '' || this.trunk_post_param.end_vlan_id < 1 || 
+                        this.trunk_post_param.end_vlan_id > 4094 || isNaN(this.trunk_post_param.end_vlan_id)){
                         this.$message({
                             type: 'error',
                             text: this.lanMap['vlanid_range_hit']
@@ -725,6 +696,7 @@ import { mapState } from 'vuex'
                 this.trunk_post_param.vlan_pri = 0;
             },
             delete_trunk(node){
+                if(!node.vlan_list || node.vlan_list.length === 0) return
                 this.is_delete_trunk = true;
                 this.cache_port_vlan = node;
                 this.cache_vlan_list = node.vlan_list;
@@ -772,7 +744,7 @@ import { mapState } from 'vuex'
                 this.$http.get('/onumgmt?form=port_cfg&port_id='+this.portid+'&onu_id=' + this.onuid).then(res=>{
                     if(res.data.code === 1){
                         this.onu_port_info = res.data;
-                    }else if(res.data.code >1){
+                    }else if(res.data.code > 1){
                         this.onu_port_info = {};
                     }
                 }).catch(err=>{
@@ -783,7 +755,7 @@ import { mapState } from 'vuex'
                 this.$http.get('/onumgmt?form=port_vlan&port_id='+ this.portid +'&onu_id=' + this.onuid).then(res=>{
                     if(res.data.code === 1){
                         this.onu_vlan_info = res.data;
-                    }else if(res.data.code >1){
+                    }else if(res.data.code > 1){
                         this.onu_vlan_info = {}
                     }
                 }).catch(err=>{
@@ -813,18 +785,22 @@ import { mapState } from 'vuex'
                 }
                 return result
             },
-            translate_str_map(arr,pre){
-                if(!arr) return ''
+            translate_str_map(arr,pre,flag){
+                if(!arr || arr.length === 0) return ''
                 var str = '';
                 for(var key in arr){
-                    if(arr[key].old_vlan_id){
-                        str += arr[key].old_vlan_id + pre + arr[key].new_vlan_id + ',';
+                    if(arr[key].old_vlan_id && flag === 'translate'){
+                        str += arr[key].old_vlan_id + pre + arr[key].new_vlan_id + ',' + arr[key].new_vlan_pri + '/';
                     }else{
-                        str += arr[key].start_vlan_id + pre + arr[key].end_vlan_id + ',';
+                        if(arr[key].new_vlan_id){
+                            str += arr[key].old_vlan_id+ ',' + arr[key].new_vlan_id + ',';
+                        }else{
+                            str += arr[key].old_vlan_id + ',';
+                        }
                     }
                 }
                 var e = document.createElement('div');
-                e.innerHTML = str.replace(/,$/,'');
+                e.innerHTML = str.replace(/(,|\/)*$/,'');
                 return e.childNodes[0].nodeValue;
             },
             confirm_close(){
@@ -868,7 +844,8 @@ import { mapState } from 'vuex'
                             this.getOnuVlan();
                         }
                     }else{
-                        this.onu_list = {}; 
+                        this.onu_list = {};
+                        this.onu_vlan_info = {};
                     }
                 }).catch(err=>{
                     // to do
@@ -896,10 +873,11 @@ import { mapState } from 'vuex'
                 }
                 for(var key in this.onu_vlan_info.data){
                     if(this.onu_vlan_info.data[key].op_id === this.op_id){
-                        var data = this.onu_vlan_info.data[key];
-                        for(var _key in data){
-                            this.onu_vlan_item[_key] = data[_key];
-                        }
+                        // var data = this.onu_vlan_info.data[key];
+                        // for(var _key in data){
+                        //     this.onu_vlan_item[_key] = data[_key];
+                        // }
+                        this.onu_vlan_item = Object.assign({},this.onu_vlan_info.data[key]);
                     }
                 }
                 // 缓存数据，用于提交时对比变化
