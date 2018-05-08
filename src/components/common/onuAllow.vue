@@ -83,7 +83,7 @@
             </div>
             <p class="lf">{{ lanMap['search_by_macaddr'] }}</p>
         </div>
-        <ul v-if="onu_allow_list.data && onu_allow_list.data.length>0">
+        <!-- <ul v-if="onu_allow_list.data && onu_allow_list.data.length>0">
             <li class="flex-box">
                 <span v-for="(item,key) in onu_allow_list.data[0]" :key="key" v-if=" key != 'port_id' ">
                     {{ lanMap[key] }}
@@ -106,7 +106,8 @@
                     <i :title="lanMap['reboot_onu']" class="reset-onu" @click="reboot(item)"></i>
                 </span>
             </li>
-        </ul>
+        </ul> -->
+        <onuCard v-if="onu_allow_list.data && onu_allow_list.data.length>0" :onu-allow-list="onu_allow_list"></onuCard>
         <p v-else>{{ lanMap['no_more_data'] }}</p>
         <confirm :tool-tips="lanMap['tips_del_onu']" @choose="result_delete" v-if="delete_confirm"></confirm>
         <confirm :tool-tips="lanMap['tips_add_deny_onu']" @choose="result_deny" v-if="deny_confirm"></confirm>
@@ -118,9 +119,10 @@
 <script>
 import { mapState,mapMutations } from 'vuex'
 import confirm from '@/components/common/confirm'
+import onuCard from '@/components/common/onuCard'
     export default {
         name: 'onuAllow',
-        components: { confirm },
+        components: { confirm,onuCard },
         data(){
             return {
                 onu_arrow: {},
@@ -573,6 +575,12 @@ i.onu-remove{
 i.onu-remove:hover{
     background: url('../../assets/remove-hover.png') no-repeat;
 }
+i.reset-onu{
+    background: url('../../assets/reset-normal.png') no-repeat 2px 2px;
+}
+i.reset-onu:hover{
+    background: url('../../assets/reset-hover.png') no-repeat 2px 2px;
+}
 div.modal-content{
     width: 600px;
     height: 300px;
@@ -626,12 +634,6 @@ i.verified-actived{
 i.unverified{
     background: url('../../assets/unauthstatus-normal.png') no-repeat;
 }
-i.reset-onu{
-    background: url('../../assets/reset-normal.png') no-repeat 2px 2px;
-}
-i.reset-onu:hover{
-    background: url('../../assets/reset-hover.png') no-repeat 2px 2px;
-}
 i.reload{
     background: url('../../assets/refresh.png') no-repeat;
     margin: 0 20px 0;
@@ -663,6 +665,7 @@ div.tool-tips{
         position: absolute;
         top: 26px;
         right: 26px;
+        z-index: 99;
         >div{
             padding: 5px 0;
             &:first-child{

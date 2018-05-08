@@ -155,29 +155,29 @@ const router = new Router({
 })
 
 router.beforeEach((to, from, next) => {
-  store.commit('updateLoad', true);
-  // 判断该路由是否需要登录权限
-  if (to.meta.requireAuth) {
-    if (sessionStorage.getItem('x-token')) {
-        next();
-    } else {
-        next({path: '/login'})
-    }
-    //next();
-  } else {
-    if (!sessionStorage.getItem('x-token')) {
-      next();
-    } else {
-      next('/main');
-    }
-  }
+	store.commit('updateLoad', true);
+	// 判断该路由是否需要登录权限
+	if (to.meta.requireAuth) {
+		// if (sessionStorage.getItem('x-token')) {
+		//     next();
+		// } else {
+		//     next({path: '/login'})
+		// }
+		next();
+	} else {
+		if (!sessionStorage.getItem('x-token')) {
+			next();
+		} else {
+			next('/main');
+		}
+	}
 })
 
 router.afterEach((to, from) => {
-  store.commit('updateLoad', false);
-  if(document.documentElement.scrollTop){
-	  document.documentElement.scrollTop = 0;
-  }
+  	store.commit('updateLoad', false);
+	if(document.documentElement.scrollTop){
+		document.documentElement.scrollTop = 0;
+	}
 })
 
 export default router

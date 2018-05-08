@@ -25,7 +25,7 @@ export default new Vuex.Store({
     //  切换语言
     language: '',
     //  全局替换url  testUrl => 开发版本   betaUrl => 测试版本
-    change_url: change_url.betaUrl
+    change_url: change_url.testUrl
   },
   mutations:{
     updateSysData(state,data){

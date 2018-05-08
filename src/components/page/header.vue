@@ -36,7 +36,7 @@
 import { mapState,mapMutations } from 'vuex'
 import confirm from '@/components/common/confirm'
 export default {
-   name : 'topBanner',
+   name: 'topBanner',
    computed: mapState(['system','lanMap','language']),
    components: { confirm },
    data(){
