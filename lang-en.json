@@ -361,5 +361,12 @@
     "transmit_power": "transmit power",
     "receive_power":"receive power",
     "refresh": "Refresh",
-    "onu_optical_diagnose":"ONU optical diangose"
+    "onu_optical_diagnose":"ONU optical diangose",
+    "diag_tools_type":"Diagnose tools type",
+    "dest_ping_ip": "Destination IP",
+    "diag_ping_intf":"Out interface",
+    "diag_ping_count": "PING Count",
+    "diag_ping_pktsize": "PING packet size",
+	"diag_type": "Ping test",
+	"start": "Start"
 }

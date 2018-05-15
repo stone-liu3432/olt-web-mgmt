@@ -57,7 +57,6 @@ import loading from '@/components/common/loading'
         methods: {
             upgrade_result(bool){
                 if(bool){
-                    clearTimeout(this.reboot_timer);
                     this.$http.get("/system_reboot").then(res=>{
                         // to do
                     }).catch(err=>{
@@ -79,6 +78,7 @@ import loading from '@/components/common/loading'
                 }
                 this.width = 0;
                 this.reboot_confirm = false;
+                clearTimeout(this.reboot_timer);
             },
             changeFile(fileid,fnameid){
                 var file = document.getElementById(fileid);

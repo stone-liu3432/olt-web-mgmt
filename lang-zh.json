@@ -115,10 +115,10 @@
 	"onu_name":"名称",
 	"onu_desc":"描述信息",
     "auth_state" : "认证状态",
-    "tips_cfm_onu":"当前ONU已认证,点击可以取消认证状态",
+    "tips_cfm_onu":"表示当前ONU已认证,点击可以取消认证状态",
     "tips_auth_state": "是否确认认证此ONU",
     "tips_unauth_state": "是否确认要解除当前ONU的认证状态",
-	"tips_n_cfm_onu":"当前ONU未认证,点击可以进行认证",
+	"tips_n_cfm_onu":"表示当前ONU未认证,点击可以进行认证",
 	"tips_authstate_error": "ONU未处于online状态，无法进行此操作",
     "tips_onu_btn_detail":"查看ONU详细信息",
     "tips_page_refresh": "刷新当前页面",
@@ -361,5 +361,12 @@
     "transmit_power":"发送光功率",
     "receive_power":"接收光功率",
     "refresh": "刷新",
-    "onu_optical_diagnose":"ONU光诊断"
+    "onu_optical_diagnose":"ONU光诊断",
+    "diag_tools_type":"诊断工具类型",
+    "dest_ping_ip": "目的IP地址",
+    "diag_ping_intf":"出接口",
+    "diag_ping_count": "PING次数",
+	"diag_ping_pktsize": "PING 数据包大小",
+	"diag_type": "Ping诊断",
+	"start":"开始"
 }

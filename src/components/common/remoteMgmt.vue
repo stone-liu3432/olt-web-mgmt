@@ -510,8 +510,9 @@ p>span{
     margin:20px 10px;
 }
 .remote-mgmt>span{
-    font-size: 20px;
+    font-size: 24px;
     font-weight: 600;
+    color: #67AEF7;
 }
 .remote-mgmt>a{
     display: inline-block;

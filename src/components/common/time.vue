@@ -4,12 +4,30 @@
         <div>
             <div v-if="timer.data" class="time-item">
                 <span>{{ lanMap['current_time'] }}</span>
-                <span>{{ new Date(timer.data.time_sec*1000).toLocaleString({hour12:false}).replace(/\//g,'-') }}</span>
+                <span>
+                    <!-- {{ 
+                        timer.data.time_now[0] + lanMap['time_year'] + timer.data.time_now[1] + lanMap['time_month'] + timer.data.time_now[2] + lanMap['time_day'] +
+                        '   ' + timer.data.time_now[3] + lanMap['time_hour'] + timer.data.time_now[4] + lanMap['time_min'] + timer.data.time_now[5] + lanMap['time_sec']
+                    }} -->
+                    {{ 
+                        now_time.year + '-' + now_time.month + '-' + now_time.day + '  ' +
+                        now_time.hour + ':' + (now_time.min < 10 ? '0' + now_time.min : now_time.min ) + ':' + 
+                        (now_time.sec < 10 ? '0' + now_time.sec : now_time.sec)
+                    }}
+                </span>
             </div>
             <div class="time-item">
                 <span>{{ lanMap['config'] + lanMap['time_set'] }}</span>
                 <!-- 选择设置时间方式，暂未实现 -->
                 <span>{{ lanMap['manual_s'] + lanMap['config'] + lanMap['time_set'] }}</span>
+            </div>
+            <div class="time-item">
+                <span>选择时区</span>
+                <span>
+                    <select style="width: 350px" v-model="timezone">
+                        <option v-for="(item,index) in timezones" :key="index" :value="index">{{ item.tag }}</option>
+                    </select>
+                </span>
             </div>
             <div class="time-item">
                 <span>{{ lanMap['time_days'] }}</span>
@@ -58,6 +76,7 @@
 
 <script>
 import { mapState } from "vuex"
+import timezone from '@/config/timezone'
     export default {
         name : 'time',
         data(){
@@ -77,25 +96,36 @@ import { mapState } from "vuex"
                     hour: 0,
                     min: 0,
                     sec: 0
+                },
+                timezones: [],
+                timezone: null,
+                now_time: {
+                    year: 0,
+                    month: 0,
+                    day: 0,
+                    hour: 0,
+                    min: 0,
+                    sec: 0
                 }
             }
         },
         created(){
             this.get_time();
+            this.timezones = timezone;
         },
         methods: {
-            //  获取服务器时间 
             get_time(){
                 this.$http.get(this.change_url.time).then(res=>{
                     if(res.data.code === 1){
                         this.timer = res.data;
-                        var date = new Date(this.timer.data.time_sec*1000);
-                        this.set_time.year = date.getFullYear();
-                        this.set_time.month = date.getMonth() + 1;
-                        this.set_time.day = date.getDate();
-                        this.set_time.hour = date.getHours();
-                        this.set_time.min = date.getMinutes();
-                        this.set_time.sec = date.getSeconds();
+                        var arr = this.timer.data.time_now;
+                        this.set_time.year = this.now_time.year = arr[0];
+                        this.set_time.month = this.now_time.month = arr[1];
+                        this.set_time.day =  this.now_time.day = arr[2];
+                        this.set_time.hour = this.now_time.hour = arr[3];
+                        this.set_time.min = this.now_time.min = arr[4];
+                        this.set_time.sec = this.now_time.sec = arr[5];
+                        this.timezone = this.timer.data.timezone;
                         this.auto_update_time();
                     }
                 }).catch(err=>{
@@ -106,25 +136,23 @@ import { mapState } from "vuex"
             auto_update_time(){
                 if(this.timer.data){
                     this.interval = setInterval(()=>{
-                        if(this.timer.data.secs < 60){
-                            this.timer.data.secs += 1;
-                            if(this.timer.data.secs > 59){
-                                this.timer.data.secs = 0;
-                                this.timer.data.mins += 1;
-                                if(this.timer.data.mins > 59){
-                                    this.timer.data.secs = 0;
-                                    this.timer.data.mins = 0;
-                                    this.timer.data.hours += 1;
-                                    if(this.timer.data.nours > 23){
-                                        this.timer.data.secs = 0;
-                                        this.timer.data.mins = 0;
-                                        this.timer.data.hours = 0;
-                                        this.timer.data.days += 1;
-                                    }
+                        if(this.now_time.sec < 59){
+                            this.now_time.sec += 1;
+                        }else{
+                            this.now_time.sec = 0;
+                            this.now_time.min += 1;
+                            if(this.now_time.min > 59){
+                                this.now_time.sec = 0;
+                                this.now_time.min = 0;
+                                this.now_time.hour += 1;
+                                if(this.now_time.hour > 23){
+                                    this.now_time.sec = 0;
+                                    this.now_time.min = 0;
+                                    this.now_time.hour = 0;
+                                    this.now_time.day += 1;
                                 }
                             }
                         }
-                        this.timer.data.time_sec += 1;
                     },1000)
                 }
             },
@@ -150,8 +178,16 @@ import { mapState } from "vuex"
             //  点击按钮手动更新页面时间
             handle_update_time(){
                 this.$http.get('/time?form=info').then(res=>{
-                    if(res.data.code ===1){
+                    if(res.data.code === 1){
                         this.timer = res.data;
+                        var arr = this.timer.data.time_now;
+                        this.set_time.year = this.now_time.year = arr[0];
+                        this.set_time.month = this.now_time.month = arr[1];
+                        this.set_time.day =  this.now_time.day = arr[2];
+                        this.set_time.hour = this.now_time.hour = arr[3];
+                        this.set_time.min = this.now_time.min = arr[4];
+                        this.set_time.sec = this.now_time.sec = arr[5];
+                        this.timezone = this.timer.data.timezone;
                         this.$message({
                             type: 'success',
                             text: this.lanMap['update_time'] + this.lanMap['st_success']
@@ -171,12 +207,8 @@ import { mapState } from "vuex"
                 var post_params = {
                     "method":"set",
                     "param":{
-                        "year": this.set_time.year,
-                        "mon": this.set_time.month,
-                        "day": this.set_time.day,
-                        "hour": this.set_time.hour,
-                        "min": this.set_time.min,
-                        "sec": this.set_time.sec
+                        "time": [this.set_time.year,this.set_time.month,this.set_time.day,this.set_time.hour,this.set_time.min,this.set_time.sec],
+                        "time_zone": this.timezone
                     }
                 }
                 this.$http.post('/time?form=info',post_params).then(res=>{
@@ -212,8 +244,9 @@ import { mapState } from "vuex"
 div.time-cfg{
     >h2{
         font-size: 24px;
-        color: #3390e6;
+        color: #67AEF7;
         margin: 20px 0 0 20px;
+        font-weight: bold;
     }
     >div{
         margin: 30px 0 0 30px;

@@ -65,15 +65,22 @@
                 <h2>{{ lanMap['sys_run_time'] }}</h2>
                 <div class="time-info">
                     <span>{{ lanMap['current_time'] + ' :' }}</span>
-                    <span>{{ new Date(timer.data.time_sec*1000).toLocaleString().replace(/\//g,'-') }}</span>
+                    <span>
+                        {{ 
+                            now_time.year + '-' + now_time.month + '-' + now_time.day + '  ' +
+                            now_time.hour + ':' + (now_time.min < 10 ? '0' + now_time.min : now_time.min ) + ':' + 
+                            (now_time.sec < 10 ? '0' + now_time.sec : now_time.sec)
+                        }}
+                    </span>
                 </div>
                 <div class="time-info">
                     <span>{{ lanMap['run_time']+' :' }}</span>
                     <span>
-                        {{ timer.data.days + " " + lanMap['days'] }}
-                        {{ timer.data.hours + " " + lanMap['hours'] }}
-                        {{ timer.data.mins < 10 ? '0' + this.timer.data.mins + " " + lanMap['mins'] : this.timer.data.mins + " " + lanMap['mins'] }}
-                        {{ timer.data.secs < 10 ? '0' + this.timer.data.secs + " " + lanMap['secs'] : this.timer.data.secs + " " + lanMap['secs'] }}
+                        <!-- "uptime":[1,2,3,1], -->
+                        {{ run_time.day + " " + lanMap['days'] }}
+                        {{ run_time.hour + " " + lanMap['hours'] }}
+                        {{ (run_time.min < 10 ? '0' + run_time.min : run_time.min) + " " + lanMap['mins'] }}
+                        {{ (run_time.sec < 10 ? '0' + run_time.sec : run_time.sec) + " " + lanMap['secs'] }}
                     </span>
                 </div>
             </div>
@@ -92,7 +99,21 @@
                 geInfo: {},
                 timer: {},
                 interval: null,
-                time_interval: null
+                time_interval: null,
+                now_time: {
+                    year: 0,
+                    month: 0,
+                    day: 0,
+                    hour: 0,
+                    min: 0,
+                    sec: 0
+                },
+                run_time: {
+                    day: 0,
+                    hour: 0,
+                    min: 0,
+                    sec: 0
+                }
             }
         },
         created(){
@@ -120,28 +141,53 @@
             this.$http.get(this.change_url.time).then(res=>{
                 if(res.data.code === 1){
                     this.timer = res.data;
-                    this.sys_time(res.data);
+                    var arr = this.timer.data.time_now;
+                    this.now_time.year = arr[0];
+                    this.now_time.month = arr[1];
+                    this.now_time.day = arr[2];
+                    this.now_time.hour = arr[3];
+                    this.now_time.min = arr[4];
+                    this.now_time.sec = arr[5];
+                    this.run_time.day = this.timer.data.uptime[0];
+                    this.run_time.hour = this.timer.data.uptime[1];
+                    this.run_time.min = this.timer.data.uptime[2];
+                    this.run_time.sec = this.timer.data.uptime[3];
                     if(this.timer.data){
                         this.time_interval = setInterval(()=>{
-                            if(this.timer.data.secs < 60){
-                                this.timer.data.secs += 1;
-                                if(this.timer.data.secs > 59){
-                                    this.timer.data.secs = 0;
-                                    this.timer.data.mins += 1;
-                                    if(this.timer.data.mins > 59){
-                                        this.timer.data.secs = 0;
-                                        this.timer.data.mins = 0;
-                                        this.timer.data.hours += 1;
-                                        if(this.timer.data.nours > 23){
-                                            this.timer.data.secs = 0;
-                                            this.timer.data.mins = 0;
-                                            this.timer.data.hours = 0;
-                                            this.timer.data.days += 1;
-                                        }
+                            if(this.now_time.sec < 59){
+                                this.now_time.sec += 1;
+                            }else{
+                                this.now_time.sec = 0;
+                                this.now_time.min += 1;
+                                if(this.now_time.min > 59){
+                                    this.now_time.sec = 0;
+                                    this.now_time.min = 0;
+                                    this.now_time.hour += 1;
+                                    if(this.now_time.hour > 23){
+                                        this.now_time.sec = 0;
+                                        this.now_time.min = 0;
+                                        this.now_time.hour = 0;
+                                        this.now_time.day += 1;
                                     }
                                 }
                             }
-                            this.timer.data.time_sec += 1;
+                            if(this.run_time.sec < 59){
+                                this.run_time.sec += 1;
+                            }else{
+                                this.run_time.sec = 0;
+                                this.run_time.min += 1;
+                                if(this.run_time.min > 59){
+                                    this.run_time.sec = 0;
+                                    this.run_time.min = 0;
+                                    this.run_time.hour += 1;
+                                    if(this.run_time.hour > 23){
+                                        this.run_time.sec = 0;
+                                        this.run_time.min = 0;
+                                        this.run_time.hour = 0;
+                                        this.run_time.day += 1;
+                                    }
+                                }
+                            }
                         },1000)
                     }
                 }

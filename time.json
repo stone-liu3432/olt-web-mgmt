@@ -2,10 +2,8 @@
     "code":1,
     "msg":"success",
     "data":{
-        "time_sec":1512464309,
-        "days":11,
-        "hours":10,
-        "mins":59,
-        "secs":50
+        "time_now":[2018,5,14,12,5,52],
+        "uptime":[1,2,3,1],
+        "timezone":1
     }
 }
