@@ -133,7 +133,7 @@ import { mapState,mapMutations } from "vuex"
         },
         watch: {
             userName(){
-                var reg = /^\w{4,16}$/;
+                var reg = /^[a-zA-Z][a-zA-Z_]{3,15}$/;
                 if(!reg.test(this.userName)){
                     this.verify_uname = true;
                 }else{
@@ -145,7 +145,7 @@ import { mapState,mapMutations } from "vuex"
                 this.login_failed = false;
             },
             userPwd(){
-                var reg = /^[^\s]{5,16}$/;
+                var reg = /^[^\s\?\\\/\'\"]{5,16}$/;
                 if(!reg.test(this.userPwd)){
                     this.verify_upwd = true;
                 }else{

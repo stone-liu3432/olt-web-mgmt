@@ -1,5 +1,6 @@
 <template>
     <div class="onu-deny">
+        <h2>{{ lanMap['onu_deny'] }}</h2>
         <div>
             <select v-model="portid">
                 <option v-for="(item,key) in port_name.pon" :key="key" :value="item.id">
@@ -338,5 +339,11 @@ div.tool-tips{
             }
         }
     }
+}
+div.onu-deny>h2{
+	font-size: 20px;
+	font-weight: 600;
+	color: 	#67AEF7;
+    margin: 10px 0 20px 10px;
 }
 </style>

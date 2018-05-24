@@ -95,7 +95,8 @@
                 isProgress: false,
                 width: 0,
                 timer1: null,
-                timer2: null
+                timer2: null,
+                timeout: null
             }
         },
         components: { confirm,loading },
@@ -137,6 +138,8 @@
                     },10000)
                 }
                 this.rebootChoose = false;
+                this.restoreChoose = false;
+                if(this.timeout) clearTimeout(this.timeout);
             },
             //  恢复出厂设置模态框
             result(bool){
@@ -148,7 +151,10 @@
                                 type: 'success',
                                 text: this.lanMap['def_cfg_succ']
                             })
-                            this.reboot_result(true);
+                            this.rebootChoose = true;
+                            this.timeout = setTimeout(()=>{
+                                this.reboot_result(true);
+                            },10000)
                         }else{
                             this.$message({
                                 type: 'error',
@@ -169,10 +175,16 @@
             backup_cfg(){
                 this.$http.get('/system_backup').then(res=>{
                     if(res.data.code === 1){
-                        var a = document.createElement('a');  
-                        a.href = "./";
-                        a.download = res.data.data.filename;
-                        a.click();
+                        try{
+                            var a = document.createElement('a');  
+                            var str = window.location.href;
+                            var _url = str.substr(0,str.indexOf('/#/')+1);
+                            a.href = _url + res.data.data.filename;
+                            a.download = res.data.data.filename;
+                            a.click();
+                        }catch(e){
+                            this.backup_cfg();
+                        }
                     }else if(res.data.code >1){
                         this.$message({
                             type: 'error',
@@ -185,16 +197,16 @@
             },
             //  导入配置        --> 暂未支持，后续添加
             restore_cfg(){
-                this.$message({
-                    type: 'info',
-                    text: this.lanMap['no_support']
-                })
-                return
+                // this.$message({
+                //     type: 'info',
+                //     text: this.lanMap['no_support']
+                // })
+                // return
                 var formData = new FormData();
                 var file = document.getElementById('file');
                 var files = file.files[0];
                 var fileName = document.getElementById('fileName');
-                var reg = /\.txt$/;
+                //var reg = /\.txt$/;
                 if(!files) {
                     fileName.innerText = this.lanMap['file_click'];
                     this.$message({
@@ -203,13 +215,13 @@
                     })
                     return
                 }
-                if(!reg.test(fileName.innerText)){
-                    this.$message({
-                        type: 'error',
-                        text: this.lanMap['restore_file_nr']
-                    })
-                    return
-                }
+                // if(!reg.test(fileName.innerText)){
+                //     this.$message({
+                //         type: 'error',
+                //         text: this.lanMap['restore_file_nr']
+                //     })
+                //     return
+                // }
                 formData.append('file',files);
                 this.isProgress = true;
                 document.body.addEventListener('keydown',this.preventRefresh,false);
@@ -258,6 +270,7 @@
             save_cfg(){
                 this.saveChoose = true;
             },
+            //  配置保存
             saveCfg_result(bool){
                 if(bool){
                     this.$http.get('/system_save').then(res=>{

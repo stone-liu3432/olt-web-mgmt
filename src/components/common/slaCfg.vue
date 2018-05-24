@@ -1,5 +1,6 @@
 <template>
     <div class="onu-bandwidth">
+        <h2>{{ lanMap['sla_cfg'] }}</h2>
         <div>
             <select v-model="portid">
                 <option v-for="(item,key) in port_name.pon" :key="key" :value="item.id">
@@ -95,7 +96,8 @@
                     <span>{{ lanMap['fix'] }}</span>
                     <span>
                         <input type="text" placeholder="1-1000 Mbps" class="sla-fix" v-model.number="post_params.fix"
-                        :style="{ 'border-color': post_params.fix !== '' && (post_params.fix <1 || post_params.fix > 1000000 || isNaN(post_params.fix)) ? 'red' : '' }">
+                        :style="{ 'border-color': post_params.fix !== '' && (post_params.sla_type === 'type1' || post_params.sla_type === 'type5')
+                        && (post_params.fix <1 || post_params.fix > 1000000 || isNaN(post_params.fix)) ? 'red' : '' }">
                     </span>
                     <span class="tips">range: 1-1000000kbs</span>
                 </div>
@@ -103,7 +105,8 @@
                     <span>{{ lanMap['assure'] }}</span>
                     <span>
                         <input type="text" placeholder="1-1000 Mbps" class="sla-assure" v-model.number="post_params.assure" disabled
-                        :style="{ 'border-color': post_params.assure !== '' && (post_params.assure <1 || post_params.assure > 1000000 || isNaN(post_params.assure)) ? 'red' : '' }">
+                        :style="{ 'border-color': post_params.assure !== '' && (post_params.sla_type === 'type2' || post_params.sla_type === 'type3' || post_params.sla_type === 'type5')
+                         && (post_params.assure <1 || post_params.assure > 1000000 || isNaN(post_params.assure)) ? 'red' : '' }">
                     </span>
                     <span class="tips">range: 1-1000000kbs</span>
                 </div>
@@ -111,7 +114,8 @@
                     <span>{{ lanMap['max'] }}</span>
                     <span>
                         <input type="text" placeholder="1-1000 Mbps" class="sla-max" v-model.number="post_params.max" disabled
-                        :style="{ 'border-color': post_params.max !== '' && (post_params.max <1 || post_params.max > 1000000 || isNaN(post_params.max)) ? 'red' : '' }">
+                        :style="{ 'border-color': post_params.max !== '' && (post_params.sla_type === 'type3' || post_params.sla_type === 'type4' || post_params.sla_type === 'type5')
+                        && (post_params.max <1 || post_params.max > 1000000 || isNaN(post_params.max)) ? 'red' : '' }">
                     </span>
                     <span class="tips">range: 1-1000000kbs</span>
                 </div>
@@ -216,21 +220,24 @@ import { mapState } from 'vuex'
                         })
                         return
                     }
-                    if(this.post_params.fix < 1 || this.post_params.fix > 1000000 || isNaN(this.post_params.fix)){
+                    if((this.post_params.sla_type === 'type1' || this.post_params.sla_type === 'type5') && 
+                        (this.post_params.fix < 1 || this.post_params.fix > 1000000 || isNaN(this.post_params.fix))){
                         this.$message({
                             type: 'error',
                             text: this.lanMap['fix_range_err']
                         })
                         return
                     }
-                    if(this.post_params.assure < 1 || this.post_params.assure > 1000000 || isNaN(this.post_params.assure)){
+                    if( (this.post_params.sla_type === 'type2' || this.post_params.sla_type === 'type3' || this.post_params.sla_type === 'type5') &&
+                        (this.post_params.assure < 1 || this.post_params.assure > 1000000 || isNaN(this.post_params.assure))){
                         this.$message({
                             type: 'error',
                             text: this.lanMap['assure_range_err'] 
                         })
                         return
                     }
-                    if(this.post_params.max < 1 || this.post_params.max > 1000000 || isNaN(this.post_params.max)){
+                    if( (this.post_params.sla_type === 'type3' || this.post_params.sla_type === 'type4' || this.post_params.sla_type === 'type5') &&
+                        (this.post_params.max < 1 || this.post_params.max > 1000000 || isNaN(this.post_params.max))){
                         this.$message({
                             type: 'error',
                             text: this.lanMap['max_range_err']
@@ -485,5 +492,11 @@ div.slc-type-tips{
             }
         }
     }
+}
+div.onu-bandwidth>h2{
+	font-size: 20px;
+	font-weight: 600;
+	color: 	#67AEF7;
+    margin: 10px 0 20px 10px;
 }
 </style>

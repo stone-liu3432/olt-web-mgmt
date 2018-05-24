@@ -174,20 +174,30 @@ import confirm from '@/components/common/confirm'
                     url = this.change_url.vlancfg + this.count;
                 }
                 this.$http.get(url).then(res=>{
-                    if(this.count == 0){
-                        this.vlan_list = res.data;
-                    }else{
-                        this.vlan_list.data.concat(res.data.data);
-                    }
-                    if(this.vlan_list.data){
-                        var vlan_map = {}
-                        for(var key in this.vlan_list.data){
-                            vlan_map[this.vlan_list.data[key].vlan_id] = this.vlan_list.data[key];
+                    if(res.data.code === 1 && res.data.data){
+                        if(this.count === 0){
+                            this.vlan_list = res.data;
+                        }else if(res.data.data){
+                            var data = Object.assign([],this.vlan_list.data);
+                            data = data.concat(res.data.data);
+                            this.vlan_list = {
+                                code: 1,
+                                data: data
+                            }
                         }
-                        this.vlan_map = vlan_map;
+                        if(this.vlan_list.data){
+                            var vlan_map = {};
+                            for(var key in this.vlan_list.data){
+                                vlan_map[this.vlan_list.data[key].vlan_id] = this.vlan_list.data[key];
+                            }
+                            this.vlan_map = vlan_map;
+                        }
+                        this.pagination.page = Math.ceil(this.vlan_list.data.length/this.pagination.display);
+                        this.getPage();
+                    }else{
+                        this.vlan_list = {};
+                        this.vlan_tab = [];
                     }
-                    this.pagination.page = Math.ceil(this.vlan_list.data.length/this.pagination.display);
-                    this.getPage();
                 }).catch(err=>{
                     // to do
                 })

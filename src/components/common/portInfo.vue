@@ -7,7 +7,8 @@
             <li>
                 <span>{{ lanMap['port_id']}}</span>
             </li>
-            <li  v-for="(item,key) of port_info.data[0]" :key="key" v-if="port_info.data && key !== 'port_id'">
+            <li  v-for="(item,key) of port_info.data[0]" :key="key" 
+                v-if="port_info.data && key !== 'port_id' && key !== 'ingress_rate' && key !== 'int_media' && key !== 'int_speed' && key !== 'egress_rate'">
                 <span>{{ lanMap[key] }}</span>
             </li>
             <li>

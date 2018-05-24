@@ -410,6 +410,7 @@ import axios from 'axios'
                         // })
                     })
                 }
+                this.modalDialog = false;
             },
             //  清除统计按钮  -->  暂未使用
             clear_statistic(data){

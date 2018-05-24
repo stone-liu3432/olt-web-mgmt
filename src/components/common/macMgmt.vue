@@ -62,7 +62,11 @@
         <ul class="mac-table" v-if="this.mac_table[0]">
             <li>
                 <span>{{ lanMap['mac_index'] }}</span>
-                <span v-for="(item,key) in mac_table[0]" :key="key">{{ lanMap[key] }}</span>
+                <span v-for="(item,key) in mac_table[0]" :key="key">
+                    {{ lanMap[key] }}
+                    <i class="arrow-sort-up" v-if="key === 'vlan_id'" @click="sort_by_vlan"></i>
+                    <i class="arrow-sort-up" v-if="key === 'port_id'" @click="sort_by_port"></i>
+                </span>
                 <span>{{ lanMap['delete'] }}</span>
             </li>
             <li v-for="(item,key) in mac_table" :key="key">
@@ -81,7 +85,7 @@
             <li v-if="mac_table.length%200 === 0">
                 <a href="javascript:;" @click="loadmore">{{ lanMap['loadmore'] }}</a>
             </li>
-            <li v-if="pagination.page > 2" class="paginations">
+            <li v-if="pagination.page > 1" class="paginations">
                 <ul class="pagination rt">
                     <li :class="pagination.index > 1 ? '' : 'disabled'" @click="changeIndex(1)">&lt;&lt;</li>
                     <li :class="pagination.index > 1 ? '' : 'disabled'" @click="changeIndex(pagination.index-1)">&lt;</li>
@@ -297,7 +301,7 @@ import loading from '@/components/common/loading'
         },
         methods: {
             getName(id){
-                if(id < 1) return false
+                if(id < 1) return '';
                 return this.port_name.pon[id] ? this.port_name.pon[id].name : this.port_name.ge[id].name;
             },
             getData(){
@@ -316,8 +320,9 @@ import loading from '@/components/common/loading'
                 }
                 this.$http.post('/switch_mac?form=table',post_param).then(res=>{
                     if(res.data.code === 1){
-                        if(this.tab.length%200 === 0 && this.count !== 0){
-                            this.tab.concat(res.data.data);
+                        if(res.data.data && this.count !== 0){
+                            var data = Object.assign([],this.tab.concat(res.data.data));
+                            this.tab = data;
                         }else if(this.count === 0 && res.data.data){
                             this.tab = res.data.data;
                         }else{
@@ -328,6 +333,7 @@ import loading from '@/components/common/loading'
                     }else{
                         this.tab = [];
                         this.mac_table = [];
+                        this.count = 0;
                     }
                 }).catch(err=>{
                     // to do
@@ -616,6 +622,28 @@ import loading from '@/components/common/loading'
                     this.flush_param.port_id = [];
                 }
             },
+            sort_by_vlan(e){
+                if(e.target.className === 'arrow-sort-up'){
+                    e.target.className = 'arrow-sort-down';
+                    this.tab.sort((a,b)=>b.vlan_id - a.vlan_id);
+                }else{
+                    e.target.className = 'arrow-sort-up';
+                    this.tab.sort((a,b)=>a.vlan_id - b.vlan_id);
+                }
+                this.pagination.page = Math.ceil(this.tab.length/this.pagination.display);
+                this.getPage();
+            },
+            sort_by_port(e){
+                if(e.target.className === 'arrow-sort-up'){
+                    e.target.className = 'arrow-sort-down';
+                    this.tab.sort((a,b)=>b.port_id - a.port_id);
+                }else{
+                    e.target.className = 'arrow-sort-up';
+                    this.tab.sort((a,b)=>a.port_id - b.port_id);
+                }
+                this.pagination.page = Math.ceil(this.tab.length/this.pagination.display);
+                this.getPage();
+            }
         },
         watch: {
             flag(){
@@ -818,6 +846,12 @@ i.delete{
 }
 i.delete:hover{
     background: url('../../assets/delete-hover.png') no-repeat;
+}
+i.arrow-sort-down{
+    background: url('../../assets/arrow-sort-down.png') no-repeat;
+}
+i.arrow-sort-up{
+    background: url('../../assets/arrow-sort-up.png') no-repeat;
 }
 div.cover+div.self-align{
     height: 340px;

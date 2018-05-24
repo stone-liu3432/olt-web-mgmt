@@ -1,4 +1,4 @@
-{
+var en = {
 	"advanced" :  "advanced",
 	"running_status" :  "Running Status",
 	"system_mgmt" :  "System",
@@ -371,3 +371,5 @@
 	"start":  "Start",
 	"select_timezone":  "Select Timezone"
 }
+
+export default en

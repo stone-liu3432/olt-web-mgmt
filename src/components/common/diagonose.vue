@@ -93,21 +93,21 @@ import { mapState } from 'vuex'
                 if(!this.reg_ip.test(this.ipaddr)){
                     this.$message({
                         type: 'error',
-                        text: lanMap['ipaddr_error']
+                        text: this.lanMap['ipaddr_error']
                     })
                     return
                 }
                 if(this.count < 1 || this.count > 50){
                     this.$message({
                         type: 'error',
-                        text: lanMap['param_error']
+                        text: this.lanMap['param_error']
                     })
                     return
                 }
                 if(this.pktsize < 4 || this.pktsize > 1472){
                     this.$message({
                         type: 'error',
-                        text: lanMap['param_error']
+                        text: this.lanMap['param_error']
                     })
                     return
                 }

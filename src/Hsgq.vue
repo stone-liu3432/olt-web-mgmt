@@ -8,6 +8,8 @@
 <script>
 import { mapState, mapMutations } from "vuex";
 import loading from "@/components/common/loading";
+import zh from '@/config/lang_zh';
+import en from '@/config/lang_en';
 export default {
     name: "hsgq",
     components: { loading },
@@ -20,37 +22,27 @@ export default {
         }
     },
     created() {
-        var get_lang = sessionStorage.getItem('lang_data');
+        this.lang = {
+            zh,
+            en
+        }
         var def_lang = sessionStorage.getItem('def_lang');
-        if(get_lang && def_lang){
-            this.lang = JSON.parse(get_lang);
+        if(def_lang){
             this.set_language(def_lang);
             this.add_lanMap(this.lang[def_lang]);
         }else{
-            this.$http.get('./lang-en.json').then(res=>{
-                this.lang.en = res.data;
-                this.$http.get('./lang-zh.json').then(res=>{
-                    this.lang.zh = res.data;
-                    //  缓存language文件，防止用户手动刷新时数据丢失
-                    sessionStorage.setItem('lang_data',JSON.stringify(this.lang));
-                    this.$http.get(this.change_url.get_lang).then(res => {
-                        if (res.data.code === 1) {
-                            this.set_language(res.data.data.lang);
-                            //  缓存用户选择的语言类型，防止用户手动刷新数据消失
-                            sessionStorage.setItem('def_lang',res.data.data.lang);
-                        }else{
-                            this.set_language('en');
-                            sessionStorage.setItem('def_lang','en');
-                        }
-                    }).catch(err => {
-                        // to do
-                    });
-                }).catch(err=>{
-                    // to do
-                })
-            }).catch(err=>{
+            this.$http.get(this.change_url.get_lang).then(res => {
+                if (res.data.code === 1) {
+                    this.set_language(res.data.data.lang);
+                    //  缓存用户选择的语言类型，防止用户手动刷新数据消失
+                    sessionStorage.setItem('def_lang',res.data.data.lang);
+                }else{
+                    this.set_language('en');
+                    sessionStorage.setItem('def_lang','en');
+                }
+            }).catch(err => {
                 // to do
-            })
+            });
         }
         this.http_interceptors();
     },

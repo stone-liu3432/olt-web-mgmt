@@ -1,4 +1,4 @@
-﻿{
+var zh = {
 	"advanced" : "用户权限",
 	"running_status" : "运行状态",
 	"system_mgmt" : "系统管理",
@@ -371,3 +371,5 @@
 	"start":"开始",
 	"select_timezone": "选择时区"
 }
+
+export default zh

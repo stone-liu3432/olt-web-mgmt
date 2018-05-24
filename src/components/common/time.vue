@@ -22,7 +22,7 @@
                 <span>{{ lanMap['manual_s'] + lanMap['config'] + lanMap['time_set'] }}</span>
             </div>
             <div class="time-item">
-                <span>选择时区</span>
+                <span>{{ lanMap['select_timezone'] }}</span>
                 <span>
                     <select style="width: 350px" v-model="timezone">
                         <option v-for="(item,index) in timezones" :key="index" :value="index">{{ item.tag }}</option>

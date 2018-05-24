@@ -5,7 +5,7 @@
         "port_id":1,
         "onu_id":1,
         "sla_type":"type5",
-        "fix":1,
+        "fix":0,
         "assure":10000,
         "max":1000000
     }

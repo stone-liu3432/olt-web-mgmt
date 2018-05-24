@@ -57,6 +57,9 @@ export default {
         ...mapMutations({
             update_menu: 'updateMenu'
         }),
+        getData(){
+            this.$emit('updateData');
+        },
         // 删除onu
         delete_onu(node){
             this.post_params = {
@@ -104,7 +107,7 @@ export default {
             this.post_params = {
                 "method": "set",
                 "param":{
-                    "port_id": this.portid,
+                    "port_id": node.port_id,
                     "onu_id": node.onu_id,
                     "macaddr": node.macaddr,
                     "auth_state": node.auth_state ? 0 : 1,
@@ -126,18 +129,6 @@ export default {
                 }
             };
             this.deny_confirm = true;
-        },
-        //  跳转带宽管理
-        onu_bandwieth(){
-            // 请求url: /onu_bandwidth?port_id=1
-            this.$router.push('/sla_cfg?port_id='+this.portid);
-            var sub_item = document.querySelectorAll('p.sub-item');
-            for(var i=0;i<sub_item.length;i++){
-                sub_item[i].className = 'sub-item';
-                if(sub_item[i].innerText.replace(/\s/g,'') == this.lanMap['sla_cfg']){
-                    sub_item[i].className += ' actived';
-                }
-            }
         },
         //  重启模态框
         result_reboot(bool){
@@ -175,7 +166,7 @@ export default {
             this.post_params = {
                 "method":"set",
                 "param":{
-                    "port_id": this.portid,
+                    "port_id": item.port_id,
                     "onu_id": item.onu_id,
                     "flags": 1,
                     "fec_mode": 1
@@ -269,9 +260,6 @@ export default {
             // 调用 vuex Mutations方法，更新 store 状态
             this.update_menu(_menu);
         }
-    },
-    mounted(){
-        
     }
 }
 </script>

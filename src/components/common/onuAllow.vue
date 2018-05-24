@@ -1,5 +1,6 @@
 <template>
     <div class="onu-allow">
+        <h2>{{ lanMap['onu_allow'] }}</h2>
         <div>
             <select v-model="portid">
                 <option v-for="(item,key) in port_name.pon" :key="key" :value="item.id">
@@ -49,7 +50,7 @@
                 </div>
                 <div class="modal-item">
                     <span>{{ lanMap['macaddr'] }}</span>
-                    <input type="text" v-model="add_macaddr" :style="{'borderColor' : add_macaddr && testMacaddr ? 'red' : '#ccc'}" placeholder="00:00:00:00:00:00">
+                    <input type="text" v-model="add_macaddr" :style="{'borderColor' : add_macaddr && testMacaddr ? 'red' : ''}" placeholder="00:00:00:00:00:00">
                     <span class="tips">EX : 00:00:00:00:00:00</span>
                 </div>
                 <div class="modal-item">
@@ -107,7 +108,7 @@
                 </span>
             </li>
         </ul> -->
-        <onuCard v-if="onu_allow_list.data && onu_allow_list.data.length>0" :onu-allow-list="onu_allow_list"></onuCard>
+        <onuCard v-if="onu_allow_list.data && onu_allow_list.data.length>0" :onu-allow-list="onu_allow_list" @updateData="getData"></onuCard>
         <p v-else>{{ lanMap['no_more_data'] }}</p>
         <confirm :tool-tips="lanMap['tips_del_onu']" @choose="result_delete" v-if="delete_confirm"></confirm>
         <confirm :tool-tips="lanMap['tips_add_deny_onu']" @choose="result_deny" v-if="deny_confirm"></confirm>
@@ -219,7 +220,8 @@ import onuCard from '@/components/common/onuCard'
                     if(this.add_onuid === ''){
                         this.add_onuid = 0;
                     }
-                    if(this.testMacaddr || this.add_macaddr === '') {
+                    if(this.testMacaddr || this.add_macaddr === '' || this.macaddr === 'ff:ff:ff:ff:ff:ff' || 
+                    this.macaddr === '00:00:00:00:00:00' || this.macaddr === '01:00:5e:00:00:00') {
                         this.$message({
                             type: 'error',
                             text: this.lanMap['param_mac']
@@ -263,6 +265,7 @@ import onuCard from '@/components/common/onuCard'
                 }
                 this.add_dialog = false;
             },
+            //  onu认证/取消认证确认框
             result_authstate(bool){
                 if(bool){
                     this.$http.post('/onu_allow_list',this.post_params).then(res=>{
@@ -716,5 +719,11 @@ div.search-onu{
         color: #666;
         font-size: 14px;
     }
+}
+div.onu-allow>h2{
+	font-size: 20px;
+	font-weight: 600;
+	color: 	#67AEF7;
+    margin: 10px 0 20px 10px;
 }
 </style>
