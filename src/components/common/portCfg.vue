@@ -1,7 +1,8 @@
 <template>
     <div>
-        <div>
-            <h2>{{ lanMap['port_cfg'] }}</h2>
+        <div class="port-cfg-title">
+            <h2 class="lf">{{ lanMap['port_cfg'] }}</h2>
+            <a href="javascript:void(0);" @click="refresh_port">{{ lanMap['refresh'] }}</a>
         </div>
         <div class="vlan-config">
             <p class="item-align">
@@ -87,6 +88,7 @@
                                 <option value="1">{{ lanMap['full'] }}</option>
                             </select>
                             <select v-if="key === 'speed'" v-model="port_data.speed">
+                                <option value="0M" disabled>Auto</option>
                                 <option value="10M">10M</option>
                                 <option value="100M">100M</option>
                                 <option value="1000M">1000M</option>
@@ -608,6 +610,11 @@ import confirm from '@/components/common/confirm'
                 }).catch(err=>{
                     // to do
                 })
+            },
+            refresh_port(){
+                this.getPortData();
+                this.getStormData();
+                this.getMirrorData();
             }
         },
         watch: {
@@ -719,7 +726,7 @@ a.delete-mirror{
     height: 30px;
     display: inline-block;
     border: 1px solid transparent;
-    border-radius: 5px;
+    border-radius: 3px;
     background: #ddd;
     line-height: 30px;
     text-align: center;
@@ -818,6 +825,19 @@ div.tips{
             border: none;
             border-top: 1px solid #333;
         }
+    }
+}
+div.port-cfg-title{
+    overflow: hidden;
+    >a{
+        display: inline-block;
+        width: 120px;
+        height: 30px;
+        line-height: 30px;
+        text-align: center;
+        margin: 10px 0 20px 10px;
+        border-radius: 3px;
+        background: #ddd;
     }
 }
 </style>

@@ -24,7 +24,7 @@ var en = {
       "onu_port_cfg":  "ONU Port Config",
 	"swport_mgmt" :  "Switch Port",
 	  "port_info" :  "Port Info",
-	  "perf_info" :  "Perfomance",
+	  "perf_info" :  "Performance",
 	  "port_cfg" :  "Port Config",
 		"vlan_cfg" :  "VLAN Config",
 		"stormctrl_cfg" :  "Stormctrl",
