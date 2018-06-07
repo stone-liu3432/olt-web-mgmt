@@ -859,16 +859,18 @@ import { mapState } from 'vuex'
                 if(this.onu_port_cfg){
                     for(var key in this.onu_port_info.data){
                         if(this.onu_port_info.data[key].op_id === this.op_id){
-                            var data = this.onu_port_info.data[key];
-                            for(var _key in data){
-                                this.onu_port_item[_key] = data[_key];
-                            }
+                            // var data = this.onu_port_info.data[key];
+                            // for(var _key in data){
+                            //     this.onu_port_item[_key] = data[_key];
+                            // }
+                            this.onu_port_item = Object.assign({},this.onu_port_info.data[key]);
                         }
                     }
-                    //  缓存数据，提交时比对数据有无变化，若有变化添加 flags
-                    for(var key in this.onu_port_item){
-                        this.cache_data[key] = this.onu_port_item[key];
-                    }
+                    // 缓存数据，提交时比对数据有无变化，若有变化添加 flags
+                    // for(var key in this.onu_port_item){
+                    //     this.cache_data[key] = this.onu_port_item[key];
+                    // }
+                    this.cache_data = Object.assign({},this.onu_port_item);
                     return
                 }
                 for(var key in this.onu_vlan_info.data){
@@ -881,9 +883,10 @@ import { mapState } from 'vuex'
                     }
                 }
                 // 缓存数据，用于提交时对比变化
-                for(var key in this.onu_vlan_item){
-                    this.cache_data[key] = this.onu_vlan_item[key];
-                }
+                // for(var key in this.onu_vlan_item){
+                //     this.cache_data[key] = this.onu_vlan_item[key];
+                // }
+                this.cache_data = Object.assign({},this.onu_vlan_item);
             }
         }
     }

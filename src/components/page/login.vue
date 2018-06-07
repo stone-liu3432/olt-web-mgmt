@@ -133,7 +133,7 @@ import { mapState,mapMutations } from "vuex"
         },
         watch: {
             userName(){
-                var reg = /^[a-zA-Z][a-zA-Z_]{3,15}$/;
+                var reg = /^[a-zA-Z][a-zA-Z_\d]{3,15}$/;
                 if(!reg.test(this.userName)){
                     this.verify_uname = true;
                 }else{

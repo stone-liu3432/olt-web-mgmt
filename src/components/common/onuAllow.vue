@@ -10,6 +10,7 @@
             <i class="reload" :title="lanMap['tips_page_refresh']" @click="reload"></i>
             <a href="javascript:;" @click="add_onu()">{{ lanMap['add'] }}</a>
             <a href="javascript:;" @click="onu_bandwieth()">{{ lanMap['sla_cfg'] }}</a>
+            <a href="javascript:;" @click="switch_display_mode()">{{ lanMap['switch_display'] }}</a>
             <div class="rt tool-tips">
                 <i class="icon-tips"></i>
                 <div>
@@ -84,15 +85,17 @@
             </div>
             <p class="lf">{{ lanMap['search_by_macaddr'] }}</p>
         </div>
-        <!-- <ul v-if="onu_allow_list.data && onu_allow_list.data.length>0">
+        <ul v-if="onu_allow_list.data && onu_allow_list.data.length>0 && onu_display_style === 1">
             <li class="flex-box">
-                <span v-for="(item,key) in onu_allow_list.data[0]" :key="key" v-if=" key != 'port_id' ">
+                <span v-for="(item,key) in onu_allow_list.data[0]" :key="key" v-if=" key != 'port_id' && key !== 'onu_name'">
                     {{ lanMap[key] }}
                 </span>
                 <span>{{ lanMap['config'] }}</span>
             </li>
             <li v-for="(item,index) in onu_allow_list.data" :key="index" class="flex-box" :style="{ 'background-color' : item.status.toLowerCase() !== 'online' ? '#F3A9A0' : '' }">
-                <span>{{ 'ONU0'+item.port_id +'/'+ item.onu_id }}</span>
+                <span :title="item.onu_name" class="onu-name-ellipsis">
+                    {{ item.onu_name || 'ONU0'+item.port_id +'/'+ item.onu_id }}
+                </span>
                 <span>{{ item.macaddr }}</span>
                 <span>{{ item.status }}</span>
                 <span>
@@ -107,9 +110,9 @@
                     <i :title="lanMap['reboot_onu']" class="reset-onu" @click="reboot(item)"></i>
                 </span>
             </li>
-        </ul> -->
-        <onuCard v-if="onu_allow_list.data && onu_allow_list.data.length>0" :onu-allow-list="onu_allow_list" @updateData="getData"></onuCard>
-        <p v-else>{{ lanMap['no_more_data'] }}</p>
+        </ul>
+        <onuCard v-if="onu_allow_list.data && onu_allow_list.data.length > 0 && onu_display_style === 2" :onu-allow-list="onu_allow_list" @updateData="getData"></onuCard>
+        <p v-if="!onu_allow_list.data || onu_allow_list.data.length <= 0">{{ lanMap['no_more_data'] }}</p>
         <confirm :tool-tips="lanMap['tips_del_onu']" @choose="result_delete" v-if="delete_confirm"></confirm>
         <confirm :tool-tips="lanMap['tips_add_deny_onu']" @choose="result_deny" v-if="deny_confirm"></confirm>
         <confirm :tool-tips="lanMap['confirm_reboot_onu']" @choose="result_reboot" v-if="reboot_confirm"></confirm>
@@ -141,7 +144,8 @@ import onuCard from '@/components/common/onuCard'
                 authstate_confirm: false,
                 post_params: {},
                 search_macaddr: '',
-                tips_authstate: ''
+                tips_authstate: '',
+                onu_display_style: 1
             }
         },
         computed: mapState(['lanMap','port_name','menu','change_url']),
@@ -178,6 +182,14 @@ import onuCard from '@/components/common/onuCard'
             //  手动刷新
             reload(){
                 this.$parent.reload();
+            },
+            //  切换Oun列表显示模式
+            switch_display_mode(){
+                if(this.onu_display_style === 1){
+                    this.onu_display_style = 2;
+                }else{
+                    this.onu_display_style = 1;
+                }
             },
             getData(){
                 this.search_macaddr = '';
@@ -293,7 +305,7 @@ import onuCard from '@/components/common/onuCard'
                 if(node.status.toLowerCase() !== 'online'){
                     this.$message({
                         type: 'error',
-                        text: this.lanMap['tips_cfm_onu']
+                        text: this.lanMap['tips_authstate_error']
                     })
                     return
                 }
@@ -503,6 +515,7 @@ ul{
     border:1px solid #ddd;
     margin-top: 20px;
     min-width: 1020px;
+    overflow: hidden;
 }
 ul>li{
     font-size: 0;
@@ -520,6 +533,12 @@ span{
     text-align: center;
     font-size: 16px;
 }
+span.onu-name-ellipsis{
+    padding: 0 20px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    box-sizing: border-box;
+}
 input{
     margin-left:20px;
     margin-top: 9px;
@@ -536,7 +555,7 @@ select+a{
 }
 a{
     display: inline-block;
-    width: 120px;
+    padding: 0 20px;
     height: 36px;
     line-height: 36px;
     border-radius: 5px;
@@ -558,7 +577,7 @@ i{
     cursor: pointer;
     width: 32px;
     height: 32px;
-    vertical-align: middle;
+    vertical-align: top;
 }
 i.onu-detail{
     background: url('../../assets/detail-normals.png') no-repeat 1px 1px;

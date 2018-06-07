@@ -2,7 +2,9 @@
     <div class="onu-list">
         <div class="onu-card"  v-for="(item,key) in onuAllowList.data" :key="key">
             <div class="card-cover">
-                <div :style="{ 'color' : item.status.toLowerCase() !== 'online' ? 'red' : 'blue' }">{{ 'ONU0'+item.port_id +'/'+ item.onu_id }}</div>
+                <div :style="{ 'color' : item.status.toLowerCase() !== 'online' ? 'red' : 'blue' }" :title="item.onu_name">
+                    {{ item.onu_name || 'ONU0'+item.port_id +'/'+ item.onu_id }}
+                </div>
                 <div>
                     <span>{{ lanMap['status'] + ':' }}</span>
                     <span :style="{ 'color' : item.status.toLowerCase() !== 'online' ? 'red' : 'blue' }">{{ item.status }}</span>
@@ -333,6 +335,10 @@ div.onu-card{
         background: #ddd;
         transition: all .3s linear;
         opacity: .9;
+        div:first-child{
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
         >div{
             text-align: center;
             padding: 2px 0;

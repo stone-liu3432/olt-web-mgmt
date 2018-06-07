@@ -176,7 +176,7 @@ import confirm from '@/components/common/confirm'
                             "onu_id": this.onuid,
                             "flags": 8,
                             "fec_mode": this.onu_fec_mode.data.fec_mode ? 0 : 1,
-                            "onu_name": this.onu_name,
+                            "onu_name": this.onu_name.replace(/\s*/g,''),
                             "onu_desc": this.onu_desc
                         }
                     }

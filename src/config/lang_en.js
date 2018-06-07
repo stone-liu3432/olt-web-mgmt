@@ -223,7 +223,7 @@ var en = {
 	"service_user_password_fail": "The username or password check failed",
 	"login_success": "Welcome",
 	"login_user": "Login",
-	"password_length_fail": "the range of the length of the password is 5-16 and it can't be use space charactor, Please check!",
+	"password_length_fail": "the range of the length of the password is 5-16 and it can't be use space / \\ \' \" charactor, Please check!",
 	"username_length_fail": "the range of the length of the username is 5-16 and it can't be use special charactior, Please check!",
 	"login_out": "Logout successfully",
 	"login_page_login_hit": "Please Login EPON OLT for Management",
@@ -334,8 +334,8 @@ var en = {
     "onu_port_config": "ONU port configuration",
     "onu_vlan_mode_cfg": "ONU port VLAN mode configuration",
     "onu_port_id": "ONU port ID",
-    "onu_add_translate": "add vlan transpond for ONU",
-    "onu_del_translate": "delete vlan transpond from ONU",
+    "onu_add_translate": "add vlan translate for ONU",
+    "onu_del_translate": "delete vlan translate from ONU",
     "vlan_pri_param_error": "VLAN priority parameters incorrect",
     "translate_exits": " VLAN translate is existed",
     "trunk_vlanid_range_error": "VLAN list exceed maximum configurable",
@@ -369,7 +369,8 @@ var en = {
     "diag_ping_pktsize":  "PING packet size",
 	"diag_type":  "Ping test",
 	"start":  "Start",
-	"select_timezone":  "Select Timezone"
+	"select_timezone":  "Select Timezone",
+	"switch_display": "Switch display mode"
 }
 
 export default en

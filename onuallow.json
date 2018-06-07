@@ -3,7 +3,8 @@
     "msg":"success",
     "data":[{
 		"port_id":1,
-		"onu_id":1,
+        "onu_id":1,
+        "onu_name": "fdkajfsalkfjlsdklfsjalfafakldfjslkfjdkslafjdslafdjs",
 		"macaddr":"38:3a:21:20:22:66",
 		"status":"offline",
 		"auth_state":1,

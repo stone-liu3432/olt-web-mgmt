@@ -7,7 +7,7 @@
             <h3>{{ lanMap['firmware'] }}</h3>
         </div>
         <form class="upload-form"> 
-            <input type="file" class="hide" id="file1" @change="changeFile('file1','fileName1')"/>
+            <input type="file" class="hide" id="file1" @change="changeFile('file1','fileName1')" accept=".img"/>
             <span class="updateFile" id="fileName1">{{ lanMap['file_click'] }}</span>
             <a href="javascript:;" @click="firmware">{{ lanMap["apply"] }}</a>
         </form>
@@ -15,7 +15,7 @@
             <h3>{{ lanMap['system'] }}</h3>
         </div>
         <form class="upload-form">
-            <input type="file" class="hide" id="file2" @change="changeFile('file2','fileName2')"/>
+            <input type="file" class="hide" id="file2" @change="changeFile('file2','fileName2')" accept=".img"/>
             <span class="updateFile" id="fileName2">{{ lanMap['file_click'] }}</span>
             <a href="javascript:;" @click="system">{{ lanMap["apply"] }}</a>
         </form>

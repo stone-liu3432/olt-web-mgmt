@@ -222,7 +222,7 @@ var zh = {
 	"service_user_password_fail":"用户名或密码验证失败",
 	"login_success":"登录成功,欢迎使用",
 	"login_user":"登录",
-	"password_length_fail":"密码限定长度为5-16位,且不能使用空格",
+	"password_length_fail":"密码限定长度为5-16位,且不能使用空格 / \\ \' \"",
 	"username_length_fail":"请输入符合规范的4-16位用户名，不能输入中文、空格和特殊字符",
 	"login_out":"成功退出登陆",
 	"login_page_login_hit":"请登录以管理EPON OLT",
@@ -369,7 +369,8 @@ var zh = {
 	"diag_ping_pktsize": "PING 数据包大小",
 	"diag_type": "Ping诊断",
 	"start":"开始",
-	"select_timezone": "选择时区"
+	"select_timezone": "选择时区",
+	"switch_display": "切换显示模式"
 }
 
 export default zh
