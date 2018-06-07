@@ -86,13 +86,13 @@
             <p class="lf">{{ lanMap['search_by_macaddr'] }}</p>
         </div>
         <ul v-if="onu_allow_list.data && onu_allow_list.data.length>0 && onu_display_style === 1">
-            <li class="flex-box">
+            <li class="onulist-item">
                 <span v-for="(item,key) in onu_allow_list.data[0]" :key="key" v-if=" key != 'port_id' && key !== 'onu_name'">
                     {{ lanMap[key] }}
                 </span>
                 <span>{{ lanMap['config'] }}</span>
             </li>
-            <li v-for="(item,index) in onu_allow_list.data" :key="index" class="flex-box" :style="{ 'background-color' : item.status.toLowerCase() !== 'online' ? '#F3A9A0' : '' }">
+            <li v-for="(item,index) in onu_allow_list.data" :key="index" class="onulist-item" :style="{ 'background-color' : item.status.toLowerCase() !== 'online' ? '#F3A9A0' : '' }">
                 <span :title="item.onu_name" class="onu-name-ellipsis">
                     {{ item.onu_name || 'ONU0'+item.port_id +'/'+ item.onu_id }}
                 </span>
@@ -529,15 +529,21 @@ ul>li:last-child{
 }
 span{
     display: inline-block;
-    width: 20%;
+    width: 16%;
     text-align: center;
     font-size: 16px;
 }
-span.onu-name-ellipsis{
+li.onulist-item>span.onu-name-ellipsis{
     padding: 0 20px;
     overflow: hidden;
     text-overflow: ellipsis;
     box-sizing: border-box;
+}
+li.onulist-item>span{
+    display: inline-block;
+    width: 16%;
+    overflow: hidden;
+    text-overflow: ellipsis;
 }
 input{
     margin-left:20px;

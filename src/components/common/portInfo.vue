@@ -6,48 +6,27 @@
         <ul class="port-info-title"  onselectstart="return false;" v-if="port_info.data">
             <li>
                 <span>{{ lanMap['port_id']}}</span>
-            </li>
-            <li  v-for="(item,key) of port_info.data[0]" :key="key" 
-                v-if="port_info.data && key !== 'port_id' && key !== 'ingress_rate' && key !== 'int_media' && key !== 'int_speed' && key !== 'egress_rate'">
-                <span>{{ lanMap[key] }}</span>
-            </li>
-            <li>
+                <span v-for="(item,key) of port_info.data[0]" :key="key" 
+                v-if="port_info.data && key !== 'port_id' && key !== 'ingress_rate' && key !== 'int_media' && key !== 'int_speed' && key !== 'egress_rate'"
+                :title="lanMap[key]" >
+                    {{ lanMap[key] }}
+                </span>
                 <span>{{ lanMap['config']}}</span>
             </li>
         </ul>
-        <ul class="port-info-title" v-if="port_info.data && port_name.pon" v-for="(item,index) in port_info.data" :key="index" onselectstart="return false;">
-            <li>
+        <ul class="port-info-title" v-if="port_info.data && port_name.pon" onselectstart="return false;">
+            <li v-for="(item,index) in port_info.data" :key="index">
                 <span>{{ port_name.pon[item.port_id] ? port_name.pon[item.port_id].name : port_name.ge[item.port_id].name }}</span>
-            </li>
-            <li>
                 <span>{{ item.admin_status >= 1 ? "Enable" : "Disable" }}</span>
-            </li>
-            <li>
                 <span>{{ item.link_status >=1 ? "Link-up" : "Link-down" }}</span>
-            </li>
-            <li>
                 <span>{{ item.auto_neg >=1 ? "Enable" : "Disable" }}</span>
-            </li>
-            <li>
                 <span>{{ item.speed === "10/100/1000M" ? "Auto" : item.speed }}</span>
-            </li>
-            <li>
                 <span>{{ item.duplex >= 1 ? "full" : "half" }}</span>
-            </li>
-            <li>
                 <span>{{ item.flow_ctrl >= 1 ? "Enable" : "Disable" }}</span>
-            </li>
-            <li>
                 <span>{{ item.mtu }}</span>
-            </li>
-            <li>
                 <span>{{ lanMap[item.media] }}</span>
-            </li>
-            <li>
                 <span>{{ item.pvid }}</span>
-            </li>
-            <li class="cfg-btn"  onselectstart="return false;" @click="jump(item.port_id)">
-                <span>{{ lanMap['config'] }}</span>
+                <span class="cfg-btn"  onselectstart="return false;" @click="jump(item.port_id)">{{ lanMap['config'] }}</span>
             </li>
         </ul>
     </div>
@@ -94,10 +73,8 @@ import { mapState } from 'vuex'
     min-width: 1020px;
 }
 .port-info-title{
-    display: flex;
     width:100%;
     max-width:1200px;
-    justify-content: space-around;
 }
 h2{
     width: 200px;
@@ -106,26 +83,26 @@ h2{
 	color: 	#67AEF7;
     margin: 10px 0 20px 10px;
 }
-ul>li{
-    width:12%;
-    border:1px solid #ccc;
-    text-align: center;
-    border-bottom: none;
-    border-right: none;
-    height: 40px;
-    font-size: 32px;
-    vertical-align: middle;
+li{
+    height: 32px;
+    line-height: 32px;
     overflow: hidden;
 }
 ul>li>span{
-    display: inline-block;
-    font-size: 16px;
-    vertical-align: middle;
+    float: left;
+    width: 9.08%;
+    border: 1px solid #ccc;
+    text-align: center;
+    border-bottom: none;
+    border-right: none;
+    box-sizing: border-box;
+    overflow: hidden;
+    text-overflow: ellipsis;
 }
-ul>li:last-child{
-    border-right:1px solid #ccc;
+ul>li>span:last-child{
+    border-right: 1px solid #ccc;
 }
-ul:last-child{
+ul+ul>li:last-child{
     border-bottom: 1px solid #ccc;
 }
 .cfg-btn{
