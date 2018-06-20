@@ -152,6 +152,7 @@ a {
 }
 select {
   border: 1px solid #ccc;
+  padding-left: 10px\9\0;
 }
 .flex-box {
   display: flex;

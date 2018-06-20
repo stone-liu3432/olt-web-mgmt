@@ -370,7 +370,9 @@ var en = {
 	"diag_type":  "Ping test",
 	"start":  "Start",
 	"select_timezone":  "Select Timezone",
-	"switch_display": "Switch display mode"
+	"switch_display": "Switch display mode",
+	"service": "Service",
+	"click_often":"Click too often"
 }
 
 export default en

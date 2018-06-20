@@ -15,9 +15,10 @@ import slaCfg from '../components/common/slaCfg'
 import upgrade from '../components/common/upgrade'
 import portCfg from '../components/common/portCfg'
 import vlanMgmt from '../components/common/vlanMgmt'
-import time from '../components/common/time'
+import timeMgmt from '../components/common/timeMgmt'
 import devMgmt from "../components/common/devMgmt"
 import onuPortCfg from "../components/common/onuPortCfg"
+import service from "../components/common/service"
 import Router from 'vue-router'
 import store from '../vuex/store'
 
@@ -144,7 +145,13 @@ const router = new Router({
           }
         }, {
           path: "/time",
-          component: time,
+          component: timeMgmt,
+          meta: {
+            requireAuth: true
+          }
+        }, {
+          path: "/service",
+          component: service,
           meta: {
             requireAuth: true
           }

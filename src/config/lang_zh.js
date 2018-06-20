@@ -370,7 +370,9 @@ var zh = {
 	"diag_type": "Ping诊断",
 	"start":"开始",
 	"select_timezone": "选择时区",
-	"switch_display": "切换显示模式"
+	"switch_display": "切换显示模式",
+	"service": "服务",
+	"click_often":"点击太过频繁"
 }
 
 export default zh

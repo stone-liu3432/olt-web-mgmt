@@ -17,7 +17,7 @@
         <div class="diagonose-item">
             <span>{{ lanMap['diag_ping_intf'] }}</span>
             <span>
-                <select v-model="interface">
+                <select v-model="_interface">
                     <option v-for="(item,index) in interface_data" :key="index" :value="item.interface">
                         {{ lanMap[item.interface] ? lanMap[item.interface] : item.interface }}
                     </option>
@@ -55,7 +55,7 @@ import { mapState } from 'vuex'
         data(){
             return {
                 ipaddr: '',
-                interface: '',
+                _interface: '',
                 count: 4,
                 pktsize: 64,
                 interval: null,
@@ -77,7 +77,7 @@ import { mapState } from 'vuex'
                         if(res.data.data){
                             this.interface_data = this.interface_data.concat(res.data.data);
                         }
-                         this.interface = this.interface_data[0].interface;
+                         this._interface = this.interface_data[0].interface;
                     }else{
                         this.inbound = {};
                     }
@@ -115,7 +115,7 @@ import { mapState } from 'vuex'
                     "method":"start",
                     "param":{
                         "ipaddr": this.ipaddr,
-                        "interface": this.interface,
+                        "interface": this._interface,
                         "count": this.count,
                         "pktsize": this.pktsize
                     }

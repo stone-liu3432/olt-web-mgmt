@@ -14,7 +14,8 @@
                     {"name":"diagonose"},
                     {"name":"remote_mgmt"},
                     {"name":"upgrade"},
-                    {"name":"time"}
+                    {"name":"time"},
+                    {"name":"service"}
                 ]
             },{
                 "name":"pon_mgmt",
