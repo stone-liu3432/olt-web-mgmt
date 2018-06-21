@@ -295,10 +295,9 @@ import { mapState } from 'vuex'
                             this.getPortData();
                         }
                     }else if(res.data.code > 1){
-                        // to do
                         this.$message({
-                            type: 'success',
-                            text: this.lanMap['setting_fail']
+                            type: 'error',
+                            text: res.data.message
                         })
                     }
                 }).catch(err=>{
@@ -404,7 +403,7 @@ import { mapState } from 'vuex'
                     }else if(res.data.code > 1){
                         this.$message({
                             type: 'error',
-                            text: this.lanMap['setting_fail']
+                            text: res.data.message
                         })
                     }
                 }).catch(err=>{

@@ -373,7 +373,7 @@ import loading from '@/components/common/loading'
                         }else if(res.data.code >1){
                             this.$message({
                                 type: 'error',
-                                text: this.lanMap['delete'] + this.lanMap['st_fail']
+                                text: res.data.message
                             })
                         }
                     }).catch(err=>{
@@ -412,6 +412,11 @@ import loading from '@/components/common/loading'
                             })
                             this.$http.get(this.change_url.macage).then(res=>{
                                 this.mac_age = res.data;
+                            })
+                        }else{
+                            this.$message({
+                                type: 'error',
+                                text: res.data.message
                             })
                         }
                     }).catch(err=>{
@@ -520,7 +525,7 @@ import loading from '@/components/common/loading'
                     }else if(res.data.code >1){
                         this.$message({
                             type: 'error',
-                            text: this.lanMap['setting_fail']
+                            text: res.data.message
                         })
                     }
                 }).catch(err=>{
@@ -600,7 +605,7 @@ import loading from '@/components/common/loading'
                     }else if(res.data.code >1){
                         this.$message({
                             type: 'error',
-                            text: this.lanMap['flush'] + this.lanMap['st_fail']
+                            text: res.data.message
                         })
                     }
                 }).catch(err=>{

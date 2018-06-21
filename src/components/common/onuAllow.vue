@@ -268,7 +268,7 @@ import onuCard from '@/components/common/onuCard'
                         }else if(res.data.code >1){
                             this.$message({
                                 type: 'error',
-                                text: this.lanMap['setting_fail']
+                                text: res.data.message
                             })
                         }
                     }).catch(err=>{
@@ -290,7 +290,7 @@ import onuCard from '@/components/common/onuCard'
                         }else if(res.data.code >1){
                             this.$message({
                                 type: 'error',
-                                text: this.lanMap['setting_fail']
+                                text: res.data.message
                             })
                         }
                     }).catch(err=>{
@@ -360,7 +360,7 @@ import onuCard from '@/components/common/onuCard'
                         }else if(res.data.code >1){
                             this.$message({
                                 type: 'error',
-                                text: this.lanMap['reboot_onu'] + this.lanMap['st_fail']
+                                text: res.data.message
                             })
                         }
                     }).catch(err=>{
@@ -444,7 +444,7 @@ import onuCard from '@/components/common/onuCard'
                         }else if(res.data.code >1){
                             this.$message({
                                 type: 'error',
-                                text: this.lanMap['setting_fail']
+                                text: res.data.message
                             })
                         }
                     }).catch(err=>{
@@ -467,7 +467,7 @@ import onuCard from '@/components/common/onuCard'
                         }else if(res.data.code >1){
                             this.$message({
                                 type: 'error',
-                                text: this.lanMap['setting_fail']
+                                text: res.data.message
                             })
                         }
                     }).catch(err=>{

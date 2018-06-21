@@ -128,7 +128,7 @@ import loading from '@/components/common/loading'
                         this.isLoading = false;
                         this.$message({
                             type: 'error',
-                            text: this.lanMap['fw_upgrade_fail']
+                            text: res.data.message
                         })
                     }
                     this.width = 0;
@@ -174,7 +174,7 @@ import loading from '@/components/common/loading'
                         this.isLoading = false;
                         this.$message({
                             type: 'error',
-                            text: this.lanMap['sys_upgrade_fail']
+                            text: res.data.message
                         })
                     }
                     this.width = 0;

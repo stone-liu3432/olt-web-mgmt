@@ -140,7 +140,7 @@ export default {
                     }else if(res.data.code >1){
                         this.$message({
                             type: 'error',
-                            text: this.lanMap['add'] + this.lanMap['st_fail']
+                            text: res.data.message
                         })
                     }
                 }).catch(err=>{
@@ -170,7 +170,7 @@ export default {
                     }else if(res.data.code >1){
                         this.$message({
                             type: 'error',
-                            text: this.lanMap['delete'] + this.lanMap['st_fail']
+                            text: res.data.message
                         })
                     }
                 }).catch(err=>{

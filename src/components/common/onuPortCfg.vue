@@ -33,7 +33,8 @@
             <!-- 状态显示，待修改 -->
             <div v-for="(item,key) in onu_port_info.data" :key="key">
                 <span v-for="(_item,_key) in item" :key="_key">
-                    {{ (_key === 'auto_neg' || _key === 'flow_ctrl' || _key === 'loopdetect' || _key === 'enable') ? _item ? 'Enable' : 'Disable' : _item }}
+                    {{ (_key === 'auto_neg' || _key === 'flow_ctrl' || _key === 'loopdetect' || _key === 'enable' || _key === 'rlds_opt' || _key === 'rlus_opt') 
+                         ? _item ? 'Enable' : 'Disable' : _item }}
                 </span>
             </div>
         </div>
@@ -155,12 +156,14 @@
                         <option value="0">Disable</option>
                         <option value="1">Enable</option>
                     </select>
-                    <input type="text" v-if="key === 'rl_cir' || key === 'rl_pir' || key === 'bandwidth'" v-model.number="onu_port_item[key]">
+                    <input type="text" v-if="key === 'rl_cir' || key === 'rl_pir' || key === 'bandwidth'" v-model.number="onu_port_item[key]"
+                        :style="{ 'border-color': (onu_port_item[key] < 128 || onu_port_item[key] > 1000000) && (onu_port_item[key] != 0) ? 'red' : '' }"
+                        :disabled="((key === 'rl_cir' || key === 'rl_pir') && !onu_port_item.rlds_opt) || (key === 'bandwidth' && !onu_port_item.rlus_opt) ? true : false ">
                     <span v-if="key === 'rl_cir' || key === 'rl_pir' || key === 'bandwidth'">Kbps</span>
                 </div>
                 <div>
-                    <a href="javascript:;" @click="handle_onu_basicCfg(true)">{{ lanMap['apply'] }}</a>
-                    <a href="javascript:;" @click="handle_onu_basicCfg(false)">{{ lanMap['cancel'] }}</a>
+                    <a href="javascript:void(0);" @click="handle_onu_basicCfg(true)">{{ lanMap['apply'] }}</a>
+                    <a href="javascript:void(0);" @click="handle_onu_basicCfg(false)">{{ lanMap['cancel'] }}</a>
                 </div>
                 <b class="close" @click="handle_onu_basicCfg(false)"></b>
             </div>
@@ -371,7 +374,28 @@ import { mapState } from 'vuex'
             //  确认/关闭模态框时的操作
             handle_onu_basicCfg(bool){
                 if(bool){
-                    //  输入验证待添加
+                    //  输入验证待添加    rl_cir    rl_pir     bandwidth
+                    if(this.onu_port_item.rlds_opt && (this.onu_port_item.rl_cir < 128 || this.onu_port_item.rl_cir > 1000000)){
+                        this.$message({
+                            type: 'error',
+                            text: this.lanMap['param_error'] + ': ' + this.lanMap['rl_cir']
+                        })
+                        return
+                    }
+                    if(this.onu_port_item.rlds_opt && (this.onu_port_item.rl_pir < 128 || this.onu_port_item.rl_pir > 1000000)){
+                        this.$message({
+                            type: 'error',
+                            text: this.lanMap['param_error'] + ': ' + this.lanMap['rl_pir']
+                        })
+                        return
+                    }
+                    if(this.onu_port_item.rlus_opt && (this.onu_port_item.bandwidth < 128 || this.onu_port_item.bandwidth > 1000000)){
+                        this.$message({
+                            type: 'error',
+                            text: this.lanMap['param_error'] + ': ' + this.lanMap['bandwidth']
+                        })
+                        return
+                    }
                     var flags = 0;
                     if(this.cache_data.auto_neg !== this.onu_port_item.auto_neg){
                         flags += 1;
@@ -407,8 +431,8 @@ import { mapState } from 'vuex'
                             "onu_id": this.onuid,
                             "op_id": this.onu_port_item.op_id,
                             "flags": flags,
-                            "autoneg": this.onu_port_item.autoneg,
-                            "flowctrl": this.onu_port_item.flowctrl,
+                            "auto_neg": this.onu_port_item.auto_neg,
+                            "flow_ctrl": this.onu_port_item.flow_ctrl,
                             "loopdetect": this.onu_port_item.loopdetect,
                             "enable": this.onu_port_item.enable,
                             "rlds_opt": this.onu_port_item.rlds_opt,
@@ -428,7 +452,7 @@ import { mapState } from 'vuex'
                         }else if(res.data.code >1){
                             this.$message({
                                 type: 'error',
-                                text: this.lanMap['setting_fail']
+                                text: res.data.message
                             })
                         }
                     }).catch(err=>{
@@ -496,7 +520,7 @@ import { mapState } from 'vuex'
                         }else if(res.data.code >1){
                             this.$message({
                                 type: 'error',
-                                text: this.lanMap['setting_fail']
+                                text: res.data.message
                             })
                         }
                     }).catch(err=>{
@@ -567,7 +591,7 @@ import { mapState } from 'vuex'
                         }else if(res.data.code >1){
                             this.$message({
                                 type: 'error',
-                                text: this.lanMap['add'] + ' ' + this.lanMap['st_fail']
+                                text: res.data.message
                             })
                         }
                     }).catch(err=>{
@@ -612,7 +636,7 @@ import { mapState } from 'vuex'
                         }else if(res.data.code >1){
                             this.$message({
                                 type: 'error',
-                                text: this.lanMap['delete'] + ' ' + this.lanMap['st_fail']
+                                text: res.data.message
                             })
                         }
                     }).catch(err=>{
@@ -681,7 +705,7 @@ import { mapState } from 'vuex'
                         }else if(res.data.code >1){
                             this.$message({
                                 type: 'error',
-                                text: this.lanMap['add'] + ' ' + this.lanMap['st_fail']
+                                text: res.data.message
                             })
                         }
                     }).catch(err=>{
@@ -726,7 +750,7 @@ import { mapState } from 'vuex'
                         }else if(res.data.code >1){
                             this.$message({
                                 type: 'error',
-                                text: this.lanMap['delete'] + ' ' + this.lanMap['st_fail']
+                                text: res.data.message
                             })
                         }
                     }).catch(err=>{
@@ -972,6 +996,7 @@ div.onu-port-info{
             text-align: center;
             border: 1px solid #ccc;
             border-right: none;
+            border-top: none;
             &:last-child{
                 border-right: 1px solid #ccc;
             }

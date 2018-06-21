@@ -195,7 +195,7 @@ import timezone from '@/config/timezone'
                     }else if(res.data.code >1){
                         this.$message({
                             type: 'error',
-                            text: this.lanMap['update_time'] + this.lanMap['st_fail']
+                            text: res.data.message
                         })
                     }
                 }).catch(err=>{
@@ -217,7 +217,7 @@ import timezone from '@/config/timezone'
                     }else if(res.data.code >1){
                         this.$message({
                             type: 'error',
-                            text: this.lanMap['time_set_local'] + this.lanMap['st_fail']
+                            text: res.data.message
                         })
                     }
                 }).catch(err=>{

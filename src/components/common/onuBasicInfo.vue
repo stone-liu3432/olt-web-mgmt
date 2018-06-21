@@ -284,7 +284,7 @@ import confirm from '@/components/common/confirm'
                     }else if(res.data.code >1){
                         this.$message({
                             type: 'error',
-                            text: this.lanMap['setting_fail']
+                            text: res.data.message
                         })
                     }
                 }).catch(err=>{

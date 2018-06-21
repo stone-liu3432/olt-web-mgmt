@@ -52,6 +52,7 @@ export default {
     transform: translateX(-50%);
     transition: opacity 0.3s, transform 0.4s;
     overflow: hidden;
+    text-overflow: ellipsis;
     padding: 10px 10px 10px 20px;
     background-color: #909399;
     color: #000;
@@ -68,7 +69,6 @@ export default {
     background-color: #e6a23c;
 }
 .mei-message-icon {
-//   display: inline-block;
     width: 40px;
     height: 40px;
     float: left;

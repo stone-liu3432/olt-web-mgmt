@@ -266,7 +266,7 @@ import axios from 'axios'
                         }else if(res.data.code >1){
                             this.$message({
                                 type: 'error',
-                                text: this.lanMap['add'] + this.lanMap['st_fail']
+                                text: res.data.message
                             })
                         }
                     }).catch(err=>{
@@ -299,7 +299,7 @@ import axios from 'axios'
                         }else if(res.data.code >1){
                             this.$message({
                                 type: 'error',
-                                text: this.lanMap['delete'] + this.lanMap['st_fail']
+                                text: res.data.message
                             })
                         }
                     }).catch(err=>{
@@ -399,7 +399,7 @@ import axios from 'axios'
                         }else{
                             this.$message({
                                 type: 'error',
-                                text: this.lanMap['setting_fail']
+                                text: res.data.message
                             })
                         }
                     }).catch(err=>{

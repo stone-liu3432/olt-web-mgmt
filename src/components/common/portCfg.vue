@@ -369,7 +369,7 @@ import confirm from '@/components/common/confirm'
                         }else if(res.data.code >1){
                             this.$message({
                                 type: 'error',
-                                text: this.lanMap['setting_fail']
+                                text: res.data.message
                             })
                         }
                         this.getStormData();
@@ -464,10 +464,10 @@ import confirm from '@/components/common/confirm'
                                 type: 'success',
                                 text: this.lanMap['setting_ok']
                             })
-                        }else if(res.data.code >1){
+                        }else if(res.data.code > 1){
                             this.$message({
                                 type: 'error',
-                                text: this.lanMap['setting_fail']
+                                text: res.data.message
                             })
                         }
                         this.getPortData();
@@ -499,10 +499,10 @@ import confirm from '@/components/common/confirm'
                                 type: 'success',
                                 text: this.lanMap['setting_ok']
                             })
-                        }else{
+                        }else if(res.data.code > 1){
                             this.$message({
                                 type: 'error',
-                                text: this.lanMap['setting_fail']
+                                text: res.data.message
                             })
                         }
                         this.getMirrorData();
@@ -557,7 +557,7 @@ import confirm from '@/components/common/confirm'
                         }else if(res.data.code >1){
                             this.$message({
                                 type: 'error',
-                                text: this.lanMap['setting_fail']
+                                text: res.data.message
                             })
                         }
                         this.getMirrorData();
