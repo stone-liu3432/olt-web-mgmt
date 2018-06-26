@@ -18,7 +18,7 @@
             <span>{{ lanMap['diag_ping_intf'] }}</span>
             <span>
                 <select v-model="_interface">
-                    <option v-for="(item,index) in interface_data" :key="index" :value="item.interface">
+                    <option v-for="(item,index) in interface_data" :key="index" :value="item.interface" :selected="item.interface === 'outbound'">
                         {{ lanMap[item.interface] ? lanMap[item.interface] : item.interface }}
                     </option>
                 </select>

@@ -17,7 +17,7 @@
             <form>
                 <div>
                     <span>USER</span>
-                    <input type="text" v-model="userName" :class="[ verify_uname ? 'input-error' : '' ]" id="uName">
+                    <input type="text" v-model="userName" :class="[ verify_uname ? 'input-error' : '' ]" v-focus>
                 </div>
                 <div class="user-pwd">
                     <span>password</span>
@@ -67,13 +67,6 @@ import { mapState,mapMutations } from "vuex"
         computed: mapState(['lanMap','language']),
         created(){
             this.lang = this.language;
-        },
-        mounted(){
-            this.$nextTick(()=>{
-                var uName = document.getElementById('uName');
-                uName.focus();
-                
-            })
         },
         methods: {
             ...mapMutations({

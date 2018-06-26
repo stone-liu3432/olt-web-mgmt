@@ -372,7 +372,7 @@ import onuCard from '@/components/common/onuCard'
             },
             //  重启 onu
             reboot(item){
-                if(item.status === 'offline'){
+                if(item.status !== 'online'){
                     this.$message({
                         type: 'info',
                         text: this.lanMap['onu_offline_tips']
@@ -509,7 +509,7 @@ import onuCard from '@/components/common/onuCard'
 
 <style scoped lang="less">
 .onu-allow{
-    margin-top: 30px;
+    margin-top: 20px;
 }
 ul{
     border:1px solid #ddd;

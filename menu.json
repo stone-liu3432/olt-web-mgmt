@@ -23,7 +23,8 @@
                 "children":[
                     {"name":"onu_allow"},
                     {"name":"onu_deny"},
-                    {"name":"sla_cfg"}
+                    {"name":"sla_cfg"},
+                    {"name":"pon_setting"}
                 ]
             },{
                 "name":"onu_mgmt",

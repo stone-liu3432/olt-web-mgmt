@@ -33,6 +33,13 @@ axios.interceptors.response.use(response=>{
 
 Vue.prototype.$http = axios
 
+//  页面加载时，该元素将获取焦点  调用： v-focus
+Vue.directive('focus',{
+	inserted(el){
+		el.focus();
+	}
+})
+
 Vue.config.productionTip = false
 
 /* eslint-disable no-new */

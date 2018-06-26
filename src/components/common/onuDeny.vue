@@ -216,7 +216,7 @@ export default {
 
 <style scoped lang="less">
 .onu-deny{
-    margin-top: 30px;
+    margin-top: 20px;
 }
 .add-item{
     height: 40px;

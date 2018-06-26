@@ -19,6 +19,7 @@ var en = {
 	  "onu_allow" :  "ONU Allow List",
 	  "onu_deny" :  "ONU Deny List",
 	  "sla_cfg" :  "Bandwidth",
+	  "pon_setting": "PON Setting",
 	"onu_mgmt" :  "ONU Device",
       "onu_basic_info" :  "ONU Basic Info",
       "onu_port_cfg":  "ONU Port Config",
@@ -56,7 +57,12 @@ var en = {
     "range":  "Range",
 	"onu_info": "ONU Info",
 	
-	"macaddr" :  "MAC Address",
+	"upgrade_firmware":" upgrade firmware",
+	"upgrade_system": " upgrade system",
+	"pon_auth":"PON Authorize",
+	"auth_type": "Auth type",
+	"auth_mode": "Auth mode",
+	"macaddr" :  "MAC",
 	"macmask" :  "MAC Mask",
 	"ponports" :  "PON Ports",
 	"geports" :  "GE Ports",
@@ -289,7 +295,7 @@ var en = {
 	"no_inb_info": "None outbound interface",
 	"oub_con_fail": "Connect outbound interface failed",
 	
-	"if_sure": "Confirm",
+	"if_sure": "Please confirm",
 	
 	"flush_page_retry": "Please refresh and try it again...",
 	"sw_port_cfg": "Switch port basic configuration",

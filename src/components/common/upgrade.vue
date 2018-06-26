@@ -31,6 +31,8 @@
             </div>
         </div>
         <confirm :tool-tips="lanMap['upgrade_success'] + '?' " @choose="upgrade_result" v-if="reboot_confirm"></confirm>
+        <confirm :tool-tips="lanMap['if_sure'] + lanMap['upgrade_firmware'] + '?' " @choose="result_firmware" v-if="firmware_confirm"></confirm>
+        <confirm :tool-tips="lanMap['if_sure'] + lanMap['upgrade_system'] + '?' " @choose="result_system" v-if="system_confirm"></confirm>
         <loading v-if="isReboot"></loading>
     </div>
 </template>
@@ -47,6 +49,8 @@ import loading from '@/components/common/loading'
                 isLoading: false,
                 isReboot: false,
                 reboot_confirm: false,
+                firmware_confirm: false,
+                system_confirm: false,
                 width: 0,
                 timer: null,
                 interval: null,
@@ -90,97 +94,109 @@ import loading from '@/components/common/loading'
                     return
                 }
             },
-            firmware(){
-                var formData = new FormData();
-                var file = document.getElementById('file1');
-                var files = file.files[0];
-                var fileName = document.getElementById('fileName1');
-                var reg = /\.img$/;
-                if(!files){
-                    fileName.innerText = this.lanMap['file_click'];
-                    this.$message({
-                        type: 'error',
-                        text: this.lanMap['file_not_select']
-                    })
-                    return
-                }
-                if(!reg.test(fileName.innerText)){
-                    this.$message({
-                        type: 'error',
-                        text: this.lanMap['restore_file_nr']
-                    })
-                    return 
-                }
-                formData.append('file',files);
-                this.isLoading = true;
-                document.body.addEventListener('keydown',this.preventRefresh,false);
-                document.body.addEventListener('contextmenu',this.preventMouse,false);
-                this.$http.post('/upgrade?type=firmware', formData,{
-                    headers: {'Content-Type': 'multipart/form-data'},
-                    timeout: 0
-                }).then(res=>{
-                    document.body.removeEventListener('keydown',this.preventRefresh);
-                    document.body.removeEventListener('contextmenu',this.preventMouse);
-                    if(res.data.code === 1){
-                        this.upgrade_callback(this.lanMap['fw_upgrade_succ'],this.lanMap['upgrade_buzy'],this.lanMap['file_header_error'],this.lanMap['fw_upgrade_fail']);
-                    }else if(res.data.code > 1){
-                        clearInterval(this.timer);
-                        this.isLoading = false;
+            result_firmware(bool){
+                if(bool){
+                    var formData = new FormData();
+                    var file = document.getElementById('file1');
+                    var files = file.files[0];
+                    var fileName = document.getElementById('fileName1');
+                    var reg = /\.img$/;
+                    if(!files){
+                        fileName.innerText = this.lanMap['file_click'];
                         this.$message({
                             type: 'error',
-                            text: res.data.message
+                            text: this.lanMap['file_not_select']
                         })
+                        return
                     }
-                    this.width = 0;
-                }).catch(error=>{
-                    // to do
-                });
+                    if(!reg.test(fileName.innerText)){
+                        this.$message({
+                            type: 'error',
+                            text: this.lanMap['restore_file_nr']
+                        })
+                        return 
+                    }
+                    formData.append('file',files);
+                    document.body.addEventListener('keydown',this.preventRefresh,false);
+                    document.body.addEventListener('contextmenu',this.preventMouse,false);
+                    this.$http.post('/upgrade?type=firmware', formData,{
+                        headers: {'Content-Type': 'multipart/form-data'},
+                        timeout: 0
+                    }).then(res=>{
+                        document.body.removeEventListener('keydown',this.preventRefresh);
+                        document.body.removeEventListener('contextmenu',this.preventMouse);
+                        if(res.data.code === 1){
+                            this.isLoading = true;
+                            this.upgrade_callback(this.lanMap['fw_upgrade_succ'],this.lanMap['upgrade_buzy'],this.lanMap['file_header_error'],this.lanMap['fw_upgrade_fail']);
+                        }else if(res.data.code > 1){
+                            clearInterval(this.timer);
+                            this.isLoading = false;
+                            this.$message({
+                                type: 'error',
+                                text: res.data.message
+                            })
+                        }
+                        this.width = 0;
+                    }).catch(error=>{
+                        // to do
+                    });
+                }
+                this.firmware_confirm = false;
+            },
+            result_system(bool){
+                if(bool){
+                    var formData = new FormData();
+                    var file = document.getElementById('file2');
+                    var files = file.files[0];
+                    var fileName = document.getElementById('fileName2');
+                    var reg = /\.img$/;
+                    if(!files) {
+                        fileName.innerText = this.lanMap['file_click'];
+                        this.$message({
+                            type: 'error',
+                            text: this.lanMap['file_not_select']
+                        })
+                        return
+                    }
+                    if(!reg.test(fileName.innerText)){
+                        this.$message({
+                            type: 'error',
+                            text: this.lanMap['restore_file_nr']
+                        })
+                        return 
+                    }
+                    formData.append('file',files);
+                    document.body.addEventListener('keydown',this.preventRefresh,false);
+                    document.body.addEventListener('contextmenu',this.preventMouse,false);
+                    this.$http.post('/upgrade?type=system', formData,{
+                        headers: {'Content-Type': 'multipart/form-data'},
+                        timeout: 0
+                    }).then(res=>{
+                        document.body.removeEventListener('keydown',this.preventRefresh);
+                        document.body.removeEventListener('contextmenu',this.preventMouse);
+                        if(res.data.code === 1){
+                            this.isLoading = true;
+                            this.upgrade_callback(this.lanMap['sys_upgrade_succ'],this.lanMap['upgrade_buzy'],this.lanMap['file_header_error'],this.lanMap['sys_upgrade_fail']);
+                        }else if(res.data.code > 1){
+                            clearInterval(this.timer);
+                            this.isLoading = false;
+                            this.$message({
+                                type: 'error',
+                                text: res.data.message
+                            })
+                        }
+                        this.width = 0;
+                    }).catch(error=>{
+                        // to do
+                    });
+                }
+                this.system_confirm = false;
+            },
+            firmware(){
+                this.firmware_confirm = true;
             },
             system(){
-                var formData = new FormData();
-                var file = document.getElementById('file2');
-                var files = file.files[0];
-                var fileName = document.getElementById('fileName2');
-                var reg = /\.img$/;
-                if(!files) {
-                    fileName.innerText = this.lanMap['file_click'];
-                    this.$message({
-                        type: 'error',
-                        text: this.lanMap['file_not_select']
-                    })
-                    return
-                }
-                if(!reg.test(fileName.innerText)){
-                    this.$message({
-                        type: 'error',
-                        text: this.lanMap['restore_file_nr']
-                    })
-                    return 
-                }
-                formData.append('file',files);
-                this.isLoading = true;
-                document.body.addEventListener('keydown',this.preventRefresh,false);
-                document.body.addEventListener('contextmenu',this.preventMouse,false);
-                this.$http.post('/upgrade?type=system', formData,{
-                    headers: {'Content-Type': 'multipart/form-data'},
-                    timeout: 0
-                }).then(res=>{
-                    document.body.removeEventListener('keydown',this.preventRefresh);
-                    document.body.removeEventListener('contextmenu',this.preventMouse);
-                    if(res.data.code === 1){
-                        this.upgrade_callback(this.lanMap['sys_upgrade_succ'],this.lanMap['upgrade_buzy'],this.lanMap['file_header_error'],this.lanMap['sys_upgrade_fail']);
-                    }else if(res.data.code > 1){
-                        clearInterval(this.timer);
-                        this.isLoading = false;
-                        this.$message({
-                            type: 'error',
-                            text: res.data.message
-                        })
-                    }
-                    this.width = 0;
-                }).catch(error=>{
-                    // to do
-                });
+                this.system_confirm = true;
             },
             //  固件或系统升级期间，禁用F5刷新浏览器
             preventRefresh(e){

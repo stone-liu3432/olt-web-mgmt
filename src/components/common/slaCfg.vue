@@ -332,7 +332,7 @@ import { mapState } from 'vuex'
 
 <style scoped lang="less">
 .onu-bandwidth{
-    margin-top: 30px;
+    margin-top: 20px;
 }
 ul{
     border:1px solid #ddd;

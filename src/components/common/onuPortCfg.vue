@@ -134,13 +134,13 @@
                         <i></i>
                         <div>
                             <p>{{ lanMap['rl_cir'] }}</p>
-                            <p>{{ lanMap['range'] }}: 128-1000000</p>
+                            <p>{{ lanMap['range'] }}: 128-1024000</p>
                             <hr>
                             <p>{{ lanMap['rl_pir'] }}</p>
-                            <p>{{ lanMap['range'] }}: 128-1000000</p>
+                            <p>{{ lanMap['range'] }}: 128-1024000</p>
                             <hr>
                             <p>{{ lanMap['bandwidth'] }}</p>
-                            <p>{{ lanMap['range'] }}: 128-1000000</p>
+                            <p>{{ lanMap['range'] }}: 128-1024000</p>
                         </div>
                     </div>
                 </div>
@@ -157,7 +157,7 @@
                         <option value="1">Enable</option>
                     </select>
                     <input type="text" v-if="key === 'rl_cir' || key === 'rl_pir' || key === 'bandwidth'" v-model.number="onu_port_item[key]"
-                        :style="{ 'border-color': (onu_port_item[key] < 128 || onu_port_item[key] > 1000000) && (onu_port_item[key] != 0) ? 'red' : '' }"
+                        :style="{ 'border-color': (onu_port_item[key] < 128 || onu_port_item[key] > 1024000) && (onu_port_item[key] != 0) ? 'red' : '' }"
                         :disabled="((key === 'rl_cir' || key === 'rl_pir') && !onu_port_item.rlds_opt) || (key === 'bandwidth' && !onu_port_item.rlus_opt) ? true : false ">
                     <span v-if="key === 'rl_cir' || key === 'rl_pir' || key === 'bandwidth'">Kbps</span>
                 </div>
@@ -375,21 +375,21 @@ import { mapState } from 'vuex'
             handle_onu_basicCfg(bool){
                 if(bool){
                     //  输入验证待添加    rl_cir    rl_pir     bandwidth
-                    if(this.onu_port_item.rlds_opt && (this.onu_port_item.rl_cir < 128 || this.onu_port_item.rl_cir > 1000000)){
+                    if(this.onu_port_item.rlds_opt && (this.onu_port_item.rl_cir < 128 || this.onu_port_item.rl_cir > 1024000)){
                         this.$message({
                             type: 'error',
                             text: this.lanMap['param_error'] + ': ' + this.lanMap['rl_cir']
                         })
                         return
                     }
-                    if(this.onu_port_item.rlds_opt && (this.onu_port_item.rl_pir < 128 || this.onu_port_item.rl_pir > 1000000)){
+                    if(this.onu_port_item.rlds_opt && (this.onu_port_item.rl_pir < 128 || this.onu_port_item.rl_pir > 1024000)){
                         this.$message({
                             type: 'error',
                             text: this.lanMap['param_error'] + ': ' + this.lanMap['rl_pir']
                         })
                         return
                     }
-                    if(this.onu_port_item.rlus_opt && (this.onu_port_item.bandwidth < 128 || this.onu_port_item.bandwidth > 1000000)){
+                    if(this.onu_port_item.rlus_opt && (this.onu_port_item.bandwidth < 128 || this.onu_port_item.bandwidth > 1024000)){
                         this.$message({
                             type: 'error',
                             text: this.lanMap['param_error'] + ': ' + this.lanMap['bandwidth']

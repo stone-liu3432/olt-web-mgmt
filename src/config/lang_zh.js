@@ -19,6 +19,7 @@ var zh = {
 	  "onu_allow" : "ONU允许列表",
 	  "onu_deny" : "ONU阻止列表",
 	  "sla_cfg" : "带宽配置",
+	  "pon_setting": "PON设置",
 	"onu_mgmt" : "ONU管理",
       "onu_basic_info" : "ONU基本信息",
       "onu_port_cfg": "ONU端口配置",
@@ -56,6 +57,11 @@ var zh = {
 	"range": "范围",
 	"onu_info":"ONU信息",
 	
+	"upgrade_firmware":"升级固件",
+	"upgrade_system":"升级系统",
+	"pon_auth":"PON鉴权",
+	"auth_type": "鉴权类型",
+	"auth_mode": "鉴权类型",
 	"macaddr" : "MAC地址",
 	"macmask" : "MAC Mask",
 	"ponports" : "PON口数量",
@@ -288,7 +294,7 @@ var zh = {
 	"no_inb_info":"当前没有带内接口",
 	"oub_con_fail":"带外接口连接失败",
 	
-	"if_sure":"是否确认?",
+	"if_sure":"是否确认",
 	
 	"flush_page_retry":"请刷新页面或稍后再试...",
 	"sw_port_cfg":"交换端口基本配置",

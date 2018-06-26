@@ -60,10 +60,10 @@
                             <p>{{ lanMap['range'] }} 128-2000</p>
                             <hr>
                             <p>{{ lanMap['erate'] }}</p>
-                            <p>{{ lanMap['range'] }} 64-100000</p>
+                            <p>{{ lanMap['range'] }} 64-1024000</p>
                             <hr>
                             <p>{{ lanMap['irate'] }}</p>
-                            <p>{{ lanMap['range'] }} 64-100000</p>
+                            <p>{{ lanMap['range'] }} 64-1024000</p>
                             <hr>
                             <p>{{ lanMap['pvid'] }}</p>
                             <p>{{ lanMap['range'] }} 1-4094</p>
@@ -98,10 +98,10 @@
                             :style="{ 'border-color' : port_data.mtu && (port_data.mtu < 128 || port_data.mtu > 2000 || isNaN(port_data.mtu)) ? 'red' : '' }">
                             <span v-if="key === 'media'">{{ lanMap[item] }}</span>
                             <input type="text" v-if="key === 'erate'" v-model.number="port_data.erate"
-                            :style="{ 'border-color' : port_data.erate && (port_data.erate < 64 || port_data.erate > 100000 || isNaN(port_data.erate)) ? 'red' : '' }">
+                            :style="{ 'border-color' : port_data.erate && (port_data.erate < 64 || port_data.erate > 1024000 || isNaN(port_data.erate)) ? 'red' : '' }">
                             <span v-if="key === 'erate'" class="units">Kbps</span>
                             <input type="text" v-if="key === 'irate'" v-model.number="port_data.irate"
-                            :style="{ 'border-color' : port_data.irate && (port_data.irate < 64 || port_data.irate > 100000 || isNaN(port_data.irate)) ? 'red' : '' }">
+                            :style="{ 'border-color' : port_data.irate && (port_data.irate < 64 || port_data.irate > 1024000 || isNaN(port_data.irate)) ? 'red' : '' }">
                             <span v-if="key === 'irate'" class="units">Kbps</span>
                             <input type="text" v-if="key === 'pvid'" v-model.number="port_data.pvid"
                             :style="{ 'border-color' : port_data.pvid && (port_data.pvid < 1 || port_data.pvid > 4094 || isNaN(port_data.pvid)) ? 'red' : '' }">
@@ -416,7 +416,7 @@ import confirm from '@/components/common/confirm'
                         return
                     }
                     if(original.erate !== this.port_data.erate && (this.portid > this.system.data.ponports) && 
-                    (this.port_data.erate === '' || (this.port_data.erate !== 0 && (this.port_data.erate < 64 || this.port_data.erate > 100000)) || isNaN(this.port_data.erate)) ){
+                    (this.port_data.erate === '' || (this.port_data.erate !== 0 && (this.port_data.erate < 64 || this.port_data.erate > 1024000)) || isNaN(this.port_data.erate)) ){
                         this.userChoose = false;
                         this.$message({
                             type: 'error',
@@ -425,7 +425,7 @@ import confirm from '@/components/common/confirm'
                         return
                     }
                     if(original.irate !== this.port_data.irate && (this.portid > this.system.data.ponports) && 
-                    (this.port_data.irate === '' || (this.port_data.irate !== 0 && (this.port_data.irate < 64 || this.port_data.irate > 100000)) || isNaN(this.port_data.irate)) ){
+                    (this.port_data.irate === '' || (this.port_data.irate !== 0 && (this.port_data.irate < 64 || this.port_data.irate > 1024000)) || isNaN(this.port_data.irate)) ){
                         this.userChoose = false;
                         this.$message({
                             type: 'error',
