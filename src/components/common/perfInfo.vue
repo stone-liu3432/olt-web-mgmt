@@ -38,8 +38,12 @@ import { mapState } from 'vuex'
                 portid: 0
             }
         },
+        activated(){
+            this.getData();
+        },
         created(){
-            this.portid = this.port_info.data[0].port_id;
+            var pid = sessionStorage.getItem('portid');
+            this.portid = pid || 1;
             //请求url: /switch_port?form=statistic&port_id=1   //  打包时删除
             if(this.change_url.beta === 'test'){
                 var url;
@@ -55,9 +59,8 @@ import { mapState } from 'vuex'
                 })
             }
         },
-        watch:{
-            portid(){
-                //请求url: /switch_port?form=statistic&port_id=1
+        methods: {
+            getData(){
                 this.$http.get('/switch_port?form=statistic&port_id='+this.portid).then(res=>{
                     if(res.data.code === 1){
                         this.data = res.data;
@@ -67,6 +70,12 @@ import { mapState } from 'vuex'
                 }).catch(err=>{
                     // to do 
                 })
+            }
+        },
+        watch:{
+            portid(){
+                sessionStorage.setItem('portid',this.portid);
+                this.getData();
             }
         }
     }

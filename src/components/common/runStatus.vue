@@ -5,10 +5,9 @@
                 {{ lanMap['pon_info'] }}
             </h2>
             <div class="pon-detail" v-for="(item,index) in this.ponInfo.data" :key="index" @click="jump_onu_allow(item.port_id)">
-                <!-- <p>{{ item.port_id < 10 ? 'PON0' + item.port_id : 'PON' + item.port_id }}</p> -->
                 <div :class="[ item.status >= 1 ? 'bg-online' : 'bg-offline' ]">
-                    <img src="../../assets/pon_online.png" v-if="item.status >=1">
-                    <img src="../../assets/pon_offline.png" v-if="item.status <1">
+                    <img src="../../assets/pon_online.png" v-if="item.status >= 1">
+                    <img src="../../assets/pon_offline.png" v-if="item.status < 1">
                 </div>
                 <p :style="{'color' : item.status >=1 ? '#29BDFA' : '#8D8F92'}">
                     {{ item.port_id < 10 ? 'PON0' + item.port_id : 'PON' + item.port_id }} : {{ item.status >= 1 ? lanMap['online'] : lanMap['offline'] }}
@@ -21,14 +20,14 @@
                 </div>
             </div>
         </div>
-        <div class="container"  v-if="this.geInfo[0]">
+        <div class="container"  v-if="port_info.data && port_info.data.length > 0">
             <h2>{{ lanMap['ge_port_info'] }}</h2>
-            <div class="pon-detail" v-for="(item,index) in this.geInfo" :key="index" @click="jump_port_cfg(item.port_id)">
+            <div class="pon-detail" v-for="(item,index) in port_info.data.slice(system.data.ponports)" :key="index" @click="jump_port_cfg(item.port_id)">
                 <div :class="[ item.admin_status >= 1 ? item.link_status >= 1 ? 'bg-online' : 'bg-offline' :'bg-disabled' ]">
-                    <img src="../../assets/uplink-fiber-blue.png" v-if="item.media == 'fiber' &&item.admin_status >=1 && item.link_status >=1 ">
+                    <img src="../../assets/uplink-fiber-blue.png" v-if="item.media == 'fiber' && item.admin_status >=1 && item.link_status >=1 ">
                     <img src="../../assets/uplink-fiber-black.png" v-if="item.media == 'fiber' && item.admin_status >=1 && item.link_status < 1">
                     <img src="../../assets/uplink-fiber-black-disable.png" v-if="item.media == 'fiber' && item.admin_status < 1">
-                    <img src="../../assets/uplink-rj45-blue.png" v-if="item.media == 'copper' &&item.admin_status >=1 && item.link_status >=1 ">
+                    <img src="../../assets/uplink-rj45-blue.png" v-if="item.media == 'copper' && item.admin_status >=1 && item.link_status >=1 ">
                     <img src="../../assets/uplink-rj45-black.png" v-if="item.media == 'copper' && item.admin_status >=1 && item.link_status < 1">
                     <img src="../../assets/uplink-rj45-disable.png" v-if="item.media == 'copper' && item.admin_status < 1">
                 </div>
@@ -46,7 +45,6 @@
         <div class="system-info" v-if="this.system.data">
             <h2>{{ lanMap['sys_info'] }}</h2>
             <div v-for="(item,key) of this.system.data" :key="key" class="system-info-detail"  v-if="key !== 'bl_ver' && key !== 'vendor'">
-                <!-- 根据key值，取出映射的lanMap字符 -->
                 <span>{{ lanMap[key] }}</span>
                 <span>{{ item }}</span>
             </div>
@@ -76,7 +74,6 @@
                 <div class="time-info">
                     <span>{{ lanMap['run_time']+' :' }}</span>
                     <span>
-                        <!-- "uptime":[1,2,3,1], -->
                         {{ run_time.day + " " + lanMap['days'] }}
                         {{ run_time.hour + " " + lanMap['hours'] }}
                         {{ (run_time.min < 10 ? '0' + run_time.min : run_time.min) + " " + lanMap['mins'] }}
@@ -116,8 +113,8 @@
                 }
             }
         },
+        computed: mapState(['lanMap','port_info','system','change_url','menu','port_name']),
         created(){
-            this.get_ge();
             //获取 PON 口信息
             this.$http.get(this.change_url.pon).then(res=>{
                 if(res.data.code === 1){
@@ -126,7 +123,6 @@
             }).catch(err=>{
                 // to do
             })
-            // 请求url: '/board?info=cpu'
             this.$http.get(this.change_url.cpu).then(res=>{
                 if(res.data.code === 1){
                     this.cpuInfo = res.data;
@@ -198,13 +194,15 @@
                 this.get_pon();
                 this.get_ge();
             },5000)
+            sessionStorage.setItem('first_menu','running_status');
+            sessionStorage.removeItem('sec_menu');
         },
         beforeDestroy(){
             clearInterval(this.interval);
             clearInterval(this.time_interval);
         },
         methods: {
-            ...mapMutations({
+            ...mapMutations({ 
                 systemInfo: 'updateSysData',
                 portInfo: 'updatePortData',
                 portName: 'updatePortName',
@@ -250,6 +248,8 @@
                 }
                 // 调用 vuex Mutations方法，更新 store 状态
                 this.update_menu(_menu);
+                sessionStorage.setItem('first_menu','pon_mgmt');
+                sessionStorage.setItem('sec_menu','onu_allow');
             },
             //  点击跳转到 端口配置
             jump_port_cfg(portid){
@@ -290,6 +290,8 @@
                 }
                 // 调用 vuex Mutations方法，更新 store 状态
                 this.update_menu(_menu);
+                sessionStorage.setItem('first_menu','swport_mgmt');
+                sessionStorage.setItem('sec_menu','port_cfg');
             },
             get_pon(){
                 this.$http.get(this.change_url.pon).then(res=>{
@@ -301,17 +303,10 @@
             get_ge(){
                 this.$http.get(this.change_url.port).then(res=>{
                     this.portInfo(res.data);
-                    // 获取pon口数量，从端口中去除pon口，将剩下的端口（ge口）展示到页面上
-                    var ge_port = this.port_info.data.slice(this.system.data.ponports,this.port_info.data.length);
-                    this.geInfo = ge_port;
-                    var index;
-                    for(var i=0,len=this.port_info.data.length;i<len;i++){
-                        if(this.port_info.data[i].port_id === this.system.data.ponports){
-                            index = i + 1;
-                        }
-                    }
-                    var pon_count = this.port_info.data.slice(0,index);
-                    var ge_count = this.port_info.data.slice(index,this.port_info.data.length);
+                    var index = this.system.data.ponports;
+                    var pon_count = res.data.data.slice(0,index);
+                    var ge_count = res.data.data.slice(index);
+                    this.geInfo = ge_count;
                     var portName = {
                         pon: this.get_portName(pon_count,'PON'),
                         ge: this.get_portName(ge_count,'GE')
@@ -399,8 +394,7 @@
                 memoryCtx.textAlign = 'center';
                 memoryCtx.fillText(memoryNum+'%', 100, 100);
             }
-        },
-        computed: mapState(['lanMap','port_info','system','change_url','menu'])
+        }
     }
 </script>
 

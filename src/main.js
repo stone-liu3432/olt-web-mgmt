@@ -14,11 +14,11 @@ Vue.use(Vuex)
 
 //  request拦截器  -->  全局request添加请求头
 axios.interceptors.request.use(config => {
-  var xtoken = sessionStorage.getItem('x-token');
-  config.headers['X-Token'] = xtoken;
-  return config
+	var xtoken = sessionStorage.getItem('x-token');
+	config.headers['X-Token'] = xtoken;
+	return config
 }, err => {
-  return Promise.reject(err)
+  	return Promise.reject(err)
 })
 
 //  response拦截器  -->  全局错误处理
@@ -44,11 +44,11 @@ Vue.config.productionTip = false
 
 /* eslint-disable no-new */
 new Vue({
-  el: '#app',
-  router,
-  store,
-  template: '<Hsgq/>',
-  components: {
-    Hsgq
-  }
+	el: '#app',
+	router,
+	store,
+	template: '<Hsgq/>',
+	components: {
+		Hsgq
+	}
 });

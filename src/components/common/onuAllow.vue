@@ -46,7 +46,7 @@
                 <h3>{{ lanMap['manual_bind'] }}</h3>
                 <div class="modal-item">
                     <span>{{ lanMap['onu_id'] }}</span>
-                    <input type="text" v-model="add_onuid" placeholder="1-64">
+                    <input type="text" v-model="add_onuid" placeholder="1-64" v-focus>
                     <span class="tips">{{ lanMap['zero_auto_'] }}</span>
                 </div>
                 <div class="modal-item">
@@ -149,10 +149,14 @@ import onuCard from '@/components/common/onuCard'
             }
         },
         computed: mapState(['lanMap','port_name','menu','change_url']),
+        activated(){
+            var pid = sessionStorage.getItem('pid');
+            this.portid = this.$route.query.port_id || pid;
+            this.getData();
+        },
         created(){
-            // 请求 url: /onu_allow_list?port_id=1
-            // '/onu_allow_list?port_id=' + ( this.$route.query.port_id || 1 )
-            this.portid = this.$route.query.port_id || this.port_name.pon['1'].id;
+            var pid = sessionStorage.getItem('pid');
+            this.portid = this.$route.query.port_id || pid || 1;
             if(this.change_url.beta === 'test'){
                 var url;
                 if(this.change_url.onu_allow[this.change_url.onu_allow.length - 1] != '='){
@@ -200,6 +204,9 @@ import onuCard from '@/components/common/onuCard'
                         this.onu_arrow = {};
                     }
                     this.onu_allow_list = Object.assign({},this.onu_arrow);
+                    this.onu_allow_list.data.sort((a,b)=>{
+                        return a.status === 'online' && b.status === 'offline'
+                    })
                 }).catch(err=>{
                     // to do 
                 })
@@ -480,6 +487,7 @@ import onuCard from '@/components/common/onuCard'
         },
         watch: {
             portid(){
+                sessionStorage.setItem('pid',this.portid);
                 this.getData();
             },
             add_macaddr(){

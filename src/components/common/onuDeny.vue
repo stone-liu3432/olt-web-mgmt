@@ -26,7 +26,7 @@
         </div>
         <div class="add-item" v-if="addItem.isShow">
             <span>{{ lanMap['macaddr'] }}</span>
-            <input type="text" v-model="addItem.macaddr" :style="{ 'border-color': test_macaddr ? 'red' : '#ddd' }">
+            <input type="text" v-model="addItem.macaddr" :style="{ 'border-color': test_macaddr ? 'red' : '' }" v-focus>
             <span>{{ lanMap['desc'] }}</span>
             <input type="text" v-model="addItem.desc">
             <span>
@@ -62,7 +62,7 @@
 import { mapState } from 'vuex'
 import confirm from '@/components/common/confirm'
 export default {
-    name: 'ounDeny',
+    name: 'onuDeny',
     components: { confirm },
     computed: mapState(['lanMap','port_name','change_url']),
     data(){
@@ -82,9 +82,13 @@ export default {
             }
         }
     },
+    activated(){
+        this.getData();
+    },
     created(){
         // 请求 url: /onu_deny_list?port_id=1
-        this.portid = this.port_name.pon['1'].id;
+        var pid = sessionStorage.getItem('pid');
+        this.portid = pid || 1;
         if(this.change_url.beta === 'test'){
             var url;
             if(this.change_url.onu_allow[this.change_url.onu_allow.length - 1] != '='){
@@ -208,6 +212,7 @@ export default {
         },
         //  切换端口的操作
         portid(){
+            sessionStorage.setItem('pid',this.portid);
             this.getData();
         }
     }

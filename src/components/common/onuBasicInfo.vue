@@ -108,7 +108,8 @@ import confirm from '@/components/common/confirm'
             }
         },
         created(){
-            this.portid = this.$route.query.port_id || this.port_info.data[0].port_id;
+            var pid = sessionStorage.getItem('pid');
+            this.portid = this.$route.query.port_id || pid || 1;
             if(this.change_url.beta === 'test'){
                 this.$http.get('./onu_resource.json').then(res=>{
                     if(res.data.code === 1){
@@ -137,7 +138,11 @@ import confirm from '@/components/common/confirm'
                     // to do
                 })
             }
-		},
+        },
+        activated(){
+            this.getData();
+            this.getOpticalData();
+        },
 		methods:{
             ...mapMutations({
                 addonu_list: 'updateOnuList'
@@ -292,6 +297,7 @@ import confirm from '@/components/common/confirm'
                 })
             },
             getData(){
+                if(!this.onuid) return
                 this.$http.get('/onumgmt?form=base-info&port_id='+this.portid+'&onu_id='+this.onuid).then(res=>{
                     if(res.data.code === 1){
                         this.onu_basic_info = res.data;
@@ -312,6 +318,7 @@ import confirm from '@/components/common/confirm'
                 })
             },
             getOpticalData(){
+                if(!this.onuid) return
                 this.$http.get("/onumgmt?form=optical-diagnose&port_id="+this.portid+"&onu_id="+this.onuid).then(res=>{
                     if(res.data.code === 1){
                         this.optical_diagnose = res.data;
@@ -325,8 +332,9 @@ import confirm from '@/components/common/confirm'
 		},
 		watch: {
 			portid(){
-            	// 请求url:  请求url: /onumgmt?form=base-info&port_id=1&onu_id=1
-             var _onuid = this.onuid;
+                // 请求url:  请求url: /onumgmt?form=base-info&port_id=1&onu_id=1
+                sessionStorage.setItem('pid',this.portid);
+                var _onuid = this.onuid;
 				this.$http.get('/onu_allow_list?form=resource&port_id='+this.portid).then(res=>{
 					if(res.data.code === 1){
                         var _onu_list = this.analysis(res.data.data.resource);
@@ -341,7 +349,8 @@ import confirm from '@/components/common/confirm'
                             data: _onu_list
                         }
                         this.addonu_list(obj);
-                        this.onuid = this.$route.query.onu_id || this.onu_list.data[0];
+                        var oid = sessionStorage.getItem('oid');
+                        this.onuid = this.$route.query.onu_id || oid || this.onu_list.data[0];
                         if(this.$route.query.onu_id){
                             this.$route.query.onu_id = null;
                         }
@@ -359,7 +368,8 @@ import confirm from '@/components/common/confirm'
 			},
 			onuid(){
             	// 请求url:  请求url: /onumgmt?form=base-info&port_id=1&onu_id=1
-                if(this.onuid === 0) return   
+                if(this.onuid === 0) return
+                sessionStorage.setItem('oid',this.onuid);
 				this.getData();
                 this.getOpticalData();
 			}

@@ -81,6 +81,9 @@ export default {
     created(){
         this.getData();
     },
+    activated(){
+        this.getData();
+    },
     methods: {
         getData(){
             this.$http.get('/ponmgmt?form=authorize').then(res=>{

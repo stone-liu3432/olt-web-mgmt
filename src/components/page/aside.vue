@@ -3,13 +3,13 @@
         <ul class="menu" v-if="menu.data && lanMap">
             <!-- 主菜单/左侧导航栏 -->
             <li v-for="(item,index) in menu.data.menu" :key="index">
-                <p class="menu-item" @click="handleClick(item,$event)" :class="[ item.isHidden ? 'active' : '' ]"> 
+                <p class="menu-item" @click="handleClick(item)" :class="[ item.isHidden ? 'active' : '' ]"> 
                     {{ lanMap[item.name] }}
                 </p>
                 <!-- 二级菜单 -->
                 <transition name="bounce">
                     <ul class="sub-menu" v-if="item.children" :class="{ hide: item.isHidden }">
-                        <li v-for="(_item,_index) in item.children" :key="_index" @click="selectEvent($event)">
+                        <li v-for="(_item,_index) in item.children" :key="_index" @click="selectEvent($event,_item.name)">
                             <p class="sub-item" @click="selectItem(_item)">
                                 {{ lanMap[_item.name] }}
                             </p>
@@ -30,10 +30,7 @@ export default {
         return {}
     },
     methods:{
-        // ...mapMutations({
-        //     addmenu: 'updateMenu'
-        // }),
-        handleClick(node,e){
+        handleClick(node){
             // 检查 菜单项下面是否有子菜单
             if(!node.children){
                 for(var key in this.menu.data.menu){
@@ -58,22 +55,48 @@ export default {
                     node.isHidden = true;
                 }
             }
-            return 
+            sessionStorage.setItem('first_menu',node.name);
         },
         //  子菜单被选中时样式
-        selectEvent(e){
+        selectEvent(e,str){
             var sub_item = document.querySelectorAll('p.sub-item');
             for(var i=0;i<sub_item.length;i++){
                 sub_item[i].className = 'sub-item';
             }
             e.target.className += ' actived';
+            sessionStorage.setItem('sec_menu',str);
         },
         //  点击切换页面
         selectItem(node){
             this.$router.replace(node.name);
         }
     },
-    computed: mapState(['lanMap','menu'])
+    computed: mapState(['lanMap','menu']),
+    watch: {
+        //  页面刷新时的menu状态恢复
+        'menu'(){
+            var first_menu = sessionStorage.getItem('first_menu');
+            var sec_menu = sessionStorage.getItem('sec_menu');
+            if(first_menu){
+                this.menu.data.menu.forEach(item=>{
+                    if(item.name === first_menu){
+                        item.isHidden = true;
+                    }
+                })
+                if(sec_menu){
+                    this.$nextTick(()=>{
+                        var sub_item = document.querySelectorAll('p.sub-item');
+                        for(var i=0;i<sub_item.length;i++){
+                            if(sub_item[i].innerHTML.replace(/^\s*|\s*$/g,'') === this.lanMap[sec_menu]){
+                                sub_item[i].className += ' actived';
+                            }
+                        }
+                    })
+                    
+                }
+            }
+        }
+    }
 }
 </script>
 

@@ -4,7 +4,7 @@
             <h2 class="lf">{{ lanMap['port_cfg'] }}</h2>
             <a href="javascript:void(0);" @click="refresh_port">{{ lanMap['refresh'] }}</a>
         </div>
-        <div class="vlan-config">
+        <div class="vlan-config" v-if="port_name.pon && port_name.ge">
             <p class="item-align">
                 <span>{{ lanMap['port_id'] + '：' }}</span>
                 <select v-model="portid">
@@ -237,7 +237,8 @@ import confirm from '@/components/common/confirm'
             }
         },
         created(){
-            this.portid = this.$route.query.port_id || this.port_info.data[0].port_id;
+            var pid = sessionStorage.getItem('portid');
+            this.portid = this.$route.query.port_id || pid || 1;
             if(this.change_url.beta == 'test'){
                 this.$http.get('./swich_port_info.json').then(res=>{
                     if(res.data.code ===1){
@@ -276,6 +277,9 @@ import confirm from '@/components/common/confirm'
                     // to do
                 })
             }
+        },
+        activated(){
+            this.refresh_port();
         },
         methods: {
             //  点击交换基本配置时弹出确认层，并收集数据
@@ -619,6 +623,7 @@ import confirm from '@/components/common/confirm'
         },
         watch: {
             portid(){
+                sessionStorage.setItem('portid',this.portid);
                 this.getPortData();
                 this.getStormData();
                 this.getMirrorData();

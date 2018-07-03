@@ -329,7 +329,7 @@ var en = {
 	"time_hour": "Hour",
 	"time_min": "Minute",
 	"time_sec": "Second",
-	"time_get_serv": "Get server time",
+	"time_get_serv": "Get device time",
 	"time_set_local": "Update local time",
 	"notice_time_sync":  "Notice:  WebGUI's time display maybe different from server, you can press this button for synchronization",
 	"update_time": "Update time",
@@ -378,7 +378,11 @@ var en = {
 	"select_timezone":  "Select Timezone",
 	"switch_display": "Switch display mode",
 	"service": "Service",
-	"click_often":"Click too often"
+	"click_often":"Click too often",
+	"ntp_ipaddr1": "Preferred IP address",
+	"ntp_ipaddr2": "Alternate IP address",
+	"ntp_gettime": "Get time automatically",
+	"update_frequency": "Update frequency"
 }
 
 export default en

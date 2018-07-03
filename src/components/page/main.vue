@@ -44,7 +44,7 @@ import topBanner from '@/components/page/header'
             }).catch(err=>{
                 // to do
             })
-            this.$router.push('/main');
+            // this.$router.push('/main');
             this.uName = sessionStorage.getItem('uname');
         },
         mounted(){
@@ -64,8 +64,7 @@ import topBanner from '@/components/page/header'
                             text: this.lanMap['login_out']
                         })
                         sessionStorage.removeItem('x-token');
-                        this.$router.push('/login');
-                        //window.close();
+                        this.$router.replace('/login');
                     }).catch(err=>{
                         // to do
                     })
@@ -76,6 +75,10 @@ import topBanner from '@/components/page/header'
             document.body.addEventListener('mousedown',this.user_timeout);
         },
         beforeDestroy(){
+            sessionStorage.removeItem('pid');
+            sessionStorage.removeItem('oid');
+            sessionStorage.removeItem('first_menu');
+            sessionStorage.removeItem('sec_menu');
             clearInterval(this.interval);
             document.body.removeEventListener('mousemove',this.user_timeout);
             document.body.removeEventListener('mousedown',this.user_timeout);

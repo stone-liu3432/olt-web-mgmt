@@ -59,7 +59,7 @@
                     <div class="add-vlan" v-if="create_vlan">
                         <span>VLAN ID：</span>
                         <span>
-                            <input id="create-vlan" type="text" placeholder="VLAN ID 1-4094" v-model.number="new_vlan" :style="{ 'border-color' : (new_vlan != '' && (isNaN(new_vlan) || new_vlan > 4094 || new_vlan < 1)) ? 'red' : '' }">
+                            <input v-focus type="text" placeholder="VLAN ID 1-4094" v-model.number="new_vlan" :style="{ 'border-color' : (new_vlan != '' && (isNaN(new_vlan) || new_vlan > 4094 || new_vlan < 1)) ? 'red' : '' }">
                             <span class="tips">
                                 {{ lanMap['vlanid_range_hit'] }}
                             </span>
@@ -250,10 +250,6 @@ import confirm from '@/components/common/confirm'
                 this.modalDialog = true;
                 this.create_vlan = true;
                 this.vlanid = 0;
-                this.$nextTick(()=>{
-                    var input1 = document.getElementById('create-vlan');
-                    input1.focus();
-                })
             },
             //  删除VLAN
             deleteVlan(vlanid){

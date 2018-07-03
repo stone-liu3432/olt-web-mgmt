@@ -11,7 +11,7 @@
             <i v-if="type=='error'" class="mei-message-icon">
                 <svg t="1516780106581" class="icon" style="" viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg" p-id="7228" xmlns:xlink="http://www.w3.org/1999/xlink" width="40" height="40"><defs></defs><path d="M557.248 512l158.56 158.528a31.808 31.808 0 0 1-0.16 45.12 31.904 31.904 0 0 1-45.12 0.16L512 557.248l-158.528 158.56a31.808 31.808 0 0 1-45.12-0.16 31.904 31.904 0 0 1-0.16-45.12L466.752 512 308.16 353.472a31.808 31.808 0 0 1 0.16-45.12 31.904 31.904 0 0 1 45.12-0.16L512 466.752l158.528-158.56a31.808 31.808 0 0 1 45.12 0.16 31.904 31.904 0 0 1 0.16 45.12L557.248 512zM512 960C264.576 960 64 759.424 64 512S264.576 64 512 64s448 200.576 448 448-200.576 448-448 448z m0-64c212.064 0 384-171.936 384-384S724.064 128 512 128 128 299.936 128 512s171.936 384 384 384z" fill="#ffffff" p-id="7229"></path></svg>
             </i>
-            <span class="mei-message-con">{{text}}</span>
+            <span class="mei-message-con">{{ text }}</span>
         </div>
     </transition>
 </template>
@@ -43,6 +43,7 @@ export default {
 .mei-message {
     position: fixed;
     min-width: 300px;
+    max-width: 800px;
     border-radius: 4px;
     position: fixed;
     z-index: 9999;
@@ -75,9 +76,12 @@ export default {
 }
 .mei-message-con {
     line-height: 40px;
+    max-width: 800px;
     height: 40px;
     display: inline-block;
     margin-left: 10px;
+    overflow: hidden;
+    text-overflow: ellipsis;
 }
 .mei-message-fade-enter-active {
     transition: all 0.3s linear;

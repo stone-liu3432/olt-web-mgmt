@@ -18,7 +18,9 @@
             <li v-for="(item,index) in port_info.data" :key="index">
                 <span>{{ port_name.pon[item.port_id] ? port_name.pon[item.port_id].name : port_name.ge[item.port_id].name }}</span>
                 <span>{{ item.admin_status >= 1 ? "Enable" : "Disable" }}</span>
-                <span>{{ item.link_status >=1 ? "Link-up" : "Link-down" }}</span>
+                <span :style="{ 'color': item.link_status ? '#3990E5' : 'red'}">
+                    {{ item.link_status >=1 ? lanMap['link_up'] : lanMap['link_down'] }}
+                </span>
                 <span>{{ item.auto_neg >=1 ? "Enable" : "Disable" }}</span>
                 <span>{{ item.speed === "10/100/1000M" ? "Auto" : item.speed }}</span>
                 <span>{{ item.duplex >= 1 ? "full" : "half" }}</span>
@@ -41,8 +43,15 @@ import { mapState } from 'vuex'
                 port_info: {}
             }
         },
+        activated(){
+            this.getData();
+        },
         created(){
-             this.$http.get(this.change_url.port).then(res=>{
+            this.getData();
+        },
+        methods:{
+            getData(){
+                this.$http.get(this.change_url.port).then(res=>{
                     if(res.data.code === 1){
                         this.port_info = res.data;
                     }else{
@@ -51,8 +60,7 @@ import { mapState } from 'vuex'
                 }).catch(err=>{
                     // to do
                 })
-        },
-        methods:{
+            },
             jump(id){
                 this.$router.push('/port_cfg?port_id='+id);
                 var sub_item = document.querySelectorAll('p.sub-item');
@@ -62,6 +70,7 @@ import { mapState } from 'vuex'
                         sub_item[i].className += ' actived';
                     }
                 }
+                sessionStorage.setItem('sec_menu','port_cfg');
             }
         },
         computed: mapState(['lanMap','port_name','change_url'])

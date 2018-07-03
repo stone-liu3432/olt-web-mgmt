@@ -3,7 +3,7 @@ import messageVue from './message.vue';
 const defaults = {
   show: false,
   text: '',
-  duration: '2000',
+  duration: '5000',
   type: ''
 };
 const messageVueConstructor = Vue.extend(messageVue);
@@ -26,6 +26,7 @@ const messageBox = (options = {}) => {
         data: options
     });
     parent.appendChild(instance.$el);
+    if(options.type === 'success' || options.type === 'info') options.duration = '2000';
     Vue.nextTick(() => {
         instance.show = true;
         setTimeout(function () {

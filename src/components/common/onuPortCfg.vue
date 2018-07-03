@@ -18,7 +18,7 @@
         </div>
         <hr>
         <!-- ONU端口信息 -->
-        <div class="onu-port-info" v-if="onu_list.data && onu_port_info.data && port_name.pon">
+        <div class="onu-port-info" v-if="onu_list.data/* && onu_port_info.data && port_name.pon*/">
             <div>
                 <h3 class="lf">{{ 'ONU' + port_name.pon[portid].id + '/' + onuid + ' ' + lanMap['port_info'] }}</h3>
                 <div class="lf">
@@ -32,9 +32,10 @@
             </ul>
             <!-- 状态显示，待修改 -->
             <div v-for="(item,key) in onu_port_info.data" :key="key">
-                <span v-for="(_item,_key) in item" :key="_key">
+                <span v-for="(_item,_key) in item" :key="_key" :style="{ 'color': _key === 'status' ? _item !== 0 ? '#3990E5' : 'red' : '' }">
                     {{ (_key === 'auto_neg' || _key === 'flow_ctrl' || _key === 'loopdetect' || _key === 'enable' || _key === 'rlds_opt' || _key === 'rlus_opt') 
-                         ? _item ? 'Enable' : 'Disable' : _item }}
+                         ? _item ? 'Enable' : 'Disable' : _key === 'status' ? _item ? lanMap['link_up'] : lanMap['link_down'] : _item }}
+                    <!-- <i v-if="_key === 'status'" :class="[ _item ? 'online' : '']"></i> -->
                 </span>
             </div>
         </div>
@@ -150,7 +151,7 @@
                         <option :value="item.op_id" v-for="(item,index) in onu_port_info.data" :key="index">{{ item.op_id }}</option>
                     </select>
                 </div>
-                <div v-for="(item,key) in onu_port_item" :key="key" v-if="key !== 'op_id'">
+                <div v-for="(item,key) in onu_port_item" :key="key" v-if="key !== 'op_id' && key !== 'status'">
                     <span>{{ lanMap[key] ? lanMap[key] : key.replace(/_/,' ') }}</span>
                     <select v-if="key !== 'rl_cir' && key !== 'rl_pir' && key !== 'bandwidth'" v-model.number="onu_port_item[key]">
                         <option value="0">Disable</option>
@@ -305,7 +306,23 @@ import { mapState } from 'vuex'
                 onuid: 0,
                 op_id: 0,
                 //  当前PON口下ONU列表
-                onu_list: {},
+                onu_list: {
+                    // "code":1,	
+                    // "message":"success",
+                    // "data":[{
+                    //     "op_id": 1,
+                    //     "auto_neg": 1,
+                    //     "flow_ctrl": 1,
+                    //     "loopdetect": 1,
+                    //     "enable": 1,
+                    //     "rlds_opt": 1,
+                    //     "rl_cir": 1,
+                    //     "rl_pir": 1,
+                    //     "rlus_opt": 1,
+                    //     "bandwidth": 1,
+                    //     "status": 1
+                    // }]
+                },
                 //  模态框显示/隐藏
                 onu_port_cfg: false,
                 onu_vlan_mode: false,
@@ -321,7 +338,23 @@ import { mapState } from 'vuex'
                 cache_data: {},
                 vlan_mode_map: ['transparent','tag','translate','aggregation','trunk'],
                 //  ONU下的所有端口列表
-                onu_port_info: {},
+                onu_port_info: {
+                    // "code":1,	
+                    // "message":"success",
+                    // "data":[{
+                    //     "op_id": 1,
+                    //     "auto_neg": 1,
+                    //     "flow_ctrl": 1,
+                    //     "loopdetect": 1,
+                    //     "enable": 1,
+                    //     "rlds_opt": 1,
+                    //     "rl_cir": 1,
+                    //     "rl_pir": 1,
+                    //     "rlus_opt": 1,
+                    //     "bandwidth": 1,
+                    //     "status": 1
+                    // }]
+                },
                 //  ONU下某个特定的端口的基本信息  --> 配置ONU端口基本信息时使用
                 onu_port_item: {
                     "op_id": 0,
@@ -333,7 +366,8 @@ import { mapState } from 'vuex'
                     "rl_cir": 0,
                     "rl_pir" : 0,
                     "rlus_opt": 0,
-                    "bandwidth": 0
+                    "bandwidth": 0,
+                    "status": 0
                 },
                 //  ONU VLAN信息  -->当前ONU下所有的端口信息
                 onu_vlan_info: {},
@@ -362,7 +396,12 @@ import { mapState } from 'vuex'
             }
         },
         created(){
-            this.portid = this.port_name.pon['1'].id;
+            var pid = sessionStorage.getItem('pid');
+            this.portid = pid || 1;
+        },
+        activated(){
+            this.getOnuInfo();
+            this.getOnuVlan();
         },
         methods: {
             //  打开ONU基本配置模态框
@@ -765,6 +804,7 @@ import { mapState } from 'vuex'
                 this.trunk_post_param.vlan_pri = 0;
             },
             getOnuInfo(){
+                if(!this.onuid) return
                 this.$http.get('/onumgmt?form=port_cfg&port_id='+this.portid+'&onu_id=' + this.onuid).then(res=>{
                     if(res.data.code === 1){
                         this.onu_port_info = res.data;
@@ -776,6 +816,7 @@ import { mapState } from 'vuex'
                 })
             },
             getOnuVlan(){
+                if(!this.onuid) return
                 this.$http.get('/onumgmt?form=port_vlan&port_id='+ this.portid +'&onu_id=' + this.onuid).then(res=>{
                     if(res.data.code === 1){
                         this.onu_vlan_info = res.data;
@@ -850,6 +891,7 @@ import { mapState } from 'vuex'
         },
         watch: {
             portid(){
+                sessionStorage.setItem('pid',this.portid);
                 var _onuid = this.onuid;
                 this.$http.get('/onu_allow_list?form=resource&port_id='+this.portid).then(res=>{
                     if(res.data.code === 1){
@@ -862,6 +904,7 @@ import { mapState } from 'vuex'
                             port_id: res.data.data.port_id,
                             data: _onu_list
                         }
+                        var oid = sessionStorage.getItem('oid');
                         this.onuid = this.onu_list.data[0];
                         if(_onuid === this.onuid){
                             this.getOnuInfo();
@@ -876,6 +919,7 @@ import { mapState } from 'vuex'
                 })
             },
             onuid(){
+                sessionStorage.setItem('oid',this.onuid);
                 this.getOnuInfo();
                 this.getOnuVlan();
             },
@@ -883,33 +927,17 @@ import { mapState } from 'vuex'
                 if(this.onu_port_cfg){
                     for(var key in this.onu_port_info.data){
                         if(this.onu_port_info.data[key].op_id === this.op_id){
-                            // var data = this.onu_port_info.data[key];
-                            // for(var _key in data){
-                            //     this.onu_port_item[_key] = data[_key];
-                            // }
                             this.onu_port_item = Object.assign({},this.onu_port_info.data[key]);
                         }
                     }
-                    // 缓存数据，提交时比对数据有无变化，若有变化添加 flags
-                    // for(var key in this.onu_port_item){
-                    //     this.cache_data[key] = this.onu_port_item[key];
-                    // }
                     this.cache_data = Object.assign({},this.onu_port_item);
                     return
                 }
                 for(var key in this.onu_vlan_info.data){
                     if(this.onu_vlan_info.data[key].op_id === this.op_id){
-                        // var data = this.onu_vlan_info.data[key];
-                        // for(var _key in data){
-                        //     this.onu_vlan_item[_key] = data[_key];
-                        // }
                         this.onu_vlan_item = Object.assign({},this.onu_vlan_info.data[key]);
                     }
                 }
-                // 缓存数据，用于提交时对比变化
-                // for(var key in this.onu_vlan_item){
-                //     this.cache_data[key] = this.onu_vlan_item[key];
-                // }
                 this.cache_data = Object.assign({},this.onu_vlan_item);
             }
         }
@@ -989,9 +1017,8 @@ div.onu-port-info{
         }
         >span{
             display: table-cell;
-            vertical-align: top;
-            width: 9.89%;
-            height: auto;
+            vertical-align: middle;
+            width: 8.89%;
             font-size: 16px;
             text-align: center;
             border: 1px solid #ccc;
@@ -1002,6 +1029,17 @@ div.onu-port-info{
             }
         }
     }
+    i{
+        display: inline-block;
+        position: relative;
+        top: 7px;
+        width: 32px;
+        height: 32px;
+        background: url('../../assets/rj45_offline.png') no-repeat;
+    }
+    i.online{
+        background: url('../../assets/rj45_online.png') no-repeat;
+    }
 }
 ul.vertical-font{
     width: 100%;
@@ -1009,7 +1047,7 @@ ul.vertical-font{
     >li{
         display: table-cell;
         overflow: hidden;
-        width: 9.89%;
+        width: 8.89%;
         text-align: center;
         height: 40px;
         vertical-align: middle;

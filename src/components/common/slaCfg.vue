@@ -154,8 +154,9 @@ import { mapState } from 'vuex'
             }
         },
         created(){
-            //  '/onu_bandwidth?port_id=' + (this.$route.query.port_id || 1)  
-            this.portid = this.$route.query.port_id || this.port_info.data[0].port_id;
+            //  '/onu_bandwidth?port_id=' + (this.$route.query.port_id || 1)
+            var pid = sessionStorage.getItem('pid');
+            this.portid = this.$route.query.port_id || pid || 1;
             if(this.change_url.beta === 'test'){
                 var url;
                 if(this.change_url.onu_allow[this.change_url.onu_allow.length - 1] != '='){
@@ -169,6 +170,9 @@ import { mapState } from 'vuex'
                     // to do 
                 })
             }
+        },
+        activated(){
+            this.getData();
         },
         methods: {
             closeModal(){
@@ -244,7 +248,8 @@ import { mapState } from 'vuex'
                         })
                         return
                     }
-                    if(this.post_params.fix > this.post_params.assure || this.post_params.fix > this.post_params.max){
+                    if((this.post_params.sla_type === 'type3' || this.post_params.sla_type === 'type5') && 
+                        (this.post_params.fix > this.post_params.assure || this.post_params.fix > this.post_params.max)){
                         this.$message({
                             type: 'error',
                             text: this.lanMap['fix_param_err']
@@ -295,6 +300,7 @@ import { mapState } from 'vuex'
         computed: mapState(['lanMap','port_name','port_info','change_url']),
         watch: {
             portid(){
+                sessionStorage.setItem('pid',this.portid);
                 this.getData();
             },
             'post_params.sla_type'(){

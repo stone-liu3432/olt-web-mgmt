@@ -89,49 +89,56 @@ const router = new Router({
           path: "/onu_allow",
           component: onuAllow,
           meta: {
-            requireAuth: true
+            requireAuth: true,
+            keepAlive: true
           }
         },
         {
           path: "/pon_setting",
           component: ponSetting,
           meta: {
-            requireAuth: true
+            requireAuth: true,
+            keepAlive: true
           }
         },
         {
           path: "/onu_deny",
           component: onuDeny,
           meta: {
-            requireAuth: true
+            requireAuth: true,
+            keepAlive: true
           }
         },
         {
           path: "/sla_cfg",
           component: slaCfg,
           meta: {
-            requireAuth: true
+            requireAuth: true,
+            keepAlive: true
           }
         },
         {
           path: "/onu_basic_info",
           component: onuBasicInfo,
           meta: {
-            requireAuth: true
+            requireAuth: true,
+            keepAlive: true
           }
         },
         {
           path: "/onu_port_cfg",
           component: onuPortCfg,
           meta: {
-            requireAuth: true
+            requireAuth: true,
+            keepAlive: true
           }
         },
         {
           path: "/perf_info",
           component: perfInfo,
           meta: {
-            requireAuth: true
+            requireAuth: true,
+            keepAlive: true
           }
         },
         {
@@ -145,7 +152,8 @@ const router = new Router({
           path: "/port_cfg",
           component: portCfg,
           meta: {
-            requireAuth: true
+            requireAuth: true,
+            keepAlive: true
           }
         },
         {
@@ -192,12 +200,12 @@ router.beforeEach((to, from, next) => {
   store.commit("updateLoad", true);
   // 判断该路由是否需要登录权限
   if (to.meta.requireAuth) {
-    // if (sessionStorage.getItem('x-token')) {
-    //     next();
-    // } else {
-    //     next({path: '/login'})
-    // }
-    next();
+    if (sessionStorage.getItem("x-token")) {
+      next();
+    } else {
+      next({ path: "/login" });
+    }
+    //next();
   } else {
     if (!sessionStorage.getItem("x-token")) {
       next();

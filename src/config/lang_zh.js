@@ -329,7 +329,7 @@ var zh = {
 	"time_hour":"时",
 	"time_min":"分",
 	"time_sec":"秒",
-	"time_get_serv":"获取服务器时间",
+	"time_get_serv":"获取设备时间",
 	"time_set_local":"更新本地时间",
 	"notice_time_sync": "请注意，页面时间可能与服务器时间存在差异，可以点击按钮将本页面时间与服务器时间同步",
 	"update_time":"更新时间",
@@ -378,7 +378,11 @@ var zh = {
 	"select_timezone": "选择时区",
 	"switch_display": "切换显示模式",
 	"service": "服务",
-	"click_often":"点击太过频繁"
+	"click_often":"点击太过频繁",
+	"ntp_ipaddr1": "首选IP地址",
+	"ntp_ipaddr2": "备用IP地址",
+	"ntp_gettime": "自动获取时间",
+	"update_frequency": "更新频率"
 }
 
 export default zh

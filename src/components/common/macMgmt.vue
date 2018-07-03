@@ -11,7 +11,7 @@
         </div>
         <div class="mac-age" v-if="cfg_age">
             <span>{{ lanMap['age'] }} : </span>
-            <input type="text" v-model.number="macage" placeholder="secends">
+            <input type="text" v-model.number="macage" placeholder="secends" v-focus>
             <span class="tips">range: 0 , 10-1000000</span>
             <a href="javascript:;" @click="macage_choose(true)">{{ lanMap['apply'] }}</a>
             <a href="javascript:;" @click="macage_choose(false)">{{ lanMap['cancel'] }}</a>
