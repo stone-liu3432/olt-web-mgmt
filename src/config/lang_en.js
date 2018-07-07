@@ -382,7 +382,14 @@ var en = {
 	"ntp_ipaddr1": "Preferred IP address",
 	"ntp_ipaddr2": "Alternate IP address",
 	"ntp_gettime": "Get time automatically",
-	"update_frequency": "Update frequency"
+	"update_frequency": "Update frequency",
+	"alarm": "Alarm",
+	"alarm_info": "Alarm information",
+	"port_vlan":"Port VLAN",
+	"pv_vlist_tips": 'The vlan list can be a single number or a continuous range. The start and end points of the range are separated by "-", and each item is separated by ",".',
+	"pv_vmode_tips": "The vlan mode is allowed to be modified only when the port type is 'hybrid'.",
+	"add_vlan_list":"Add the port to the specified VLAN",
+	"del_vlan_list":"Remove the port from the specified VLAN"
 }
 
 export default en

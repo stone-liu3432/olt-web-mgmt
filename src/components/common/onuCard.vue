@@ -157,7 +157,7 @@ export default {
         },
         //  重启 onu
         reboot(item){
-            if(item.status === 'offline'){
+            if(item.status.toLowerCase() === 'offline'){
                 this.$message({
                     type: 'error',
                     text: this.lanMap['onu_offline_tips']

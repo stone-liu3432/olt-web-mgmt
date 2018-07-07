@@ -172,7 +172,7 @@ import onuCard from '@/components/common/onuCard'
                     }
                     this.onu_allow_list = Object.assign({},this.onu_arrow);
                     this.onu_allow_list.data.sort((a,b)=>{
-                        return a.status === 'online' && b.status === 'offline'
+                        return a.status.toLowerCase() === 'online' && b.status.toLowerCase() === 'offline'
                     })
                 }).catch(err=>{
                     // to do 
@@ -205,7 +205,7 @@ import onuCard from '@/components/common/onuCard'
                     }
                     this.onu_allow_list = Object.assign({},this.onu_arrow);
                     this.onu_allow_list.data.sort((a,b)=>{
-                        return a.status === 'online' && b.status === 'offline'
+                        return a.status.toLowerCase() === 'online' && b.status.toLowerCase() === 'offline'
                     })
                 }).catch(err=>{
                     // to do 
@@ -239,8 +239,8 @@ import onuCard from '@/components/common/onuCard'
                     if(this.add_onuid === ''){
                         this.add_onuid = 0;
                     }
-                    if(this.testMacaddr || this.add_macaddr === '' || this.macaddr === 'ff:ff:ff:ff:ff:ff' || 
-                    this.macaddr === '00:00:00:00:00:00' || this.macaddr === '01:00:5e:00:00:00') {
+                    if(this.testMacaddr || this.add_macaddr === '' || this.macaddr.toLowerCase() === 'ff:ff:ff:ff:ff:ff' || 
+                    this.macaddr === '00:00:00:00:00:00' || this.macaddr.toLowerCase() === '01:00:5e:00:00:00') {
                         this.$message({
                             type: 'error',
                             text: this.lanMap['param_mac']
@@ -379,7 +379,7 @@ import onuCard from '@/components/common/onuCard'
             },
             //  重启 onu
             reboot(item){
-                if(item.status !== 'online'){
+                if(item.status.toLowerCase() !== 'online'){
                     this.$message({
                         type: 'info',
                         text: this.lanMap['onu_offline_tips']

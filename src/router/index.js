@@ -20,6 +20,8 @@ import devMgmt from "../components/common/devMgmt";
 import onuPortCfg from "../components/common/onuPortCfg";
 import service from "../components/common/service";
 import ponSetting from "../components/common/ponSetting";
+import alarm from "../components/common/alarm";
+import portVlan from "../components/common/portVlan";
 import Router from "vue-router";
 import store from "../vuex/store";
 
@@ -190,6 +192,20 @@ const router = new Router({
           meta: {
             requireAuth: true
           }
+        },
+        {
+          path: "/alarm",
+          component: alarm,
+          meta: {
+            requireAuth: true
+          }
+        },
+        {
+          path: "/port_vlan",
+          component: portVlan,
+          meta: {
+            requireAuth: true
+          }
         }
       ]
     }
@@ -200,12 +216,12 @@ router.beforeEach((to, from, next) => {
   store.commit("updateLoad", true);
   // 判断该路由是否需要登录权限
   if (to.meta.requireAuth) {
-    if (sessionStorage.getItem("x-token")) {
-      next();
-    } else {
-      next({ path: "/login" });
-    }
-    //next();
+    // if (sessionStorage.getItem("x-token")) {
+    //   next();
+    // } else {
+    //   next({ path: "/login" });
+    // }
+    next();
   } else {
     if (!sessionStorage.getItem("x-token")) {
       next();

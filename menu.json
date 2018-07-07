@@ -15,7 +15,8 @@
                     {"name":"remote_mgmt"},
                     {"name":"upgrade"},
                     {"name":"time"},
-                    {"name":"service"}
+                    {"name":"service"},
+                    {"name":"alarm"}
                 ]
             },{
                 "name":"pon_mgmt",
@@ -39,7 +40,8 @@
                 "children":[
                     {"name":"port_info"},
                     {"name":"perf_info"},
-                    {"name":"port_cfg"}
+                    {"name":"port_cfg"},
+                    {"name":"port_vlan"}
                 ]
             },{
                 "name":"layer2_mgmt",

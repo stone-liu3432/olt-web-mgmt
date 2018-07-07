@@ -25,6 +25,11 @@ const messageBox = (options = {}) => {
         el: document.createElement('div'),
         data: options
     });
+    if(document.querySelectorAll('div.mei-message').length !== 0){
+        document.querySelectorAll('div.mei-message').forEach(item=>{
+            parent.removeChild(item);
+        })
+    }
     parent.appendChild(instance.$el);
     if(options.type === 'success' || options.type === 'info') options.duration = '2000';
     Vue.nextTick(() => {

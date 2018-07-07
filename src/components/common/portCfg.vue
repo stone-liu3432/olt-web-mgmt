@@ -14,11 +14,11 @@
             </p>  
             <p>
                 <span>{{ lanMap['link_status'] + '：' }}</span>
-                <span>{{ port_info.data[portid-1].link_status === 1 ? lanMap['link_up'] : lanMap['link_down'] }}</span>
+                <span>{{ link_status === 1 ? lanMap['link_up'] : lanMap['link_down'] }}</span>
             </p>
             <p>
                 <span>{{ lanMap['admin_status'] + '：' }}</span>
-                <span>{{ port_info.data[portid-1].admin_status === 1 ? lanMap['enable'] : lanMap['disable'] }}</span>
+                <span>{{ admin_status === 1 ? lanMap['enable'] : lanMap['disable'] }}</span>
             </p>
         </div>
         <!-- <div class="config">
@@ -198,6 +198,8 @@ import confirm from '@/components/common/confirm'
                 stormctrl_data: {},
                 mirror_data: {},
                 portid: 0,
+                link_status: 0,
+                admin_status: 0,
                 //  基本配置 confirm 弹出框
                 userChoose: false,
                 //  风暴控制 confirm 弹出框
@@ -575,9 +577,9 @@ import confirm from '@/components/common/confirm'
                 this.$http.get('/switch_port?form=port_info&port_id=' + this.portid).then(res=>{
                     if(res.data.code === 1){
                         this.swich_port_info = res.data;
-                        for(var key in res.data.data){
-                            this.port_data[key] = res.data.data[key];
-                        }
+                        this.port_data = Object.assign({},res.data.data);
+                        this.link_status = this.port_data.link_status;
+                        this.admin_status = this.port_data.admin_status;
                     }else if(res.data.code >1){
                         this.swich_port_info = {};
                     }
@@ -590,9 +592,7 @@ import confirm from '@/components/common/confirm'
                 this.$http.get('/switch_port?form=stormctrl&port_id=' + this.portid).then(res=>{
                     if(res.data.code === 1){
                         this.stormctrl_data = res.data;
-                        for(var key in res.data.data){
-                            this.storm_data[key] = res.data.data[key];
-                        }
+                        this.storm_data = Object.assign({},res.data.data);
                     }else if(res.data.code >1){
                         this.stormctrl_data = {};
                     }
@@ -605,9 +605,7 @@ import confirm from '@/components/common/confirm'
                 this.$http.get('/switch_port?form=mirror&port_id=' + this.portid).then(res=>{
                     if(res.data.code === 1){
                         this.mirror_data = res.data;
-                        for(var key in res.data.data){
-                            this.mirror[key] = res.data.data[key];
-                        }
+                        this.mirror = Object.assign({},res.data.data);
                     }else if(res.data.code >1){
                         this.mirror_data = {};
                     }

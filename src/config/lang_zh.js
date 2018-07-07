@@ -382,7 +382,14 @@ var zh = {
 	"ntp_ipaddr1": "首选IP地址",
 	"ntp_ipaddr2": "备用IP地址",
 	"ntp_gettime": "自动获取时间",
-	"update_frequency": "更新频率"
+	"update_frequency": "更新频率",
+	"alarm": "告警",
+	"alarm_info": "告警信息",
+	"port_vlan":"端口VLAN",
+	"pv_vlist_tips": 'vlan列表可以是单个数字，也可以是一段连续的范围，范围起点和终点间用"-"分隔，每一项之间用","隔开。',
+	"pv_vmode_tips": "vlan 模式只有在端口类型为'hybrid'时才允许修改。",
+	"add_vlan_list":"将端口加入指定VLAN",
+	"del_vlan_list":"将端口从指定VLAN删除"
 }
 
 export default zh

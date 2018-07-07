@@ -97,7 +97,7 @@
                 </div>
             </div>
             <div>
-                <a href="javascript:;" @click="handle_update_time">{{ lanMap['time_get_serv'] }}</a>
+                <a href="javascript:;" @click="get_time">{{ lanMap['time_get_serv'] }}</a>
                 <span>{{ lanMap['notice_time_sync'] }}</span>
             </div>
             <div class="btn-item">
@@ -120,7 +120,7 @@ import confirm from '@/components/common/confirm'
             return {
                 timer: {},
                 interval: null,
-                years: [2016,2017,2018,2019,2020,2021,2022,2023,2024,2025,2026,2027,2028,2029,2030,2031,2032,2033,2034,2035],
+                years: [1990,1991,1992,1993,1994,1995,1996,1997,1998,1999,2000,2001,2002,2003,2004,2005,2006,2007,2008,2009,2010,2011,2012,2013,2014,2015,2016,2017,2018,2019,2020,2021,2022,2023,2024,2025,2026,2027,2028,2029,2030,2031,2032,2033,2034,2035],
                 months: [1,2,3,4,5,6,7,8,9,10,11,12],
                 days: [1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31],
                 hours: [0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23],
@@ -297,31 +297,34 @@ import confirm from '@/components/common/confirm'
                 }
                 this.$http.post('/time?form=ntp',post_params).then(res=>{
                     if(res.data.code === 1){
-                        this.$http.get('/time?form=info').then(res=>{
-                            if(res.data.code === 1){
-                                this.timer = res.data;
-                                var arr = this.timer.data.time_now;
-                                this.set_time.year = this.now_time.year = arr[0];
-                                this.set_time.month = this.now_time.month = arr[1];
-                                this.set_time.day =  this.now_time.day = arr[2];
-                                this.set_time.hour = this.now_time.hour = arr[3];
-                                this.set_time.min = this.now_time.min = arr[4];
-                                this.set_time.sec = this.now_time.sec = arr[5];
-                                this.timezone = this.timer.data.timezone;
-                                this.$message({
-                                    type: 'success',
-                                    text: this.lanMap['update_time'] + this.lanMap['st_success']
-                                })
-                            }else if(res.data.code >1){
-                                this.$message({
-                                    type: 'error',
-                                    text: res.data.message
-                                })
-                            }
-                        }).catch(err=>{
-                            // to do
-                        })
+                        this.get_time();
                     }else{
+                        this.$message({
+                            type: 'error',
+                            text: res.data.message
+                        })
+                    }
+                }).catch(err=>{
+                    // to do
+                })
+            },
+            get_time(){
+                this.$http.get('/time?form=info').then(res=>{
+                    if(res.data.code === 1){
+                        this.timer = res.data;
+                        var arr = this.timer.data.time_now;
+                        this.set_time.year = this.now_time.year = arr[0];
+                        this.set_time.month = this.now_time.month = arr[1];
+                        this.set_time.day =  this.now_time.day = arr[2];
+                        this.set_time.hour = this.now_time.hour = arr[3];
+                        this.set_time.min = this.now_time.min = arr[4];
+                        this.set_time.sec = this.now_time.sec = arr[5];
+                        this.timezone = this.timer.data.timezone;
+                        this.$message({
+                            type: 'success',
+                            text: this.lanMap['update_time'] + this.lanMap['st_success']
+                        })
+                    }else if(res.data.code >1){
                         this.$message({
                             type: 'error',
                             text: res.data.message
