@@ -3,7 +3,7 @@ import messageVue from './message.vue';
 const defaults = {
   show: false,
   text: '',
-  duration: '5000',
+  duration: '4000',
   type: ''
 };
 const messageVueConstructor = Vue.extend(messageVue);

@@ -389,7 +389,8 @@ var zh = {
 	"pv_vlist_tips": 'vlan列表可以是单个数字，也可以是一段连续的范围，范围起点和终点间用"-"分隔，每一项之间用","隔开。',
 	"pv_vmode_tips": "vlan 模式只有在端口类型为'hybrid'时才允许修改。",
 	"add_vlan_list":"将端口加入指定VLAN",
-	"del_vlan_list":"将端口从指定VLAN删除"
+	"del_vlan_list":"将端口从指定VLAN删除",
+	"svlan_pri": "svlan优先级"
 }
 
 export default zh

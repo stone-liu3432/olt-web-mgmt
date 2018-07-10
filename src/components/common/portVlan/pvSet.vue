@@ -136,7 +136,6 @@ export default {
     computed: mapState(['lanMap']),
     data(){
         return {
-            cache_d: {},
             modal_show: false,
             port_type_map: ['','Access','Trunk','Hybrid'],
             port_type: 0,
@@ -146,22 +145,22 @@ export default {
             set_vlist_type: 0,        //  0 -> delete   1 -> add
             port_type_show: false,
             port_defvid_show: false,
-            port_vlist_show: false,
-            pvData: {
-                "code":1,
-                "msg":"success",
-                "data":{
-                    "port_id":1,
-                    "port_type":2,
-                    "pvid":1,
-                    "tagged_vlan":" ",
-                    "untagged_vlan":"1"
-                }
-            }
+            port_vlist_show: false
+            // pvData: {
+            //     "code":1,
+            //     "msg":"success",
+            //     "data":{
+            //         "port_id":1,
+            //         "port_type":2,
+            //         "pvid":1,
+            //         "tagged_vlan":" ",
+            //         "untagged_vlan":"1"
+            //     }
+            // }
         }
     },
     created(){
-        this.cache_d = Object.assign({},this.pvData);
+        //  to do
     },
     methods: {
         set_port_type(){
@@ -170,7 +169,7 @@ export default {
             this.port_type = this.pvData.data.port_type;
         },
         submit_set_port_type(){
-            if(this.port_type === this.cache_d.data.port_type){
+            if(this.port_type === this.pvData.data.port_type){
                 this.$message({
                     type: 'info',
                     text: this.lanMap['modify_tips']
@@ -180,7 +179,7 @@ export default {
             var post_params = {
                 "method":"set",
                 "param":{
-                    "port_id": this.cache_d.data.port_id,
+                    "port_id": this.pvData.data.port_id,
                     "port_type": this.port_type
                 }
             }
@@ -209,7 +208,7 @@ export default {
         set_pv_def_vlan(){
             this.modal_show = true;
             this.port_defvid_show = true;
-            this.pvid = this.cache_d.data.pvid;
+            this.pvid = this.pvData.data.pvid;
         },
         submit_set_pv_def_vlan(){
             if(this.pvid < 1 || this.pvid > 4094 || isNaN(this.pvid)){
@@ -219,7 +218,7 @@ export default {
                 })
                 return
             }
-            if(this.pvid === this.cache_d.data.pvid){
+            if(this.pvid === this.pvData.data.pvid){
                 this.$message({
                     type: 'info',
                     text: this.lanMap['modify_tips']
@@ -229,7 +228,7 @@ export default {
             var post_params = {
                 "method":"set",
                 "param":{
-                    "port_id": this.cache_d.data.port_id,
+                    "port_id": this.pvData.data.port_id,
                     "pvid": this.pvid
                 }
             }
@@ -266,7 +265,7 @@ export default {
             this.set_vlist_type = 0;
         },
         submit_add_pv_vlist(){
-            if(this.vlan_list.replace(/\s+/g,'') === this.cache_d.data.vlan_list.replace(/\s+/g,'')){
+            if(this.vlan_list.replace(/\s+/g,'') === this.pvData.data.vlan_list.replace(/\s+/g,'')){
                 this.$message({
                     type: 'info',
                     text: this.lanMap['modify_tips']
@@ -276,8 +275,8 @@ export default {
             var post_params = {
                 "method":"set",
                 "param":{
-                    "port_id": this.cache_d.data.port_id,
-                    "port_type": this.cache_d.data.port_type,
+                    "port_id": this.pvData.data.port_id,
+                    "port_type": this.pvData.data.port_type,
                     "vlan_list": this.vlan_list.replace(/\s+/g,''),
                     "vlan_mode": this.vlan_mode     // (hybrid)
                 }
@@ -304,8 +303,8 @@ export default {
              var post_params = {
                 "method":"delete",
                 "param":{
-                    "port_id": this.cache_d.data.port_id,
-                    "port_type": this.cache_d.data.port_type,
+                    "port_id": this.pvData.data.port_id,
+                    "port_type": this.pvData.data.port_type,
                     "vlan_list": this.vlan_list.replace(/\s+/g,''),
                     "vlan_mode": this.vlan_mode     // (hybrid)
                 }
@@ -331,11 +330,6 @@ export default {
         close_pv_vlist(){
             this.modal_show = false;
             this.port_vlist_show = false;
-        }
-    },
-    watch: {
-        'pvData'(){
-            this.cache_d = Object.assign({},this.pvData);
         }
     }
 }

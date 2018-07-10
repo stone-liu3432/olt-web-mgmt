@@ -389,7 +389,8 @@ var en = {
 	"pv_vlist_tips": 'The vlan list can be a single number or a continuous range. The start and end points of the range are separated by "-", and each item is separated by ",".',
 	"pv_vmode_tips": "The vlan mode is allowed to be modified only when the port type is 'hybrid'.",
 	"add_vlan_list":"Add the port to the specified VLAN",
-	"del_vlan_list":"Remove the port from the specified VLAN"
+	"del_vlan_list":"Remove the port from the specified VLAN",
+	"svlan_pri": "svlan priority"
 }
 
 export default en

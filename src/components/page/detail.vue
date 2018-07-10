@@ -1,6 +1,6 @@
 <template>
     <div id="detail" class="lf">
-        <keep-alive :include="['onuAllow','ponSetting','onuDeny','slaCfg','onuBasicInfo','onuPortCfg','perfInfo','portCfg']">
+        <keep-alive :include="['onuAllow','ponSetting','onuDeny','slaCfg','onuBasicInfo','onuPortCfg','perfInfo','portCfg','portVlan']">
             <router-view v-if="isRouterAlive"></router-view>
         </keep-alive>
     </div>

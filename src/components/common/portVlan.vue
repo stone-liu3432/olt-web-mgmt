@@ -1,10 +1,10 @@
 <template>
-    <div class="port-vlan">
+    <div class="port-vlan" v-if="port_name.pon && port_name.ge">
         <div class="portvlan-title">
             {{ lanMap['port_vlan'] }}
             <a href="javascript:void(0);">{{ lanMap['refresh'] }}</a>
         </div>
-        <div v-if="port_name.pon && port_name.ge" class="portvlan-port">
+        <div class="portvlan-port">
             <span>{{ lanMap['port_id'] + ': ' }}</span>
             <select v-model="portid">
                 <option v-for="(item,index) in port_name.pon" :key="index" :value="item.id">{{ item.name }}</option>
@@ -17,9 +17,9 @@
             <div :class="{actived: show_index === 3}" @click="pv_qinq">VLAN qinq</div>
         </div>
         <div>
-            <pvSet :pv-data="pv_set_d" v-if="show_index === 1"></pvSet>
-            <pvTranslate :pv-data="pv_translate_d" v-if="show_index === 2"></pvTranslate>
-            <pvQinq :pv-data="pv_qinq_d" v-if="show_index === 3"></pvQinq>
+            <pvSet :pv-data="pv_set_d" v-if="show_index === 1 && pv_set_d.data"></pvSet>
+            <pvTranslate :pv-data="pv_translate_d" v-if="show_index === 2 && pv_translate_d.data"></pvTranslate>
+            <pvQinq :pv-data="pv_qinq_d" v-if="show_index === 3 && pv_qinq_d.data"></pvQinq>
         </div>
     </div>
 </template>
@@ -45,7 +45,19 @@ export default {
     created(){
         var portid = sessionStorage.getItem('portid');
         this.portid = portid || 1;
-        this.get_pv_set();
+    },
+    activated(){
+        switch(this.show_index){
+            case 1:
+                this.get_pv_set();
+                break;
+            case 2: 
+                this.get_pv_translate();
+                break;
+            case 3: 
+                this.get_pv_qinq();
+                break;
+        }
     },
     methods: {
         pv_set(){
@@ -162,24 +174,28 @@ div.portvlan-port{
     
 }
 div.portvlan-tab{
-    overflow: hidden;
     margin-top: 30px !important;
+    border-bottom: 2px solid #67aef7;
+    padding-left: 10px;
+    &::after{
+        content: '';
+        display: table;
+        clear: both;
+    }
     >div{
         float: left;
+        margin-bottom: -2px;
         cursor: pointer;
         padding: 0 30px;
         text-align: center;
         height: 30px;
         line-height: 30px;
         border-bottom: 2px solid transparent;
-        &:after{
-            display: table;
-            content: "";
-            clear: both;
-        }
     }
     .actived{
-        border-bottom: 2px solid #67aef7;
+        border: 1px solid #67aef7;
+        border-radius: 3px 3px 0 0;
+        border-bottom: 2px solid #fff;
         color: #67aef7;
         font-weight: 600;
     }
