@@ -46,6 +46,7 @@ exports.cssLoaders = function (options) {
       return ExtractTextPlugin.extract({
         use: loaders,
         fallback: 'vue-style-loader'
+        // publicPath:'../../'     //  2018-7-16-15-18  @stone  add
       })
     } else {
       return ['vue-style-loader'].concat(loaders)

@@ -73,12 +73,6 @@ import topBanner from '@/components/page/header'
             document.body.addEventListener('mousemove',this.user_timeout);
             document.body.addEventListener('keydown',this.user_timeout);
             document.body.addEventListener('mousedown',this.user_timeout);
-            //Lorem ipsum dolor sit amet, consectetur adipisicing elit. Consequatur, asperiores, 
-            // this.$message({
-            //     type: 'error',
-            //     text: 'Lorem ipsum dolor sit amet, consectetur adipisicing elit. Consequatur, asperiores, asperiores adipisicing elit. Consequatur, asperiores, asperiores',
-            //     duration: '100000'
-            // })
         },
         beforeDestroy(){
             sessionStorage.removeItem('pid');
