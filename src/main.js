@@ -8,9 +8,12 @@ import Vuex from 'Vuex'
 import axios from 'axios'
 import store from './vuex/store'
 import VueMessage from '@/components/common/message'
+import confirm from '@/components/common/confirm'
 
 Vue.use(VueMessage)
 Vue.use(Vuex)
+
+Vue.component('confirm',confirm)
 
 //  request拦截器  -->  全局request添加请求头
 axios.interceptors.request.use(config => {

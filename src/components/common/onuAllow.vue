@@ -122,11 +122,10 @@
 
 <script>
 import { mapState,mapMutations } from 'vuex'
-import confirm from '@/components/common/confirm'
 import onuCard from '@/components/common/onuCard'
     export default {
         name: 'onuAllow',
-        components: { confirm,onuCard },
+        components: { onuCard },
         data(){
             return {
                 onu_arrow: {},

@@ -85,10 +85,8 @@
 
 <script>
 import { mapState,mapMutations } from 'vuex'
-import confirm from '@/components/common/confirm'
     export default {
         name: 'onuBasicInfo',
-        components: { confirm },
 		computed: mapState(['lanMap','port_name','port_info','change_url','onu_list']),
         data(){
             return {

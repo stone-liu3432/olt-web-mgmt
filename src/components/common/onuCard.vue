@@ -40,12 +40,10 @@
 
 <script>
 import { mapState,mapMutations } from 'vuex'
-import confirm from '@/components/common/confirm'
 export default {
     name: 'onuCard',
     props: ['onuAllowList'],
     computed: mapState(['lanMap','menu']),
-    components: { confirm },
     data(){
         return {
             delete_confirm: false,

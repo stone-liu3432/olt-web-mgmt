@@ -2,7 +2,7 @@
     <transition name="mei-message-fade">
         <div v-if="show" :class="['mei-message',type ? `mei-message-${ type }` : '']">
             <i v-if="type=='warning'" class="mei-message-icon">
-               <svg t="1516780450055" class="icon" style="" viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg" p-id="8101" xmlns:xlink="http://www.w3.org/1999/xlink" width="40" height="40"><defs></defs><path d="M560 528C560 554.496 538.624 576 512 576l0 0C485.568 576 464 554.496 464 528l0-224C464 277.44 485.568 256 512 256l0 0c26.624 0 48 21.44 48 48L560 528zM560 720c0-26.496-21.376-48-48-48-26.432 0-48 21.504-48 48S485.568 768 512 768C538.624 768 560 746.496 560 720zM512 64C264.64 64 64 264.64 64 512c0 247.424 200.64 448 448 448 247.488 0 448-200.576 448-448C960 264.64 759.488 64 512 64zM512 896.768c-212.48 0-384.768-172.224-384.768-384.768S299.52 127.232 512 127.232 896.64 299.52 896.64 512 724.48 896.768 512 896.768z" p-id="8102" fill="#ffffff"></path></svg>
+            <svg t="1516780450055" class="icon" style="" viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg" p-id="8101" xmlns:xlink="http://www.w3.org/1999/xlink" width="40" height="40"><defs></defs><path d="M560 528C560 554.496 538.624 576 512 576l0 0C485.568 576 464 554.496 464 528l0-224C464 277.44 485.568 256 512 256l0 0c26.624 0 48 21.44 48 48L560 528zM560 720c0-26.496-21.376-48-48-48-26.432 0-48 21.504-48 48S485.568 768 512 768C538.624 768 560 746.496 560 720zM512 64C264.64 64 64 264.64 64 512c0 247.424 200.64 448 448 448 247.488 0 448-200.576 448-448C960 264.64 759.488 64 512 64zM512 896.768c-212.48 0-384.768-172.224-384.768-384.768S299.52 127.232 512 127.232 896.64 299.52 896.64 512 724.48 896.768 512 896.768z" p-id="8102" fill="#ffffff"></path></svg>
             </i>
             <i v-if="type=='success'" class="mei-message-icon">
                 <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" t="1515656188050"
@@ -31,7 +31,7 @@ export default {
             type: ""
         };
     },
-     computed: {
+    computed: {
         iconClass() {
             return this.type ? `mei-message-icon mei-icon-${typeMap[this.type]}` : "";
         }
@@ -76,9 +76,7 @@ export default {
 }
 .mei-message-con {
     line-height: 40px;
-    max-width: 800px;
-    height: 40px;
-    display: inline-block;
+    display: inline;
     margin-left: 10px;
     overflow: hidden;
     text-overflow: ellipsis;

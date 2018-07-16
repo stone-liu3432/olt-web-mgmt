@@ -202,11 +202,10 @@
 
 <script>
 import { mapState } from 'vuex'
-import confirm from '@/components/common/confirm'
 import loading from '@/components/common/loading'
     export default {
         name: 'macMgmt',
-        components: { confirm,loading },
+        components: { loading },
         computed: {
             ...mapState(['lanMap','change_url','port_name','port_info']),
             select_all_text(){

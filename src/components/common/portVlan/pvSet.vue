@@ -103,7 +103,7 @@
                 <div class="pv-vlist-item">
                     <span>{{ lanMap['vlan_mode'] }}</span>
                     <span>
-                        <select v-model="vlan_mode" :disabled="pvData.data.port_mode !== 3">
+                        <select v-model="vlan_mode" :disabled="pvData.data.port_type !== 3">
                             <option value="1">{{ lanMap['tagged'] }}</option>
                             <option value="2">{{ lanMap['untagged'] }}</option>
                         </select>
@@ -132,7 +132,7 @@
 import { mapState } from 'vuex'
 export default {
     name: 'pvSet',
-    //props: ['pvData'],
+    props: ['pvData'],
     computed: mapState(['lanMap']),
     data(){
         return {
@@ -179,7 +179,7 @@ export default {
             var post_params = {
                 "method":"set",
                 "param":{
-                    "port_id": this.pvData.data.port_id,
+                    "port_id": this.$parent.$data.portid,
                     "port_type": this.port_type
                 }
             }
@@ -228,7 +228,7 @@ export default {
             var post_params = {
                 "method":"set",
                 "param":{
-                    "port_id": this.pvData.data.port_id,
+                    "port_id": this.$parent.$data.portid,
                     "pvid": this.pvid
                 }
             }
@@ -275,7 +275,7 @@ export default {
             var post_params = {
                 "method":"set",
                 "param":{
-                    "port_id": this.pvData.data.port_id,
+                    "port_id": this.$parent.$data.portid,
                     "port_type": this.pvData.data.port_type,
                     "vlan_list": this.vlan_list.replace(/\s+/g,''),
                     "vlan_mode": this.vlan_mode     // (hybrid)
@@ -303,7 +303,7 @@ export default {
              var post_params = {
                 "method":"delete",
                 "param":{
-                    "port_id": this.pvData.data.port_id,
+                    "port_id": this.$parent.$data.portid,
                     "port_type": this.pvData.data.port_type,
                     "vlan_list": this.vlan_list.replace(/\s+/g,''),
                     "vlan_mode": this.vlan_mode     // (hybrid)

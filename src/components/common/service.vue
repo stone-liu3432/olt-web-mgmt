@@ -68,11 +68,9 @@
 
 <script>
 import { mapState } from 'vuex'
-import confirm from '@/components/common/confirm'
 export default {
     name: 'service',
     computed: mapState(['lanMap']),
-    components: { confirm },
     data(){
         return {
             ssh: false,

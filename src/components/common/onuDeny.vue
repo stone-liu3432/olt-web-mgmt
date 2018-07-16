@@ -60,10 +60,8 @@
 
 <script>
 import { mapState } from 'vuex'
-import confirm from '@/components/common/confirm'
 export default {
     name: 'onuDeny',
-    components: { confirm },
     computed: mapState(['lanMap','port_name','change_url']),
     data(){
         return {

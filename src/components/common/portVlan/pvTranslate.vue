@@ -1,27 +1,28 @@
 <template>
     <div class="port-vlan-translate">
         <div class="pv-translate-item">
-            <span><!-- {{ lanMap['old_vlan'] }} --> old vlan</span>
-            <span>{{ pvData.data.old_vlan || ' - ' }}</span>
-        </div>
-        <div class="pv-translate-item">
-            <span><!-- {{ lanMap['new_vlan'] }} --> new vlan</span>
-            <span>{{ pvData.data.new_vlan || ' - ' }}</span>
-        </div>
-        <div class="pv-translate-item">
+            <span>old vlan</span>
+            <span>new vlan</span>
             <span>{{ lanMap['new_vlan_pri'] }}</span>
-            <span>{{ pvData.data.new_vlan_pri || ' - ' }}</span>
+            <span>
+                <a href="javascript:void(0);" @click="open_add_translate">{{ lanMap['add'] }}</a>
+            </span>
         </div>
-        <div class="pv-translate-item">
-            <a href="javascript:void(0);" @click="open_translate_modal">{{ lanMap['config'] }}</a>
-            <a href="javascript:void(0);" @click="open_del_translate">{{ lanMap['delete'] }}</a>
+        <div class="pv-translate-item" v-for="(item,key) in pvData.data" :key="key" v-if="pvData.data && pvData.data.length > 0">
+            <span>{{ item.old_vlan }}</span>
+            <span>{{ item.new_vlan }}</span>
+            <span>{{ item.new_vlan_pri }}</span>
+            <span>
+                <a href="javascript:void(0);" @click="open_cfg_translate(item)">{{ lanMap['modify'] }}</a>
+                <a href="javascript:void(0);" @click="open_del_translate(item)">{{ lanMap['delete'] }}</a>
+            </span>
         </div>
         <div class="modal-dialog" v-if="show_set_pvtrans">
             <div class="cover"></div>
             <div class="pv-translate-modal">
                 <div class="translate-modal-item">
-                    <h3>{{ lanMap['config'] }}</h3>
-                    <h3 v-if="false">{{ lanMap['delete'] }}</h3>
+                    <h3 v-if="flags === 2">{{ lanMap['config'] }}</h3>
+                    <h3 v-if="flags === 1">{{ lanMap['add'] }}</h3>
                 </div>
                 <div class="translate-modal-item">
                     <span>old vlan</span>
@@ -66,14 +67,14 @@
 
 <script>
 import { mapState } from 'vuex'
-import confirm from '@/components/common/confirm'
 export default {
     name: 'pvTranslate',
     computed: mapState(['lanMap']),
-    components: { confirm },
-    //props: ['pvData'],
+    props: ['pvData'],
     data(){
         return {
+            flags: 0,       //  模态框内标题
+            cache_d: {},
             show_set_pvtrans: false,
             pv_old_vlan: 0,
             pv_new_vlan: 0,
@@ -82,13 +83,13 @@ export default {
             // pvData: {
             //     "code":1,
             //     "msg":"success",
-            //     "data":{
+            //     "data":[{
             //         "port_id":1,
             //         "old_vlan":100,
             //         "new_vlan":200,
             //         "new_vlan_pri":1,
             //         "action":0
-            //     }
+            //     }]
             // }
         }
     },
@@ -96,19 +97,27 @@ export default {
         //  to do
     },
     methods: {
-        open_translate_modal(){
+        //  打开配置 translate 模态框
+        open_cfg_translate(item){
+            this.flags = 2;
             this.show_set_pvtrans = true;
-            this.pv_new_vlan = this.pvData.data.new_vlan;
-            this.pv_old_vlan = this.pvData.data.old_vlan;
-            this.pv_new_vlan_pri = this.pvData.data.new_vlan_pri;
+            this.pv_new_vlan = item.new_vlan;
+            this.pv_old_vlan = item.old_vlan;
+            this.pv_new_vlan_pri = item.new_vlan_pri;
+            this.cache_d = Object.assign({},item);
         },
+        //  关闭配置 translate 模态框
         close_translate_modal(){
             this.show_set_pvtrans = false;
+            this.pv_new_vlan = '';
+            this.pv_old_vlan = '';
+            this.pv_new_vlan_pri = 255;
         },
+        //  配置 translate 模态框内提交按钮
         submit_pv_translate(){
-            if( this.pv_old_vlan === this.pvData.data.old_vlan &&
-                this.pv_new_vlan === this.pvData.data.new_vlan && 
-                this.pv_new_vlan_pri === this.pvData.data.new_vlan_pri ){
+            if( this.pv_old_vlan === this.cache_d.old_vlan &&
+                this.pv_new_vlan === this.cache_d.new_vlan && 
+                this.pv_new_vlan_pri === this.cache_d.new_vlan_pri ){
                 this.$message({
                     type: 'info',
                     text: this.lanMap['modify_tips']
@@ -132,7 +141,7 @@ export default {
             var post_params = {
                 "method":"set",
                 "param":{
-                    "port_id": this.pvData.data.port_id,
+                    "port_id": this.$parent.$data.portid,
                     "old_vlan": this.pv_old_vlan,
                     "new_vlan": this.pv_new_vlan,
                     "new_vlan_pri": this.pv_new_vlan_pri,
@@ -157,16 +166,19 @@ export default {
             })
             this.close_translate_modal();
         },
-        open_del_translate(){
+        //  打开删除 translate 确认框
+        open_del_translate(item){
             this.show_del_pv_trans = true;
+            this.pv_old_vlan = item.old_vlan;
         },
+        //  确认框内的操作按钮
         del_pv_trans(bool){
             if(bool){
                 var post_params = {
                     "method":"delete",
                     "param":{
-                        "port_id": this.pvData.data.port_id,
-                        "old_vlan": this.pvData.data.old_vlan,
+                        "port_id": this.$parent.$data.portid,
+                        "old_vlan": this.pv_old_vlan,
                         "action": 0
                     }
                 }
@@ -188,6 +200,14 @@ export default {
                 })
             }
             this.show_del_pv_trans = false;
+        },
+        //  打开添加 translate 模态框
+        open_add_translate(){
+            this.flags = 1;
+            this.show_set_pvtrans = true;
+            this.pv_new_vlan = '';
+            this.pv_old_vlan = '';
+            this.pv_new_vlan_pri = 255;
         }
     }
 }
@@ -222,15 +242,14 @@ div.pv-translate-item{
     height: 30px;
     >span{
         display: inline-block;
-        overflow: hidden;
-        text-overflow: ellipsis;
         min-width: 120px;
         max-width: 800px;
         height: 30px;
         line-height: 30px;
         vertical-align: middle;
-        &:first-child{
-            width: 130px;
+        &:last-child{
+            width: 300px;
+            text-align: center;
         }
     }
     a.large-btn{

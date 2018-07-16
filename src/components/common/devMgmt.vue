@@ -80,7 +80,6 @@
 
 <script>
     import { mapState } from 'vuex'
-    import confirm from '@/components/common/confirm'
     import loading from '@/components/common/loading'
     export default {
         name: 'devMgmt',
@@ -99,7 +98,6 @@
                 timeout: null
             }
         },
-        components: { confirm,loading },
         methods:{
             //  选择上传文件
             changeFile(){

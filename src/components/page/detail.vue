@@ -1,5 +1,5 @@
 <template>
-    <div id="detail" class="lf">
+    <div id="detail" class="lf" v-if="port_name.pon && port_name.ge">
         <keep-alive :include="['onuAllow','ponSetting','onuDeny','slaCfg','onuBasicInfo','onuPortCfg','perfInfo','portCfg','portVlan']">
             <router-view v-if="isRouterAlive"></router-view>
         </keep-alive>
@@ -16,7 +16,7 @@
                 ponInfo: {}
             }
         },
-        computed: mapState(['lanMap','change_url','system']),
+        computed: mapState(['lanMap','change_url','system','port_name']),
         created(){
             document.body.addEventListener('keydown',this.preventRefresh,false);
             this.getData();

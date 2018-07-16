@@ -186,10 +186,8 @@
 
 <script>
 import { mapState } from 'vuex'
-import confirm from '@/components/common/confirm'
     export default {
         name: 'vlanCfg',
-        components: { confirm },
         computed: mapState(['lanMap','port_info','port_name','change_url','system']),
         data(){
             return {

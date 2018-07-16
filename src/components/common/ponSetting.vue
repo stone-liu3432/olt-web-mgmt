@@ -62,11 +62,9 @@
 
 <script>
 import { mapState } from 'vuex'
-import confirm from '@/components/common/confirm'
 export default {
     name: 'ponSetting',
     computed: mapState(['lanMap','port_name']),
-    components: { confirm },
     data(){
         return {
             port_id: 0,

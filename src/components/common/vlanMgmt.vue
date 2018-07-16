@@ -121,10 +121,8 @@
 
 <script>
 import { mapState } from 'vuex'
-import confirm from '@/components/common/confirm'
     export default {
         name: 'vlanMgmt',
-        components: { confirm },
         data(){
             return {
                 // 已有的 VLAN列表
@@ -614,7 +612,7 @@ span.vlan-cfg-title{
 }
 div.cover+div{
     width:850px;
-    height:330px;
+    height:300px;
     position: absolute;
     left: 0;
     right: 0;

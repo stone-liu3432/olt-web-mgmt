@@ -112,10 +112,8 @@
 <script>
 import { mapState } from "vuex"
 import timezone from '@/config/timezone'
-import confirm from '@/components/common/confirm'
     export default {
         name : 'timeMgmt',
-        components: { confirm },
         data(){
             return {
                 timer: {},

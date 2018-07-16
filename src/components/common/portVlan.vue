@@ -18,8 +18,8 @@
         </div>
         <div>
             <pvSet :pv-data="pv_set_d" v-if="show_index === 1 && pv_set_d.data"></pvSet>
-            <pvTranslate :pv-data="pv_translate_d" v-if="show_index === 2 && pv_translate_d.data"></pvTranslate>
-            <pvQinq :pv-data="pv_qinq_d" v-if="show_index === 3 && pv_qinq_d.data"></pvQinq>
+            <pvTranslate :pv-data="pv_translate_d" v-if="show_index === 2"></pvTranslate>
+            <pvQinq :pv-data="pv_qinq_d" v-if="show_index === 3"></pvQinq>
         </div>
     </div>
 </template>
