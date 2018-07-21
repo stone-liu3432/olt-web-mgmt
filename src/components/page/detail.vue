@@ -49,13 +49,27 @@
             getData(){
                 this.$http.get(this.change_url.port).then(res=>{
                     this.portInfo(res.data);
-                    var index = this.system.data.ponports;
-                    var pon_count = res.data.data.slice(0,index);
-                    var ge_count = res.data.data.slice(index);
-                    var portName = {
-                        pon: this.get_portName(pon_count,'PON'),
-                        ge: this.get_portName(ge_count,'GE')
-                    };
+                    var pon = this.system.data.ponports;
+                    var ge = this.system.data.geports;
+                    var xge = this.system.data.xgeports;
+                    var pon_count,ge_count,xge_count,portName;
+                    pon_count = res.data.data.slice(0,pon);
+                    //ge_count = res.data.data.slice(pon);
+                    if(!xge){
+                        ge_count = res.data.data.slice(pon);
+                        portName = {
+                            pon: this.get_portName(pon_count,'PON'),
+                            ge: this.get_portName(ge_count,'GE')
+                        };
+                    }else{
+                        ge_count = res.data.data.slice(pon,pon+ge);
+                        xge_count = res.data.data.slice(pon+ge);
+                        portName = {
+                            pon: this.get_portName(pon_count,'PON'),
+                            ge: this.get_portName(ge_count,'GE'),
+                            xge: this.get_portName(xge_count,'XGE')
+                        }
+                    }
                     this.portName(portName);
                 }).catch(err=>{
                     // to do
@@ -66,11 +80,7 @@
                 var obj = {};
                 for(var i=0;i<arr.length;i++){
                     obj[arr[i].port_id] = {};
-                    obj[arr[i].port_id].name = i < 10 ? prefix + '0' + arr[i].port_id : prefix + arr[i].port_id;
-                    if(arr[i].port_id > this.system.data.ponports){
-                        var n = arr[i].port_id - this.system.data.ponports;
-                        obj[arr[i].port_id].name = i < 10 ? prefix + '0' + n : prefix + n;
-                    }
+                    obj[arr[i].port_id].name = i < 10 ? prefix + '0' + (i + 1) : prefix + (i + 1);
                     obj[arr[i].port_id].id = arr[i].port_id;
                     obj[arr[i].port_id].data = arr[i]; 
                 }

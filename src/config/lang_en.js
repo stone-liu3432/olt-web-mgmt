@@ -40,7 +40,7 @@ var en = {
 	"destroy":  "Delete",
 	"add" :  "Add",
 	"delete" :  "Delete",
-	"modify" :  "Modify",
+	"modify" :  "Modify ",
 	"find" :  "Find",
 	"apply" :  "Apply",
 	"cancel" :  "Cancel",
@@ -66,6 +66,7 @@ var en = {
 	"macmask" :  "MAC Mask",
 	"ponports" :  "PON Ports",
 	"geports" :  "GE Ports",
+	"xgeports" :  "XGE Ports",
 	"feports" :  "FE Ports",
 	"build_time" :  "Build Time",
 	"product_name" :  "Product Model",
@@ -390,7 +391,10 @@ var en = {
 	"pv_vmode_tips": "The vlan mode is allowed to be modified only when the port type is 'hybrid'.",
 	"add_vlan_list":"Add the port to the specified VLAN",
 	"del_vlan_list":"Remove the port from the specified VLAN",
-	"svlan_pri": "svlan priority"
+	"svlan_pri": "svlan priority",
+	"batch_mgmt_onu":"ONU Batch management",
+	"exit_batch_onu": "Exit batch management",
+	"no_select_onu":"No ONU is currently selected"
 }
 
 export default en

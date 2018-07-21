@@ -58,6 +58,17 @@ import loading from '@/components/common/loading'
         },
         computed: mapState(['lanMap']),
         methods: {
+            reboot(){
+                this.$http.get('/system_start',{timeout: 3000}).then(res=>{
+                    if(res.data.code === 1){
+                        this.isReboot = false;
+                        sessionStorage.clear();
+                        this.$router.push('/login');
+                    }
+                }).catch(err=>{
+                    this.reboot();
+                })
+            },
             upgrade_result(bool){
                 if(bool){
                     this.$http.get("/system_reboot").then(res=>{
@@ -66,18 +77,7 @@ import loading from '@/components/common/loading'
                         // to do
                     })
                     this.isReboot = true;
-                    this.interval = setInterval(()=>{
-                        this.$http.get('/system_start').then(res=>{
-                            if(res.data.code === 1){
-                                clearInterval(this.interval);
-                                this.isReboot = false;
-                                sessionStorage.clear();
-                                this.$router.push('/login');
-                            }
-                        }).catch(err=>{
-                            // to do
-                        })
-                    },10000)
+                    this.reboot();
                 }
                 this.width = 0;
                 this.reboot_confirm = false;

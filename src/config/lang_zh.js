@@ -66,6 +66,7 @@ var zh = {
 	"macmask" : "MAC Mask",
 	"ponports" : "PON口数量",
 	"geports" : "千兆口数量",
+	"xgeports" :  "XGE口数量",
 	"feports" : "百兆口数量",
 	"build_time" : "编译时间",
 	"product_name" : "设备型号",
@@ -390,7 +391,10 @@ var zh = {
 	"pv_vmode_tips": "vlan 模式只有在端口类型为'hybrid'时才允许修改。",
 	"add_vlan_list":"将端口加入指定VLAN",
 	"del_vlan_list":"将端口从指定VLAN删除",
-	"svlan_pri": "svlan优先级"
+	"svlan_pri": "svlan优先级",
+	"batch_mgmt_onu":"批量管理ONU",
+	"exit_batch_onu": "退出批量管理",
+	"no_select_onu":"当前未选择任何ONU"
 }
 
 export default zh

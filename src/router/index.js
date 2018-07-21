@@ -5,6 +5,7 @@ import login from "../components/page/login";
 
 Vue.use(Router);
 
+//  文件切割  -->  懒加载，提高首页打开速度
 //  main
 const main = () => import(/* webpackChunkName: "main-page" */  '@/components/page/main')
 //  system page
@@ -242,9 +243,6 @@ router.beforeEach((to, from, next) => {
 
 router.afterEach((to, from) => {
 	store.commit("updateLoad", false);
-	if (document.documentElement.scrollTop) {
-		document.documentElement.scrollTop = 0;
-	}
 });
 
 export default router;

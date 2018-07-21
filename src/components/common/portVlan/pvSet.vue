@@ -30,7 +30,7 @@
                 {{ pvData.data.untagged_vlan }}
             </span>
         </div>
-        <div class="pv-set-item">
+        <div class="pv-set-item" v-if="pvData.data.port_type !== 1">
             <a href="javascript:void(0);" @click="set_pv_vlist_add" class="large-btn">
                 {{ lanMap['add_vlan_list'] }}
             </a>
@@ -44,7 +44,10 @@
             <div class="pv-type" v-if="port_type_show">
                 <div class="pv-type-item">
                     <span>{{ lanMap['port_id'] }}</span>
-                    <span>{{ pvData.data.port_id }}</span>
+                    <span>
+                        {{ port_name.pon[pvData.data.port_id] ? port_name.pon[pvData.data.port_id].name : port_name.ge[pvData.data.port_id] ? port_name.ge[pvData.data.port_id].name : 
+                            port_name.xge[pvData.data.port_id].name }}
+                    </span>
                 </div>
                 <div class="pv-type-item">
                     <span>{{ lanMap['port_type'] }}</span>
@@ -66,7 +69,10 @@
             <div class="pv-def-vid" v-if="port_defvid_show">
                 <div class="pv-defvlan-item">
                     <span>{{ lanMap['port_id'] }}</span>
-                    <span>{{ pvData.data.port_id }}</span>
+                    <span>
+                        {{ port_name.pon[pvData.data.port_id] ? port_name.pon[pvData.data.port_id].name : port_name.ge[pvData.data.port_id] ? port_name.ge[pvData.data.port_id].name : 
+                            port_name.xge[pvData.data.port_id].name }}
+                    </span>
                 </div>
                 <div class="pv-defvlan-item">
                     <span>{{ lanMap['def_vlan_id'] }}</span>
@@ -88,7 +94,10 @@
                 </div>
                 <div class="pv-vlist-item">
                     <span>{{ lanMap['port_id'] }}</span>
-                    <span>{{ pvData.data.port_id }}</span>
+                    <span>
+                        {{ port_name.pon[pvData.data.port_id] ? port_name.pon[pvData.data.port_id].name : port_name.ge[pvData.data.port_id] ? port_name.ge[pvData.data.port_id].name : 
+                            port_name.xge[pvData.data.port_id].name }}
+                    </span>
                 </div>
                 <div class="pv-vlist-item">
                     <span>{{ lanMap['port_type'] }}</span>
@@ -133,7 +142,7 @@ import { mapState } from 'vuex'
 export default {
     name: 'pvSet',
     props: ['pvData'],
-    computed: mapState(['lanMap']),
+    computed: mapState(['lanMap','port_name']),
     data(){
         return {
             modal_show: false,
@@ -265,7 +274,25 @@ export default {
             this.set_vlist_type = 0;
         },
         submit_add_pv_vlist(){
-            if(this.vlan_list.replace(/\s+/g,'') === this.pvData.data.vlan_list.replace(/\s+/g,'')){
+            var vlist;
+            if(this.pvData.data.port_type === 1){
+                vlist = this.pvData.data.untagged_vlan;
+            }
+            if(this.pvData.data.port_type === 2){
+                vlist = this.pvData.data.tagged_vlan;
+            }
+            if(this.pvData.data.port_type === 3){
+                vlist = this.pvData.data.tagged_vlan + ',' + this.pvData.data.untagged_vlan;
+            }
+            vlist = vlist.replace(/^\s*,|\s+|,\s*$/g,'');
+            if(!this.vlan_list){
+                this.$message({
+                    type: 'error',
+                    text: this.lanMap['param_error'] + ': ' + this.lanMap['vlan_list']
+                })
+                return
+            }
+            if(vlist && this.vlan_list.replace(/\s+/g,'') === vlist){
                 this.$message({
                     type: 'info',
                     text: this.lanMap['modify_tips']
@@ -374,6 +401,9 @@ div.port-vlan-set{
             vertical-align: middle;
             &:first-child{
                 width: 130px;
+            }
+            a{
+                box-sizing: border-box;
             }
         }
         a.large-btn{

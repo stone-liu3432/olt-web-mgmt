@@ -9,7 +9,8 @@
         "bl_ver":"V1.0_Rel",
         "macaddr":"38:3a:21:f0:01:b0",
         "ponports":4,
-        "geports":8,
+        "geports":4,
+        "xgeports":4,
         "build_time":"2017/11/22 09:32:48"
     }
 }

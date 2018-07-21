@@ -4,7 +4,7 @@
             <h2>{{ lanMap['onu_port_cfg'] }}</h2>
             <div class="lf" v-if="port_name.pon">
                 <span>{{ lanMap['port_id'] }}</span>
-                <select v-model="portid">
+                <select v-model.number="portid">
                     <option :value="item.id" v-for="(item,key) in port_name.pon" :key="key">{{ item.name }}</option>
                 </select>
             </div>
@@ -18,7 +18,7 @@
         </div>
         <hr>
         <!-- ONU端口信息 -->
-        <div class="onu-port-info" v-if="onu_list.data/* && onu_port_info.data && port_name.pon*/">
+        <div class="onu-port-info" v-if="onu_list.data && onu_port_info.data && port_name.pon">
             <div>
                 <h3 class="lf">{{ 'ONU' + port_name.pon[portid].id + '/' + onuid + ' ' + lanMap['port_info'] }}</h3>
                 <div class="lf">

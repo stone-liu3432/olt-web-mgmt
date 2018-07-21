@@ -30,6 +30,11 @@
                     <i :title="lanMap['reboot_onu']" class="reset-onu" @click="reboot(item)"></i> 
                 </div>
             </div>
+            <div id="onu-batch-mgmt" v-if="isBatchMgmt">
+                <label :for="'ONU0'+item.port_id +'/'+ item.onu_id">
+                    <input type="checkbox" :id="'ONU0'+item.port_id +'/'+ item.onu_id" :value="item.onu_id" v-model="batch_onulist" name="onulist">
+                </label>
+            </div>
         </div>
         <confirm :tool-tips="lanMap['tips_del_onu']" @choose="result_delete" v-if="delete_confirm"></confirm>
         <confirm :tool-tips="lanMap['tips_add_deny_onu']" @choose="result_deny" v-if="deny_confirm"></confirm>
@@ -42,7 +47,7 @@
 import { mapState,mapMutations } from 'vuex'
 export default {
     name: 'onuCard',
-    props: ['onuAllowList'],
+    props: ['onuAllowList','batchOnulist','isBatchMgmt'],
     computed: mapState(['lanMap','menu']),
     data(){
         return {
@@ -50,8 +55,15 @@ export default {
             deny_confirm: false,
             reboot_confirm: false,
             authstate_confirm: false,
-            post_params: {}
+            post_params: {},
+            batch_onulist: []
         }
+    },
+    created(){
+        this.batch_onulist = this.batchOnulist;
+    },
+    beforeDestroy(){
+        this.$parent.$data.batch_onulist = this.batch_onulist;
     },
     methods: {
         ...mapMutations({
@@ -260,6 +272,14 @@ export default {
             // 调用 vuex Mutations方法，更新 store 状态
             this.update_menu(_menu);
         }
+    },
+    watch: {
+        batch_onulist(){
+            this.$parent.$data.batch_onulist = this.batch_onulist;
+        },
+        batchOnulist(){
+            this.batch_onulist = this.batchOnulist;
+        }
     }
 }
 </script>
@@ -317,7 +337,6 @@ div.onu-card{
     border-radius: 3px;
     position: relative;
     overflow: hidden;
-    //cursor: pointer;
     &:hover{
         div.card-cover{
             top: 0;
@@ -329,7 +348,7 @@ div.onu-card{
         padding: 5px;
         position: absolute;
         left: 0;
-        top: 182px; // 182px;
+        top: 182px;
         background: #ddd;
         transition: all .3s linear;
         opacity: .9;
@@ -341,6 +360,20 @@ div.onu-card{
             text-align: center;
             padding: 2px 0;
         }
+    }
+}
+#onu-batch-mgmt{
+    text-align: right;
+    >label{
+        position: absolute;
+        width: 40px;
+        height: 40px;
+        text-align: center;
+        line-height: 40px;
+        right: 0px;
+        top: 0px;
+        cursor: pointer;
+        z-index: 9;
     }
 }
 </style>

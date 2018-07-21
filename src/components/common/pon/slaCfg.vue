@@ -2,13 +2,13 @@
     <div class="onu-bandwidth">
         <h2>{{ lanMap['sla_cfg'] }}</h2>
         <div>
-            <select v-model="portid">
+            <select v-model.number="portid">
                 <option v-for="(item,key) in port_name.pon" :key="key" :value="item.id">
                     {{ item.name }}
                 </option>
             </select>
         </div>
-        <ul v-if="band_width.data">
+        <ul v-if="band_width.data && band_width.data.length > 0">
             <li>
                 <span v-for="(item,key) in this.band_width.data[0]" :key="key" v-if=" key != 'port_id'">
                     {{ lanMap[key] }}
@@ -18,9 +18,12 @@
             <li v-for="(item,index) in this.band_width.data" :key="index">
                 <span>{{ 'ONU0'+item.port_id +'/'+ item.onu_id }}</span>
                 <span>{{ item.sla_type }}</span>
-                <span>{{ item.fix }}</span>
-                <span>{{ item.assure }}</span>
-                <span>{{ item.max }}</span>
+                <span v-if="item.sla_type === 'type1' || item.sla_type === 'type5'">{{ item.fix }}</span>
+                <span v-else> - </span>
+                <span v-if="item.sla_type === 'type2' || item.sla_type === 'type3' || item.sla_type === 'type5'">{{ item.assure }}</span>
+                <span v-else> - </span>
+                <span v-if="item.sla_type === 'type3' || item.sla_type === 'type4' || item.sla_type === 'type5'">{{ item.max }}</span>
+                <span v-else> - </span>
                 <span>
                     <a href="javascript:;" @click="sla_config(item.onu_id)">{{ lanMap['config'] }}</a>
                 </span>
@@ -149,8 +152,7 @@ import { mapState } from 'vuex'
                     "assure": 0,
                     "max": 0
                 },
-                onu_detail: {},
-                cache_onu_detail: {}
+                onu_detail: {}
             }
         },
         created(){
@@ -189,6 +191,7 @@ import { mapState } from 'vuex'
                 }
                 this.$http.get(url).then(res=>{
                     if(res.data.code === 1){
+                        this.isConfig = true;
                         this.onu_detail = res.data;
                         for(var key in this.onu_detail.data){
                             this.post_params[key] = this.onu_detail.data[key];
@@ -196,11 +199,9 @@ import { mapState } from 'vuex'
                     }else if(res.data.code >1){
                         this.onu_detail = {};
                     }
-                    this.cache_onu_detail = Object.assign({},this.onu_detail.data);
                 }).catch(err=>{
                     // to do
                 })
-                this.isConfig = true;
             },
             getData(){
                  this.$http.get('/onu_bandwidth?port_id='+ this.portid).then(res=>{
@@ -216,8 +217,8 @@ import { mapState } from 'vuex'
             //  带宽配置  -->  确定按钮
             isChange(bool){
                 if(bool){
-                    if(this.cache_onu_detail.fix === this.post_params.fix && this.cache_onu_detail.assure === this.post_params.assure 
-                    && this.cache_onu_detail.max === this.post_params.max && this.cache_onu_detail.sla_type === this.post_params.sla_type){
+                    if(this.onu_detail.data.fix === this.post_params.fix && this.onu_detail.data.assure === this.post_params.assure 
+                    && this.onu_detail.data.max === this.post_params.max && this.onu_detail.data.sla_type === this.post_params.sla_type){
                         this.$message({
                             type: 'info',
                             text: this.lanMap['modify_tips']
@@ -292,7 +293,6 @@ import { mapState } from 'vuex'
                         // to do
                     })
                 }
-                this.cache_onu_detail = {};
                 this.post_params.sla_type = '';
                 this.isConfig = false;
             }
@@ -304,33 +304,47 @@ import { mapState } from 'vuex'
                 this.getData();
             },
             'post_params.sla_type'(){
-                setTimeout(()=>{
-                    // sla_type类型不同时，不同的可设置选项
-                    var sla_fix = document.querySelector('.sla-fix');
-                    var sla_assure = document.querySelector('.sla-assure');
-                    var sla_max = document.querySelector('.sla-max');
-                    if(this.post_params.sla_type === 'type1'){
-                        sla_assure.disabled = true;
-                        sla_max.disabled = true;
-                        sla_fix.disabled = false;
-                    }else if(this.post_params.sla_type === 'type2'){
-                        sla_fix.disabled = true;
-                        sla_assure.disabled = false;
-                        sla_max.disabled = true;
-                    }else if(this.post_params.sla_type === 'type3'){
-                        sla_fix.disabled = true;
-                        sla_assure.disabled = false;
-                        sla_max.disabled = false;
-                    }else if(this.post_params.sla_type === 'type4'){
-                        sla_fix.disabled = true;
-                        sla_assure.disabled = true;
-                        sla_max.disabled = false;
-                    }else if(this.post_params.sla_type === 'type5'){
-                        sla_fix.disabled = false;
-                        sla_assure.disabled = false;
-                        sla_max.disabled = false;
-                    }
-                },0)
+                if(this.isConfig){
+                    //  延时，等待DOM加载完成再进行操作
+                    this.$nextTick(()=>{
+                        for(var key in this.onu_detail.data){
+                            if(key !== 'sla_type'){
+                                this.post_params[key] = this.onu_detail.data[key];
+                            }
+                        }
+                        var sla_fix = document.querySelector('.sla-fix');
+                        var sla_assure = document.querySelector('.sla-assure');
+                        var sla_max = document.querySelector('.sla-max');
+                        if(this.post_params.sla_type === 'type1'){
+                            sla_assure.disabled = true;
+                            sla_max.disabled = true;
+                            sla_fix.disabled = false;
+                            this.post_params.assure = ' - ';
+                            this.post_params.max = ' - ';
+                        }else if(this.post_params.sla_type === 'type2'){
+                            sla_fix.disabled = true;
+                            sla_assure.disabled = false;
+                            sla_max.disabled = true;
+                            this.post_params.fix = ' - ';
+                            this.post_params.max = ' - ';
+                        }else if(this.post_params.sla_type === 'type3'){
+                            sla_fix.disabled = true;
+                            sla_assure.disabled = false;
+                            sla_max.disabled = false;
+                            this.post_params.fix = ' - ';
+                        }else if(this.post_params.sla_type === 'type4'){
+                            sla_fix.disabled = true;
+                            sla_assure.disabled = true;
+                            sla_max.disabled = false;
+                            this.post_params.assure = ' - ';
+                            this.post_params.fix = ' - ';
+                        }else if(this.post_params.sla_type === 'type5'){
+                            sla_fix.disabled = false;
+                            sla_assure.disabled = false;
+                            sla_max.disabled = false;
+                        }
+                    })
+                }
             }
         }
     }

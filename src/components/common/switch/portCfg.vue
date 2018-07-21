@@ -7,9 +7,10 @@
         <div class="vlan-config" v-if="port_name.pon && port_name.ge">
             <p class="item-align">
                 <span>{{ lanMap['port_id'] + '：' }}</span>
-                <select v-model="portid">
+                <select v-model.number="portid">
                     <option v-for="(item,index) in port_name.pon" :key="index" :value="item.id">{{ item.name }}</option>
                     <option v-for="(item,index) in port_name.ge" :key="index" :value="item.id">{{ item.name }}</option>
+                    <option v-if="port_name.xge" v-for="(item,index) in port_name.xge" :key="index" :value="item.id">{{ item.name }}</option>
                 </select>
             </p>  
             <p>
@@ -75,24 +76,25 @@
                         <li v-for="(item,key) in swich_port_info.data" :key="key" class="swich-item" v-if="key !== 'port_id'">
                             <span v-if="key !== 'port_id'">{{ lanMap[key] }}</span>
                             <!-- <span v-if="key === 'port_id'">{{ item }}</span> -->
-                            <select v-if="key === 'admin_status' || key === 'auto_neg' || key === 'flow_ctrl'" v-model="port_data[key]">
+                            <select v-if="key === 'admin_status' || key === 'auto_neg' || key === 'flow_ctrl'" v-model.number="port_data[key]" :disabled="key === 'auto_neg'">
                                 <option value="0">{{ lanMap['disable'] }}</option>
                                 <option value="1">{{ lanMap['enable'] }}</option>
                             </select>
-                            <select v-if="key === 'link_status'" v-model="port_data.link_status" disabled>
+                            <select v-if="key === 'link_status'" v-model.number="port_data.link_status" disabled>
                                 <option value="0">{{ lanMap['link_down'] }}</option>
                                 <option value="1">{{ lanMap['link_up'] }}</option>
                             </select>
-                            <select v-if="key === 'duplex'" v-model="port_data.duplex">
+                            <select v-if="key === 'duplex'" v-model.number="port_data.duplex">
                                 <option value="0">{{ lanMap['half'] }}</option>
                                 <option value="1">{{ lanMap['full'] }}</option>
                             </select>
                             <select v-if="key === 'speed'" v-model="port_data.speed">
                                 <option value="0M" disabled>Auto</option>
-                                <option value="10M">10M</option>
-                                <option value="100M">100M</option>
+                                <option v-if="swich_port_info.data.port_id <= (system.data.ponports + system.data.geports)" value="10M">10M</option>
+                                <option v-if="swich_port_info.data.port_id <= (system.data.ponports + system.data.geports)" value="100M">100M</option>
                                 <option value="1000M">1000M</option>
-                                <option value="10/100/1000M">Auto</option>
+                                <option v-if="swich_port_info.data.port_id > (system.data.ponports + system.data.geports)" value="10000M">10000M</option>
+                                <option value="auto">Auto</option>
                             </select>
                             <input type="text" v-if="key === 'mtu'" placeholder="128-2000" v-model.number="port_data.mtu"
                             :style="{ 'border-color' : port_data.mtu && (port_data.mtu < 128 || port_data.mtu > 2000 || isNaN(port_data.mtu)) ? 'red' : '' }">
@@ -154,14 +156,14 @@
                     <ul>
                         <li class="swich-item">
                             <span>{{ lanMap['dst_port'] }}</span>
-                            <select v-model="mirror.dst_port">
+                            <select v-model.number="mirror.dst_port">
                                 <option value="0">{{ lanMap['choose'] }}</option>
                                 <option v-for="(item,key) in port_name.ge" :key="key" :value="item.id">{{ item.name }}</option>
                             </select>
                         </li>
                         <li class="swich-item">
                             <span>{{ lanMap['type'] }}</span>
-                            <select v-model="mirror.type">
+                            <select v-model.number="mirror.type">
                                 <option value="0">{{ lanMap['choose'] }}</option>
                                 <option value="1">ingress</option>
                                 <option value="2">egress</option>

@@ -2,15 +2,17 @@
     <div class="onu-allow">
         <h2>{{ lanMap['onu_allow'] }}</h2>
         <div>
-            <select v-model="portid">
+            <select v-model.number="portid">
                 <option v-for="(item,key) in port_name.pon" :key="key" :value="item.id">
                     {{ item.name }}
                 </option>
             </select>
             <i class="reload" :title="lanMap['tips_page_refresh']" @click="reload"></i>
-            <a href="javascript:;" @click="add_onu()">{{ lanMap['add'] }}</a>
-            <a href="javascript:;" @click="onu_bandwieth()">{{ lanMap['sla_cfg'] }}</a>
-            <a href="javascript:;" @click="switch_display_mode()">{{ lanMap['switch_display'] }}</a>
+            <a href="javascript:void(0);" @click="add_onu">{{ lanMap['add'] }}</a>
+            <a href="javascript:void(0);" @click="onu_bandwieth">{{ lanMap['sla_cfg'] }}</a>
+            <a href="javascript:void(0);" @click="switch_display_mode">{{ lanMap['switch_display'] }}</a>
+            <a href="javascript:void(0);" @click="show_batchmgmt" v-if="!is_batch_mgmt">{{ lanMap['batch_mgmt_onu'] }}</a>
+            <a href="javascript:void(0);" @click="show_batchmgmt" v-else>{{ lanMap['exit_batch_onu'] }}</a>
             <div class="rt tool-tips">
                 <i class="icon-tips"></i>
                 <div>
@@ -61,23 +63,19 @@
                         <option value="0">false</option>
                     </select>
                 </div>
-                <!-- <div class="modal-item">
-                    <span>{{ lanMap['onu_type'] }}</span>
-                    <input type="text">
-                </div> -->
                 <div class="modal-item">
                     <span>{{ lanMap['desc'] }}</span>
                     <input type="text" v-model="add_onudesc">
                     <span class="tips">{{ lanMap['input_desc'] }}</span>
                 </div>
                 <div class="modal-btn">
-                    <a href="javascript:;" @click="add_onuitem(true)">{{ lanMap['apply'] }}</a>
-                    <a href="javascript:;" @click="add_onuitem(false)">{{ lanMap['cancel'] }}</a>
+                    <a href="javascript:void(0);" @click="add_onuitem(true)">{{ lanMap['apply'] }}</a>
+                    <a href="javascript:void(0);" @click="add_onuitem(false)">{{ lanMap['cancel'] }}</a>
                 </div>
                 <div class="close" @click="closeModal"></div>
             </div>
         </div>
-        <div class="search-onu">
+        <div class="search-onu" v-if="!is_batch_mgmt">
             <h3 class="lf">{{ lanMap['find'] }} ONU</h3>
             <div class="lf">
                 <input type="text" v-model="search_macaddr">
@@ -85,14 +83,35 @@
             </div>
             <p class="lf">{{ lanMap['search_by_macaddr'] }}</p>
         </div>
+        <div v-else class="search-onu batch-onu">
+            <h3 class="lf">{{ lanMap['batch_mgmt_onu'] }}</h3>
+            <div class="lf">
+                <div class="lf">
+                    <label for="select-all-onu" onselectstart="return false;">
+                        <input type="checkbox" id="select-all-onu" @click="change_select_status" v-model="selectall_state">
+                        <span v-if="!select_all">{{ lanMap['select_all'] }}</span>
+                        <span v-else>{{ lanMap['clear_all'] }}</span>
+                    </label>
+                </div>
+                <a href="javascript:void(0);" @click="delete_onu()">{{ lanMap['delete'] }}</a>
+                <a href="javascript:void(0);" @click="remove_onu()">{{ lanMap['add_to_deny'] }}</a>
+                <!-- <a href="javascript:boid(0);" @click="authstate()">{{ lanMap['modify'] + lanMap['auth_state'] }}</a> -->
+            </div>
+        </div>
         <ul v-if="onu_allow_list.data && onu_allow_list.data.length>0 && onu_display_style === 1">
             <li class="onulist-item">
+                <span></span>
                 <span v-for="(item,key) in onu_allow_list.data[0]" :key="key" v-if=" key != 'port_id' && key !== 'onu_name'">
                     {{ lanMap[key] }}
                 </span>
                 <span>{{ lanMap['config'] }}</span>
             </li>
             <li v-for="(item,index) in onu_allow_list.data" :key="index" class="onulist-item" :style="{ 'background-color' : item.status.toLowerCase() !== 'online' ? '#F3A9A0' : '' }">
+                <span>
+                    <label :for="'ONU0'+item.port_id +'/'+ item.onu_id" v-if="is_batch_mgmt">
+                        <input type="checkbox" :value="item.onu_id" v-model="batch_onulist" :id="'ONU0'+item.port_id +'/'+ item.onu_id" name="onulist">
+                    </label>
+                </span>
                 <span :title="item.onu_name" class="onu-name-ellipsis">
                     {{ item.onu_name || 'ONU0'+item.port_id +'/'+ item.onu_id }}
                 </span>
@@ -111,7 +130,8 @@
                 </span>
             </li>
         </ul>
-        <onuCard v-if="onu_allow_list.data && onu_allow_list.data.length > 0 && onu_display_style === 2" :onu-allow-list="onu_allow_list" @updateData="getData"></onuCard>
+        <onuCard v-if="onu_allow_list.data && onu_allow_list.data.length > 0 && onu_display_style === 2" :onu-allow-list="onu_allow_list" 
+            :batch-onulist="batch_onulist" :is-batch-mgmt="is_batch_mgmt" @updateData="getData"></onuCard>
         <p v-if="!onu_allow_list.data || onu_allow_list.data.length <= 0">{{ lanMap['no_more_data'] }}</p>
         <confirm :tool-tips="lanMap['tips_del_onu']" @choose="result_delete" v-if="delete_confirm"></confirm>
         <confirm :tool-tips="lanMap['tips_add_deny_onu']" @choose="result_deny" v-if="deny_confirm"></confirm>
@@ -144,7 +164,12 @@ import onuCard from '@/components/common/pon/onuCard'
                 post_params: {},
                 search_macaddr: '',
                 tips_authstate: '',
-                onu_display_style: 1
+                onu_display_style: 1,
+                is_batch_mgmt: false,
+                batch_onulist: [],
+                select_all: false,
+                selectall_state: false,
+                post_url: ''
             }
         },
         computed: mapState(['lanMap','port_name','menu','change_url']),
@@ -215,12 +240,30 @@ import onuCard from '@/components/common/pon/onuCard'
             },
             // 删除onu
             delete_onu(node){
+                var olist;
+                this.post_url = '/onu_allow_list';
+                if(!node){
+                    olist = this.batch_onulist;
+                    this.post_url = '/onu_allow_list?form=batch';
+                    olist = olist.map(item=>{
+                        return Number(item);
+                    }).sort((a,b)=>a-b);
+                }else{
+                    olist = node.onu_id;
+                }
+                if(olist.length <= 0){
+                    this.$message({
+                        type: 'info',
+                        text: this.lanMap['no_select_onu']
+                    })
+                    return
+                }
                 this.post_params = {
                     "method":"delete",
                     "param":{
-                        "port_id": node.port_id,
-                        "onu_id": node.onu_id,
-                        "macaddr": node.macaddr
+                        "port_id": Number(this.portid),
+                        "onu_id": olist,
+                        "macaddr": node ? node.macaddr : ''
                     }
                 }
                 this.delete_confirm = true;
@@ -256,7 +299,7 @@ import onuCard from '@/components/common/pon/onuCard'
                     var post_params = {
                         "method":"add",
                         "param":{
-                            "port_id": this.portid,
+                            "port_id": Number(this.portid),
                             "onu_id": Number(this.add_onuid),
                             "macaddr": this.add_macaddr,
                             "auth_state": this.add_onustate,
@@ -315,12 +358,21 @@ import onuCard from '@/components/common/pon/onuCard'
                     })
                     return
                 }
+                // var olist;
+                // if(!node){
+                //     olist = this.batch_onulist;
+                // }else{
+                //     olist = [node.onu_id];
+                // }
+                // olist = olist.map(item=>{
+                //     return Number(item);
+                // }).sort((a,b)=>a-b);
                 this.post_params = {
                     "method": "set",
                     "param":{
-                        "port_id": this.portid,
+                        "port_id": Number(this.portid),
                         "onu_id": node.onu_id,
-                        "macaddr": node.macaddr,
+                        "macaddr": node ? node.macaddr : '',
                         "auth_state": node.auth_state ? 0 : 1,
                         "onu_type": '',
                         "onu_desc": ''
@@ -331,19 +383,36 @@ import onuCard from '@/components/common/pon/onuCard'
             },
             //  移动ONU到阻止列表
             remove_onu(node){
+                var olist;
+                this.post_url = '/onu_allow_list';
+                if(!node){
+                    olist = this.batch_onulist;
+                    this.post_url = '/onu_allow_list?form=batch'
+                    olist = olist.map(item=>{
+                        return Number(item);
+                    }).sort((a,b)=>a-b);
+                }else{
+                    olist = node.onu_id;
+                }
+                if(olist.length <= 0){
+                    this.$message({
+                        type: 'info',
+                        text: this.lanMap['no_select_onu']
+                    })
+                    return
+                }
                 this.post_params = {
                     "method":"reject",
                     "param":{
-                        "port_id": node.port_id,
-                        "onu_id": node.onu_id,
-                        "macaddr": node.macaddr
+                        "port_id": Number(this.portid),
+                        "onu_id": olist,
+                        "macaddr": node ? node.macaddr : ''
                     }
                 };
                 this.deny_confirm = true;
             },
             //  跳转带宽管理
             onu_bandwieth(){
-                // 请求url: /onu_bandwidth?port_id=1
                 this.$router.push('/sla_cfg?port_id='+this.portid);
                 var sub_item = document.querySelectorAll('p.sub-item');
                 for(var i=0;i<sub_item.length;i++){
@@ -389,7 +458,7 @@ import onuCard from '@/components/common/pon/onuCard'
                 this.post_params = {
                     "method":"set",
                     "param":{
-                        "port_id": this.portid,
+                        "port_id": Number(this.portid),
                         "onu_id": item.onu_id,
                         "flags": 1,
                         "fec_mode": 1
@@ -440,7 +509,7 @@ import onuCard from '@/components/common/pon/onuCard'
             //  删除确认框
             result_delete(bool){
                 if(bool){
-                    this.$http.post('/onu_allow_list',this.post_params).then(res=>{
+                    this.$http.post(this.post_url,this.post_params).then(res=>{
                         if(res.data.code === 1){
                             this.$message({
                                 type: 'success',
@@ -463,7 +532,7 @@ import onuCard from '@/components/common/pon/onuCard'
             //  加入黑名单确认框
             result_deny(bool){
                 if(bool){
-                    this.$http.post('/onu_allow_list',this.post_params).then(res=>{
+                    this.$http.post(this.post_url,this.post_params).then(res=>{
                         if(res.data.code === 1){
                             this.$message({
                                 type: 'success',
@@ -482,6 +551,21 @@ import onuCard from '@/components/common/pon/onuCard'
                 }
                 this.post_params = {};
                 this.deny_confirm = false;
+            },
+            //  开启/关闭 批量管理状态
+            show_batchmgmt(){
+                this.is_batch_mgmt = !this.is_batch_mgmt;
+            },
+            //  全选/反选 按钮
+            change_select_status(){
+                this.select_all = !this.select_all;
+                this.batch_onulist = [];
+                var onulist = document.getElementsByName('onulist');
+                if(this.select_all){
+                    onulist.forEach(item=>{
+                        this.batch_onulist.push(item.value);
+                    })
+                }
             }
         },
         watch: {
@@ -508,6 +592,16 @@ import onuCard from '@/components/common/pon/onuCard'
                         }
                     }
                     this.onu_allow_list.data = arr;
+                }
+            },
+            batch_onulist(){
+                var onulist = document.getElementsByName('onulist');
+                if(this.batch_onulist.length === onulist.length){
+                    this.select_all = true;
+                    this.selectall_state = true;
+                }else{
+                    this.select_all = false;
+                    this.selectall_state = false;
                 }
             }
         }
@@ -551,10 +645,23 @@ li.onulist-item>span{
     width: 16%;
     overflow: hidden;
     text-overflow: ellipsis;
+    &:first-child{
+        width: 3%;
+    }
+    >label{
+        display: inline-block;
+        width: 100%;
+        height: 100%;
+        cursor: pointer;
+    }
 }
 input{
     margin-left:20px;
     margin-top: 9px;
+}
+input[type='checkbox']{
+    margin: 0;
+    cursor: pointer;
 }
 select{
     width: 160px;
@@ -590,7 +697,7 @@ i{
     cursor: pointer;
     width: 32px;
     height: 32px;
-    vertical-align: top;
+    vertical-align: middle;
 }
 i.onu-detail{
     background: url('../../../assets/detail-normals.png') no-repeat 1px 1px;
@@ -757,5 +864,19 @@ div.onu-allow>h2{
 	font-weight: 600;
 	color: 	#67AEF7;
     margin: 10px 0 20px 10px;
+}
+div.batch-onu{
+    h3{
+        font-weight: 500px;
+        color: #67aef7;
+    }
+    h3+div{
+        >div{
+            margin: 0 20px;
+            span{
+                display: inline;
+            }
+        }
+    }
 }
 </style>

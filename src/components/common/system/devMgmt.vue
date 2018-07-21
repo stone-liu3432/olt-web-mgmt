@@ -84,6 +84,7 @@
     export default {
         name: 'devMgmt',
         computed: mapState(['lanMap']),
+        components: { loading },
         data(){
             return {
                 userChoose: false,
@@ -114,6 +115,17 @@
             reboot(){
                 this.rebootChoose = true;
             },
+            reboot_req(){
+                this.$http.get('/system_start',{timeout: 3000}).then(res=>{
+                    if(res.data.code === 1){
+                        this.isLoading = false;
+                        sessionStorage.clear();
+                        this.$router.push('/login');
+                    }
+                }).catch(err=>{
+                    this.reboot_req();
+                })
+            },
             reboot_result(bool){
                 if(bool){
                     this.$http.get('/system_reboot').then(res=>{
@@ -122,18 +134,7 @@
                         // to do
                     })
                     this.isLoading = true;
-                    this.timer1 = setInterval(()=>{
-                        this.$http.get('/system_start').then(res=>{
-                            if(res.data.code === 1){
-                                clearInterval(this.timer1);
-                                this.isLoading = false;
-                                sessionStorage.clear();
-                                this.$router.push('/login');
-                            }
-                        }).catch(err=>{
-                            // to do
-                        })
-                    },10000)
+                    this.reboot_req();
                 }
                 this.rebootChoose = false;
                 this.restoreChoose = false;

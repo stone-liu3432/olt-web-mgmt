@@ -2,7 +2,7 @@
     <div class="onu-deny">
         <h2>{{ lanMap['onu_deny'] }}</h2>
         <div>
-            <select v-model="portid">
+            <select v-model.number="portid">
                 <option v-for="(item,key) in port_name.pon" :key="key" :value="item.id">
                     {{ item.name }}
                 </option>

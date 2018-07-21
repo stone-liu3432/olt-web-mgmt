@@ -25,7 +25,7 @@
             </div>
             <div class="query-frame">
                 <span>{{ lanMap['query_method'] }}：</span>
-                <select v-model="flag">
+                <select v-model.number="flag">
                     <option value="1">{{ lanMap['mac_type'] }}</option>
                     <option value="2">{{ lanMap['port_id'] }}</option>
                     <option value="4">{{ lanMap['vlan_id'] }}</option>
@@ -40,7 +40,7 @@
                 <a href="javascript:;" @click="query_macaddr">{{ lanMap['apply'] }}</a>
             </div>
             <div v-if="choose_mactype" class="query-frame">
-                <select v-model="mac_type">
+                <select v-model.number="mac_type">
                     <option value="0">{{ lanMap['dynamic'] }}</option>
                     <option value="1">{{ lanMap['static'] }}</option>
                     <option value="2">{{ lanMap['blackhole'] }}</option>
@@ -48,9 +48,10 @@
                 </select>
             </div>
             <div v-if="choose_port" class="query-frame">
-                <select v-model="port_id">
+                <select v-model.number="port_id">
                     <option :value="item.id" v-for="(item,key) in port_name.pon" :key="key">{{ item.name }}</option>
                     <option :value="item.id" v-for="(item,key) in port_name.ge" :key="key">{{ item.name }}</option>
+                    <option v-if="port_name.xge" :value="item.id" v-for="(item,key) in port_name.xge" :key="key">{{ item.name }}</option>
                 </select>
             </div>
             <div v-if="choose_vlan" class="query-frame">
@@ -108,7 +109,7 @@
                 <h3>{{ lanMap['add_mac'] }}</h3>
                 <div class="add-mac-item">
                     <span>{{ lanMap['mac_type'] }}</span>
-                    <select v-model="add_param.mac_type">
+                    <select v-model.number="add_param.mac_type">
                         <option value="1">{{ lanMap['static'] }}</option>
                         <option value="2">{{ lanMap['blackhole'] }}</option>
                     </select>
@@ -125,9 +126,10 @@
                 </div>
                 <div class="add-mac-item">
                     <span>{{ lanMap['port_id'] }}</span>
-                    <select v-model="add_param.port_id">
+                    <select v-model.number="add_param.port_id">
                         <option :value="item.id" v-for="(item,key) in port_name.pon" :key="key">{{ item.name }}</option>
                         <option :value="item.id" v-for="(item,key) in port_name.ge" :key="key">{{ item.name }}</option>
+                        <option v-if="port_name.xge" :value="item.id" v-for="(item,key) in port_name.xge" :key="key">{{ item.name }}</option>
                     </select>
                 </div>
                 <div class="add-mac-item">
@@ -182,11 +184,10 @@
                             <input type="checkbox" :id="item.name" v-model="flush_param.port_id" :value="item.id" name="port_list">
                             <label :for="item.name">{{ item.name }}</label>
                         </div>
-                        <!-- 测试用 -->
-                        <!-- <div v-for="(item,key) in port_name.pon" class="lf">
+                        <div v-for="(item,key) in port_name.xge" :key="key" class="lf" v-if="port_name.xge">
                             <input type="checkbox" :id="item.name" v-model="flush_param.port_id" :value="item.id" name="port_list">
                             <label :for="item.name">{{ item.name }}</label>
-                        </div> -->
+                        </div>
                     </div>
                 </div>
                 <div class="add-mac-item">
@@ -301,7 +302,7 @@ import loading from '@/components/common/loading'
         methods: {
             getName(id){
                 if(id < 1) return '';
-                return this.port_name.pon[id] ? this.port_name.pon[id].name : this.port_name.ge[id].name;
+                return this.port_name.pon[id] ? this.port_name.pon[id].name : this.port_name.ge[id] ? this.port_name.ge[id].name : this.port_name.xge[id].name;
             },
             getData(){
                 var post_param = {
@@ -621,6 +622,9 @@ import loading from '@/components/common/loading'
                     }
                     for(var key in this.port_name.ge){
                         this.flush_param.port_id.push(this.port_name.ge[key].id);
+                    }
+                    for(var key in this.port_name.xge){
+                        this.flush_param.port_id.push(this.port_name.xge[key].id);
                     }
                 }else{
                     this.flush_param.port_id = [];

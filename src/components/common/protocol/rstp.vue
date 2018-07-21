@@ -22,7 +22,9 @@
                 <span v-for="(item,key) in rstp_port.data[0]" :key="key">{{ lanMap[key] }}</span>
             </li>
             <li v-for="(item,key) in rstp_port.data" :key="key">
-                <span>{{ port_name.ge[item.port_id].name }}</span>
+                <span>
+                    {{ port_name.ge[item.port_id] ? port_name.ge[item.port_id].name : port_name.xge[item.port_id].name }}
+                </span>
                 <span>{{ item.port_priority }}</span>
                 <span>{{ item.port_path_cost }}</span>
                 <span>{{ item.edge_status === 1 ? 'Edge' : 'NEdge' }}</span>
@@ -108,8 +110,9 @@
                 <h2>{{ lanMap['rstp_port_pri'] }}</h2>
                 <div>
                     <span>{{ lanMap['port_id'] }}</span>
-                    <select v-model="priority_info.port_id">
+                    <select v-model.number="priority_info.port_id">
                         <option v-for="(item,key) in port_name.ge" :value="item.id">{{ item.name }}</option>
+                        <option v-for="(item,key) in port_name.xge" :value="item.id">{{ item.name }}</option>
                     </select>
                 </div>
                 <div>

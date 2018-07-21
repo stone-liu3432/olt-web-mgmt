@@ -22,7 +22,8 @@
         </div>
         <div class="container"  v-if="port_info.data && port_info.data.length > 0">
             <h2>{{ lanMap['ge_port_info'] }}</h2>
-            <div class="pon-detail" v-for="(item,index) in port_info.data.slice(system.data.ponports)" :key="index" @click="jump_port_cfg(item.port_id)">
+            <div class="pon-detail" v-for="(item,index) in port_info.data.slice(system.data.ponports,system.data.ponports + system.data.geports)" :key="item.portid"
+             @click="jump_port_cfg(item.port_id)">
                 <div :class="[ item.admin_status >= 1 ? item.link_status >= 1 ? 'bg-online' : 'bg-offline' :'bg-disabled' ]">
                     <img src="../../../assets/uplink-fiber-blue.png" v-if="item.media == 'fiber' && item.admin_status >=1 && item.link_status >=1 ">
                     <img src="../../../assets/uplink-fiber-black.png" v-if="item.media == 'fiber' && item.admin_status >=1 && item.link_status < 1">
@@ -33,6 +34,26 @@
                 </div>
                 <p :style="{'color' : item.admin_status >=1 ? item.link_status >=1 ? '#29BDFA' : '#aaa' : 'red'}">
                     {{ index < 10 ? "GE0"+(index+1) : 'GE'+(index+1) }}：{{ item.admin_status >= 1 ? item.link_status >=1 ? lanMap['link_up'] : lanMap['link_down'] : lanMap['forbidden'] }}
+                </p>
+                <div class="pon-modal">
+                    <p :style="{'color' : item.admin_status >=1 ? item.link_status >=1 ? '#29BDFA' : '#aaa' : 'red'}" class="tips">
+                        {{ lanMap['admin_status'] }}：{{ item.admin_status >= 1 ? item.link_status >= 1 ? lanMap['enable'] : lanMap['disable'] : lanMap['disable'] }}
+                    </p>
+                    <span>{{ lanMap['clk_port_cfg'] }}</span>
+                </div>
+            </div>
+            <div class="pon-detail" v-for="(item,key) in port_info.data.slice(system.data.ponports,system.data.ponports + system.data.geports)" :key="item.portid"
+             @click="jump_port_cfg(item.port_id)" v-if="system.data.xgeports">
+                <div :class="[ item.admin_status >= 1 ? item.link_status >= 1 ? 'bg-online' : 'bg-offline' :'bg-disabled' ]">
+                    <img src="../../../assets/uplink-fiber-blue.png" v-if="item.media == 'fiber' && item.admin_status >=1 && item.link_status >=1 ">
+                    <img src="../../../assets/uplink-fiber-black.png" v-if="item.media == 'fiber' && item.admin_status >=1 && item.link_status < 1">
+                    <img src="../../../assets/uplink-fiber-black-disable.png" v-if="item.media == 'fiber' && item.admin_status < 1">
+                    <img src="../../../assets/uplink-rj45-blue.png" v-if="item.media == 'copper' && item.admin_status >=1 && item.link_status >=1 ">
+                    <img src="../../../assets/uplink-rj45-black.png" v-if="item.media == 'copper' && item.admin_status >=1 && item.link_status < 1">
+                    <img src="../../../assets/uplink-rj45-disable.png" v-if="item.media == 'copper' && item.admin_status < 1">
+                </div>
+                <p :style="{'color' : item.admin_status >=1 ? item.link_status >=1 ? '#29BDFA' : '#aaa' : 'red'}">
+                    {{ key < 10 ? "XGE0"+(key+1) : 'XGE'+(key+1) }}：{{ item.admin_status >= 1 ? item.link_status >=1 ? lanMap['link_up'] : lanMap['link_down'] : lanMap['forbidden'] }}
                 </p>
                 <div class="pon-modal">
                     <p :style="{'color' : item.admin_status >=1 ? item.link_status >=1 ? '#29BDFA' : '#aaa' : 'red'}" class="tips">
@@ -303,14 +324,27 @@
             get_ge(){
                 this.$http.get(this.change_url.port).then(res=>{
                     this.portInfo(res.data);
-                    var index = this.system.data.ponports;
-                    var pon_count = res.data.data.slice(0,index);
-                    var ge_count = res.data.data.slice(index);
-                    this.geInfo = ge_count;
-                    var portName = {
-                        pon: this.get_portName(pon_count,'PON'),
-                        ge: this.get_portName(ge_count,'GE')
-                    };
+                    var pon = this.system.data.ponports;
+                    var ge = this.system.data.geports;
+                    var xge = this.system.data.xgeports;
+                    var pon_count,ge_count,xge_count,portName;
+                    pon_count = res.data.data.slice(0,pon);
+                    //ge_count = res.data.data.slice(pon);
+                    if(!xge){
+                        ge_count = res.data.data.slice(pon);
+                        portName = {
+                            pon: this.get_portName(pon_count,'PON'),
+                            ge: this.get_portName(ge_count,'GE')
+                        };
+                    }else{
+                        ge_count = res.data.data.slice(pon,pon+ge);
+                        xge_count = res.data.data.slice(pon+ge);
+                        portName = {
+                            pon: this.get_portName(pon_count,'PON'),
+                            ge: this.get_portName(ge_count,'GE'),
+                            xge: this.get_portName(xge_count,'XGE')
+                        }
+                    }
                     this.portName(portName);
                 }).catch(err=>{
                     // to do
@@ -321,11 +355,7 @@
                 var obj = {};
                 for(var i=0;i<arr.length;i++){
                     obj[arr[i].port_id] = {};
-                    obj[arr[i].port_id].name = i < 10 ? prefix + '0' + arr[i].port_id : prefix + arr[i].port_id;
-                    if(arr[i].port_id > this.system.data.ponports){
-                        var n = arr[i].port_id - this.system.data.ponports;
-                        obj[arr[i].port_id].name = i < 10 ? prefix + '0' + n : prefix + n;
-                    }
+                    obj[arr[i].port_id].name = i < 10 ? prefix + '0' + (i + 1) : prefix + (i + 1);
                     obj[arr[i].port_id].id = arr[i].port_id;
                     obj[arr[i].port_id].data = arr[i]; 
                 }

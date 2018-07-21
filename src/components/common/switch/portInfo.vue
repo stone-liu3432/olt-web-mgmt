@@ -16,7 +16,9 @@
         </ul>
         <ul class="port-info-title" v-if="port_info.data && port_name.pon" onselectstart="return false;">
             <li v-for="(item,index) in port_info.data" :key="index">
-                <span>{{ port_name.pon[item.port_id] ? port_name.pon[item.port_id].name : port_name.ge[item.port_id].name }}</span>
+                <span>
+                    {{ port_name.pon[item.port_id] ? port_name.pon[item.port_id].name : port_name.ge[item.port_id] ? port_name.ge[item.port_id].name : port_name.xge[item.port_id].name }}
+                </span>
                 <span>{{ item.admin_status >= 1 ? "Enable" : "Disable" }}</span>
                 <span :style="{ 'color': item.link_status ? '#3990E5' : 'red'}">
                     {{ item.link_status >=1 ? lanMap['link_up'] : lanMap['link_down'] }}

@@ -82,6 +82,10 @@
                                     <input type="radio" :name="item.id" :id="'tagged'+item.id" @click="changeState($event)" value="0">
                                     <label :for="'tagged'+item.id">{{ item.name }}</label>
                                 </span>
+                                <span v-for="(item,key) in port_name.xge" :key="key" class="tagged" v-if="port_name.xge">
+                                    <input type="radio" :name="item.id" :id="'tagged'+item.id" @click="changeState($event)" value="0">
+                                    <label :for="'tagged'+item.id">{{ item.name }}</label>
+                                </span>
                             </div>
                         </div>
                     </div>
@@ -97,6 +101,10 @@
                             </div>
                             <div>
                                 <span v-for="(item,key) in port_name.ge" :key="key" class="untagged">
+                                    <input type="radio" :name="item.id" :id="'untagged'+item.id" @click="changeState($event)" value="0">
+                                    <label :for="'untagged'+item.id">{{ item.name }}</label>
+                                </span>
+                                <span v-for="(item,key) in port_name.xge" :key="key" class="untagged" v-if="port_name.xge">
                                     <input type="radio" :name="item.id" :id="'untagged'+item.id" @click="changeState($event)" value="0">
                                     <label :for="'untagged'+item.id">{{ item.name }}</label>
                                 </span>
@@ -412,7 +420,6 @@ import { mapState } from 'vuex'
                             untag_str += ',';
                         }
                     }
-
                     var post_param = {
                         "method":"create",
                         "param":{
@@ -478,13 +485,15 @@ import { mapState } from 'vuex'
             nomenclature(arr){
                 if(!arr) return ''
                 var results = '';
-                var n = this.system.data.ponports;
+                var pon_count = this.system.data.ponports,ge_count = this.system.data.geports;
                 for(var i=0,len=arr.length;i<len;i++){
                     var m = arr[i];
-                    if(m <= n){
-                        results += n < 10 ? 'PON0'+ m + ',' : 'PON' + m +',';
+                    if(m <= pon_count){
+                        results += pon_count < 10 ? 'PON0'+ m + ',' : 'PON' + m +',';
+                    }else if(m > pon_count && m <= (pon_count + ge_count)){
+                        results += (m - pon_count) < 10 ? 'GE0' + (m - pon_count) + ',' : 'GE' + (m - pon_count) + ',';
                     }else{
-                        results += (m-n) < 10 ? 'GE0' + (m - n) + ',' : 'GE' + ( m - n ) + ',';
+                        results += (m - (pon_count + ge_count)) < 10 ? 'XGE0' + (m - (pon_count + ge_count)) + ',' : 'XGE' + (m - (pon_count + ge_count)) + ',';
                     }
                 }
                 return results.replace(/\,$/,'');
