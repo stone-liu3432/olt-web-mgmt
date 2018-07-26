@@ -2,7 +2,7 @@
     <div class="port-vlan" v-if="port_name.pon && port_name.ge">
         <div class="portvlan-title">
             {{ lanMap['port_vlan'] }}
-            <a href="javascript:void(0);">{{ lanMap['refresh'] }}</a>
+            <a href="javascript:void(0);" @click="refresh_page">{{ lanMap['refresh'] }}</a>
         </div>
         <div class="portvlan-port">
             <span>{{ lanMap['port_id'] + ': ' }}</span>
@@ -105,6 +105,19 @@ export default {
             }).catch(err=>{
                 // to do
             })
+        },
+        refresh_page(){
+            switch(this.show_index){
+                case 1:
+                    this.get_pv_set();
+                    break;
+                case 2: 
+                    this.get_pv_translate();
+                    break;
+                case 3: 
+                    this.get_pv_qinq();
+                    break;
+            }
         }
     },
     watch: {

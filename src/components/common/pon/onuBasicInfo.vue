@@ -365,6 +365,13 @@ import { mapState,mapMutations } from 'vuex'
                     })
                     return
                 }
+                // if(!this.onu_basic_info.data.upgrade_type){
+                //     this.$message({
+                //         type: 'error',
+                //         text: this.lanMap['no_upgrade_type']
+                //     })
+                //     return
+                // }
                 this.upgrade_confirm = true;
             },
             upgrade_result(bool){
@@ -373,7 +380,7 @@ import { mapState,mapMutations } from 'vuex'
                     var file = document.getElementById('onu-upgrade-file1');
                     var files = file.files[0];
                     formData.append('file',files);
-                    this.$http.post('/onu_upgrade?type=hsgq', formData,{
+                    this.$http.post('/onu_upload', formData,{
                         headers: {'Content-Type': 'multipart/form-data'},
                         timeout: 0
                     }).then(res=>{
@@ -398,7 +405,7 @@ import { mapState,mapMutations } from 'vuex'
                     "param":{
                         "port_id": this.portid,
                         "onu_id": this.onuid,
-                        "upgrade_type": this.onu_list.data.upgrade_type || ''
+                        "upgrade_type": this.onu_basic_info.data.upgrade_type || ''
                     }
                 }
                 this.$http.post('/onu_upgrade?form=upgrade',post_params).then(res=>{
@@ -438,7 +445,7 @@ import { mapState,mapMutations } from 'vuex'
                         this.addonu_list(obj);
                         var oid = sessionStorage.getItem('oid');
                         this.onuid = this.$route.query.onu_id || oid;
-                        if(!this.$route.query.onu_id && !oid && _onu_list.indexof(Number(oid)) === -1){
+                        if(!this.$route.query.onu_id && (!oid || _onu_list.indexof(Number(oid)) === -1)){
                             this.onuid = this.onu_list.data[0];
                         }
                         if(this.$route.query.onu_id){

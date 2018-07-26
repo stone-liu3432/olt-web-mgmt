@@ -911,7 +911,7 @@ import { mapState } from 'vuex'
                         }
                         var oid = sessionStorage.getItem('oid');
                         this.onuid = oid;
-                        if(!oid || _onu_list.indexOf(Number(oid) === -1)) this.onuid = this.onu_list.data[0];
+                        if(!oid || _onu_list.indexOf(Number(oid)) === -1) this.onuid = this.onu_list.data[0];
                         this.getOnuInfo();
                         this.getOnuVlan();
                     }else{
