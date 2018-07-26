@@ -25,11 +25,11 @@
             <div class="pon-detail" v-for="(item,index) in port_info.data.slice(system.data.ponports,system.data.ponports + system.data.geports)" :key="item.portid"
              @click="jump_port_cfg(item.port_id)">
                 <div :class="[ item.admin_status >= 1 ? item.link_status >= 1 ? 'bg-online' : 'bg-offline' :'bg-disabled' ]">
-                    <img src="../../../assets/uplink-fiber-blue.png" v-if="item.media == 'fiber' && item.admin_status >=1 && item.link_status >=1 ">
-                    <img src="../../../assets/uplink-fiber-black.png" v-if="item.media == 'fiber' && item.admin_status >=1 && item.link_status < 1">
+                    <img src="../../../assets/uplink-fiber-blue.png" v-if="item.media == 'fiber' && item.admin_status >= 1 && item.link_status >=1 ">
+                    <img src="../../../assets/uplink-fiber-black.png" v-if="item.media == 'fiber' && item.admin_status >= 1 && item.link_status < 1">
                     <img src="../../../assets/uplink-fiber-black-disable.png" v-if="item.media == 'fiber' && item.admin_status < 1">
-                    <img src="../../../assets/uplink-rj45-blue.png" v-if="item.media == 'copper' && item.admin_status >=1 && item.link_status >=1 ">
-                    <img src="../../../assets/uplink-rj45-black.png" v-if="item.media == 'copper' && item.admin_status >=1 && item.link_status < 1">
+                    <img src="../../../assets/uplink-rj45-blue.png" v-if="item.media == 'copper' && item.admin_status >= 1 && item.link_status >=1 ">
+                    <img src="../../../assets/uplink-rj45-black.png" v-if="item.media == 'copper' && item.admin_status >= 1 && item.link_status < 1">
                     <img src="../../../assets/uplink-rj45-disable.png" v-if="item.media == 'copper' && item.admin_status < 1">
                 </div>
                 <p :style="{'color' : item.admin_status >=1 ? item.link_status >=1 ? '#29BDFA' : '#aaa' : 'red'}">
@@ -42,14 +42,14 @@
                     <span>{{ lanMap['clk_port_cfg'] }}</span>
                 </div>
             </div>
-            <div class="pon-detail" v-for="(item,key) in port_info.data.slice(system.data.ponports,system.data.ponports + system.data.geports)" :key="item.portid"
+            <div class="pon-detail" v-for="(item,key) in port_info.data.slice(system.data.ponports + system.data.geports)" :key="item.portid"
              @click="jump_port_cfg(item.port_id)" v-if="system.data.xgeports">
                 <div :class="[ item.admin_status >= 1 ? item.link_status >= 1 ? 'bg-online' : 'bg-offline' :'bg-disabled' ]">
-                    <img src="../../../assets/uplink-fiber-blue.png" v-if="item.media == 'fiber' && item.admin_status >=1 && item.link_status >=1 ">
+                    <img src="../../../assets/uplink-fiber-blue.png" v-if="item.media == 'fiber' && item.admin_status >=1 && item.link_status >= 1 ">
                     <img src="../../../assets/uplink-fiber-black.png" v-if="item.media == 'fiber' && item.admin_status >=1 && item.link_status < 1">
                     <img src="../../../assets/uplink-fiber-black-disable.png" v-if="item.media == 'fiber' && item.admin_status < 1">
-                    <img src="../../../assets/uplink-rj45-blue.png" v-if="item.media == 'copper' && item.admin_status >=1 && item.link_status >=1 ">
-                    <img src="../../../assets/uplink-rj45-black.png" v-if="item.media == 'copper' && item.admin_status >=1 && item.link_status < 1">
+                    <img src="../../../assets/uplink-rj45-blue.png" v-if="item.media == 'copper' && item.admin_status >= 1 && item.link_status >= 1 ">
+                    <img src="../../../assets/uplink-rj45-black.png" v-if="item.media == 'copper' && item.admin_status >= 1 && item.link_status < 1">
                     <img src="../../../assets/uplink-rj45-disable.png" v-if="item.media == 'copper' && item.admin_status < 1">
                 </div>
                 <p :style="{'color' : item.admin_status >=1 ? item.link_status >=1 ? '#29BDFA' : '#aaa' : 'red'}">

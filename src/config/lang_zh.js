@@ -160,6 +160,8 @@ var zh = {
 	"sn_model" : "SN型号",
 	"chip_model":"芯片型号",
 	"onu_chip" : "芯片厂商",
+	"software_ver": "软件版本",
+	"hardware_ver": "硬件版本",
 	
 	"tips_del_onu":"是否确认删除该onu",
 	"tips_add_deny_onu":"是否确认添加到阻止列表",
@@ -341,8 +343,10 @@ var zh = {
     "onu_port_config": "ONU端口基本配置",
     "onu_vlan_mode_cfg": "ONU端口VLAN模式配置",
     "onu_port_id": "ONU端口号",
-    "onu_add_translate": "ONU下添加转发VLAN",
-    "onu_del_translate": "ONU下删除转发VLAN",
+    "onu_add_translate": "添加 ONU VLAN translate",
+	"onu_del_translate": "删除 ONU VLAN translate",
+    "onu_add_trunk": "添加 ONU VLAN trunk",
+    "onu_del_trunk": "删除 ONU VLAN trunk",
     "vlan_pri_param_error": "VLAN优先级参数不正确",
     "translate_exits": "要添加的转发已存在",
     "trunk_vlanid_range_error": "VLAN ID 设置的范围超出",
@@ -394,7 +398,19 @@ var zh = {
 	"svlan_pri": "svlan优先级",
 	"batch_mgmt_onu":"批量管理ONU",
 	"exit_batch_onu": "退出批量管理",
-	"no_select_onu":"当前未选择任何ONU"
+	"no_select_onu":"当前未选择任何ONU",
+
+	"onu_batch_upgrade":"ONU批量升级",
+	"onu_upgrade_tips":"升级类型名只能由英文字母，数字和 \" - \" 组成",
+	"upgrade_type":"升级类型",
+	"upgrade_type_mgmt":"升级类型管理",
+	"onu_bind_upgrade_type":"ONU绑定升级类型",
+	"current_upgrade_type":"当前已有升级类型",
+	"select_upgrade_type":"选择升级类型",
+	"no_upgrade_type":"当前无可用的升级类型",
+	"add_onu_type":"添加ONU升级类型",
+	"del_onu_type":"删除ONU升级类型",
+	"onu_upgrade_start":"升级已开始，升级信息请在告警信息页面查看"
 }
 
 export default zh

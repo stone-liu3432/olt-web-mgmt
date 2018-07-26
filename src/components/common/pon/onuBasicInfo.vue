@@ -53,6 +53,21 @@
                     </div>
                     <div v-if="!(optical_diagnose.data)"  class="no-more-data">{{ lanMap['flush_page_retry'] }}</div>
                 </div>
+                <div class="onu-upgrade">
+                    <div class="onu-optical-title">
+                        <span>ONU {{ lanMap['upgrade'] }}</span>
+                        <span></span>
+                    </div>
+                    <div class="upgrade-item">
+                        <form class="upload-form">
+                            <input type="file" id="onu-upgrade-file1" class="hide" @change="changeFile('onu-upgrade-file1','onu-upgrade-filename1')" />
+                            <span class="updateFile" id="onu-upgrade-filename1">{{ lanMap['file_click'] }}</span>
+                        </form>
+                    </div>
+                    <div class="upgrade-item">
+                        <a href="javascript:void(0);" @click="upload_file">{{ lanMap['apply'] }}</a>
+                    </div>
+                </div>
             </div>
         </div>
         <div class="modal-dialog" v-if="onu_cfg_name">
@@ -80,6 +95,7 @@
         <confirm :tool-tips="lanMap['confirm_reboot_onu'] + '?'" @choose="reboot_onu" v-if="reboot_onu_confirm"></confirm>
         <confirm :tool-tips="lanMap['confirm_deresgester'] + '?'" @choose="un_auth_onu" v-if="un_auth_confirm"></confirm>
         <confirm :tool-tips="lanMap['confirm_change_fecmode'] + '?'" @choose="set_fec_mode" v-if="set_fec_confirm"></confirm>
+        <confirm v-if="upgrade_confirm" @choose="upgrade_result"></confirm>
     </div>
 </template>
 
@@ -102,7 +118,9 @@ import { mapState,mapMutations } from 'vuex'
                 //  ONU配置name和description
                 onu_cfg_name: false,
                 onu_name: '',
-                onu_desc: ''
+                onu_desc: '',
+                //  升级确认框
+                upgrade_confirm: false
             }
         },
         created(){
@@ -326,13 +344,84 @@ import { mapState,mapMutations } from 'vuex'
                 }).catch(err=>{
                     // to do
                 })
+            },
+            //  文件选择框
+            changeFile(fileid,fnameid){
+                var file = document.getElementById(fileid);
+                var fileName = document.getElementById(fnameid);
+                var files = file.files[0];
+                fileName.innerText = file.value.substring(file.value.lastIndexOf('\\')+1);
+                this.upgrade_file = fileName.innerText;
+                if(!files) {
+                    fileName.innerText = this.lanMap['file_click'];
+                }
+            },
+            //  升级按钮
+            upload_file(){
+                if(!this.upgrade_file){
+                    this.$message({
+                        type: 'error',
+                        text: this.lanMap['file_not_select']
+                    })
+                    return
+                }
+                this.upgrade_confirm = true;
+            },
+            upgrade_result(bool){
+                if(bool){
+                    var formData = new FormData();
+                    var file = document.getElementById('onu-upgrade-file1');
+                    var files = file.files[0];
+                    formData.append('file',files);
+                    this.$http.post('/onu_upgrade?type=hsgq', formData,{
+                        headers: {'Content-Type': 'multipart/form-data'},
+                        timeout: 0
+                    }).then(res=>{
+                        if(res.data.code === 1){
+                            this.start_upgrade_onu();
+                        }else if(res.data.code > 1){
+                            this.$message({
+                                type: 'error',
+                                text: res.data.message
+                            })
+                        }
+                    }).catch(error=>{
+                        // to do
+                    });
+                }
+                this.upgrade_confirm = false;
+            },
+            //  文件上传成功，开始进行升级
+            start_upgrade_onu(){
+                var post_params = {
+                    "method":"set",
+                    "param":{
+                        "port_id": this.portid,
+                        "onu_id": this.onuid,
+                        "upgrade_type": this.onu_list.data.upgrade_type || ''
+                    }
+                }
+                this.$http.post('/onu_upgrade?form=upgrade',post_params).then(res=>{
+                    if(res.data.code === 1){
+                        this.$message({
+                            type: 'success',
+                            text: this.lanMap['onu_upgrade_start']
+                        })
+                    }else{
+                        this.$message({
+                            type: 'error',
+                            text: res.data.message
+                        })
+                    }
+                }).catch(err=>{
+                    // to do
+                })
             }
 		},
 		watch: {
 			portid(){
                 // 请求url:  请求url: /onumgmt?form=base-info&port_id=1&onu_id=1
                 sessionStorage.setItem('pid',this.portid);
-                var _onuid = this.onuid;
 				this.$http.get('/onu_allow_list?form=resource&port_id='+this.portid).then(res=>{
 					if(res.data.code === 1){
                         var _onu_list = this.analysis(res.data.data.resource);
@@ -348,13 +437,14 @@ import { mapState,mapMutations } from 'vuex'
                         }
                         this.addonu_list(obj);
                         var oid = sessionStorage.getItem('oid');
-                        this.onuid = this.$route.query.onu_id || oid || this.onu_list.data[0];
+                        this.onuid = this.$route.query.onu_id || oid;
+                        if(!this.$route.query.onu_id && !oid && _onu_list.indexof(Number(oid)) === -1){
+                            this.onuid = this.onu_list.data[0];
+                        }
                         if(this.$route.query.onu_id){
                             this.$route.query.onu_id = null;
                         }
-                        if(_onuid === this.onuid){
-                            this.getData();
-                        }
+                        this.getData();
                     }else{
                         this.addonu_list({});
                         this.onu_basic_info = {}; 
@@ -367,7 +457,7 @@ import { mapState,mapMutations } from 'vuex'
 			onuid(){
             	// 请求url:  请求url: /onumgmt?form=base-info&port_id=1&onu_id=1
                 if(this.onuid === 0) return
-                sessionStorage.setItem('oid',this.onuid);
+                sessionStorage.setItem('oid',Number(this.onuid));
 				this.getData();
                 this.getOpticalData();
 			}
@@ -581,6 +671,54 @@ div.onu-desc{
         }
         &:last-child{
             margin: 0;
+        }
+    }
+}
+form.upload-form{
+    position: relative;
+    width: 300px;
+    height: 40px;
+    display: inline-block;
+    vertical-align: middle;
+    input{
+        width: 300px;
+    }
+    .updateFile{
+        position: absolute;
+        left: 0;
+        top: 0;
+        width: 300px;
+        height: 38px;
+        overflow: hidden;
+        white-space: nowrap;
+        text-overflow: ellipsis;
+        border: 1px solid #ddd;
+        text-align: center;
+        line-height: 38px;
+        z-index: 9;
+        border-radius: 5px;
+        background: #eee;
+    }
+    .hide{
+        height: 40px;
+        position: absolute;
+        left: 0;
+        top: 0;
+        z-index: 99;
+        opacity: 0;
+        cursor: pointer;
+    }
+}
+div.onu-upgrade{
+    margin-top: 30px;
+    div.upgrade-item{
+        margin: 20px 0;
+        text-align: center;
+        a{
+            padding: 5px 50px;
+            text-align: center;
+            border-radius: 3px;
+            background: #ddd;
         }
     }
 }

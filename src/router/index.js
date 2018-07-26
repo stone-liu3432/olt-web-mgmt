@@ -24,6 +24,7 @@ const slaCfg = () => import(/* webpackChunkName: "ponmgmt-page" */  '@/component
 const ponSetting = () => import(/* webpackChunkName: "ponmgmt-page" */  '@/components/common/pon/ponSetting')
 const onuBasicInfo = () => import(/* webpackChunkName: "ponmgmt-page" */  '@/components/common/pon/onuBasicInfo')
 const onuPortCfg = () => import(/* webpackChunkName: "ponmgmt-page" */  '@/components/common/pon/onuPortCfg')
+const onuBatchUpgrade = () => import(/* webpackChunkName: "ponmgmt-page" */  '@/components/common/pon/onuBatchUpgrade')
 // switch
 const portInfo = () => import(/* webpackChunkName: "switch-page" */  '@/components/common/switch/portInfo')
 const perfInfo = () => import(/* webpackChunkName: "switch-page" */  '@/components/common/switch/perfInfo')
@@ -121,6 +122,14 @@ const router = new Router({
 				{
 					path: "/sla_cfg",
 					component: slaCfg,
+					meta: {
+						requireAuth: true,
+						keepAlive: true
+					}
+				},
+				{
+					path: "/onu_batch_upgrade",
+					component: onuBatchUpgrade,
 					meta: {
 						requireAuth: true,
 						keepAlive: true

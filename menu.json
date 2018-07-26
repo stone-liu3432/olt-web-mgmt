@@ -25,7 +25,8 @@
                     {"name":"onu_allow"},
                     {"name":"onu_deny"},
                     {"name":"sla_cfg"},
-                    {"name":"pon_setting"}
+                    {"name":"pon_setting"},
+                    {"name":"onu_batch_upgrade"}
                 ]
             },{
                 "name":"onu_mgmt",

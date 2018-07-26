@@ -97,6 +97,12 @@ export default {
         auth_confirm(port_id){
             this.isSetAuth = true;
             this.port_id = port_id;
+            this.pon_authorize.data.forEach(item=>{
+                if(item.port_id === port_id){
+                    this.auth_type = item.auth_type;
+                    this.auth_mode = item.auth_mode;
+                }
+            })
         },
         set_auth(){
             var params = {
@@ -129,6 +135,8 @@ export default {
         cancel_confirm(){
             this.isSetAuth = false;
             this.port_id = 0;
+            this.auth_type = 0;
+            this.auth_mode = 0;
         }
     }
 }

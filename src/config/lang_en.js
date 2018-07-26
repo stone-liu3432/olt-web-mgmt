@@ -161,6 +161,8 @@ var en = {
 	"sn_model" :  "SN model",
 	"chip_model": "Chip model",
 	"onu_chip" :  "Chip vendor",
+	"software_ver": "Software versions",
+	"hardware_ver": "Hareware versions",
 	
 	"tips_del_onu": "Please confirm to delete ONU",
 	"tips_add_deny_onu": "Please confirm to add ONU to onu deny list",
@@ -343,6 +345,8 @@ var en = {
     "onu_port_id": "ONU port ID",
     "onu_add_translate": "add vlan translate for ONU",
     "onu_del_translate": "delete vlan translate from ONU",
+    "onu_add_trunk": "add vlan trunk for ONU",
+    "onu_del_trunk": "delete vlan trunk from ONU",
     "vlan_pri_param_error": "VLAN priority parameters incorrect",
     "translate_exits": " VLAN translate is existed",
     "trunk_vlanid_range_error": "VLAN list exceed maximum configurable",
@@ -362,7 +366,7 @@ var en = {
     "bandwidth":  "Band width",
     "rstp_tips_disable": "Global RSTP bridge is not enabled and can not proceed this setting",
 
-    "work_temprature": "work temprature",
+    "work_temprature": "work temperature",
     "work_voltage": "work voltage",
     "transmit_bias":  "transmit bias",
     "transmit_power":  "transmit power",
@@ -394,7 +398,19 @@ var en = {
 	"svlan_pri": "svlan priority",
 	"batch_mgmt_onu":"ONU Batch management",
 	"exit_batch_onu": "Exit batch management",
-	"no_select_onu":"No ONU is currently selected"
+	"no_select_onu":"No ONU is currently selected",
+
+	"onu_batch_upgrade":"ONU Batch Upgrade",
+	"onu_upgrade_tips":"The upgrade type name only consists of English letters, numbers and \" - \"",
+	"upgrade_type":"Upgrade type",
+	"upgrade_type_mgmt":"Upgrade type management",
+	"onu_bind_upgrade_type":"ONU binding upgrade type",
+	"current_upgrade_type":"Currently upgrade types",
+	"select_upgrade_type":"Select upgrade type",
+	"no_upgrade_type":"No currently available type of upgrade",
+	"add_onu_type":"Add an ONU upgrade type",
+	"del_onu_type":"Delete ONU upgrade type",
+	"onu_upgrade_start":"The upgrade has started, The upgrade information is displayed on the alarm information page."
 }
 
 export default en

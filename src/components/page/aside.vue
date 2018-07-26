@@ -168,7 +168,7 @@ export default {
     height: auto;
 }
 .sub-item{
-    padding:10px 0 10px 50px;
+    padding:10px 0 10px 40px;
     cursor: pointer;
     background: #2F2F39;
     transition: all 0.3s linear;

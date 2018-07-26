@@ -27,8 +27,8 @@
                 <div class="translate-modal-item">
                     <span>old vlan</span>
                     <span>
-                        <input type="text" v-model.number="pv_old_vlan" v-focus
-                            :style="{ 'border-color' : this.pv_old_vlan !== '' && (this.pv_old_vlan < 1 || this.pv_old_vlan > 4094 || isNaN(this.pv_old_vlan)) ? 'red' : '' }">
+                        <input type="text" v-model.number="pv_old_vlan" :disabled="flags === 2" 
+                        :style="{ 'border-color' : this.pv_old_vlan !== '' && (this.pv_old_vlan < 1 || this.pv_old_vlan > 4094 || isNaN(this.pv_old_vlan)) ? 'red' : '' }">
                     </span>
                 </div>
                 <div class="translate-modal-item">

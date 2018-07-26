@@ -359,7 +359,7 @@ import { mapState } from 'vuex'
                     var post_params = {
                         "method":"set",
                         "param":{
-                            "port_id": this.portid,
+                            "port_id": Number(this.portid),
                             "flags": this.storm_flags,
                             "broadcast": Number(this.storm_data.broadcast),
                             "multicast": Number(this.storm_data.multicast),
@@ -451,7 +451,7 @@ import { mapState } from 'vuex'
                     var post_params = {
                         "method":"set",
                         "param":{
-                            "port_id": this.portid,
+                            "port_id": Number(this.portid),
                             "flags": this.flags,
                             "admin_status": this.port_data.admin_status,
                             "auto_neg": this.port_data.auto_neg,
@@ -496,7 +496,7 @@ import { mapState } from 'vuex'
                     var post_param = {
                         "method":"clear",
                         "param":{
-                            "src_port": this.portid,
+                            "src_port": Number(this.portid),
                         }
                     }
                     this.$http.post("/switch_port?form=mirror",post_param).then(res=>{
@@ -549,7 +549,7 @@ import { mapState } from 'vuex'
                     var post_params = {
                         "method":"set",
                         "param":{
-                            "src_port": this.portid,
+                            "src_port": Number(this.portid),
                             "dst_port": this.mirror.dst_port,
                             "type": this.mirror.type
                         }
@@ -621,7 +621,7 @@ import { mapState } from 'vuex'
         },
         watch: {
             portid(){
-                sessionStorage.setItem('portid',this.portid);
+                sessionStorage.setItem('portid',Number(this.portid));
                 this.getPortData();
                 this.getStormData();
                 this.getMirrorData();

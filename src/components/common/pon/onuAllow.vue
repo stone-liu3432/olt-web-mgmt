@@ -281,8 +281,8 @@ import onuCard from '@/components/common/pon/onuCard'
                     if(this.add_onuid === ''){
                         this.add_onuid = 0;
                     }
-                    if(this.testMacaddr || this.add_macaddr === '' || this.macaddr.toLowerCase() === 'ff:ff:ff:ff:ff:ff' || 
-                    this.macaddr === '00:00:00:00:00:00' || this.macaddr.toLowerCase() === '01:00:5e:00:00:00') {
+                    if(this.testMacaddr || this.add_macaddr === '' || this.add_macaddr.toLowerCase() === 'ff:ff:ff:ff:ff:ff' || 
+                    this.add_macaddr === '00:00:00:00:00:00' || this.add_macaddr.toLowerCase() === '01:00:5e:00:00:00') {
                         this.$message({
                             type: 'error',
                             text: this.lanMap['param_mac']

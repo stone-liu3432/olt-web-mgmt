@@ -36,14 +36,14 @@
                     </span>
                 </div>
                 <div class="pv-qinq-modal-item">
-                    <span>cvlan_s</span>
+                    <span>cvlan start</span>
                     <span>
                         <input type="text" v-model.number="cvlan_s" :disabled="cvlan != 0"
                           :style="{ 'border-color' : cvlan_s < 0 ||  cvlan_s > 4094 || isNaN(cvlan_s)  ? 'red' : '' }">
                     </span>
                 </div>
                 <div class="pv-qinq-modal-item">
-                    <span>vlan_e</span>
+                    <span>vlan end</span>
                     <span>
                         <input type="text" v-model.number="cvlan_e" :disabled="cvlan != 0"
                           :style="{ 'border-color' : cvlan_e < 0 || cvlan_e > 4094 || isNaN(cvlan_e) ? 'red' : '' }">
@@ -57,7 +57,7 @@
                     </span>
                 </div>
                 <div class="pv-qinq-modal-item">
-                    <span>svlan_pri</span>
+                    <span>{{ lanMap['svlan_pri'] }}</span>
                     <span>
                         <select v-model.number="svlan_pri">
                             <option value="255"> - </option>

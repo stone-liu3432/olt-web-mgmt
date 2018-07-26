@@ -23,7 +23,8 @@ var change_url = {
         beta: 'test',
         rstp: './rstp.json',
         rstp_port: './rstp_port.json',
-        get_lang: 'get_lang.json'
+        get_lang: 'get_lang.json',
+        get_onu_baseinfo:"./onu_base_info.json"
     },
     betaUrl: {
         menu: "/board?info=menu",
@@ -49,7 +50,8 @@ var change_url = {
         beta: 'beta',
         rstp: '/switch_rstp?form=bridge',
         rstp_port: '/switch_rstp?form=port',
-        get_lang: '/system_lang'
+        get_lang: '/system_lang',
+        get_onu_baseinfo:"/onumgmt?form=base-info"
     }
 }
 

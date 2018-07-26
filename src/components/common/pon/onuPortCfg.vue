@@ -10,7 +10,7 @@
             </div>
             <div class="lf" v-if="onu_list.data">
                 <span>{{ lanMap['onu_id'] }}</span>
-                <select v-model="onuid">
+                <select v-model.number="onuid">
                     <option :value="item" v-for="(item,index) in onu_list.data" :key="index">{{ 'ONU'+ onu_list.port_id + '/' + item }}</option>
                 </select>
             </div>
@@ -234,8 +234,8 @@
             <div class="cover"></div>
             <div class="dialog-content add-vlan-translate" :style="{'height' : is_delete_trunk ? '260px' : ''}">
                 <div>
-                    <h3 v-if="is_add_trunk">{{ lanMap['onu_add_translate'] }}</h3>
-                    <h3 v-if="is_delete_trunk">{{ lanMap['onu_del_translate'] }}</h3>
+                    <h3 v-if="is_add_trunk">{{ lanMap['onu_add_trunk'] }}</h3>
+                    <h3 v-if="is_delete_trunk">{{ lanMap['onu_del_trunk'] }}</h3>
                 </div>
                 <div>
                     <span>{{ lanMap['onu_id'] }}</span>
@@ -260,15 +260,18 @@
                 <div v-if="is_delete_trunk">
                     <span>{{ lanMap['vlan_list'] }}</span>
                     <select v-model="trunk_post_param.vlan_list">
-                        <option :value="index" v-for="(item,index) in cache_port_vlan.vlan_list" :key="index">
-                            {{ item.start_vlan_id }} - {{ item.end_vlan_id }}
+                        <option :value="item.start_vlan_id" v-for="(item,index) in cache_port_vlan.vlan_list" :key="index" v-if="item.start_vlan_id > 0">
+                            {{ item.start_vlan_id }}
+                        </option>
+                        <option :value="item.end_vlan_id" v-for="(item,index) in cache_port_vlan.vlan_list" :key="index" v-if="item.end_vlan_id > 0">
+                             {{ item.end_vlan_id }}
                         </option>
                     </select>
                 </div>
                 <div v-else></div>
-                <div v-if="false">
+                <!-- <div v-if="false">
                     <span>{{ lanMap['new_vlan_pri'] }}</span>
-                    <select v-model.number="trunk_post_param.vlan_pri">
+                    <select v-model.number="trunk_post_param.vlan_pri" :disabled="is_delete_trunk">
                         <option value="0">0</option>
                         <option value="1">1</option>
                         <option value="2">2</option>
@@ -278,7 +281,7 @@
                         <option value="6">6</option>
                         <option value="7">7</option>
                     </select>
-                </div>
+                </div> -->
                 <div v-if="is_add_trunk">
                     <a href="javascript:;" @click="confirm_add_trunk(true)">{{ lanMap['apply'] }}</a>
                     <a href="javascript:;" @click="confirm_add_trunk(false)">{{ lanMap['cancel'] }}</a>
@@ -466,7 +469,7 @@ import { mapState } from 'vuex'
                     var post_params = {
                         "method":"set",
                         "param":{
-                            "port_id": this.portid,
+                            "port_id": Number(this.portid),
                             "onu_id": this.onuid,
                             "op_id": this.onu_port_item.op_id,
                             "flags": flags,
@@ -541,7 +544,7 @@ import { mapState } from 'vuex'
                     var post_params = {
                         "method":"set",
                         "param":{
-                            "port_id": this.portid,
+                            "port_id": Number(this.portid),
                             "onu_id": this.onuid,
                             "op_id": this.onu_vlan_item.op_id,
                             "op_vlan_mode": this.onu_vlan_item.op_vlan_mode,
@@ -611,7 +614,7 @@ import { mapState } from 'vuex'
                     var post_params = {
                         "method":"add",
                         "param":{
-                            "port_id": this.portid,
+                            "port_id": Number(this.portid),
                             "onu_id": this.onuid,
                             "op_id": this.cache_port_vlan.op_id,
                             "op_vlan_mode": this.cache_port_vlan.op_vlan_mode,
@@ -656,7 +659,7 @@ import { mapState } from 'vuex'
                     var post_params = {
                         "method": "delete",
                         "param":{
-                            "port_id": this.portid,
+                            "port_id": Number(this.portid),
                             "onu_id": this.onuid,
                             "op_id": this.cache_port_vlan.op_id,
                             "op_vlan_mode": this.cache_port_vlan.op_vlan_mode,
@@ -725,7 +728,7 @@ import { mapState } from 'vuex'
                     var post_params = {
                         "method":"add",
                         "param":{
-                            "port_id": this.portid,
+                            "port_id": Number(this.portid),
                             "onu_id": this.onuid,
                             "op_id": this.cache_port_vlan.op_id,
                             "op_vlan_mode": this.cache_port_vlan.op_vlan_mode,
@@ -763,6 +766,7 @@ import { mapState } from 'vuex'
                 this.is_delete_trunk = true;
                 this.cache_port_vlan = node;
                 this.cache_vlan_list = node.vlan_list;
+                this.trunk_post_param.vlan_list = node.vlan_list[0].start_vlan_id ? node.vlan_list[0].start_vlan_id : node.vlan_list[0].end_vlan_id;
             },
             //  删除trunk确认框
             confirm_delete_trunk(bool){
@@ -770,13 +774,15 @@ import { mapState } from 'vuex'
                     var post_params = {
                         "method": "delete",
                         "param":{
-                            "port_id": this.portid,
+                            "port_id": Number(this.portid),
                             "onu_id": this.onuid,
                             "op_id": this.cache_port_vlan.op_id,
                             "op_vlan_mode": this.cache_port_vlan.op_vlan_mode,
-                            "start_vlan_id": this.cache_vlan_list[this.trunk_post_param.vlan_list].start_vlan_id,
-                            "end_vlan_id": this.cache_vlan_list[this.trunk_post_param.vlan_list].end_vlan_id,
-                            "vlan_pri": this.cache_vlan_list[this.trunk_post_param.vlan_list].vlan_pri
+                            // "start_vlan_id": this.cache_vlan_list[this.trunk_post_param.vlan_list].start_vlan_id,
+                            // "end_vlan_id": this.cache_vlan_list[this.trunk_post_param.vlan_list].end_vlan_id,
+                            "start_vlan_id": this.trunk_post_param.vlan_list,
+                            "end_vlan_id": this.trunk_post_param.vlan_list,
+                            "vlan_pri": this.trunk_post_param.vlan_pri
                         }
                     }
                     this.$http.post('/onumgmt?form=port_vlanlist',post_params).then(res=>{
@@ -857,10 +863,10 @@ import { mapState } from 'vuex'
                     if(arr[key].old_vlan_id && flag === 'translate'){
                         str += arr[key].old_vlan_id + pre + arr[key].new_vlan_id + ',' + arr[key].new_vlan_pri + '/';
                     }else{
-                        if(arr[key].new_vlan_id){
-                            str += arr[key].old_vlan_id+ ',' + arr[key].new_vlan_id + ',';
+                        if(arr[key].end_vlan_id){
+                            str += arr[key].start_vlan_id+ ',' + arr[key].end_vlan_id + ',';
                         }else{
-                            str += arr[key].old_vlan_id + ',';
+                            str += arr[key].start_vlan_id + ',';
                         }
                     }
                 }
@@ -891,8 +897,7 @@ import { mapState } from 'vuex'
         },
         watch: {
             portid(){
-                sessionStorage.setItem('pid',this.portid);
-                var _onuid = this.onuid;
+                sessionStorage.setItem('pid',Number(this.portid));
                 this.$http.get('/onu_allow_list?form=resource&port_id='+this.portid).then(res=>{
                     if(res.data.code === 1){
                         var _onu_list = this.analysis(res.data.data.resource);
@@ -905,11 +910,10 @@ import { mapState } from 'vuex'
                             data: _onu_list
                         }
                         var oid = sessionStorage.getItem('oid');
-                        this.onuid = this.onu_list.data[0];
-                        if(_onuid === this.onuid){
-                            this.getOnuInfo();
-                            this.getOnuVlan();
-                        }
+                        this.onuid = oid;
+                        if(!oid || _onu_list.indexOf(Number(oid) === -1)) this.onuid = this.onu_list.data[0];
+                        this.getOnuInfo();
+                        this.getOnuVlan();
                     }else{
                         this.onu_list = {};
                         this.onu_vlan_info = {};
@@ -919,7 +923,7 @@ import { mapState } from 'vuex'
                 })
             },
             onuid(){
-                sessionStorage.setItem('oid',this.onuid);
+                sessionStorage.setItem('oid',Number(this.onuid));
                 this.getOnuInfo();
                 this.getOnuVlan();
             },
