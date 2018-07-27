@@ -55,7 +55,8 @@
                 "name":"protocol_mgmt",
                 "isHidden":false,
                 "children":[
-                    {"name":"rstp"}
+                    {"name":"rstp"},
+                    {"name":"igmp"}
                 ]
             }
         ]

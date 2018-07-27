@@ -34,6 +34,7 @@ const vlanMgmt = () => import(/* webpackChunkName: "switch-page" */  '@/componen
 const macMgmt = () => import(/* webpackChunkName: "switch-page" */  '@/components/common/switch/macMgmt')
 // protocol
 const rstp = () => import(/* webpackChunkName: "protocol-page" */  '@/components/common/protocol/rstp')
+const igmp = () => import(/* webpackChunkName: "protocol-page" */  '@/components/common/protocol/igmp')
 
 const router = new Router({
 	routes: [
@@ -222,6 +223,13 @@ const router = new Router({
 					meta: {
 						requireAuth: true
 					}
+				},
+				{
+					path: "/igmp",
+					component: igmp,
+					meta: {
+						requireAuth: true
+					}
 				}
 			]
 		}
@@ -235,12 +243,12 @@ router.beforeEach((to, from, next) => {
 	store.commit("updateLoad", true);
 	// 判断该路由是否需要登录权限
 	if (to.meta.requireAuth) {
-		if (sessionStorage.getItem("x-token")) {
-			next();
-		} else {
-			next({ path: "/login" });
-		}
-		//next();
+		// if (sessionStorage.getItem("x-token")) {
+		// 	next();
+		// } else {
+		// 	next({ path: "/login" });
+		// }
+		next();
 	} else {
 		if (!sessionStorage.getItem("x-token")) {
 			next();

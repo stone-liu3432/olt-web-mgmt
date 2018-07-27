@@ -410,7 +410,9 @@ var en = {
 	"no_upgrade_type":"No currently available type of upgrade",
 	"add_onu_type":"Add an ONU upgrade type",
 	"del_onu_type":"Delete ONU upgrade type",
-	"onu_upgrade_start":"The upgrade has started, The upgrade information is displayed on the alarm information page."
+	"onu_upgrade_start":"The upgrade has started, The upgrade information is displayed on the alarm information page.",
+
+	"igmp": "IGMP"
 }
 
 export default en

@@ -410,7 +410,28 @@ var zh = {
 	"no_upgrade_type":"当前无可用的升级类型",
 	"add_onu_type":"添加ONU升级类型",
 	"del_onu_type":"删除ONU升级类型",
-	"onu_upgrade_start":"升级已开始，升级信息请在告警信息页面查看"
+	"onu_upgrade_start":"升级已开始，升级信息请在告警信息页面查看",
+
+	"igmp": "IGMP",
+	"fast_leave":"快速离开",
+	"protocol_policy":"协议策略",
+	"group_aging_time":"组播表老化时间",
+	"robustness":"健壮性",
+	"gen_response_time":"普遍组查询响应时间",
+	"gen_query_interval":"普遍组查询间隔",
+	"sp_response_time":"特定组查询响应时间",
+	"sp_query_interval":"特定组查询间隔",
+	"sp_query_number":"特定组查询次数",
+	"multi_ip":"组播IP",
+	"host_portlist":"端口成员",
+	"mc_unknown_policy":"未知多播策略",
+	"transparent":"透传",
+	"discard":"丢弃",
+	"mvlan":"组播VLAN",
+	"router_portlist":"路由端口",
+	"program":"组播节目",
+	"program_s":"组播节目起始",
+	"program_e":"组播节目结束"
 }
 
 export default zh
