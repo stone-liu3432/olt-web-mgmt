@@ -11,7 +11,7 @@
         <div class="pv-translate-item" v-for="(item,key) in pvData.data" :key="key" v-if="pvData.data && pvData.data.length > 0">
             <span>{{ item.old_vlan }}</span>
             <span>{{ item.new_vlan }}</span>
-            <span>{{ item.new_vlan_pri }}</span>
+            <span>{{ item.new_vlan_pri === 255 ? ' - ' : item.new_vlan_pri }}</span>
             <span>
                 <a href="javascript:void(0);" @click="open_cfg_translate(item)">{{ lanMap['modify'] }}</a>
                 <a href="javascript:void(0);" @click="open_del_translate(item)">{{ lanMap['delete'] }}</a>
