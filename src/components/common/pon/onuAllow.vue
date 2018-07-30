@@ -351,13 +351,14 @@ import onuCard from '@/components/common/pon/onuCard'
             },
             //  onu认证 / 取消认证
             authstate(node){
-                if(node.status.toLowerCase() !== 'online'){
-                    this.$message({
-                        type: 'error',
-                        text: this.lanMap['tips_authstate_error']
-                    })
-                    return
-                }
+                //  2018-7-30-14-05 认证/取消谁时，去除onu状态校验
+                // if(node.status.toLowerCase() !== 'online' || node.status.toLowerCase() !== ''){
+                //     this.$message({
+                //         type: 'error',
+                //         text: this.lanMap['tips_authstate_error']
+                //     })
+                //     return
+                // }
                 // var olist;
                 // if(!node){
                 //     olist = this.batch_onulist;
