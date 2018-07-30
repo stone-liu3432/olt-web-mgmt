@@ -305,7 +305,7 @@ import { mapState,mapMutations } from 'vuex'
                     }else if(res.data.code >1){
                         this.$message({
                             type: 'error',
-                            text: res.data.message
+                            text: 'err:' + res.data.code + ' ' + res.data.message
                         })
                     }
                 }).catch(err=>{
@@ -389,7 +389,7 @@ import { mapState,mapMutations } from 'vuex'
                         }else if(res.data.code > 1){
                             this.$message({
                                 type: 'error',
-                                text: res.data.message
+                                text: 'err:' + res.data.code + ' ' + res.data.message
                             })
                         }
                     }).catch(error=>{
@@ -417,7 +417,7 @@ import { mapState,mapMutations } from 'vuex'
                     }else{
                         this.$message({
                             type: 'error',
-                            text: res.data.message
+                            text: 'err:' + res.data.code + ' ' + res.data.message
                         })
                     }
                 }).catch(err=>{

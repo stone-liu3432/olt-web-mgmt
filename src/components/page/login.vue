@@ -102,7 +102,7 @@ import { mapState,mapMutations } from "vuex"
                     }else{
                         this.$message({
                             type: 'error',
-                            text: res.data.message
+                            text: 'err:' + res.data.code + ' ' + res.data.message
                         })
                         this.login_failed = true;
                     }

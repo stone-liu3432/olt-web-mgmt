@@ -373,7 +373,7 @@ import loading from '@/components/common/loading'
                         }else if(res.data.code >1){
                             this.$message({
                                 type: 'error',
-                                text: res.data.message
+                                text: 'err:' + res.data.code + ' ' + res.data.message
                             })
                         }
                     }).catch(err=>{
@@ -416,7 +416,7 @@ import loading from '@/components/common/loading'
                         }else{
                             this.$message({
                                 type: 'error',
-                                text: res.data.message
+                                text: 'err:' + res.data.code + ' ' + res.data.message
                             })
                         }
                     }).catch(err=>{
@@ -525,7 +525,7 @@ import loading from '@/components/common/loading'
                     }else if(res.data.code >1){
                         this.$message({
                             type: 'error',
-                            text: res.data.message
+                            text: 'err:' + res.data.code + ' ' + res.data.message
                         })
                     }
                 }).catch(err=>{
@@ -605,7 +605,7 @@ import loading from '@/components/common/loading'
                     }else if(res.data.code >1){
                         this.$message({
                             type: 'error',
-                            text: res.data.message
+                            text: 'err:' + res.data.code + ' ' + res.data.message
                         })
                     }
                 }).catch(err=>{

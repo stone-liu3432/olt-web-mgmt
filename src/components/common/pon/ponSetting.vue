@@ -123,7 +123,7 @@ export default {
                 }else{
                     this.$message({
                         type: 'error',
-                        text: res.data.message
+                        text: 'err:' + res.data.code + ' ' + res.data.message
                     })
                 }
             }).catch(err=>{

@@ -202,7 +202,7 @@ export default {
                 }else{
                     this.$message({
                         type: 'error',
-                        text: res.data.message
+                        text: 'err:' + res.data.code + ' ' + res.data.message
                     })
                 }
                 this.close_modal_porttype();
@@ -251,7 +251,7 @@ export default {
                 }else{
                     this.$message({
                         type: 'error',
-                        text: res.data.message
+                        text: 'err:' + res.data.code + ' ' + res.data.message
                     })
                 }
                 this.close_pv_def_vlan();
@@ -318,7 +318,7 @@ export default {
                 }else{
                     this.$message({
                         type: 'error',
-                        text: res.data.message
+                        text: 'err:' + res.data.code + ' ' + res.data.message
                     })
                 }
                 this.close_pv_vlist();
@@ -346,7 +346,7 @@ export default {
                 }else{
                     this.$message({
                         type: 'error',
-                        text: res.data.message
+                        text: 'err:' + res.data.code + ' ' + res.data.message
                     })
                 }
                 this.close_pv_vlist();

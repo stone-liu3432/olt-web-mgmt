@@ -233,7 +233,7 @@ export default {
                 }else{
                     this.$message({
                         type: 'error',
-                        text: res.data.message
+                        text: 'err:' + res.data.code + ' ' + res.data.message
                     })
                 }
             }).catch(err=>{
@@ -266,7 +266,7 @@ export default {
                 }else{
                     this.$message({
                         type: 'error',
-                        text: res.data.message
+                        text: 'err:' + res.data.code + ' ' + res.data.message
                     })
                 }
             }).catch(err=>{
@@ -338,7 +338,7 @@ export default {
                 }else if(res.data.code > 1){
                     this.$message({
                         type: 'error',
-                        text: res.data.message
+                        text: 'err:' + res.data.code + ' ' + res.data.message
                     })
                 }
             }).catch(error=>{
@@ -364,7 +364,7 @@ export default {
                 }else{
                     this.$message({
                         type: 'error',
-                        text: res.data.message
+                        text: 'err:' + res.data.code + ' ' + res.data.message
                     })
                 }
             }).catch(err=>{
@@ -452,7 +452,7 @@ export default {
                 }else{
                     this.$message({
                         type: 'error',
-                        text: res.data.message
+                        text: 'err:' + res.data.code + ' ' + res.data.message
                     })
                 }
             }).catch(err=>{

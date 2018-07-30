@@ -317,7 +317,7 @@ import onuCard from '@/components/common/pon/onuCard'
                         }else if(res.data.code >1){
                             this.$message({
                                 type: 'error',
-                                text: res.data.message
+                                text: 'err:' + res.data.code + ' ' + res.data.message
                             })
                         }
                     }).catch(err=>{
@@ -339,7 +339,7 @@ import onuCard from '@/components/common/pon/onuCard'
                         }else if(res.data.code >1){
                             this.$message({
                                 type: 'error',
-                                text: res.data.message
+                                text: 'err:' + res.data.code + ' ' + res.data.message
                             })
                         }
                     }).catch(err=>{
@@ -436,7 +436,7 @@ import onuCard from '@/components/common/pon/onuCard'
                         }else if(res.data.code >1){
                             this.$message({
                                 type: 'error',
-                                text: res.data.message
+                                text: 'err:' + res.data.code + ' ' + res.data.message
                             })
                         }
                     }).catch(err=>{
@@ -520,7 +520,7 @@ import onuCard from '@/components/common/pon/onuCard'
                         }else if(res.data.code >1){
                             this.$message({
                                 type: 'error',
-                                text: res.data.message
+                                text: 'err:' + res.data.code + ' ' + res.data.message
                             })
                         }
                     }).catch(err=>{
@@ -543,7 +543,7 @@ import onuCard from '@/components/common/pon/onuCard'
                         }else if(res.data.code >1){
                             this.$message({
                                 type: 'error',
-                                text: res.data.message
+                                text: 'err:' + res.data.code + ' ' + res.data.message
                             })
                         }
                     }).catch(err=>{

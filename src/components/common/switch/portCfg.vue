@@ -375,7 +375,7 @@ import { mapState } from 'vuex'
                         }else if(res.data.code >1){
                             this.$message({
                                 type: 'error',
-                                text: res.data.message
+                                text: 'err:' + res.data.code + ' ' + res.data.message
                             })
                         }
                         this.getStormData();
@@ -473,7 +473,7 @@ import { mapState } from 'vuex'
                         }else if(res.data.code > 1){
                             this.$message({
                                 type: 'error',
-                                text: res.data.message
+                                text: 'err:' + res.data.code + ' ' + res.data.message
                             })
                         }
                         this.getPortData();
@@ -508,7 +508,7 @@ import { mapState } from 'vuex'
                         }else if(res.data.code > 1){
                             this.$message({
                                 type: 'error',
-                                text: res.data.message
+                                text: 'err:' + res.data.code + ' ' + res.data.message
                             })
                         }
                         this.getMirrorData();
@@ -563,7 +563,7 @@ import { mapState } from 'vuex'
                         }else if(res.data.code >1){
                             this.$message({
                                 type: 'error',
-                                text: res.data.message
+                                text: 'err:' + res.data.code + ' ' + res.data.message
                             })
                         }
                         this.getMirrorData();
