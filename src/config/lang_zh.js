@@ -431,7 +431,10 @@ var zh = {
 	"router_portlist":"路由端口",
 	"program":"组播节目",
 	"program_s":"组播节目起始",
-	"program_e":"组播节目结束"
+	"program_e":"组播节目结束",
+	"mode":"模式",
+	"query_src_ip":"查询报文源IP地址",
+	"query_src_mac":"查询报文源MAC地址"
 }
 
 export default zh

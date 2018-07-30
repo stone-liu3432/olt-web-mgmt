@@ -1,0 +1,18 @@
+{
+    "code": 1,
+    "msg": "success",
+    "data": {
+        "mode": 2,
+        "fast_leave": 0,
+        "protocol_policy": 0,
+        "group_aging_time": 260,
+        "robustness": 2,
+        "query_src_ip": "192.168.100.1",
+        "query_src_mac": "00:00:00:00:00:11",
+        "gen_response_time": 10,
+        "gen_query_interval": 125,
+        "sp_response_time": 800,
+        "sp_query_interval": 1000,
+        "sp_query_number": 2
+    }
+}

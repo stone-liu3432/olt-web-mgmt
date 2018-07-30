@@ -412,7 +412,29 @@ var en = {
 	"del_onu_type":"Delete ONU upgrade type",
 	"onu_upgrade_start":"The upgrade has started, The upgrade information is displayed on the alarm information page.",
 
-	"igmp": "IGMP"
+	"igmp": "IGMP",
+	"fast_leave":"fast leave",
+	"protocol_policy":"protocol policy",
+	"group_aging_time":"group aging time",
+	"robustness":"robustness",
+	"gen_response_time":"general response time",
+	"gen_query_interval":"general query interval",
+	"sp_response_time":"special response time",
+	"sp_query_interval":"special query interval",
+	"sp_query_number":"special query number",
+	"multi_ip":"multicast IP",
+	"host_portlist":"port members",
+	"mc_unknown_policy":"multicast unknown policy",
+	"transparent":"transparent",
+	"discard":"discard",
+	"mvlan":"multicast VLAN",
+	"router_portlist":"router port",
+	"program":"program",
+	"program_s":"program start",
+	"program_e":"program end",
+	"mode":"Mode",
+	"query_src_ip":"query source IP",
+	"query_src_mac":"query source MAC"
 }
 
 export default en
