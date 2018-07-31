@@ -434,7 +434,9 @@ var en = {
 	"program_e":"program end",
 	"mode":"Mode",
 	"query_src_ip":"query source IP",
-	"query_src_mac":"query source MAC"
+	"query_src_mac":"query source MAC",
+	"vid":"multicast vlan",
+	"action":"multicast type"
 }
 
 export default en

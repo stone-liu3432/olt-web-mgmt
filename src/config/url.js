@@ -25,7 +25,8 @@ var change_url = {
         rstp_port: './rstp_port.json',
         get_lang: 'get_lang.json',
         get_onu_baseinfo:"./onu_base_info.json",
-        get_igmp: "./igmp_info.json"
+        get_igmp: "./igmp_info.json",
+        get_multicast: './multicast_info.json'
     },
     betaUrl: {
         menu: "/board?info=menu",
@@ -53,7 +54,8 @@ var change_url = {
         rstp_port: '/switch_rstp?form=port',
         get_lang: '/system_lang',
         get_onu_baseinfo:"/onumgmt?form=base-info",
-        get_igmp: "/switch_igmp?form=config"
+        get_igmp: "/switch_igmp?form=config",
+        get_multicast: '/switch_igmp?form=entry'
     }
 }
 

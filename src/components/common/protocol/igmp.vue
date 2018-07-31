@@ -2,7 +2,7 @@
     <div class="igmp">
         <h2>IGMP</h2>
         <div>
-            <span>IGMP infomation</span>
+            <span>IGMP information</span>
             <span>
                 <a href="javascript:void(0);" @click="open_multicast_st">{{ lanMap['config'] }}</a>
             </span>
@@ -34,10 +34,11 @@
                 <span v-if="key === 'protocol_policy'">{{ item ? 'discard' : 'pass' }}</span>
             </li>
         </ul>
+        <multicast></multicast>
         <div class="modal-dialog" v-if="show_multicast">
             <div class="cover"></div>
             <div class="igmp-group-modal">
-                <h3>设置</h3>
+                <h3>IGMP {{ lanMap['config'] }}</h3>
                 <div>
                     <div>
                         <span>{{ lanMap['mode'] }}</span>
@@ -124,9 +125,11 @@
 
 <script>
 import { mapState } from 'vuex'
+import multicast from '@/components/common/igmp/multicast'
 export default {
     name: 'igmp',
-    computed: mapState(['lanMap','change_url','port_name']),
+    computed: mapState(['lanMap','change_url']),
+    components: { multicast },
     data(){
         return {
             mode: ['disable','snooping','proxy'],

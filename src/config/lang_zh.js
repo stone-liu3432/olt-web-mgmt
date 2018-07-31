@@ -434,7 +434,9 @@ var zh = {
 	"program_e":"组播节目结束",
 	"mode":"模式",
 	"query_src_ip":"查询报文源IP地址",
-	"query_src_mac":"查询报文源MAC地址"
+	"query_src_mac":"查询报文源MAC地址",
+	"vid":"组播VLAN",
+	"action":"组播类型"
 }
 
 export default zh
