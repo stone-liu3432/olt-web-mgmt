@@ -176,7 +176,6 @@ export default {
                     this.igmp_param[key] = this.igmp_info.data[key];
                 }
             }
-            console.log(this.reg_mac.test(this.igmp_param.query_src_mac));
         },
         //  关闭组播设置模态框
         close_multicast_st(){
@@ -235,42 +234,42 @@ export default {
                 })
                 return
             }
-            if(this.igmp_param === 2 &&(this.igmp_param.robustness < 1 || this.igmp_param.robustness > 10 || isNaN(this.igmp_param.robustness))){
+            if(this.igmp_param.mode === 2 &&(this.igmp_param.robustness < 1 || this.igmp_param.robustness > 10 || isNaN(this.igmp_param.robustness))){
                 this.$message({
                     type: 'error',
                     text: this.lanMap['param_error'] + ': ' + this.lanMap['robustness']
                 })
                 return
             }
-            if(this.igmp_param === 2 &&(this.igmp_param.gen_response_time < 1 || this.igmp_param.gen_response_time > 25 || isNaN(this.igmp_param.gen_response_time))){
+            if(this.igmp_param.mode === 2 &&(this.igmp_param.gen_response_time < 1 || this.igmp_param.gen_response_time > 25 || isNaN(this.igmp_param.gen_response_time))){
                 this.$message({
                     type: 'error',
                     text: this.lanMap['param_error'] + ': ' + this.lanMap['gen_response_time']
                 })
                 return
             }
-            if(this.igmp_param === 2 &&(this.igmp_param.gen_query_interval < 2 || this.igmp_param.gen_query_interval > 3000 || isNaN(this.igmp_param.gen_query_interval))){
+            if(this.igmp_param.mode === 2 &&(this.igmp_param.gen_query_interval < 2 || this.igmp_param.gen_query_interval > 3000 || isNaN(this.igmp_param.gen_query_interval))){
                 this.$message({
                     type: 'error',
                     text: this.lanMap['param_error'] + ': ' + this.lanMap['gen_query_interval']
                 })
                 return
             }
-            if(this.igmp_param === 2 &&(this.igmp_param.sp_response_time < 100 || this.igmp_param.sp_response_time > 10000 || isNaN(this.igmp_param.sp_response_time))){
+            if(this.igmp_param.mode === 2 &&(this.igmp_param.sp_response_time < 100 || this.igmp_param.sp_response_time > 10000 || isNaN(this.igmp_param.sp_response_time))){
                 this.$message({
                     type: 'error',
                     text: this.lanMap['param_error'] + ': ' + this.lanMap['sp_response_time']
                 })
                 return
             }
-            if(this.igmp_param === 2 &&(this.igmp_param.sp_query_interval < 100 || this.igmp_param.sp_query_interval > 10000 || isNaN(this.igmp_param.sp_query_interval))){
+            if(this.igmp_param.mode === 2 &&(this.igmp_param.sp_query_interval < 100 || this.igmp_param.sp_query_interval > 10000 || isNaN(this.igmp_param.sp_query_interval))){
                 this.$message({
                     type: 'error',
                     text: this.lanMap['param_error'] + ': ' + this.lanMap['sp_query_interval']
                 })
                 return
             }
-            if(this.igmp_param === 2 &&(this.igmp_param.sp_query_number < 1 || this.igmp_param.sp_query_number > 10 || isNaN(this.igmp_param.sp_query_number))){
+            if(this.igmp_param.mode === 2 &&(this.igmp_param.sp_query_number < 1 || this.igmp_param.sp_query_number > 10 || isNaN(this.igmp_param.sp_query_number))){
                 this.$message({
                     type: 'error',
                     text: this.lanMap['param_error'] + ': ' + this.lanMap['sp_query_number']
@@ -282,12 +281,14 @@ export default {
                     type: 'error',
                     text: this.lanMap['param_error'] + ': ' + this.lanMap['query_src_ip']
                 })
+                return
             }
             if(this.igmp_param.mode === 2 && !this.reg_mac.test(this.igmp_param.query_src_mac)){
                 this.$message({
                     type: 'error',
                     text: this.lanMap['param_error'] + ': ' + this.lanMap['query_src_mac']
                 })
+                return
             }
             var param_mode = {
                     "method":"set",
@@ -328,7 +329,7 @@ export default {
                     "sp_query_number": this.igmp_param.sp_query_number
                 }
             }
-            this.$http.post().then(res=>{
+            this.$http.post('/switch_igmp?form=config',param_multicast).then(res=>{
                 if(res.data.code === 1){
                     this.$message({
                         type: 'success',
