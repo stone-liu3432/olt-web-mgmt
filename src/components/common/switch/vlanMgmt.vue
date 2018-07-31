@@ -5,7 +5,8 @@
         </div>
         <div>
             <a href="javascript:;" @click="createVlan">{{ lanMap['create'] }}VLAN</a>
-            <span>{{ lanMap['tips_create_vlan'] }}</span>
+            <!-- <span>{{ lanMap['tips_create_vlan'] }}</span> -->
+            <a href="javascript:void(0);" @click="open_batch_del">{{ lanMap['delete'] }} VLAN</a>
         </div>
         <div class="search">
             <p class="lf">{{  lanMap['vlan_list'] }}</p>
@@ -59,7 +60,11 @@
                     <div class="add-vlan" v-if="create_vlan">
                         <span>VLAN ID：</span>
                         <span>
-                            <input v-focus type="text" placeholder="VLAN ID 1-4094" v-model.number="new_vlan" :style="{ 'border-color' : (new_vlan != '' && (isNaN(new_vlan) || new_vlan > 4094 || new_vlan < 1)) ? 'red' : '' }">
+                            <input v-focus type="text" placeholder="1-4094" 
+                                v-model.number="vlanid_s" :style="{ 'border-color' : (vlanid_s != '' && (isNaN(vlanid_s) || vlanid_s > 4094 || vlanid_s < 1)) ? 'red' : '' }">
+                             ~ 
+                            <input type="text" placeholder="1-4094" 
+                                v-model.number="vlanid_e" :style="{ 'border-color' : (vlanid_e != '' && (isNaN(vlanid_e) || vlanid_e > 4094 || vlanid_e < 1)) ? 'red' : '' }">
                             <span class="tips">
                                 {{ lanMap['vlanid_range_hit'] }}
                             </span>
@@ -123,6 +128,28 @@
                 <div class="close" @click="closeModal"></div>
             </div>
         </div>
+        <div class="modal-dialog" v-if="batch_del_vlan">
+            <div class="cover"></div>
+            <div class="batch-delete">
+                <div>
+                    <h3>{{ lanMap['delete'] }} VLAN</h3>
+                    <div>
+                        <span>VLAN ID</span>
+                        <input type="text" v-focus v-model.number="vlanid_s" placeholder="1-4094"
+                          :style="{ 'border-color' : (vlanid_s != '' && (isNaN(vlanid_s) || vlanid_s > 4094 || vlanid_s < 1)) ? 'red' : '' }">
+                         ~ 
+                        <input type="text" v-model.number="vlanid_e" placeholder="1-4094"
+                         :style="{ 'border-color' : (vlanid_e != '' && (isNaN(vlanid_e) || vlanid_e > 4094 || vlanid_e < 1)) ? 'red' : '' }">
+                    </div>
+                    <p>{{ lanMap['vlanid_range_hit'] }}</p>
+                    <div>
+                        <a href="javascript:void(0);" @click="submit_batch_del">{{ lanMap['apply'] }}</a>
+                        <a href="javascript:void(0);" @click="close_batch_del">{{ lanMap['cancel'] }}</a>
+                    </div>
+                </div>
+                <div class="close" @click="close_batch_del"></div>
+            </div>
+        </div>
         <confirm :tool-tips="lanMap['delete_vlan_hit']" @choose="result" v-if="userChoose"></confirm>
     </div>
 </template>
@@ -147,7 +174,8 @@ import { mapState } from 'vuex'
                 // 未查找到指定VLAN时的页面显示
                 not_found_vlan: false,
                 // 创建VLAN时，绑定的新创建的 VLAN ID
-                new_vlan: '',
+                vlanid_s: '',
+                vlanid_e: '',
                 // 分页数据(懒加载)
                 count: 0,
                 //  是否提示创建VLAN成功的tips
@@ -163,8 +191,9 @@ import { mapState } from 'vuex'
                     // 每页显示的数据数量
                     display: 20
                 },
-                // 模态框隐藏显示
+                // 添加/修改VLAN模态框隐藏显示
                 modalDialog: false,
+                batch_del_vlan: false
             }
         },
         created(){
@@ -387,7 +416,8 @@ import { mapState } from 'vuex'
                     }
                     this.create_vlan = false;
                     this.modalDialog = false;
-                    this.new_vlan = '';
+                    this.vlanid_s = '';
+                    this.vlanid_e = '';
                     this.tip_flag = false;
                 }).catch(err=>{
                     // to do
@@ -396,15 +426,15 @@ import { mapState } from 'vuex'
             //  添加VLAN时的动作，根据用户选择进行操作
             handle_create(bool){
                 if(bool){
-                    var vid = Number(this.new_vlan);
-                    if(isNaN(vid) || vid > 4094 || vid < 1) {
+                    var vid_s = Number(this.vlanid_s);
+                    var vid_e = Number(this.vlanid_e);
+                    if(isNaN(vid_s) || vid_s > 4094 || vid_s < 1 || isNaN(vid_e) || vid_e > 4094 || vid_e < 1) {
                         this.$message({
                             type: 'error',
                             text: this.lanMap['vlanid_range_hit']
                         })
                         return
                     }
-
                     var tagged = document.querySelectorAll('span.tagged>input');
                     var untagged = document.querySelectorAll('span.untagged>input');
                     var tag_str = '',untag_str = ''
@@ -424,22 +454,22 @@ import { mapState } from 'vuex'
                         "method":"create",
                         "param":{
                             "type": 1,
-                            "vlan_id": vid,
+                         	"vlanid_s": vid_s > vid_e ? vid_e : vid_s,
+                            "vlanid_e": vid_s > vid_e ? vid_s : vid_e,
                             "tagged_portlist": tag_str.replace(/\,$/,''),
                             "untagged_portlist": untag_str.replace(/\,$/,'')
                         }
                     }
-                    this.$http.post('/switch_vlan',post_param).then(res=>{
+                    this.$http.post('/switch_vlanlist',post_param).then(res=>{
                         if(res.data.code === 1){
                             this.$message({
                                 type: 'success',
                                 text: this.lanMap['create_vlan_info']
                             })
-                            // this.tip_flag = true;
-                            // this.set_vlan(vid);
                             this.create_vlan = false;
                             this.modalDialog = false;
-                            this.new_vlan = '';
+                            this.vlanid_s = '';
+                            this.vlanid_e = '';
                             this.tip_flag = false;
                             this.getData();
                         }else if(res.data.code > 1){
@@ -454,7 +484,8 @@ import { mapState } from 'vuex'
                 }else{
                     this.create_vlan = false;
                     this.modalDialog = false;
-                    this.new_vlan = '';
+                    this.vlanid_s = '';
+                    this.vlanid_e = '';
                     this.tip_flag = false;
                 }
             },
@@ -497,6 +528,52 @@ import { mapState } from 'vuex'
                     }
                 }
                 return results.replace(/\,$/,'');
+            },
+            //  打开范围删除vlan模态框
+            open_batch_del(){
+                this.batch_del_vlan = true;
+                this.vlanid_s = '';
+                this.vlanid_e = '';
+            },
+            //  关闭范围删除模态框
+            close_batch_del(){
+                this.batch_del_vlan = false;
+            },
+            //  范围删除提交按钮
+            submit_batch_del(){
+                var vid_s = Number(this.vlanid_s),vid_e = Number(this.vlanid_e);
+                if(vid_s < 1 || vid_s > 4094 || isNaN(vid_s) || vid_e < 1 || vid_e > 4094 || isNaN(vid_e)){
+                    this.$message({
+                        type: 'error',
+                        text: this.lanMap['vlanid_range_hit']
+                    })
+                    return
+                }
+                var post_param = {
+                    "method":"destroy",
+                    "param":{
+                        "vlanid_s": vid_s > vid_e ? vid_e : vid_s,
+                        "vlanid_e": vid_s > vid_e ? vid_s : vid_e,
+                    }
+                }
+                this.$http.post('/switch_vlanlist',post_param).then(res=>{
+                    if(res.data.code === 1){
+                        this.$message({
+                            type: 'success',
+                            text: this.lanMap['setting_ok']
+                        })
+                        this.count = 0;
+                        this.getData();
+                    }else{
+                        this.$message({
+                            type: 'error',
+                            text: 'err:' + res.data.code + ' ' + res.data.message
+                        })
+                    }
+                }).catch(err=>{
+                    // to do
+                })
+                this.close_batch_del();
             }
         },
         watch: {
@@ -511,7 +588,7 @@ import { mapState } from 'vuex'
     }
 </script>
 
-<style scoped>
+<style scoped lang="less">
 div.vlan-mgmt{
     min-width: 1020px;
 }
@@ -712,5 +789,45 @@ span.tips{
     font-size: 14px;
     color: #67AEF7;
     margin-left: 20px;
+}
+div.add-vlan{
+    input{
+        width: 100px;
+    }
+}
+div.cover+div.batch-delete{
+    border-radius: 5px;
+    height: 205px;
+    width: 500px;
+    h3{
+        height: 60px;
+        line-height: 50px;
+        font-size: 20px;
+        padding-left: 30px;
+    }
+    >div{
+        >div{
+            span{
+                display: inline-block;
+                width: 120px;
+                text-align: center;
+            }
+            input{
+                width: 120px;
+            }
+        }
+    }
+    div+p{
+        font-size: 15px;
+        color: #67aef6;
+        text-align: center;
+        font-weight: normal;
+        height: 30px;
+        line-height: 30px;
+        margin-top: 10px;
+    }
+    a{
+        margin: 15px 0 0 100px;
+    }
 }
 </style>
