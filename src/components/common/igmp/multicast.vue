@@ -14,7 +14,7 @@
                 <span>{{ lanMap['host_portlist'] }}</span>
                 <span>{{ lanMap['config'] }}</span>
             </li>
-            <li v-for="(item,key) in multicast_info.data" :key="key">
+            <li v-for="(item,key) in multicast_info.data" :key="key" class="multi-item">
                 <span>{{ item.multi_ip }}</span>
                 <span>{{ item.vid }}</span>
                 <span>{{ item.action }}</span>
@@ -23,10 +23,16 @@
                     <a href="javascript:void(0);">{{ lanMap['delete'] }}</a>
                 </span>
             </li>
-            <li>
-                
-            </li>
         </ul>
+        <div class="tab-bar">
+            <div>></div>
+            <div>5</div>
+            <div>4</div>
+            <div>3</div>
+            <div>2</div>
+            <div>1</div>
+            <div><</div>
+        </div>
     </div>
 </template>
 
@@ -81,7 +87,7 @@ div.multicast{
         }
     }
     div+ul{
-        margin: 20px 0;
+        margin: 20px 0 0 0;
         display: table;
         width: 100%;
         box-sizing: border-box;
@@ -111,6 +117,26 @@ div.multicast{
                 span{
                     border-bottom: 1px solid #ccc;
                 }
+            }
+        }
+    }
+    div.tab-bar{
+        margin-top: 8px;
+        div{
+            float: right;
+            width: 30px;
+            height: 30px;
+            line-height: 30px;
+            text-align: center;
+            border: 1px solid #ccc;
+            border-left: none;
+            font-weight: 500;
+            &:last-child{
+                border-radius: 5px 0 0 5px;
+                border-left: 1px solid #ccc;
+            }
+            &:first-child{
+                border-radius: 0 5px 5px 0;
             }
         }
     }
