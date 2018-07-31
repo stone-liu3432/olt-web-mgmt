@@ -15,7 +15,7 @@
             <span>{{ item.cvlan_s }}</span>
             <span>{{ item.cvlan_e }}</span>
             <span>{{ item.svlan }}</span>
-            <span>{{ item.svlan_pri }}</span>
+            <span>{{ item.svlan_pri === 255 ? ' - ' : item.svlan_pri }}</span>
             <span>
                 <a href="javascript:void(0);" @click="open_qinq_modal(item)">{{ lanMap['modify'] }}</a>
                 <a href="javascript:void(0);" @click="open_del_qinq_modal(item)">{{ lanMap['delete'] }}</a>
