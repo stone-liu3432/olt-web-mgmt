@@ -89,7 +89,7 @@
                 </div>
                 <div>
                     <span>{{ lanMap['onu_port_id'] }}</span>
-                    <select v-model="op_id">
+                    <select v-model.number="op_id">
                         <option :value="item.op_id" v-for="(item,index) in onu_vlan_info.data" :key="index">{{ item.op_id }}</option>
                     </select>
                 </div>
@@ -470,7 +470,7 @@ import { mapState } from 'vuex'
                         "method":"set",
                         "param":{
                             "port_id": Number(this.portid),
-                            "onu_id": this.onuid,
+                            "onu_id": Number(this.onuid),
                             "op_id": this.onu_port_item.op_id,
                             "flags": flags,
                             "auto_neg": this.onu_port_item.auto_neg,
@@ -491,10 +491,10 @@ import { mapState } from 'vuex'
                                 text: this.lanMap['setting_ok']
                             })
                             this.getOnuInfo();
-                        }else if(res.data.code >1){
+                        }else if(res.data.code > 1){
                             this.$message({
                                 type: 'error',
-                                text: 'err:' + res.data.code + ' ' + res.data.message
+                                text: '(' + res.data.code + ') ' + res.data.message
                             })
                         }
                     }).catch(err=>{
@@ -545,7 +545,7 @@ import { mapState } from 'vuex'
                         "method":"set",
                         "param":{
                             "port_id": Number(this.portid),
-                            "onu_id": this.onuid,
+                            "onu_id": Number(this.onuid),
                             "op_id": this.onu_vlan_item.op_id,
                             "op_vlan_mode": this.onu_vlan_item.op_vlan_mode,
                             "def_vlan_id": this.onu_vlan_item.def_vlan_id,
@@ -559,10 +559,10 @@ import { mapState } from 'vuex'
                                 text: this.lanMap['setting_ok']
                             })
                             this.getOnuVlan();
-                        }else if(res.data.code >1){
+                        }else if(res.data.code > 1){
                             this.$message({
                                 type: 'error',
-                                text: 'err:' + res.data.code + ' ' + res.data.message
+                                text: '(' + res.data.code + ') ' + res.data.message
                             })
                         }
                     }).catch(err=>{
@@ -615,7 +615,7 @@ import { mapState } from 'vuex'
                         "method":"add",
                         "param":{
                             "port_id": Number(this.portid),
-                            "onu_id": this.onuid,
+                            "onu_id": Number(this.onuid),
                             "op_id": this.cache_port_vlan.op_id,
                             "op_vlan_mode": this.cache_port_vlan.op_vlan_mode,
                             "old_vlan_id": this.translate_post_param.old_vlan_id,
@@ -630,10 +630,10 @@ import { mapState } from 'vuex'
                                 text: this.lanMap['add'] + ' ' + this.lanMap['st_success']
                             })
                             this.getOnuVlan();
-                        }else if(res.data.code >1){
+                        }else if(res.data.code > 1){
                             this.$message({
                                 type: 'error',
-                                text: 'err:' + res.data.code + ' ' + res.data.message
+                                text: '(' + res.data.code + ') ' + res.data.message
                             })
                         }
                     }).catch(err=>{
@@ -660,7 +660,7 @@ import { mapState } from 'vuex'
                         "method": "delete",
                         "param":{
                             "port_id": Number(this.portid),
-                            "onu_id": this.onuid,
+                            "onu_id": Number(this.onuid),
                             "op_id": this.cache_port_vlan.op_id,
                             "op_vlan_mode": this.cache_port_vlan.op_vlan_mode,
                             "old_vlan_id": this.cache_vlan_list[this.translate_post_param.vlan_list].old_vlan_id,
@@ -675,10 +675,10 @@ import { mapState } from 'vuex'
                                 text: this.lanMap['delete'] + ' ' + this.lanMap['st_success']
                             })
                             this.getOnuVlan();
-                        }else if(res.data.code >1){
+                        }else if(res.data.code > 1){
                             this.$message({
                                 type: 'error',
-                                text: 'err:' + res.data.code + ' ' + res.data.message
+                                text: '(' + res.data.code + ') ' + res.data.message
                             })
                         }
                     }).catch(err=>{
@@ -729,7 +729,7 @@ import { mapState } from 'vuex'
                         "method":"add",
                         "param":{
                             "port_id": Number(this.portid),
-                            "onu_id": this.onuid,
+                            "onu_id": Number(this.onuid),
                             "op_id": this.cache_port_vlan.op_id,
                             "op_vlan_mode": this.cache_port_vlan.op_vlan_mode,
                             "start_vlan_id": this.trunk_post_param.start_vlan_id,
@@ -744,10 +744,10 @@ import { mapState } from 'vuex'
                                 text: this.lanMap['add'] + ' ' + this.lanMap['st_success']
                             })
                             this.getOnuVlan();
-                        }else if(res.data.code >1){
+                        }else if(res.data.code > 1){
                             this.$message({
                                 type: 'error',
-                                text: 'err:' + res.data.code + ' ' + res.data.message
+                                text: '(' + res.data.code + ') ' + res.data.message
                             })
                         }
                     }).catch(err=>{
@@ -775,7 +775,7 @@ import { mapState } from 'vuex'
                         "method": "delete",
                         "param":{
                             "port_id": Number(this.portid),
-                            "onu_id": this.onuid,
+                            "onu_id": Number(this.onuid),
                             "op_id": this.cache_port_vlan.op_id,
                             "op_vlan_mode": this.cache_port_vlan.op_vlan_mode,
                             // "start_vlan_id": this.cache_vlan_list[this.trunk_post_param.vlan_list].start_vlan_id,
@@ -792,10 +792,10 @@ import { mapState } from 'vuex'
                                 text: this.lanMap['delete'] + ' ' + this.lanMap['st_success']
                             })
                             this.getOnuVlan();
-                        }else if(res.data.code >1){
+                        }else if(res.data.code > 1){
                             this.$message({
                                 type: 'error',
-                                text: 'err:' + res.data.code + ' ' + res.data.message
+                                text: '(' + res.data.code + ') ' + res.data.message
                             })
                         }
                     }).catch(err=>{
@@ -911,7 +911,7 @@ import { mapState } from 'vuex'
                         }
                         var oid = sessionStorage.getItem('oid');
                         this.onuid = oid;
-                        if(!oid || _onu_list.indexOf(Number(oid)) === -1) this.onuid = this.onu_list.data[0];
+                        if(!oid || _onu_list.indexOf(Number(oid)) === -1) this.onuid = Number(this.onu_list.data[0]);
                         this.getOnuInfo();
                         this.getOnuVlan();
                     }else{

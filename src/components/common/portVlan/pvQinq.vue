@@ -205,10 +205,10 @@ export default {
                         text: this.lanMap['setting_ok']
                     })
                     this.$parent.get_pv_qinq();
-                }else{
+                }else if(res.data.code > 1){
                     this.$message({
                         type: 'error',
-                        text: 'err:' + res.data.code + ' ' + res.data.message
+                        text: '(' + res.data.code + ') ' + res.data.message
                     })
                 }
             }).catch(err=>{
@@ -241,10 +241,10 @@ export default {
                             text: this.lanMap['delete'] + ': ' + this.lanMap['setting_ok']
                         })
                         this.$parent.get_pv_qinq();
-                    }else{
+                    }else if(res.data.code > 1){
                         this.$message({
                             type: 'error',
-                            text: 'err:' + res.data.code + ' ' + res.data.message
+                            text: '(' + res.data.code + ') ' + res.data.message
                         })
                     }
                 }).catch(err=>{

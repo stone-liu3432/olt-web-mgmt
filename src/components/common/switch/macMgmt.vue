@@ -370,10 +370,10 @@ import loading from '@/components/common/loading'
                             })
                             this.count = 0;
                             this.getData();
-                        }else if(res.data.code >1){
+                        }else if(res.data.code > 1){
                             this.$message({
                                 type: 'error',
-                                text: 'err:' + res.data.code + ' ' + res.data.message
+                                text: '(' + res.data.code + ') ' + res.data.message
                             })
                         }
                     }).catch(err=>{
@@ -413,10 +413,10 @@ import loading from '@/components/common/loading'
                             this.$http.get(this.change_url.macage).then(res=>{
                                 this.mac_age = res.data;
                             })
-                        }else{
+                        }else if(res.data.code > 1){
                             this.$message({
                                 type: 'error',
-                                text: 'err:' + res.data.code + ' ' + res.data.message
+                                text: '(' + res.data.code + ') ' + res.data.message
                             })
                         }
                     }).catch(err=>{
@@ -522,10 +522,10 @@ import loading from '@/components/common/loading'
                         this.count = 0;
                         this.getData();
                         this.add_mac_close_dialog();
-                    }else if(res.data.code >1){
+                    }else if(res.data.code > 1){
                         this.$message({
                             type: 'error',
-                            text: 'err:' + res.data.code + ' ' + res.data.message
+                            text: '(' + res.data.code + ') ' + res.data.message
                         })
                     }
                 }).catch(err=>{
@@ -602,10 +602,10 @@ import loading from '@/components/common/loading'
                         this.count = 0;
                         this.getData();
                         this.flush_mac_close_dialog();
-                    }else if(res.data.code >1){
+                    }else if(res.data.code > 1){
                         this.$message({
                             type: 'error',
-                            text: 'err:' + res.data.code + ' ' + res.data.message
+                            text: '(' + res.data.code + ') ' + res.data.message
                         })
                     }
                 }).catch(err=>{

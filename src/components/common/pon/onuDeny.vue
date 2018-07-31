@@ -139,10 +139,10 @@ export default {
                             type: 'success',
                             text: this.lanMap['add'] + this.lanMap['st_success']
                         })
-                    }else if(res.data.code >1){
+                    }else if(res.data.code > 1){
                         this.$message({
                             type: 'error',
-                            text: 'err:' + res.data.code + ' ' + res.data.message
+                            text: '(' + res.data.code + ') ' + res.data.message
                         })
                     }
                 }).catch(err=>{
@@ -169,10 +169,10 @@ export default {
                             text: this.lanMap['delete'] + this.lanMap['st_success']
                         })
                         this.getData();
-                    }else if(res.data.code >1){
+                    }else if(res.data.code > 1){
                         this.$message({
                             type: 'error',
-                            text: 'err:' + res.data.code + ' ' + res.data.message
+                            text: '(' + res.data.code + ') ' + res.data.message
                         })
                     }
                 }).catch(err=>{

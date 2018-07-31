@@ -300,7 +300,7 @@ import { mapState } from 'vuex'
                     }else if(res.data.code > 1){
                         this.$message({
                             type: 'error',
-                            text: 'err:' + res.data.code + ' ' + res.data.message
+                            text: '(' + res.data.code + ') ' + res.data.message
                         })
                     }
                 }).catch(err=>{
@@ -406,7 +406,7 @@ import { mapState } from 'vuex'
                     }else if(res.data.code > 1){
                         this.$message({
                             type: 'error',
-                            text: 'err:' + res.data.code + ' ' + res.data.message
+                            text: '(' + res.data.code + ') ' + res.data.message
                         })
                     }
                 }).catch(err=>{

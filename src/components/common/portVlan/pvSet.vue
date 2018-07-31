@@ -199,10 +199,10 @@ export default {
                         text: this.lanMap['setting_ok']
                     })
                     this.$parent.get_pv_set();
-                }else{
+                }else if(res.data.code > 1){
                     this.$message({
                         type: 'error',
-                        text: 'err:' + res.data.code + ' ' + res.data.message
+                        text: '(' + res.data.code + ') ' + res.data.message
                     })
                 }
                 this.close_modal_porttype();
@@ -248,10 +248,10 @@ export default {
                         text: this.lanMap['setting_ok']
                     })
                     this.$parent.get_pv_set();
-                }else{
+                }else if(res.data.code > 1){
                     this.$message({
                         type: 'error',
-                        text: 'err:' + res.data.code + ' ' + res.data.message
+                        text: '(' + res.data.code + ') ' + res.data.message
                     })
                 }
                 this.close_pv_def_vlan();
@@ -315,10 +315,10 @@ export default {
                         text: this.lanMap['setting_ok']
                     })
                     this.$parent.get_pv_set();
-                }else{
+                }else if(res.data.code > 1){
                     this.$message({
                         type: 'error',
-                        text: 'err:' + res.data.code + ' ' + res.data.message
+                        text: '(' + res.data.code + ') ' + res.data.message
                     })
                 }
                 this.close_pv_vlist();
@@ -343,10 +343,10 @@ export default {
                         text: this.lanMap['setting_ok']
                     })
                     this.$parent.get_pv_set();
-                }else{
+                }else if(res.data.code > 1){
                     this.$message({
                         type: 'error',
-                        text: 'err:' + res.data.code + ' ' + res.data.message
+                        text: '(' + res.data.code + ') ' + res.data.message
                     })
                 }
                 this.close_pv_vlist();

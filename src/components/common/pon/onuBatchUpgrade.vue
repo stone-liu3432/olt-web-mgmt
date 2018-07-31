@@ -230,10 +230,10 @@ export default {
                         text: this.lanMap['setting_ok']
                     })
                     this.get_upgrade_type();
-                }else{
+                }else if(res.data.code > 1){
                     this.$message({
                         type: 'error',
-                        text: 'err:' + res.data.code + ' ' + res.data.message
+                        text: '(' + res.data.code + ') ' + res.data.message
                     })
                 }
             }).catch(err=>{
@@ -263,10 +263,10 @@ export default {
                         text: this.lanMap['etting_ok']
                     })
                     this.get_upgrade_type();
-                }else{
+                }else if(res.data.code > 1){
                     this.$message({
                         type: 'error',
-                        text: 'err:' + res.data.code + ' ' + res.data.message
+                        text: '(' + res.data.code + ') ' + res.data.message
                     })
                 }
             }).catch(err=>{
@@ -338,7 +338,7 @@ export default {
                 }else if(res.data.code > 1){
                     this.$message({
                         type: 'error',
-                        text: 'err:' + res.data.code + ' ' + res.data.message
+                        text: '(' + res.data.code + ') ' + res.data.message
                     })
                 }
             }).catch(error=>{
@@ -361,10 +361,10 @@ export default {
                         type: 'success',
                         text: this.lanMap['onu_upgrade_start']
                     })
-                }else{
+                }else if(res.data.code > 1){
                     this.$message({
                         type: 'error',
-                        text: 'err:' + res.data.code + ' ' + res.data.message
+                        text: '(' + res.data.code + ') ' + res.data.message
                     })
                 }
             }).catch(err=>{
@@ -449,10 +449,10 @@ export default {
                         type: 'success',
                         text: this.lanMap['setting_ok']
                     })
-                }else{
+                }else if(res.data.code > 1){
                     this.$message({
                         type: 'error',
-                        text: 'err:' + res.data.code + ' ' + res.data.message
+                        text: '(' + res.data.code + ') ' + res.data.message
                     })
                 }
             }).catch(err=>{

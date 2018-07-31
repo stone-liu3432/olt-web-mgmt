@@ -302,10 +302,10 @@ import { mapState,mapMutations } from 'vuex'
                         })
                         this.getData();
                         this.getOpticalData();
-                    }else if(res.data.code >1){
+                    }else if(res.data.code > 1){
                         this.$message({
                             type: 'error',
-                            text: 'err:' + res.data.code + ' ' + res.data.message
+                            text: '(' + res.data.code + ') ' + res.data.message
                         })
                     }
                 }).catch(err=>{
@@ -389,7 +389,7 @@ import { mapState,mapMutations } from 'vuex'
                         }else if(res.data.code > 1){
                             this.$message({
                                 type: 'error',
-                                text: 'err:' + res.data.code + ' ' + res.data.message
+                                text: '(' + res.data.code + ') ' + res.data.message
                             })
                         }
                     }).catch(error=>{
@@ -414,10 +414,10 @@ import { mapState,mapMutations } from 'vuex'
                             type: 'success',
                             text: this.lanMap['onu_upgrade_start']
                         })
-                    }else{
+                    }else if(res.data.code > 1){
                         this.$message({
                             type: 'error',
-                            text: 'err:' + res.data.code + ' ' + res.data.message
+                            text: '(' + res.data.code + ') ' + res.data.message
                         })
                     }
                 }).catch(err=>{

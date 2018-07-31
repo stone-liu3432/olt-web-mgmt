@@ -132,7 +132,7 @@ import loading from '@/components/common/loading'
                             this.isLoading = false;
                             this.$message({
                                 type: 'error',
-                                text: 'err:' + res.data.code + ' ' + res.data.message
+                                text: '(' + res.data.code + ') ' + res.data.message
                             })
                         }
                         this.width = 0;
@@ -181,7 +181,7 @@ import loading from '@/components/common/loading'
                             this.isLoading = false;
                             this.$message({
                                 type: 'error',
-                                text: 'err:' + res.data.code + ' ' + res.data.message
+                                text: '(' + res.data.code + ') ' + res.data.message
                             })
                         }
                         this.width = 0;

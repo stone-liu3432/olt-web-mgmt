@@ -229,10 +229,10 @@ import timezone from '@/config/timezone'
                                 text: this.lanMap['setting_ok']
                             })
                             this.get_ntp();
-                        }else{
+                        }else if(res.data.code > 1){
                             this.$message({
                                 type: 'error',
-                                text: 'err:' + res.data.code + ' ' + res.data.message
+                                text: '(' + res.data.code + ') ' + res.data.message
                             })
                         }
                     }).catch(err=>{
@@ -297,10 +297,10 @@ import timezone from '@/config/timezone'
                 this.$http.post('/time?form=ntp',post_params).then(res=>{
                     if(res.data.code === 1){
                         this.get_time();
-                    }else{
+                    }else if(res.data.code > 1){
                         this.$message({
                             type: 'error',
-                            text: 'err:' + res.data.code + ' ' + res.data.message
+                            text: '(' + res.data.code + ') ' + res.data.message
                         })
                     }
                 }).catch(err=>{
@@ -324,10 +324,10 @@ import timezone from '@/config/timezone'
                             type: 'success',
                             text: this.lanMap['update_time'] + this.lanMap['st_success']
                         })
-                    }else if(res.data.code >1){
+                    }else if(res.data.code > 1){
                         this.$message({
                             type: 'error',
-                            text: 'err:' + res.data.code + ' ' + res.data.message
+                            text: '(' + res.data.code + ') ' + res.data.message
                         })
                     }
                 }).catch(err=>{
@@ -346,10 +346,10 @@ import timezone from '@/config/timezone'
                 this.$http.post('/time?form=info',post_params).then(res=>{
                     if(res.data.code === 1){
                         this.handle_update_time();
-                    }else if(res.data.code >1){
+                    }else if(res.data.code > 1){
                         this.$message({
                             type: 'error',
-                            text: 'err:' + res.data.code + ' ' + res.data.message
+                            text: '(' + res.data.code + ') ' + res.data.message
                         })
                     }
                 }).catch(err=>{
