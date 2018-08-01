@@ -391,7 +391,7 @@ div.igmp{
     }
 }
 div+ul{
-    margin: 20px 0 20px 20px;
+    margin: 20px 0 20px 10px;
     li{
         height: 30px;
         line-height: 30px;

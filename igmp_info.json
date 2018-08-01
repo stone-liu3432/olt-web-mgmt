@@ -2,7 +2,7 @@
     "code": 1,
     "msg": "success",
     "data": {
-        "mode": 2,
+        "mode": 1,
         "fast_leave": 0,
         "protocol_policy": 0,
         "group_aging_time": 260,
