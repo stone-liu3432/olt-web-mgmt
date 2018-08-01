@@ -16,7 +16,8 @@
                     {"name":"upgrade"},
                     {"name":"time"},
                     {"name":"service"},
-                    {"name":"alarm"}
+                    {"name":"alarm"},
+                    {"name":"user_mgmt"}
                 ]
             },{
                 "name":"pon_mgmt",

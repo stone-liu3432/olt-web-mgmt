@@ -17,6 +17,7 @@ const upgrade = () => import(/* webpackChunkName: "system-page" */  '@/component
 const timeMgmt = () => import(/* webpackChunkName: "system-page" */  '@/components/common/system/timeMgmt')
 const service = () => import(/* webpackChunkName: "system-page" */  '@/components/common/system/service')
 const alarm = () => import(/* webpackChunkName: "system-page" */  '@/components/common/system/alarm')
+const userMgmt = () => import(/* webpackChunkName: "system-page" */  '@/components/common/system/userMgmt')
 // pon
 const onuAllow = () => import(/* webpackChunkName: "ponmgmt-page" */  '@/components/common/pon/onuAllow')
 const onuDeny = () => import(/* webpackChunkName: "ponmgmt-page" */  '@/components/common/pon/onuDeny')
@@ -91,6 +92,13 @@ const router = new Router({
 				{
 					path: "/upgrade",
 					component: upgrade,
+					meta: {
+						requireAuth: true
+					}
+				},
+				{
+					path: "/user_mgmt",
+					component: userMgmt,
 					meta: {
 						requireAuth: true
 					}
@@ -235,12 +243,12 @@ router.beforeEach((to, from, next) => {
 	store.commit("updateLoad", true);
 	// 判断该路由是否需要登录权限
 	if (to.meta.requireAuth) {
-		if (sessionStorage.getItem("x-token")) {
-			next();
-		} else {
-			next({ path: "/login" });
-		}
-		//next();
+		// if (sessionStorage.getItem("x-token")) {
+		// 	next();
+		// } else {
+		// 	next({ path: "/login" });
+		// }
+		next();
 	} else {
 		if (!sessionStorage.getItem("x-token")) {
 			next();

@@ -125,7 +125,7 @@ export default {
     color: #fff;
 }
 .menu>li>ul.hide{
-    max-height: 300px;
+    max-height: 330px;
     transition: max-height 0.3s ease-in;
 }
 .menu{

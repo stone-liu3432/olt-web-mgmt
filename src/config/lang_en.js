@@ -56,7 +56,8 @@ var en = {
 	"st_fail": "failed",
     "range":  "Range",
 	"onu_info": "ONU Info",
-	
+	"user_mgmt":"User Managerment",
+
 	"upgrade_firmware":" upgrade firmware",
 	"upgrade_system": " upgrade system",
 	"pon_auth":"PON Authorize",
@@ -266,6 +267,8 @@ var en = {
 	"res_cfg_info": "Notice:  You can restore the configuration file",
 	"bkup_cfg_info": "Notice:  You can backup the configuration file",
 	"reboot_olt": "Notice:  Click the button, you can restart the OLT",
+	"view_cfg":"View current config",
+	"view_cfg_tips":"Click to download all current configurations (including unsaved configurations)",
 	
 	"sys_upgrade_fail": "Upgrade system failed",
 	"sys_upgrade_succ": "Upgrade system success, take it effect as restart OLT",

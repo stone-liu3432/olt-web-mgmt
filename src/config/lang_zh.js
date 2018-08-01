@@ -56,6 +56,7 @@ var zh = {
     "st_fail":"失败",
 	"range": "范围",
 	"onu_info":"ONU信息",
+	"user_mgmt":"用户管理",
 	
 	"upgrade_firmware":"升级固件",
 	"upgrade_system":"升级系统",
@@ -265,6 +266,8 @@ var zh = {
 	"res_cfg_info":"您可以通过导入配置文件来恢复您备份的配置",
 	"bkup_cfg_info":"我们建议您在升级软件或进行修改配置之前保存原有配置，点击备份按钮可以对当前配置进行备份",
 	"reboot_olt":"设备的部分配置修改需要重启设备才能生效，您可以通过点击重启按钮来重启设备。重启过程中请不要断电",
+	"view_cfg":"查看当前配置",
+	"view_cfg_tips":"点击下载当前所有配置(包含未保存的配置)",
 	
 	"sys_upgrade_fail":"系统升级失败",
     "sys_upgrade_succ":"系统升级成功，重启设备后生效",
