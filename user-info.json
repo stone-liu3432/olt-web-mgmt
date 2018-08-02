@@ -1,0 +1,18 @@
+{
+    "code":1,
+    "message":"success",
+        "data":[
+        {
+            "name":"root", 
+            "level":2, 
+            "reenter":1, 
+            "info":"Super user"
+        },
+        {
+            "name":"admin123", 
+            "level":3, 
+            "reenter":2, 
+            "info":"admin user"
+        }]
+    }
+    

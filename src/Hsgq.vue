@@ -209,4 +209,16 @@ a:active {
 .close:hover {
   background: url("./assets/close_msg_hover.png") no-repeat;
 }
+div.cover+div{
+    position: absolute;
+    left: 0;
+    right: 0;
+    top: 0;
+    bottom: 0;
+    margin: auto;
+    width: 500px;
+    height: 400px;
+    background: #fff;
+    border-radius: 5px;
+}
 </style>
