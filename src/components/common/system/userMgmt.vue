@@ -10,12 +10,14 @@
             </div>
             <div class="user-item">
                 <span>{{ lanMap['user'] }}</span>
+                <span>{{ lanMap['status'] }}</span>
                 <span>{{ lanMap['user_level'] }}</span>
                 <span>{{ lanMap['user_reenter'] }}</span>
                 <span>{{ lanMap['desc'] }}</span>
             </div>
             <div v-for="(item,index) in user_info.data" class="user-item">
                 <span>{{ item.name }}</span>
+                <span>{{ item.status && item.logins ? '' + item.logins + '/' + item.reenter : 'offline' }}</span>
                 <span>{{ u_level[item.level] }}</span>
                 <span>{{ item.reenter }}</span>
                 <span>{{ item.info }}</span>
@@ -413,9 +415,9 @@ div.user-mgmt{
                 text-align: center;
                 height: 30px;
                 line-height: 30px;
-                width: 17%;
+                width: 15%;
                 &:last-child{
-                    width: 47%;
+                    width: 39%;
                     border-right: 1px solid #ccc;
                 }
             }

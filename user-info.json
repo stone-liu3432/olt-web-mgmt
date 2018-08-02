@@ -6,13 +6,17 @@
             "name":"root", 
             "level":2, 
             "reenter":1, 
-            "info":"Super user"
+            "info":"Super user",
+            "status":0,
+            "logins":1
         },
         {
             "name":"admin123", 
             "level":3, 
             "reenter":2, 
-            "info":"admin user"
+            "info":"admin user",
+            "status":1,
+            "logins": 1
         }]
     }
     

@@ -472,6 +472,7 @@ import { mapState } from 'vuex'
                             this.vlanid_e = '';
                             this.tip_flag = false;
                             this.count = 0;
+                            this.pagination.index = 1;
                             this.getData();
                         }else if(res.data.code > 1){
                             this.$message({
