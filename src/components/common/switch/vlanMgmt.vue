@@ -355,7 +355,7 @@ import { mapState } from 'vuex'
                                 if(item.vlan_id === this.vlanid){
                                     arr.splice(index,1);
                                     this.getPage();
-                                    if(this.vlan_tab.length === 0 && this.vlan_list.data.length > 0){
+                                    if(this.search_id === '' && this.vlan_tab.length === 0 && this.vlan_list.data.length > 0){
                                         this.pagination.index--;
                                         this.pagination.page = Math.ceil(this.vlan_list.data.length/this.pagination.display);
                                         this.getPage();
@@ -631,6 +631,7 @@ import { mapState } from 'vuex'
             vlan_tab(){
                 if(this.search_id !== '' && this.vlan_tab.length === 0){
                     this.not_found_vlan = true;
+                    return
                 }
                 if(!this.not_found_vlan && this.vlan_tab.length === 0 && this.vlan_list.data.length > 0){
                     this.pagination.index--;
