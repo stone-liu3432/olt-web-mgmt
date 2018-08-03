@@ -86,7 +86,7 @@
                 <div class="close" @click="close_del_user"></div>
             </div>
         </div>
-        <div class="modal-dislog" v-if="show_current_user">
+        <div class="modal-dialog" v-if="show_current_user">
             <div class="cover"></div>
             <div class="user-content modify-user">
                 <div>
@@ -210,7 +210,7 @@ export default {
                 "method":"add",
                 "param":{
                     "name": this.user_name,
-                    "md5": md5(this.user_name + ':' + this.user_pwd1),
+                    "key": md5(this.user_name + ':' + this.user_pwd1),
                     "level": this.user_level,
                     "reenter": this.user_reenter,
                     "info": this.user_desc
@@ -307,8 +307,8 @@ export default {
                 "method":"set",
                 "param":{
                     "name": this.user_name,
-                    "key1": md5(this.user_name + ':' + this.user_pwd),
-                    "key2": md5(this.user_name + ':' + this.user_pwd1)
+                    "key": md5(this.user_name + ':' + this.user_pwd),
+                    "key1": md5(this.user_name + ':' + this.user_pwd1)
                 }
             }
             this.$http.post('/usermgmt?form=modifyps',post_param).then(res=>{
@@ -410,6 +410,7 @@ div.user-mgmt{
                 font-size: 16px;
                 display: inline-block;
                 border: 1px solid #ccc;
+                vertical-align: middle;
                 border-right: none;
                 border-bottom: none;
                 text-align: center;

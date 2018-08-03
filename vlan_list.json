@@ -20416,61 +20416,6 @@
 			"vlan_id": 4083,
 			"tagged_portlist": " 1-8",
 			"untagged_portlist": "9-16"
-		},
-		{
-			"vlan_id": 4084,
-			"tagged_portlist": " 1-8",
-			"untagged_portlist": "9-16"
-		},
-		{
-			"vlan_id": 4085,
-			"tagged_portlist": " 1-8",
-			"untagged_portlist": "9-16"
-		},
-		{
-			"vlan_id": 4086,
-			"tagged_portlist": " 1-8",
-			"untagged_portlist": "9-16"
-		},
-		{
-			"vlan_id": 4087,
-			"tagged_portlist": " 1-8",
-			"untagged_portlist": "9-16"
-		},
-		{
-			"vlan_id": 4088,
-			"tagged_portlist": " 1-8",
-			"untagged_portlist": "9-16"
-		},
-		{
-			"vlan_id": 4089,
-			"tagged_portlist": " 1-8",
-			"untagged_portlist": "9-16"
-		},
-		{
-			"vlan_id": 4090,
-			"tagged_portlist": " 1-8",
-			"untagged_portlist": "9-16"
-		},
-		{
-			"vlan_id": 4091,
-			"tagged_portlist": " 1-8",
-			"untagged_portlist": "9-16"
-		},
-		{
-			"vlan_id": 4092,
-			"tagged_portlist": " 1-8",
-			"untagged_portlist": "9-16"
-		},
-		{
-			"vlan_id": 4093,
-			"tagged_portlist": " 1-8",
-			"untagged_portlist": "9-16"
-		},
-		{
-			"vlan_id": 4094,
-			"tagged_portlist": " 1-8",
-			"untagged_portlist": "9-16"
 		}
 	]
 }

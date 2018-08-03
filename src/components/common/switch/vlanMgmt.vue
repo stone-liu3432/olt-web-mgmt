@@ -12,7 +12,8 @@
             <p class="lf">{{  lanMap['vlan_list'] }}</p>
             <div class="lf">
                 <input type="text" placeholder="VLAN ID" v-model.number="search_id">
-                <i class="icon-search" @click="searchVlan"></i>
+                <!-- <i class="icon-search" @click="searchVlan"></i> -->
+                <i class="icon-search"></i>
             </div>
         </div>
         <div v-if="not_found_vlan">
@@ -32,7 +33,7 @@
                 <a href="javascript:;"  @click="config_port(item.vlan_id)">{{ lanMap['config'] }}</a>
                 <a href="javascript:;"  @click="deleteVlan(item.vlan_id)" v-if="item.vlan_id !== 1">{{ lanMap['delete'] }}</a>
             </li>
-            <li v-if="vlan_list.data && vlan_list.data.length%200 == 0">
+            <li v-if="vlan_list.data  && is_loadmore">
                 <a href="javascript:;" @click="loadmore">{{ lanMap['loadmore'] }}</a>
             </li>
             <li v-if="pagination.page > 1" class="paginations">
@@ -163,7 +164,7 @@ import { mapState } from 'vuex'
                 // 已有的 VLAN列表
                 vlan_list: {},
                 // 分页的数据 --> 显示到页面的数据
-                vlan_tab: {},
+                vlan_tab: [],
                 // 删除VLAN确认框组件
                 userChoose: false,
                 // 创建VLAN模态框的显示隐藏参数
@@ -193,7 +194,8 @@ import { mapState } from 'vuex'
                 },
                 // 添加/修改VLAN模态框隐藏显示
                 modalDialog: false,
-                batch_del_vlan: false
+                batch_del_vlan: false,
+                is_loadmore: false
             }
         },
         created(){
@@ -209,8 +211,14 @@ import { mapState } from 'vuex'
                     url = this.change_url.vlancfg + this.count;
                 }
                 this.$http.get(url).then(res=>{
-                    if(res.data.code === 1 && res.data.data){
-                        if(this.count === 0){
+                    if(res.data.code === 1){
+                        if(res.data.data && res.data.data.length === 200){
+                            this.is_loadmore = true;
+                        }
+                        if(res.data.data && res.data.data.length !== 200){
+                            this.is_loadmore = false;
+                        }
+                        if(this.count === 0 && res.data.data){
                             this.vlan_list = res.data;
                         }else if(res.data.data){
                             var data = Object.assign([],this.vlan_list.data);
@@ -226,6 +234,10 @@ import { mapState } from 'vuex'
                                 vlan_map[this.vlan_list.data[key].vlan_id] = this.vlan_list.data[key];
                             }
                             this.vlan_map = vlan_map;
+                        }
+                        if(!res.data.data){
+                            this.is_loadmore = false;
+                            return
                         }
                         this.pagination.page = Math.ceil(this.vlan_list.data.length/this.pagination.display);
                         this.getPage();
@@ -258,7 +270,7 @@ import { mapState } from 'vuex'
                     }
                 }
                 this.not_found_vlan = true;
-                this.vlan_tab = {};
+                this.vlan_tab = [];
             },
             //  加载更多
             loadmore(){
@@ -327,7 +339,6 @@ import { mapState } from 'vuex'
             //  模态框控件 => 删除VLAN
             result(bool){
                 if(bool){
-                    // to do
                     var post_param = {
                         "method":"destroy",
                         "param":{
@@ -335,13 +346,23 @@ import { mapState } from 'vuex'
                         }
                     }
                     this.$http.post('/switch_vlan',post_param).then(res=>{
-                        // do sth
                         if(res.data.code === 1){
                             this.$message({
                                 type: 'success',
-                                text: this.lanMap['setting_ok']
+                                text: this.lanMap['delete'] + this.lanMap['st_success']
                             })
-                            this.getData();
+                            this.vlan_list.data.forEach((item,index,arr)=>{
+                                if(item.vlan_id === this.vlanid){
+                                    arr.splice(index,1);
+                                    this.getPage();
+                                    if(this.vlan_tab.length === 0 && this.vlan_list.data.length > 0){
+                                        this.pagination.index--;
+                                        this.pagination.page = Math.ceil(this.vlan_list.data.length/this.pagination.display);
+                                        this.getPage();
+                                    }
+                                }
+                            })
+                            this.vlanid = 0;
                         }else if(res.data.code > 1){
                             this.$message({
                                 type: 'error',
@@ -352,7 +373,6 @@ import { mapState } from 'vuex'
                         // to do
                     })
                 }
-                this.vlanid = 0;
                 this.userChoose = false;
             },
             //  分页切换
@@ -407,6 +427,8 @@ import { mapState } from 'vuex'
                                 text: this.lanMap['setting_ok']
                             })
                         }
+                        this.count = 0;
+                        this.pagination.index = 1;
                         this.getData();
                     }else if(res.data.code > 1){
                         this.$message({
@@ -540,6 +562,8 @@ import { mapState } from 'vuex'
             //  关闭范围删除模态框
             close_batch_del(){
                 this.batch_del_vlan = false;
+                this.vlanid_s = '';
+                this.vlanid_e = '';
             },
             //  范围删除提交按钮
             submit_batch_del(){
@@ -565,6 +589,7 @@ import { mapState } from 'vuex'
                             text: this.lanMap['setting_ok']
                         })
                         this.count = 0;
+                        this.pagination.index = 1;
                         this.getData();
                     }else if(res.data.code > 1){
                         this.$message({
@@ -582,7 +607,35 @@ import { mapState } from 'vuex'
             search_id(){
                 if(this.search_id === ''){
                     this.not_found_vlan = false;
+                    this.count = 0;
+                    this.pagination.index = 1;
                     this.getData();
+                }else{
+                    var list = this.vlan_list.data;
+                    var tab = [];
+                    this.pagination.page = 0;
+                    list.forEach((item,index,arr)=>{
+                        if(('' + item.vlan_id).indexOf('' + this.search_id) !== -1){
+                            tab.push(item);
+                        }
+                    })
+                    if(tab.length > 0){
+                        this.not_found_vlan = false;
+                        this.vlan_tab = tab;
+                    }else{
+                        this.not_found_vlan = true;
+                        this.vlan_tab = [];
+                    }
+                }
+            },
+            vlan_tab(){
+                if(this.search_id !== '' && this.vlan_tab.length === 0){
+                    this.not_found_vlan = true;
+                }
+                if(!this.not_found_vlan && this.vlan_tab.length === 0 && this.vlan_list.data.length > 0){
+                    this.pagination.index--;
+                    this.pagination.page = Math.ceil(this.vlan_list.data.length/this.pagination.display);
+                    this.getPage();
                 }
             }
         },

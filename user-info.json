@@ -14,7 +14,7 @@
             "name":"admin123", 
             "level":3, 
             "reenter":2, 
-            "info":"admin user",
+            "info":"",
             "status":1,
             "logins": 1
         }]

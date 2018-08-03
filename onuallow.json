@@ -41,7 +41,7 @@
         "port_id":1,
         "onu_id":6,
         "macaddr":"44:3a:21:20:22:00",
-        "status":"offline",
+        "status":"Register",
         "auth_state":0,
         "register_time":"2000/04/06 22:39:25"
     },{
@@ -62,7 +62,7 @@
         "port_id":1,
         "onu_id":9,
         "macaddr":"47:3a:21:20:22:00",
-        "status":"online",
+        "status":"Register",
         "auth_state":1,
         "register_time":"2000/04/06 22:39:25"
     }]

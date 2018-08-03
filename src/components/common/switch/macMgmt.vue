@@ -83,7 +83,7 @@
                     <i class="delete" @click="delete_mac(item)"></i>
                 </span>
             </li>
-            <li v-if="mac_table.length%200 === 0">
+            <li v-if="is_loadmore">
                 <a href="javascript:;" @click="loadmore">{{ lanMap['loadmore'] }}</a>
             </li>
             <li v-if="pagination.page > 1" class="paginations">
@@ -280,7 +280,9 @@ import loading from '@/components/common/loading'
                 //  用户输入的mac地址和mac掩码格式检查
                 check_mac: /^([0-9abcdefABCDEF]{2}\:){5}[0-9abcdefABCDEF]{2}$/,
                 select_all: false,
-                select_text: ''
+                select_text: '',
+                //  是否显示加载更多
+                is_loadmore: false
             }
         },
         created(){
@@ -320,13 +322,21 @@ import loading from '@/components/common/loading'
                 }
                 this.$http.post('/switch_mac?form=table',post_param).then(res=>{
                     if(res.data.code === 1){
-                        if(res.data.data && this.count !== 0){
+                        if(res.data.data && res.data.data.length === 200){
+                            this.is_loadmore = true;
+                        }
+                        if(res.data.data && res.data.data.length !== 200){
+                            this.is_loadmore = false;
+                        }
+                        if(this.count === 0 && res.data.data){
+                            this.tab = res.data.data;
+                        }else if(res.data.data){
                             var data = Object.assign([],this.tab.concat(res.data.data));
                             this.tab = data;
-                        }else if(this.count === 0 && res.data.data){
-                            this.tab = res.data.data;
-                        }else{
-                            this.tab = [];
+                        }
+                        if(!res.data.data){
+                            this.is_loadmore = false;
+                            return
                         }
                         this.pagination.page = Math.ceil(this.tab.length/this.pagination.display);
                         this.getPage();
@@ -369,6 +379,7 @@ import loading from '@/components/common/loading'
                                 text: this.lanMap['delete'] + this.lanMap['st_success']
                             })
                             this.count = 0;
+                            this.pagination.index = 1;
                             this.getData();
                         }else if(res.data.code > 1){
                             this.$message({
@@ -458,6 +469,7 @@ import loading from '@/components/common/loading'
                 this.port_id = 1;
                 this.vlan_id = 0;
                 this.vlan_id_e = 0;
+                this.pagination.index = 1;
                 this.getData();
             },
             query_portid(){
@@ -468,6 +480,7 @@ import loading from '@/components/common/loading'
                 this.vlan_id_e = 0;
                 this.macaddr = '';
                 this.macmask = '';
+                this.pagination.index = 1;
                 this.getData();
             },
             query_vlanid(){
@@ -484,6 +497,7 @@ import loading from '@/components/common/loading'
                 this.port_id = 1;
                 this.macaddr = '';
                 this.macmask = '';
+                this.pagination.index = 1;
                 this.getData();
             },
             //  点击添加mac地址模态框内 确定 按钮时的动作
@@ -520,6 +534,7 @@ import loading from '@/components/common/loading'
                             text: this.lanMap['setting_ok']
                         })
                         this.count = 0;
+                        this.pagination.index = 1;
                         this.getData();
                         this.add_mac_close_dialog();
                     }else if(res.data.code > 1){
@@ -600,6 +615,7 @@ import loading from '@/components/common/loading'
                             text: this.lanMap['flush'] + this.lanMap['st_success']
                         })
                         this.count = 0;
+                        this.pagination.index = 1;
                         this.getData();
                         this.flush_mac_close_dialog();
                     }else if(res.data.code > 1){
@@ -683,6 +699,7 @@ import loading from '@/components/common/loading'
                 this.vlan_id_e = 0;
                 this.macaddr = '';
                 this.macmask = '';
+                this.pagination.index = 1;
                 this.getData();
             },
             port_id(){
