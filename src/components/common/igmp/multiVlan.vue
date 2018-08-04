@@ -7,23 +7,26 @@
             </span>
         </div>
         <div v-if="mv_info.data && mv_info.data.length > 0">
-            <span>{{ lanMap['mvlan'] }}</span>
-            <select>
-                <option :value="item.mvlan" v-for="(item,index) in mv_info.data" :key="index">{{ item.mvlan }}</option>
-            </select>
-        </div>
-        <div>
-            <span>{{ lanMap['router_portlist'] }}</span>
-            <span></span>
-        </div>
-        <div>
-            <span>{{ lanMap['mc_unknown_policy'] }}</span>
-            <span></span>
-        </div>
-        <div>
-            <span>{{ lanMap['program'] }}</span>
-            <span></span>
-            <span></span>
+            <div>
+                <span>{{ lanMap['mvlan'] }}</span>
+                <select>
+                    <option :value="item.mvlan" v-for="(item,index) in mv_info.data" :key="index">{{ item.mvlan }}</option>
+                </select>
+            </div>
+            <div>
+                <span>{{ lanMap['router_portlist'] }}</span>
+                <span>{{ router_plist.router_portlist }}</span>
+            </div>
+            <div>
+                <span>{{ lanMap['mc_unknown_policy'] }}</span>
+                <span>{{ mc_unknow_info.mc_unknown_policy }}</span>
+            </div>
+            <div>
+                <span>{{ lanMap['program'] }}</span>
+                <span>
+                    <span v-for="(item,index) in program.data" :key="index"> {{ item.program_s  + ' - ' + item.program_e}} </span>
+                </span>
+            </div>
         </div>
     </div>
 </template>
