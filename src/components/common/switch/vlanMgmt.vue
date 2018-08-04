@@ -354,11 +354,19 @@ import { mapState } from 'vuex'
                             this.vlan_list.data.forEach((item,index,arr)=>{
                                 if(item.vlan_id === this.vlanid){
                                     arr.splice(index,1);
-                                    this.getPage();
-                                    if(this.search_id === '' && this.vlan_tab.length === 0 && this.vlan_list.data.length > 0){
-                                        this.pagination.index--;
-                                        this.pagination.page = Math.ceil(this.vlan_list.data.length/this.pagination.display);
+                                    if(this.search_id === ''){
                                         this.getPage();
+                                        if(this.vlan_tab.length === 0 && this.vlan_list.data.length > 0){
+                                            this.pagination.index--;
+                                            this.pagination.page = Math.ceil(this.vlan_list.data.length/this.pagination.display);
+                                            this.getPage();
+                                        }
+                                    }else{
+                                        this.vlan_tab.forEach((item,index,arr)=>{
+                                            if(item.vlan_id === this.vlanid){
+                                                arr.splice(index,1);
+                                            }
+                                        })
                                     }
                                 }
                             })
@@ -611,6 +619,7 @@ import { mapState } from 'vuex'
                     this.pagination.index = 1;
                     this.getData();
                 }else{
+                    this.is_loadmore = false;
                     var list = this.vlan_list.data;
                     var tab = [];
                     this.pagination.page = 0;

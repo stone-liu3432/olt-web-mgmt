@@ -47,7 +47,7 @@
                         <span>{{ lanMap['user_level'] }}</span>
                         <select v-model.number="user_level">
                             <option value=""> - </option>
-                            <option :value="index" v-for="(item,index) in u_level" :key="index">{{ item }}</option>
+                            <option :value="index" v-for="(item,index) in u_level" :key="index" v-if="index > 2">{{ item }}</option>
                         </select>
                     </div>
                     <div>
@@ -196,6 +196,13 @@ export default {
                 this.$message({
                     type: 'error',
                     text: this.lanMap['password_length_fail']
+                })
+                return
+            }
+            if(!this.user_level){
+                this.$message({
+                    type: 'error',
+                    text: this.lanMap['param_error'] + ': ' + this.lanMap['user_level']
                 })
                 return
             }
