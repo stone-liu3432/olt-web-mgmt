@@ -73,6 +73,10 @@ var zh = {
 	"sys_ver" : "系统版本",
 	"fw_ver" : "固件版本号",
 	"hw_ver" : "硬件版本号",
+	"voip":"VoIP",
+	"wlan":"WLAN",
+	"usb":"USB",
+	"catv":"CATV",
 	
 	"cpu_usage" : "CPU使用率",
 	"memory_usage" : "内存使用率",

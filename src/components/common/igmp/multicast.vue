@@ -328,7 +328,7 @@ div.multicast{
         width: 100%;
         box-sizing: border-box;
         li{
-            padding: 5px 0;
+            padding: 2px 0;
             word-wrap: break-word;
             word-break: keep-all;
             font-size: 0;
@@ -387,6 +387,11 @@ div.multicast{
         }
         div.actived{
             color: #67aef7;
+        }
+        &:after{
+            content: '';
+            display: table;
+            clear: both;
         }
     }
     div.add-content{

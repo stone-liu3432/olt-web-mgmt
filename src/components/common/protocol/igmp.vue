@@ -35,6 +35,7 @@
             </li>
         </ul>
         <multicast></multicast>
+        <multi-vlan></multi-vlan>
         <div class="modal-dialog" v-if="show_multicast">
             <div class="cover"></div>
             <div class="igmp-group-modal">
@@ -126,10 +127,11 @@
 <script>
 import { mapState } from 'vuex'
 import multicast from '@/components/common/igmp/multicast'
+import multiVlan from '@/components/common/igmp/multiVlan'
 export default {
     name: 'igmp',
     computed: mapState(['lanMap','change_url']),
-    components: { multicast },
+    components: { multicast,multiVlan },
     data(){
         return {
             mode: ['disable','snooping','proxy'],

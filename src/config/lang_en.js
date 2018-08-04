@@ -73,6 +73,10 @@ var en = {
 	"sys_ver" :  "System Version",
 	"fw_ver" :  "Firmware Version",
 	"hw_ver" :  "Hardware Version",
+	"voip":"VoIP",
+	"wlan":"WLAN",
+	"usb":"USB",
+	"catv":"CATV",
 	
 	"cpu_usage" :  "CPU Usage",
 	"memory_usage" :  "Memory Usage",

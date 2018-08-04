@@ -26,7 +26,10 @@ var change_url = {
         get_lang: 'get_lang.json',
         get_onu_baseinfo:"./onu_base_info.json",
         get_igmp: "./igmp_info.json",
-        get_multicast: './multicast_info.json'
+        get_multicast: './multicast_info.json',
+        get_multi_vlan: './multicast_vlan.json',
+        get_mc_unknow: './mc_unknow.json',
+        get_program: './program.json'
     },
     betaUrl: {
         menu: "/board?info=menu",
@@ -55,7 +58,10 @@ var change_url = {
         get_lang: '/system_lang',
         get_onu_baseinfo:"/onumgmt?form=base-info",
         get_igmp: "/switch_igmp?form=config",
-        get_multicast: '/switch_igmp?form=entry'
+        get_multicast: '/switch_igmp?form=entry',
+        get_multi_vlan: '/switch_igmp?form=multicast_vlan',
+        get_mc_unknow: '/switch_igmp?form=mc_unknown&mvlan=',
+        get_program: '/switch_igmp?form=program&mvlan='
     }
 }
 
