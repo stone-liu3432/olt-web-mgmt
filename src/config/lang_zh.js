@@ -56,6 +56,7 @@ var zh = {
     "st_fail":"失败",
 	"range": "范围",
 	"onu_info":"ONU信息",
+	"info":"信息",
 	
 	"upgrade_firmware":"升级固件",
 	"upgrade_system":"升级系统",
@@ -440,7 +441,9 @@ var zh = {
 	"query_src_ip":"查询报文源IP地址",
 	"query_src_mac":"查询报文源MAC地址",
 	"vid":"组播VLAN",
-	"action":"组播类型"
+	"action":"组播类型",
+	"program_range_tips":"节目有效地址范围：224.0.1.0-239.255.255.255",
+	"port_list_tips":"路由端口可以是单个数字，也可以是一段连续的范围,如 1,3-5"
 }
 
 export default zh

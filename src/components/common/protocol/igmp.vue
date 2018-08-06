@@ -2,7 +2,7 @@
     <div class="igmp">
         <h2>IGMP</h2>
         <div>
-            <span>IGMP information</span>
+            <span>IGMP{{ lanMap['info'] }}</span>
             <span>
                 <a href="javascript:void(0);" @click="open_multicast_st">{{ lanMap['config'] }}</a>
             </span>

@@ -3,15 +3,19 @@
         <div>
             <span>{{ lanMap['mvlan'] }}</span>
             <span>
-                <a href="javascript:void(0);">{{ lanMap['add'] }}</a>
+                <a href="javascript:void(0);" @click="open_create_mvlan">{{ lanMap['create'] }}</a>
             </span>
         </div>
-        <div v-if="mv_info.data && mv_info.data.length > 0">
+        <div v-if="mv_info.data && mv_info.data.length > 0" class="multi-vlan-content">
             <div>
                 <span>{{ lanMap['mvlan'] }}</span>
-                <select>
+                <select v-model.number="mvlan">
                     <option :value="item.mvlan" v-for="(item,index) in mv_info.data" :key="index">{{ item.mvlan }}</option>
                 </select>
+                <span class="cfg-multi-vlan">
+                    <a href="javascript: void(0);" @click="open_cfg_modal">{{ lanMap['config'] }}</a>
+                    <a href="javascript:void(0);" @click="open_delmvlan">{{ lanMap['delete'] }}</a>
+                </span>
             </div>
             <div>
                 <span>{{ lanMap['router_portlist'] }}</span>
@@ -19,15 +23,105 @@
             </div>
             <div>
                 <span>{{ lanMap['mc_unknown_policy'] }}</span>
-                <span>{{ mc_unknow_info.mc_unknown_policy }}</span>
+                <span>{{ mc_unknow_info.mc_unknown_policy ? lanMap['discard'] : lanMap['transparent'] }}</span>
             </div>
-            <div>
+            <div class="program">
                 <span>{{ lanMap['program'] }}</span>
                 <span>
                     <span v-for="(item,index) in program.data" :key="index"> {{ item.program_s  + ' - ' + item.program_e}} </span>
                 </span>
             </div>
         </div>
+        <div class="modal-dialog" v-if="is_cfg_mv">
+            <div class="cover"></div>
+            <div class="multi-vlan-set">
+                <div>
+                    <h3>{{ lanMap['config'] }}</h3>
+                    <div>
+                        <span>{{ lanMap['vlan_id'] }}</span>
+                        <span>{{ mvlan }}</span>
+                    </div>
+                    <div>
+                        <span>{{ lanMap['mode'] }}</span>
+                        <select v-model.number="mark_mode">
+                            <option value="0">{{ lanMap['delete'] }}</option>
+                            <option value="1">{{ lanMap['add'] }}</option>
+                            <option value="2">{{ lanMap['config'] }}</option>
+                        </select>
+                    </div>
+                    <div>
+                        <span>{{ lanMap['type'] }}</span>
+                        <select v-model.number="mark_type" :disabled="mark_mode === 2">
+                            <option value="0">{{ lanMap['program'] }}</option>
+                            <option value="1">{{ lanMap['router_portlist'] }}</option>
+                            <option value="2" v-if="mark_mode === 2">{{ lanMap['mc_unknown_policy'] }}</option>
+                        </select>
+                    </div>
+                    <div v-if="mark_mode === 1 && mark_type === 0" class="ip-range">
+                        <span>{{ lanMap['program'] }}</span>
+                        <input type="text" v-model="program_s" 
+                         :style="{ 'border-color': program_s !== '' && !reg_ip.test(program_s) ? 'red' : ''}">
+                         ~ 
+                        <input type="text" v-model="program_e" 
+                         :style="{ 'border-color': program_e !== '' && !reg_ip.test(program_e) ? 'red' : ''}">
+                    </div>
+                    <div v-if="mark_mode === 1 && mark_type === 1">
+                        <span>{{ lanMap['router_portlist'] }}</span>
+                        <input type="text" v-model="router_portlist" placeholder="ex: 1,3-5">
+                    </div>
+                    <div v-if="mark_mode === 2 && mark_type === 2">
+                        <span>{{ lanMap['mc_unknown_policy'] }}</span>
+                        <select v-model.number="mc_unknown_policy">
+                            <option value="0">{{ lanMap['transparent'] }}</option>
+                            <option value="1">{{ lanMap['discard'] }}</option>
+                        </select>
+                    </div>
+                    <div v-if="mark_mode === 0 && mark_type === 1">
+                        <span>{{ lanMap['router_portlist'] }}</span>
+                        <input type="text" v-model="router_portlist" placeholder="ex: 1,3-5">
+                    </div>
+                    <div v-if="mark_mode === 0 && mark_type === 0" class="ip-range">
+                        <span>{{ lanMap['program'] }}</span>
+                        <input type="text" v-model="program_s" 
+                         :style="{ 'border-color': program_s !== '' && !reg_ip.test(program_s) ? 'red' : ''}">
+                         ~ 
+                        <input type="text" v-model="program_e" 
+                         :style="{ 'border-color': program_e !== '' && !reg_ip.test(program_e) ? 'red' : ''}">
+                    </div>
+                    <div v-if="mark_type === 0" class="multi-tips">
+                        {{ lanMap['program_range_tips'] }}
+                    </div>
+                    <div v-else-if="mark_type === 1" class="multi-tips">
+                        {{ lanMap['port_list_tips'] }}
+                    </div>
+                    <div v-else></div>
+                    <div>
+                        <a href="javascript:void(0);" @click="submit_cfg">{{ lanMap['apply'] }}</a>
+                        <a href="javascript:void(0);" @click="close_cfg_modal">{{ lanMap['cancel'] }}</a>
+                    </div>
+                </div>
+                <div class="close" @click="close_cfg_modal"></div>
+            </div>
+        </div>
+        <div class="modal-dialog" v-if="is_create_mvlan">
+            <div class="cover"></div>
+            <div class="create-mvlan-modal">
+                <div>
+                    <h3>{{ lanMap['create'] }}</h3>
+                    <div>
+                        <span>{{ lanMap['vlan_id'] }}</span>
+                        <input type="text" v-model.number="create_mvlan" v-focus 
+                         :style="{ 'border-color': create_mvlan > 4094 || create_mvlan < 1 || isNaN(create_mvlan) ? 'red' : ''}">
+                    </div>
+                    <div>
+                        <a href="javascript:void(0);" @click="submit_create_mvlan">{{ lanMap['apply'] }}</a>
+                        <a href="javascript:void(0);" @click="close_create_mvlan">{{ lanMap['cancel'] }}</a>
+                    </div>
+                </div>
+                <div class="close" @click="close_create_mvlan"></div>
+            </div>
+        </div>
+        <confirm v-if="is_del_mvlan" @choose="result_delmvlan"></confirm>
     </div>
 </template>
 
@@ -42,7 +136,18 @@ export default {
             router_plist: {},
             mvlan: 0,
             mc_unknow_info: {},
-            program: {}
+            program: {},
+            mark_type: 0,       //  set which one
+            mark_mode: 1,       //  add or delete or config
+            program_s: '',
+            program_e: '',
+            router_portlist: '',
+            mc_unknown_policy: 0,
+            is_cfg_mv: false,
+            is_del_mvlan: false,
+            is_create_mvlan: false,
+            create_mvlan: '',
+            reg_ip: /^(([1-9]|[1-9]\d|1\d\d|2[0-4]\d|25[0-5])\.){1}((\d|[1-9]\d|1\d\d|2[0-4]\d|25[0-5])\.){2}([1-9]|[1-9]\d|1\d\d|2[0-4]\d|25[0-4]){1}$/,
         }
     },
     created(){
@@ -52,9 +157,6 @@ export default {
         //  获取组播VLAN列表
         get_multi_vlan(){
             var url = this.change_url.get_multi_vlan;
-            if(this.change_url.beta === 'beta'){
-                url = this.change_url.get_multi_vlan + this.mvlan;
-            }
             this.$http.get(url).then(res=>{
                 if(res.data.code === 1){
                     this.mv_info = res.data;
@@ -63,6 +165,16 @@ export default {
                             this.mvlan = res.data.data[0].mvlan;
                             this.router_plist = res.data.data[0];
                         }
+                        for(var i=0,len=res.data.data.length;i<len;i++){
+                            if(res.data.data[i].mvlan === this.mvlan){ 
+                                this.get_mc_unknow();
+                                this.get_program();
+                                return
+                            }
+                        }
+                        this.mvlan = 0;     //  触发 watcher
+                        this.mvlan = res.data.data[0].mvlan;
+                        this.router_plist = res.data.data[0];
                     }
                 }else{
                     this.mv_info = {};
@@ -102,13 +214,326 @@ export default {
             }).catch(err=>{
                 // to do
             })
+        },
+        //  打开配置模态框
+        open_cfg_modal(){
+            this.is_cfg_mv = true;
+        },
+        //  关闭配置模态框
+        close_cfg_modal(){
+            this.is_cfg_mv = false;
+        },
+        //  提交修改
+        submit_cfg(){
+            if(this.mark_mode === 0){
+                if(this.mark_type === 0){       //  删除节目库
+                    if(!this.reg_ip.test(this.program_s)){
+                        this.$message({
+                            type: 'error',
+                            text: this.lanMap['param_error'] + ': ' + this.lanMap['program_s']
+                        })
+                        return
+                    }
+                    if(!this.reg_ip.test(this.program_e)){
+                        this.$message({
+                            type: 'error',
+                            text: this.lanMap['param_error'] + ': ' + this.lanMap['program_e']
+                        })
+                        return
+                    }
+                    this.del_program();
+                }
+                if(this.mark_type === 1){       //  删除路由端口
+                    if(!this.router_portlist){
+                        this.$message({
+                            type: 'error',
+                            text: this.lanMap['param_error'] + ': ' + this.lanMap['program']
+                        })
+                        return 
+                    }
+                    this.del_router_port();
+                }
+            }
+            if(this.mark_mode === 1){
+                if(this.mark_type === 0){       //  添加节目库
+                    if(!this.reg_ip.test(this.program_s)){
+                        this.$message({
+                            type: 'error',
+                            text: this.lanMap['param_error'] + ': ' + this.lanMap['program_s']
+                        })
+                        return
+                    }
+                    if(!this.reg_ip.test(this.program_e)){
+                        this.$message({
+                            type: 'error',
+                            text: this.lanMap['param_error'] + ': ' + this.lanMap['program_e']
+                        })
+                        return
+                    }
+                    this.add_program();
+                }
+                if(this.mark_type === 1){       //  添加路由端口
+                    if(!this.router_portlist){
+                        this.$message({
+                            type: 'error',
+                            text: this.lanMap['param_error'] + ': ' + this.lanMap['program']
+                        })
+                        return 
+                    }
+                    this.add_router_port();
+                }
+            }
+            if(this.mark_mode === 2){
+                if(this.mark_type === 2){       //  修改未知多播策略
+                    if(this.mc_unknow_info.data.mc_unknown_policy === this.modify_unknow_policy){
+                        this.$message({
+                            type: 'info',
+                            text: this.lanMap['mofidy_tips']
+                        })
+                        return
+                    }
+                    this.modify_unknow_policy();
+                }
+            }
+        },
+        //  节目库增加节目
+        add_program(){
+            var post_param = {
+                "method":"add",
+                "param":{
+                    "mvlan": this.mvlan,
+                    "program_s": this.program_s,
+                    "program_e": this.program_e
+                }
+            }
+            this.$http.post('/switch_igmp?form=program',post_param).then(res=>{
+                if(res.data.code === 1){
+                    this.$message({
+                        type: 'success',
+                        text: this.lanMap['add'] + this.lanMap['st_success']
+                    })
+                    this.get_program();
+                }else if(res.data.code > 1){
+                    this.$message({
+                        type: 'error',
+                        text: '(' + res.data.code + ') ' + res.data.message
+                    })
+                }
+            }).catch(err=>{
+                // to do
+            })
+        },
+        //  节目库删除节目
+        del_program(){
+            var post_param = {
+                "method":"delete",
+                "param":{
+                    "mvlan": this.mvlan,
+                    "program_s": this.program_s, 
+                    "program_e": this.program_e
+                }
+            }
+            this.$http.post('/switch_igmp?form=program',post_param).then(res=>{
+                if(res.data.code === 1){
+                    this.$message({
+                        type: 'success',
+                        text: this.lanMap['delete'] + this.lanMap['st_success']
+                    })
+                    this.get_program();
+                }else if(res.data.code > 1){
+                    this.$message({
+                        type: 'error',
+                        text: '(' + res.data.code + ') ' + res.data.message
+                    })
+                }
+            }).catch(err=>{
+                // to do
+            })
+        },
+        //  添加路由端口
+        add_router_port(){
+            var post_param = {
+                "method":"add",
+                "param":{
+                    "mvlan": this.mvlan,
+                    "router_portlist": this.router_portlist
+                }
+            }
+            this.$http.post('/switch_igmp?form=router_port',post_param).then(res=>{
+                if(res.data.code === 1){
+                    this.$message({
+                        type: 'success',
+                        text: this.lanMap['add'] + this.lanMap['st_success']
+                    })
+                    this.get_multi_vlan();
+                }else if(res.data.code > 1){
+                    this.$message({
+                        type: 'error',
+                        text: '(' + res.data.code + ') ' + res.data.message
+                    })
+                }
+            }).catch(err=>{
+                // to do
+            })
+        },
+        //  删除路由端口
+        del_router_port(){
+            var post_param = {
+                "method":"delete",
+                "param":{
+                    "mvlan": this.mvlan,
+                    "router_portlist": this.router_portlist
+                }
+            }
+            this.$http.post('/switch_igmp?form=router_port',post_param).then(res=>{
+                if(res.data.code === 1){
+                    this.$message({
+                        type: 'success',
+                        text: this.lanMap['add'] + this.lanMap['st_success']
+                    })
+                    this.get_multi_vlan();
+                }else if(res.data.code > 1){
+                    this.$message({
+                        type: 'error',
+                        text: '(' + res.data.code + ') ' + res.data.message
+                    })
+                }
+            }).catch(err=>{
+                // to do
+            })
+        },
+        //  设置未知多播策略
+        modify_unknow_policy(){
+            var post_param = {
+                "method":"set",
+                "param":{
+                    "mvlan": this.mvlan,
+                    "mc_unknown_policy": this.mc_unknown_policy
+                }
+            }
+            this.$http.post('/switch_igmp?form=mc_unknown',post_param).then(res=>{
+                if(res.data.code === 1){
+                    this.$message({
+                        type: 'success',
+                        text: this.lanMap['add'] + this.lanMap['st_success']
+                    })
+                    this.get_mc_unknow();
+                }else if(res.data.code > 1){
+                    this.$message({
+                        type: 'error',
+                        text: '(' + res.data.code + ') ' + res.data.message
+                    })
+                }
+            }).catch(err=>{
+                // to do
+            })
+        },
+        //  删除MVLAN
+        open_delmvlan(){
+            this.is_del_mvlan = true;
+        },
+        //  删除MVLAN选择结果
+        result_delmvlan(bool){
+            if(bool){
+                var post_param = {
+                    "method":"destroy",
+                    "param":{
+                        "mvlan": this.mvlan
+                    }
+                }
+                this.$http.post('/switch_igmp?form=multicast_vlan',post_param).then(res=>{
+                    if(res.data.code === 1){
+                        this.$message({
+                            type: 'success',
+                            text: this.lanMap['delete'] + this.lanMap['st_success']
+                        })
+                        this.get_multi_vlan();
+                    }else if(res.data.code > 1){
+                        this.$message({
+                            type: 'error',
+                            text: '(' + res.data.code + ') ' + res.data.message
+                        })
+                    }
+                }).catch(err=>{
+                    // to do
+                })
+            }
+            this.is_del_mvlan = false;
+        },
+        open_create_mvlan(){
+            this.is_create_mvlan = true;
+            this.create_mvlan = '';
+        },
+        close_create_mvlan(){
+            this.is_create_mvlan = false;
+        },
+        submit_create_mvlan(){
+            if(this.create_mvlan < 1 || this.create_mvlan > 4094 || isNaN(this.create_mvlan)){
+                this.$message({
+                    type: 'error',
+                    text: this.lanMap['vlanid_range_hit']
+                })
+                return
+            }
+            var post_param = {
+                "method":"create",
+                "param":{
+                    "mvlan": this.create_mvlan
+                }
+            }
+            this.$http.post('',post_param).then(res=>{
+                if(res.data.code === 1){
+                    this.$message({
+                        type: 'success',
+                        text: this.lanMap['create'] + this.lanMap['T_success']
+                    })
+                    this.get_multi_vlan();
+                }else if(res.data.code > 1){
+                    this.$message({
+                        type: 'error',
+                        text: '(' + res.data.code + ') ' + res.data.message
+                    })
+                }
+            }).catch(err=>{
+                // to do
+            })
         }
     },
     watch: {
-        mvlan(){
+        'mvlan'(){
             if(!this.mvlan) return
             this.get_mc_unknow();
             this.get_program();
+        },
+        'mark_mode'(){
+            if(this.mark_mode === 2){
+                this.mark_type = 2;
+            }else if(this.mark_mode === 0){
+                if(this.mark_type === 1 && (!this.router_plist || !this.router_plist.router_portlist)){
+                    this.mark_mode = 1;
+                    return
+                }
+                this.router_portlist = this.router_plist.router_portlist;
+                if(this.mark_type === 0 &&(!this.mc_unknow_info.data)){
+                    this.mark_mode = 1;
+                    return
+                }
+                this.mc_unknown_policy = this.mc_unknow_info.data.mc_unknown_policy;
+            }else{
+                this.mark_type = 1;
+            }
+        },
+        'mark_type'(){
+            if(this.mark_type === 1 && (!this.router_plist || !this.router_plist.router_portlist)){
+                this.mark_mode = 1;
+                return
+            }
+            this.router_portlist = this.router_plist.router_portlist;
+            if(this.mark_type === 0 &&(!this.mc_unknow_info.data)){
+                this.mark_mode = 1;
+                return
+            }
+            this.mc_unknown_policy = this.mc_unknow_info.data.mc_unknown_policy;
         }
     }
 }
@@ -143,6 +568,123 @@ div.multi-vlan{
         }
         a:last-child{
             margin-left: 30px;
+        }
+    }
+}
+div.multi-vlan-content{
+    div{
+        height: 36px;
+        line-height: 36px;
+        border: 1px solid #ccc;
+        border-bottom: none;
+        &:first-child{
+            margin-top: 15px;
+        }
+        select{
+            width: 120px;
+            height: 28px;
+        }
+        >span:first-child{
+            display: inline-block;
+            width: 220px;
+            margin-left: 20px;
+        }
+        span.cfg-multi-vlan{
+            float: right;
+            margin-right: 50px;
+            a{
+                margin-left: 30px;
+            }
+        }
+    }
+    div.program{
+        height: auto;
+        border-bottom: 1px solid #ccc;
+        &:after{
+            content: '';
+            display: table;
+            clear: both;
+        }
+        >span{
+            display: block;
+            float: left;
+        }
+        >span:last-child{
+            span{
+                display: block;
+                line-height: 28px;
+            }
+        }
+    }
+}
+div.multi-vlan-set{
+    width: 500px;
+    height: 300px;
+    h3{
+        height: 50px;
+        line-height: 50px;
+        color: #67aef7;
+        font-size: 22px;
+        font-weight: 500;
+        padding-left: 20px;
+    }
+    div:first-child{
+        height: 36px;
+        line-height: 36px;
+        span{
+            display: inline-block;
+            width: 180px;
+            text-align: center;
+            &+span{
+                text-align: left;
+                text-indent: 10px;
+            }
+        }
+        div:last-child{
+            margin-top: 12px;
+        }
+        div.ip-range{
+            input{
+                width: 135px;
+            }
+        }
+    }
+    div{
+        height: 36px;
+        line-height: 36px;
+    }
+    div.multi-tips{
+        font-size: 14px;
+        color: #333;
+        text-align: center;
+    }
+}
+div.create-mvlan-modal{
+    width: 500px;
+    height: 160px;
+    h3{
+        height: 50px;
+        line-height: 50px;
+        color: #67aef7;
+        font-size: 22px;
+        font-weight: 500;
+        padding-left: 20px;
+    } 
+    div:first-child{
+        height: 36px;
+        line-height: 36px;
+        span{
+            display: inline-block;
+            width: 180px;
+            text-align: center;
+        }
+        div:last-child{
+            margin-top: 18px;
+        }
+        div.ip-range{
+            input{
+                width: 135px;
+            }
         }
     }
 }

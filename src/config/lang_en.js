@@ -56,6 +56,7 @@ var en = {
 	"st_fail": "failed",
     "range":  "Range",
 	"onu_info": "ONU Info",
+	"info":" information",
 	
 	"upgrade_firmware":" upgrade firmware",
 	"upgrade_system": " upgrade system",
@@ -440,7 +441,9 @@ var en = {
 	"query_src_ip":"query source IP",
 	"query_src_mac":"query source MAC",
 	"vid":"multicast vlan",
-	"action":"multicast type"
+	"action":"multicast type",
+	"program_range_tips":"Effective address range：224.0.1.0-239.255.255.255",
+	"port_list_tips": "The router port can be a single number or a continuous range,ex: 1,3-5"
 }
 
 export default en
