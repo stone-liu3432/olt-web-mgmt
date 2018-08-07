@@ -2,7 +2,7 @@
     <div>
         <div class="service-title">{{ lanMap['service'] }}</div>
         <hr>
-        <div class="service-item">
+        <!-- <div class="service-item">
             <div>SSH</div>
             <div class="toggle-button-wrapper">
                 <input type="checkbox" id="ssh-switch" class="toggle-button" name="switch" @click="ssh_switch" v-model="ssh">
@@ -13,7 +13,7 @@
                 </label>
             </div>
         </div>
-        <hr>
+        <hr> -->
         <div class="service-item">
             <div>SNMP</div>
             <div>
@@ -62,6 +62,32 @@
                 </div>
             </div>
         </div>
+        <hr>
+        <div class="ssh-info">
+            <div>
+                <h3>SSH</h3>
+                <a href="javascript:void(0);" @click="open_add_ssh">{{ lanMap['add'] }} SSH</a>
+            </div>
+            <div class="add-ssh" v-if="is_add_ssh">
+                <h4>{{ lanMap['add'] + lanMap['key'] }}</h4>
+                <h4>{{ lanMap['title'] }}</h4>
+                <input type="text" v-model="ssh_name" placeholder="Enter a name to ensure clear use">
+                <h4>{{ lanMap['key'] }}</h4>
+                <textarea rows="6" v-model="ssh_key" spellcheck="false" placeholder="Begins with 'ssh-rsa', 'ssh-dss', 'ssh-ed25519', 'ecdsa-sha2-nistp256', 'ecdsa-sha2-nistp384', or 'ecdsa-sha2-nistp521'"></textarea>
+                <a href="javascript:void(0);" @click="submit_add_ssh">{{ lanMap['apply'] }}</a>
+                <a href="javascript:void(0);" class="cancel" @click="close_add_ssh">{{ lanMap['cancel'] }}</a>
+            </div>
+            <!-- 待添加实例属性 -->
+            <div class="ssh-item">
+                <div>
+                    <h4>密钥1</h4> 
+                    <p></p>
+                </div>
+                <div>
+                    <a href="javascript:void(0);">{{ lanMap['delete'] }}</a>
+                </div>
+            </div>
+        </div>
         <confirm :tool-tips="''" v-if="false"></confirm>
     </div>
 </template>
@@ -73,7 +99,9 @@ export default {
     computed: mapState(['lanMap']),
     data(){
         return {
-            ssh: false,
+            is_add_ssh: false,
+            ssh_name: '',
+            ssh_key: '',
             serverip: '',
             trap_port: '',
             trap_community: '',
@@ -87,19 +115,19 @@ export default {
     },
     created(){
         this.get_trap();
-        this.get_ssh();
+        //this.get_ssh();
         this.get_community();
     },
     methods: {
-        get_ssh(){
-            this.$http.get('/system_service?form=sshd_status').then(res=>{
-                if(res.data.code === 1){
-                    this.ssh = !!res.data.data.status;
-                }
-            }).catch(err=>{
-                // to do
-            })
-        },
+        // get_ssh(){
+        //     this.$http.get('/system_service?form=sshd_status').then(res=>{
+        //         if(res.data.code === 1){
+        //             this.ssh = !!res.data.data.status;
+        //         }
+        //     }).catch(err=>{
+        //         // to do
+        //     })
+        // },
         get_trap(){
             this.$http.get('/snmp_cfg?form=trap').then(res=>{
                 if(res.data.code === 1){
@@ -121,40 +149,40 @@ export default {
                 // to do
             })
         },
-        ssh_switch(e){
-            if(this.limit){
-                var e = e || window.event;
-                var node = e.target || e.srcElement;
-                this.$message({
-                    type: 'error',
-                    text: this.lanMap["click_often"],
-                    duration: 1000
-                })
-                node.checked = !node.checked;
-                this.ssh = node.checked;
-                return
-            }
-            this.limit = true;
-            setTimeout(()=>{
-                this.limit = false;
-            },1000);
-            this.$http.get('/system_service?form=sshd_oper&operation=' + Number(!this.ssh)).then(res=>{
-                if(res.data.code === 1) {
-                    this.$message({
-                        type: 'success',
-                        text: this.lanMap['setting_ok']
-                    })
-                    this.get_ssh();
-                }else if(res.data.code > 1){
-                    this.$message({
-                        type: 'error',
-                        text: '(' + res.data.code + ') ' + res.data.message
-                    })
-                }
-            }).catch(err=>{
-                // to do
-            })
-        },
+        // ssh_switch(e){
+        //     if(this.limit){
+        //         var e = e || window.event;
+        //         var node = e.target || e.srcElement;
+        //         this.$message({
+        //             type: 'error',
+        //             text: this.lanMap["click_often"],
+        //             duration: 1000
+        //         })
+        //         node.checked = !node.checked;
+        //         this.ssh = node.checked;
+        //         return
+        //     }
+        //     this.limit = true;
+        //     setTimeout(()=>{
+        //         this.limit = false;
+        //     },1000);
+        //     this.$http.get('/system_service?form=sshd_oper&operation=' + Number(!this.ssh)).then(res=>{
+        //         if(res.data.code === 1) {
+        //             this.$message({
+        //                 type: 'success',
+        //                 text: this.lanMap['setting_ok']
+        //             })
+        //             this.get_ssh();
+        //         }else if(res.data.code > 1){
+        //             this.$message({
+        //                 type: 'error',
+        //                 text: '(' + res.data.code + ') ' + res.data.message
+        //             })
+        //         }
+        //     }).catch(err=>{
+        //         // to do
+        //     })
+        // },
         set_trapserver(){
             if(this.limit){
                 var e = e || window.event;
@@ -268,12 +296,32 @@ export default {
             }).catch(err=>{
                 // to do
             })
+        },
+        //  添加ssh密钥
+        open_add_ssh(){
+            this.is_add_ssh = !this.is_add_ssh;
+        },
+        close_add_ssh(){
+            this.is_add_ssh = false;
+            this.ssh_name = '';
+            this.ssh_key = '';
+        },
+        submit_add_ssh(){
+            this.close_add_ssh();
         }
     }
 }
 </script>
 
 <style lang="less" scoped>
+a{
+    width: 120px;
+    height: 30px;
+    line-height: 30px;
+    background: #ccc;
+    text-align: center;
+    border-radius: 3px;
+}
 div.service-title{
     font-size: 24px;
     margin: 20px 10px;
@@ -309,7 +357,7 @@ div.snmp-item{
                 line-height: 30px;
                 background: #ccc;
                 text-align: center;
-                border-radius: 5px;
+                border-radius: 3px;
                 margin: 10px 20px 0 0;
             }
         }
@@ -325,61 +373,164 @@ div.snmp-item{
     }
 }
 //  自定义按钮开关样式
-div.toggle-button-wrapper {
-    margin-top: 5px;
-    height: 32px;
-    input.toggle-button {
-        display: none;
+// div.toggle-button-wrapper {
+//     margin-top: 5px;
+//     height: 32px;
+//     input.toggle-button {
+//         display: none;
+//     }
+//     .button-label {
+//         position: relative;
+//         display: inline-block;
+//         width: 56px;
+//         height: 20px;
+//         background-color: #ccc;
+//         box-shadow: #ccc 0px 0px 0px 2px;
+//         border-radius: 20px;
+//         overflow: hidden;
+//     }
+//     .circle {
+//         position: absolute;
+//         top: 0;
+//         left: 0;
+//         width: 20px;
+//         height: 20px;
+//         border-radius: 50%;
+//         background-color: #fff;
+//     }
+//     .button-label .text {
+//         line-height: 20px;
+//         font-size: 14px;
+//         text-shadow: 0 0 2px #ddd;
+//     }
+//     .on {
+//         color: #fff;
+//         display: none;
+//         text-indent: 6px;
+//     }
+//     .off {
+//         color: #fff;
+//         display: inline-block;
+//         text-indent: 24px;
+//     }
+//     .button-label .circle {
+//         left: 0;
+//         transition: all 0.3s;
+//     }
+//     .toggle-button:checked + label.button-label .circle {
+//         left: 36px;
+//     }
+//     .toggle-button:checked + label.button-label .on {
+//         display: inline-block;
+//     }
+//     .toggle-button:checked + label.button-label .off {
+//         display: none;
+//     }
+//     .toggle-button:checked + label.button-label {
+//         background-color: #51ccee;
+//     }
+// }
+div.ssh-info{
+    margin-top: 30px;
+    >div{
+        border-radius: 3px;
+        h3{
+            float: left;
+        }
+        a{
+            float: right;
+        }
+        &:after{
+            content: '';
+            display: table;
+            clear: both;
+        }
+        &:first-child{
+            line-height: 32px;
+            margin: 20px 0;
+            h3{
+                margin-left: 20px;
+            }
+        }
     }
-    .button-label {
-        position: relative;
-        display: inline-block;
-        width: 56px;
-        height: 20px;
-        background-color: #ccc;
-        box-shadow: #ccc 0px 0px 0px 2px;
-        border-radius: 20px;
+}
+div.ssh-item{
+    border: 1px solid #ccc;
+    margin-top: 10px;
+    height: 75px;
+    padding: 5px;
+    >div:first-child{
+        width: 80%;
+    }
+    div{
+        height: 75px;
+        float: left;
+        width: 20%;
+        text-align: center;
         overflow: hidden;
+        text-overflow: ellipsis;
+        box-sizing: border-box;
+        a{
+            float: none;
+            display: inline-block;
+        }
+        h4{
+            margin: 5px 15px;
+            text-align: left;
+        }
+        p{
+            margin: 5px;
+            word-break: break-all;
+            word-wrap: break-word;
+            height: 36px;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+        &:last-child{
+            line-height: 75px;
+        }
     }
-    .circle {
-        position: absolute;
-        top: 0;
-        left: 0;
-        width: 20px;
-        height: 20px;
-        border-radius: 50%;
-        background-color: #fff;
+}
+div.add-ssh{
+    border: 1px solid #aaa;
+    margin: 10px 0;
+    padding: 20px;
+    input{
+        width: 100%;
+        border-radius: 3px;
     }
-    .button-label .text {
-        line-height: 20px;
-        font-size: 14px;
-        text-shadow: 0 0 2px #ddd;
+    textarea{
+        width: 100%;
+        box-sizing: border-box;
+        resize: none;
+        border-radius: 3px;
+        border-color: #ccc;
+        line-height: 18px;
+        font-size: 16px;
+        padding: 5px;
     }
-    .on {
-        color: #fff;
-        display: none;
-        text-indent: 6px;
+    h4{
+        height: 24px;
+        line-height: 24px;
+        &:first-child{
+            font-size: 18px;
+            color: #67aef7;
+            font-weight: 500;
+        }
     }
-    .off {
-        color: #fff;
+    h4+h4,input+h4{
+        margin: 10px 0 0 10px;
+    }
+    a{
+        float: none !important;
         display: inline-block;
-        text-indent: 24px;
+        margin-top: 15px;
+        background: #20BB44;
+        color: #fff;
     }
-    .button-label .circle {
-        left: 0;
-        transition: all 0.3s;
-    }
-    .toggle-button:checked + label.button-label .circle {
-        left: 36px;
-    }
-    .toggle-button:checked + label.button-label .on {
-        display: inline-block;
-    }
-    .toggle-button:checked + label.button-label .off {
-        display: none;
-    }
-    .toggle-button:checked + label.button-label {
-        background-color: #51ccee;
+    .cancel{
+        background: #666;
+        margin-left: 20px;
     }
 }
 </style>

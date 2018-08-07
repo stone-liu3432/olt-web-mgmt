@@ -34,7 +34,7 @@ var zh = {
 	  "vlan_mgmt" : "VLAN管理",
 	  "mac_mgmt" : "MAC地址管理",
 	"protocol_mgmt" : "协议管理",
-	"rstp" : "rstp",
+	"rstp" : "RSTP",
 	"tips":"提示",
 	"create" : "创建",
 	"destroy": "删除",
@@ -59,6 +59,8 @@ var zh = {
 	"user_mgmt":"用户管理",
 	"user":"用户",
 	"modify_user_pwd":"修改当前用户密码",
+	"title":"名称",
+	"key":"密钥",
 	
 	"upgrade_firmware":"升级固件",
 	"upgrade_system":"升级系统",
