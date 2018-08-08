@@ -239,26 +239,29 @@ const router = new Router({
 	}
 });
 
-router.beforeEach((to, from, next) => {
+router.beforeEach((to, from, next)=>{
 	store.commit("updateLoad", true);
 	// 判断该路由是否需要登录权限
 	if (to.meta.requireAuth) {
-		// if (sessionStorage.getItem("x-token")) {
-		// 	next();
-		// } else {
-		// 	next({ path: "/login" });
-		// }
-		next();
-	} else {
-		if (!sessionStorage.getItem("x-token")) {
+		if (process.env.NODE_ENV == 'development'){
 			next();
-		} else {
+		}else if(process.env.NODE_ENV == 'production'){
+			if (sessionStorage.getItem("x-token")){
+				next();
+			}else{
+				next({ path: "/login" });
+			}
+		}
+	}else{
+		if(!sessionStorage.getItem("x-token")){
+			next();
+		}else{
 			next("/main");
 		}
 	}
 });
 
-router.afterEach((to, from) => {
+router.afterEach((to, from)=>{
 	store.commit("updateLoad", false);
 });
 

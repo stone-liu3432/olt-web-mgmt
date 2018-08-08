@@ -4,6 +4,13 @@ import change_url from "@/config/url";
 
 Vue.use(Vuex);
 
+var _url;
+if (process.env.NODE_ENV == 'development') {    
+    _url = change_url.testUrl;
+}else if (process.env.NODE_ENV == 'production') {    
+    _url = change_url.betaUrl;
+}
+
 export default new Vuex.Store({
     state: {
         // 系统信息
@@ -24,8 +31,8 @@ export default new Vuex.Store({
         isLoading: false,
         //  切换语言
         language: "",
-        //  全局替换url  testUrl => 开发版本   betaUrl => 测试版本
-        change_url: change_url.testUrl
+        //  全局替换url
+        change_url: _url
     },
     mutations: {
         updateSysData(state, data) {

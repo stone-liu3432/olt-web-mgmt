@@ -99,6 +99,7 @@ export default {
   min-width: 1280px;
   max-width: 1980px;
   font-size: 16px;
+  overflow-y: scroll;
 }
 .global-load {
   display: none;
