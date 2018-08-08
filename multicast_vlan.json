@@ -1,0 +1,32 @@
+{
+    "code":1,
+    "msg":"success",
+    "data":[{
+        "mvlan": 1,
+        "router_portlist":""
+    },{
+        "mvlan": 2,
+        "router_portlist":""
+    },{
+        "mvlan": 3,
+        "router_portlist":""
+    },{
+        "mvlan": 4,
+        "router_portlist":""
+    },{
+        "mvlan": 5,
+        "router_portlist":""
+    },{
+        "mvlan": 6,
+        "router_portlist":""
+    },{
+        "mvlan": 7,
+        "router_portlist":""
+    },{
+        "mvlan": 8,
+        "router_portlist":""
+    },{
+        "mvlan": 9,
+        "router_portlist":""
+    }]
+}

@@ -1,6 +1,6 @@
 <template>
     <div class="rstp">
-        <h2>{{ lanMap['protocol_mgmt'] }}</h2>
+        <h2>RSTP</h2>
         <div>
             <span>{{ lanMap['rstp_b_info'] }}</span>
             <a href="javascript:;" @click="open_modal" v-if="rstp.data">{{ lanMap['config'] }}</a>

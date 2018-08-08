@@ -61,6 +61,7 @@ var zh = {
 	"modify_user_pwd":"修改当前用户密码",
 	"title":"名称",
 	"key":"密钥",
+	"info":"信息",
 	
 	"upgrade_firmware":"升级固件",
 	"upgrade_system":"升级系统",
@@ -429,7 +430,35 @@ var zh = {
 	"no_upgrade_type":"当前无可用的升级类型",
 	"add_onu_type":"添加ONU升级类型",
 	"del_onu_type":"删除ONU升级类型",
-	"onu_upgrade_start":"升级已开始，升级信息请在告警信息页面查看"
+	"onu_upgrade_start":"升级已开始，升级信息请在告警信息页面查看",
+
+	"igmp": "IGMP",
+	"fast_leave":"快速离开",
+	"protocol_policy":"协议策略",
+	"group_aging_time":"组播表老化时间",
+	"robustness":"健壮性",
+	"gen_response_time":"普遍组查询响应时间",
+	"gen_query_interval":"普遍组查询间隔",
+	"sp_response_time":"特定组查询响应时间",
+	"sp_query_interval":"特定组查询间隔",
+	"sp_query_number":"特定组查询次数",
+	"multi_ip":"组播IP",
+	"host_portlist":"端口成员",
+	"mc_unknown_policy":"未知多播策略",
+	"transparent":"透传",
+	"discard":"丢弃",
+	"mvlan":"组播VLAN",
+	"router_portlist":"路由端口",
+	"program":"组播节目",
+	"program_s":"组播节目起始",
+	"program_e":"组播节目结束",
+	"mode":"模式",
+	"query_src_ip":"查询报文源IP地址",
+	"query_src_mac":"查询报文源MAC地址",
+	"vid":"组播VLAN",
+	"action":"组播类型",
+	"program_range_tips":"节目有效地址范围：224.0.1.0-239.255.255.255",
+	"port_list_tips":"路由端口可以是单个数字，也可以是一段连续的范围,如 1,3-5"
 }
 
 export default zh

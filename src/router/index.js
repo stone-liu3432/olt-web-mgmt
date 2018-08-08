@@ -35,6 +35,7 @@ const vlanMgmt = () => import(/* webpackChunkName: "switch-page" */  '@/componen
 const macMgmt = () => import(/* webpackChunkName: "switch-page" */  '@/components/common/switch/macMgmt')
 // protocol
 const rstp = () => import(/* webpackChunkName: "protocol-page" */  '@/components/common/protocol/rstp')
+const igmp = () => import(/* webpackChunkName: "protocol-page" */  '@/components/common/protocol/igmp')
 
 const router = new Router({
 	routes: [
@@ -227,6 +228,13 @@ const router = new Router({
 				{
 					path: "/port_vlan",
 					component: portVlan,
+					meta: {
+						requireAuth: true
+					}
+				},
+				{
+					path: "/igmp",
+					component: igmp,
 					meta: {
 						requireAuth: true
 					}

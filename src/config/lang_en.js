@@ -61,6 +61,7 @@ var en = {
 	"modify_user_pwd":"Modify current user password",
 	"title":" Title",
 	"key":" Key",
+	"info": "Information",
 
 	"upgrade_firmware":" upgrade firmware",
 	"upgrade_system": " upgrade system",
@@ -429,7 +430,35 @@ var en = {
 	"no_upgrade_type":"No currently available type of upgrade",
 	"add_onu_type":"Add an ONU upgrade type",
 	"del_onu_type":"Delete ONU upgrade type",
-	"onu_upgrade_start":"The upgrade has started, The upgrade information is displayed on the alarm information page."
+	"onu_upgrade_start":"The upgrade has started, The upgrade information is displayed on the alarm information page.",
+
+	"igmp": "IGMP",
+	"fast_leave":"fast leave",
+	"protocol_policy":"protocol policy",
+	"group_aging_time":"group aging time",
+	"robustness":"robustness",
+	"gen_response_time":"general response time",
+	"gen_query_interval":"general query interval",
+	"sp_response_time":"special response time",
+	"sp_query_interval":"special query interval",
+	"sp_query_number":"special query number",
+	"multi_ip":"multicast IP",
+	"host_portlist":"port members",
+	"mc_unknown_policy":"multicast unknown policy",
+	"transparent":"transparent",
+	"discard":"discard",
+	"mvlan":"multicast VLAN",
+	"router_portlist":"router port",
+	"program":"program",
+	"program_s":"program start",
+	"program_e":"program end",
+	"mode":"Mode",
+	"query_src_ip":"query source IP",
+	"query_src_mac":"query source MAC",
+	"vid":"multicast vlan",
+	"action":"multicast type",
+	"program_range_tips":"Effective address range：224.0.1.0-239.255.255.255",
+	"port_list_tips": "The router port can be a single number or a continuous range,ex: 1,3-5"
 }
 
 export default en
