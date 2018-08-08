@@ -77,18 +77,17 @@
                 <a href="javascript:void(0);" @click="submit_add_ssh">{{ lanMap['apply'] }}</a>
                 <a href="javascript:void(0);" class="cancel" @click="close_add_ssh">{{ lanMap['cancel'] }}</a>
             </div>
-            <!-- 待添加实例属性 -->
-            <div class="ssh-item">
+            <div class="ssh-item" v-for="(item,index) in ssh_info.data" :key="index" v-if="ssh_info.data && ssh_info.data.length > 0">
                 <div>
-                    <h4>密钥1</h4> 
-                    <p></p>
+                    <h4>{{ item.keyname }}</h4> 
+                    <p>{{ item.publickey }}</p>
                 </div>
                 <div>
-                    <a href="javascript:void(0);">{{ lanMap['delete'] }}</a>
+                    <a href="javascript:void(0);" @click="open_del_sshkey(item)">{{ lanMap['delete'] }}</a>
                 </div>
             </div>
         </div>
-        <confirm :tool-tips="''" v-if="false"></confirm>
+        <confirm v-if="is_del_ssh" @choose="del_sshkey"></confirm>
     </div>
 </template>
 
@@ -100,6 +99,9 @@ export default {
     data(){
         return {
             is_add_ssh: false,
+            is_del_ssh: false,
+            ssh_info: {},
+            del_ssh_info: {},
             ssh_name: '',
             ssh_key: '',
             serverip: '',
@@ -115,19 +117,21 @@ export default {
     },
     created(){
         this.get_trap();
-        //this.get_ssh();
+        this.get_ssh();
         this.get_community();
     },
     methods: {
-        // get_ssh(){
-        //     this.$http.get('/system_service?form=sshd_status').then(res=>{
-        //         if(res.data.code === 1){
-        //             this.ssh = !!res.data.data.status;
-        //         }
-        //     }).catch(err=>{
-        //         // to do
-        //     })
-        // },
+        get_ssh(){
+            this.$http.get('/system_service?form=sshd').then(res=>{
+                if(res.data.code === 1){
+                    this.ssh_info = res.data;
+                }else{
+                    this.ssh_info = {};
+                }
+            }).catch(err=>{
+                // to do
+            })
+        },
         get_trap(){
             this.$http.get('/snmp_cfg?form=trap').then(res=>{
                 if(res.data.code === 1){
@@ -149,40 +153,37 @@ export default {
                 // to do
             })
         },
-        // ssh_switch(e){
-        //     if(this.limit){
-        //         var e = e || window.event;
-        //         var node = e.target || e.srcElement;
-        //         this.$message({
-        //             type: 'error',
-        //             text: this.lanMap["click_often"],
-        //             duration: 1000
-        //         })
-        //         node.checked = !node.checked;
-        //         this.ssh = node.checked;
-        //         return
-        //     }
-        //     this.limit = true;
-        //     setTimeout(()=>{
-        //         this.limit = false;
-        //     },1000);
-        //     this.$http.get('/system_service?form=sshd_oper&operation=' + Number(!this.ssh)).then(res=>{
-        //         if(res.data.code === 1) {
-        //             this.$message({
-        //                 type: 'success',
-        //                 text: this.lanMap['setting_ok']
-        //             })
-        //             this.get_ssh();
-        //         }else if(res.data.code > 1){
-        //             this.$message({
-        //                 type: 'error',
-        //                 text: '(' + res.data.code + ') ' + res.data.message
-        //             })
-        //         }
-        //     }).catch(err=>{
-        //         // to do
-        //     })
-        // },
+        open_del_ssh(node){
+            this.is_del_ssh = true;
+            this.del_ssh_info = node;
+        },
+        del_sshkey(bool){
+            if(bool){
+                var post_param = {
+                    "method":"delete",
+                    "param":{
+                        "keyname": this.del_ssh_info.keyname
+                    }
+                }
+                this.$http.post('/system_service?form=sshd',post_param).then(res=>{
+                    if(res.data.code === 1){
+                        this.$message({
+                            type: 'success',
+                            text: this.lanMap['delete'] + ': ' + this.lanMap['st_success']
+                        })
+                        this.get_ssh();
+                    }else if(res.data.code > 1){
+                        this.$message({
+                            type: 'error',
+                            text: '(' + res.data.code + ') ' + res.data.message
+                        })
+                    }
+                }).catch(err=>{
+                    // to do
+                })
+            }
+            this.is_del_ssh = false;
+        },
         set_trapserver(){
             if(this.limit){
                 var e = e || window.event;
@@ -307,6 +308,43 @@ export default {
             this.ssh_key = '';
         },
         submit_add_ssh(){
+            if(!this.ssh_name){
+                this.$message({
+                    type: 'error',
+                    text: this.lamMap['param_error'] + ': ' + this.lanMap['title']
+                })
+                return
+            }
+            if(!this.ssh_key){
+                this.$message({
+                    type: 'error',
+                    text: this.lamMap['param_error'] + ': ' + this.lanMap['key']
+                })
+                return
+            }
+            var post_param = {
+                "method": "add",
+                "param":{
+                    "keyname": this.ssh_name,
+                    "publickey": this.ssh_key.replace(/(^\s+)|(\s+$)/,'')
+                }
+            }
+            this.$http.post('/system_service?form=sshd',post_param).then(res=>{
+                if(res.data.code === 1){
+                    this.$message({
+                        type: 'success',
+                        text: this.lanMap['add'] + this.lanMap['st_success']
+                    })
+                    this.get_ssh();
+                }else if(res.data.code > 1){
+                    this.$message({
+                        type: 'error',
+                        text: '(' + res.data.code + ') ' + res.data.message
+                    })
+                }
+            }).catch(err=>{
+                // to do
+            })
             this.close_add_ssh();
         }
     }
@@ -372,64 +410,6 @@ div.snmp-item{
         }
     }
 }
-//  自定义按钮开关样式
-// div.toggle-button-wrapper {
-//     margin-top: 5px;
-//     height: 32px;
-//     input.toggle-button {
-//         display: none;
-//     }
-//     .button-label {
-//         position: relative;
-//         display: inline-block;
-//         width: 56px;
-//         height: 20px;
-//         background-color: #ccc;
-//         box-shadow: #ccc 0px 0px 0px 2px;
-//         border-radius: 20px;
-//         overflow: hidden;
-//     }
-//     .circle {
-//         position: absolute;
-//         top: 0;
-//         left: 0;
-//         width: 20px;
-//         height: 20px;
-//         border-radius: 50%;
-//         background-color: #fff;
-//     }
-//     .button-label .text {
-//         line-height: 20px;
-//         font-size: 14px;
-//         text-shadow: 0 0 2px #ddd;
-//     }
-//     .on {
-//         color: #fff;
-//         display: none;
-//         text-indent: 6px;
-//     }
-//     .off {
-//         color: #fff;
-//         display: inline-block;
-//         text-indent: 24px;
-//     }
-//     .button-label .circle {
-//         left: 0;
-//         transition: all 0.3s;
-//     }
-//     .toggle-button:checked + label.button-label .circle {
-//         left: 36px;
-//     }
-//     .toggle-button:checked + label.button-label .on {
-//         display: inline-block;
-//     }
-//     .toggle-button:checked + label.button-label .off {
-//         display: none;
-//     }
-//     .toggle-button:checked + label.button-label {
-//         background-color: #51ccee;
-//     }
-// }
 div.ssh-info{
     margin-top: 30px;
     >div{

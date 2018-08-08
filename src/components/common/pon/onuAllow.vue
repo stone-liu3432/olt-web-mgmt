@@ -571,7 +571,7 @@ import onuCard from '@/components/common/pon/onuCard'
         },
         watch: {
             portid(){
-                sessionStorage.setItem('pid',this.portid);
+                sessionStorage.setItem('pid',Number(this.portid));
                 this.getData();
             },
             add_macaddr(){

@@ -15,7 +15,7 @@
         <div class="portvlan-tab">
             <div :class="{actived: show_index === 1}" @click="pv_set">{{ lanMap['vlan_cfg'] }}</div>
             <div :class="{actived: show_index === 2}" @click="pv_translate">VLAN Translate</div>
-            <div :class="{actived: show_index === 3}" @click="pv_qinq">VLAN qinq</div>
+            <div :class="{actived: show_index === 3}" @click="pv_qinq">VLAN QinQ</div>
         </div>
         <div>
             <pvSet :pv-data="pv_set_d" v-if="show_index === 1 && pv_set_d.data"></pvSet>
@@ -189,7 +189,7 @@ div.portvlan-port{
 }
 div.portvlan-tab{
     margin-top: 30px !important;
-    border-bottom: 2px solid #67aef7;
+    border-bottom: 3px solid #67aef7;
     padding-left: 10px;
     &::after{
         content: '';
@@ -198,20 +198,22 @@ div.portvlan-tab{
     }
     >div{
         float: left;
-        margin-bottom: -2px;
+        margin-left: 5px;
+        border: 1px solid #67aef7;
+        margin-bottom: -1px;
+        border-radius: 3px 3px 0 0;
         cursor: pointer;
         padding: 0 30px;
         text-align: center;
         height: 30px;
         line-height: 30px;
-        border-bottom: 2px solid transparent;
     }
     .actived{
         border: 1px solid #67aef7;
         border-radius: 3px 3px 0 0;
-        border-bottom: 2px solid #fff;
-        color: #67aef7;
-        font-weight: 600;
+        color: #fff;
+        background: #67aef7;
+        font-weight: 500;
     }
 }
 </style>

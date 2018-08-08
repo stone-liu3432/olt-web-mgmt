@@ -22,7 +22,7 @@
             <div class="lf">
                 <a href="javascript:;" @click="open_onu_desc">{{ lanMap['config'] + lanMap['onu_info'] }}</a>
                 <a href="javascript:;" @click="open_reboot_onu">{{ lanMap['reboot_onu'] }}</a>
-                <a href="javascript:;" @click="open_un_auth_onu" v-if="onu_basic_info.data.auth_state.toUpperCase() == 'TRUE'">{{ lanMap['deregister_onu'] }}</a>
+                <a href="javascript:;" @click="open_un_auth_onu">{{ lanMap['deregister_onu'] }}</a>
                 <a href="javascript:;" @click="open_set_fec_mode">{{ lanMap['set_fec_mode'] }}</a>
             </div>
         </div>
@@ -156,8 +156,11 @@ import { mapState,mapMutations } from 'vuex'
             }
         },
         activated(){
-            this.getData();
-            this.getOpticalData();
+            this.portid = 0;
+            var pid = sessionStorage.getItem('pid');
+            this.portid = this.$route.query.port_id || pid || 1;
+            // this.getData();
+            // this.getOpticalData();
         },
 		methods:{
             ...mapMutations({
@@ -428,7 +431,8 @@ import { mapState,mapMutations } from 'vuex'
 		watch: {
 			portid(){
                 // 请求url:  请求url: /onumgmt?form=base-info&port_id=1&onu_id=1
-                sessionStorage.setItem('pid',this.portid);
+                if(!this.portid) return
+                sessionStorage.setItem('pid',Number(this.portid));
 				this.$http.get('/onu_allow_list?form=resource&port_id='+this.portid).then(res=>{
 					if(res.data.code === 1){
                         var _onu_list = this.analysis(res.data.data.resource);
@@ -459,7 +463,7 @@ import { mapState,mapMutations } from 'vuex'
                     }
 				}).catch(err=>{
 					// to do
-				})
+                })
 			},
 			onuid(){
             	// 请求url:  请求url: /onumgmt?form=base-info&port_id=1&onu_id=1

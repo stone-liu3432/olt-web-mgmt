@@ -190,7 +190,7 @@ var en = {
 	"mirror" :  "Mirror",
 	"src_port" :  "Source Port",
     "dst_port" :  "Destination Port",
-    "choose":  "Choose",
+    "choose":  "Select",
 	
 	"age" :  "Age Time",
 	"mac_type" :  "MAC Address Type",
