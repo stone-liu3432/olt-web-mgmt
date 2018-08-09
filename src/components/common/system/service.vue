@@ -2,18 +2,6 @@
     <div>
         <div class="service-title">{{ lanMap['service'] }}</div>
         <hr>
-        <!-- <div class="service-item">
-            <div>SSH</div>
-            <div class="toggle-button-wrapper">
-                <input type="checkbox" id="ssh-switch" class="toggle-button" name="switch" @click="ssh_switch" v-model="ssh">
-                <label for="ssh-switch" class="button-label" onselectstart="return false;">
-                    <span class="circle"></span>
-                    <span class="text on">ON</span>
-                    <span class="text off">OFF</span>
-                </label>
-            </div>
-        </div>
-        <hr> -->
         <div class="service-item">
             <div>SNMP</div>
             <div>
@@ -26,7 +14,6 @@
                         </div>
                         <div>
                             <span>trap port</span>
-                            <!-- <input type="text" v-model="trap_port" disabled> -->
                             <span>{{ trap_port }}</span>
                         </div>
                         <div>
@@ -71,7 +58,8 @@
             <div class="add-ssh" v-if="is_add_ssh">
                 <h4>{{ lanMap['add'] + lanMap['key'] }}</h4>
                 <h4>{{ lanMap['title'] }}</h4>
-                <input type="text" v-model="ssh_name" placeholder="Enter a name to ensure clear use">
+                <input type="text" v-model="ssh_name" placeholder="Enter a name to ensure clear use"
+                    :style="{'border-color': ssh_name !== '' && !reg_name.test(ssh_name) ? 'red' : ''}">
                 <h4>{{ lanMap['key'] }}</h4>
                 <textarea rows="6" v-model="ssh_key" spellcheck="false" placeholder="Begins with 'ssh-rsa', 'ssh-dss', 'ssh-ed25519', 'ecdsa-sha2-nistp256', 'ecdsa-sha2-nistp384', or 'ecdsa-sha2-nistp521'"></textarea>
                 <a href="javascript:void(0);" @click="submit_add_ssh">{{ lanMap['apply'] }}</a>
@@ -112,7 +100,8 @@ export default {
             read_community: '',
             write_community: '',
             flag_read: false,
-            flag_write: false
+            flag_write: false,
+            reg_name: /^[^\\\/\'\"\?\s]{4,32}$/
         }
     },
     created(){
@@ -308,7 +297,7 @@ export default {
             this.ssh_key = '';
         },
         submit_add_ssh(){
-            if(!this.ssh_name){
+            if(!this.ssh_name || !this.reg_name.test(this.ssh_name)){
                 this.$message({
                     type: 'error',
                     text: this.lamMap['param_error'] + ': ' + this.lanMap['title']

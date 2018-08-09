@@ -189,16 +189,6 @@ a:active {
   height: 100%;
   z-index: 1000;
 }
-.modal-dialog>div.cover+div{
-    position: absolute;
-    left: 0;
-    right: 0;
-    top: 0;
-    bottom: 0;
-    margin: auto;
-    background: #fff;
-    border-radius: 5px;
-}
 .cover {
   width: 100%;
   height: 100%;

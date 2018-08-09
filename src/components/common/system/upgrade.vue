@@ -340,16 +340,10 @@ a{
 input{
     font-size: 16px;
 }
-div.load-body{
+.modal-dialog div.load-body{
     width: 500px;
     height: 300px;
     background: #666;
-    position: absolute;
-    left: 0;
-    right: 0;
-    top: 0;
-    bottom: 0;
-    margin: auto;
     border-radius: 10px;
     >h3{
         font-size: 18px;
