@@ -52,7 +52,7 @@
         <hr>
         <div class="ssh-info">
             <div>
-                <h3>SSH</h3>
+                <h3>SSH-Key</h3>
                 <a href="javascript:void(0);" @click="open_add_ssh">{{ lanMap['add'] }} SSH</a>
             </div>
             <div class="add-ssh" v-if="is_add_ssh">
@@ -67,7 +67,8 @@
             </div>
             <div class="ssh-item" v-for="(item,index) in ssh_info.data" :key="index" v-if="ssh_info.data && ssh_info.data.length > 0">
                 <div>
-                    <h4>{{ item.keyname }}</h4> 
+                    <h4>{{ lanMap['title'] + ' ' + item.keyname }}</h4>
+                    <hr> 
                     <p>{{ item.publickey }}</p>
                 </div>
                 <div>
@@ -142,7 +143,7 @@ export default {
                 // to do
             })
         },
-        open_del_ssh(node){
+        open_del_sshkey(node){
             this.is_del_ssh = true;
             this.del_ssh_info = node;
         },
@@ -361,6 +362,9 @@ div.service-item{
     >div:first-child{
         width: 200px;
         line-height: 30px;
+        font-size: 20px;
+        font-weight: 500;
+        color: #67aef6;
     }
     >div{
         float: left;
@@ -405,6 +409,9 @@ div.ssh-info{
         border-radius: 3px;
         h3{
             float: left;
+            color: #67aef6;
+            font-size: 20px;
+            font-weight: 500;
         }
         a{
             float: right;
@@ -426,13 +433,13 @@ div.ssh-info{
 div.ssh-item{
     border: 1px solid #ccc;
     margin-top: 10px;
-    height: 75px;
+    height: 86px;
     padding: 5px;
     >div:first-child{
         width: 80%;
     }
     div{
-        height: 75px;
+        height: 86px;
         float: left;
         width: 20%;
         text-align: center;
@@ -446,6 +453,8 @@ div.ssh-item{
         h4{
             margin: 5px 15px;
             text-align: left;
+            font-weight: 600;
+            color: #000;
         }
         p{
             margin: 5px;
@@ -456,7 +465,7 @@ div.ssh-item{
             text-overflow: ellipsis;
         }
         &:last-child{
-            line-height: 75px;
+            line-height: 86px;
         }
     }
 }
