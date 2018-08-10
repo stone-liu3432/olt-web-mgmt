@@ -139,6 +139,7 @@ export default {
                             type: 'success',
                             text: this.lanMap['add'] + this.lanMap['st_success']
                         })
+                        this.getData();
                     }else if(res.data.code > 1){
                         this.$message({
                             type: 'error',

@@ -229,7 +229,7 @@ import onuCard from '@/components/common/pon/onuCard'
                     }
                     this.onu_allow_list = Object.assign({},this.onu_arrow);
                     this.onu_allow_list.data.sort((a,b)=>{
-                        return a.status.toLowerCase() === 'online' && b.status.toLowerCase() === 'offline'
+                        return a.status.toLowerCase() === 'online' && b.status.toLowerCase() !== 'online'
                     })
                 }).catch(err=>{
                     // to do 

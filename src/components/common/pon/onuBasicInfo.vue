@@ -156,11 +156,10 @@ import { mapState,mapMutations } from 'vuex'
             }
         },
         activated(){
-            this.portid = 0;
             var pid = sessionStorage.getItem('pid');
             this.portid = this.$route.query.port_id || pid || 1;
-            // this.getData();
-            // this.getOpticalData();
+            this.get_resource();
+            this.getOpticalData();
         },
 		methods:{
             ...mapMutations({
@@ -426,14 +425,9 @@ import { mapState,mapMutations } from 'vuex'
                 }).catch(err=>{
                     // to do
                 })
-            }
-		},
-		watch: {
-			portid(){
-                // 请求url:  请求url: /onumgmt?form=base-info&port_id=1&onu_id=1
-                if(!this.portid) return
-                sessionStorage.setItem('pid',Number(this.portid));
-				this.$http.get('/onu_allow_list?form=resource&port_id='+this.portid).then(res=>{
+            },
+            get_resource(){
+                this.$http.get('/onu_allow_list?form=resource&port_id='+this.portid).then(res=>{
 					if(res.data.code === 1){
                         var _onu_list = this.analysis(res.data.data.resource);
                         if(!_onu_list){
@@ -464,6 +458,45 @@ import { mapState,mapMutations } from 'vuex'
 				}).catch(err=>{
 					// to do
                 })
+            }
+		},
+		watch: {
+			portid(){
+                // 请求url:  请求url: /onumgmt?form=base-info&port_id=1&onu_id=1
+                if(!this.portid) return
+                sessionStorage.setItem('pid',Number(this.portid));
+				// this.$http.get('/onu_allow_list?form=resource&port_id='+this.portid).then(res=>{
+				// 	if(res.data.code === 1){
+                //         var _onu_list = this.analysis(res.data.data.resource);
+                //         if(!_onu_list){
+                //              this.addonu_list({});
+                //              this.onu_basic_info = {}; 
+                //              this.onuid = 0;
+                //              return
+                //         }
+                //         var obj = {
+                //             port_id: res.data.data.port_id,
+                //             data: _onu_list
+                //         }
+                //         this.addonu_list(obj);
+                //         var oid = sessionStorage.getItem('oid');
+                //         this.onuid = this.$route.query.onu_id || oid;
+                //         if(!this.$route.query.onu_id && (!oid || _onu_list.indexof(Number(oid)) === -1)){
+                //             this.onuid = this.onu_list.data[0];
+                //         }
+                //         if(this.$route.query.onu_id){
+                //             this.$route.query.onu_id = null;
+                //         }
+                //         this.getData();
+                //     }else{
+                //         this.addonu_list({});
+                //         this.onu_basic_info = {}; 
+                //         this.onuid = 0;
+                //     }
+				// }).catch(err=>{
+				// 	// to do
+                // })
+                this.get_resource();
 			},
 			onuid(){
             	// 请求url:  请求url: /onumgmt?form=base-info&port_id=1&onu_id=1
