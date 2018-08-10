@@ -237,6 +237,8 @@ import { mapState } from 'vuex'
                         }
                         if(!res.data.data){
                             this.is_loadmore = false;
+                            this.vlan_list = {};
+                            this.vlan_tab = [];
                             return
                         }
                         this.pagination.page = Math.ceil(this.vlan_list.data.length/this.pagination.display);

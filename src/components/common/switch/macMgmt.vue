@@ -336,6 +336,9 @@ import loading from '@/components/common/loading'
                         }
                         if(!res.data.data){
                             this.is_loadmore = false;
+                            this.tab = [];
+                            this.mac_table = [];
+                            this.count = 0;
                             return
                         }
                         this.pagination.page = Math.ceil(this.tab.length/this.pagination.display);
