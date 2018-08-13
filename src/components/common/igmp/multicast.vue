@@ -7,7 +7,7 @@
                 <a href="javascript:void(0);" @click="open_del_modal" v-if="static_multi.length > 0">{{ lanMap['delete'] }}</a>
             </span>
         </div>
-        <ul>
+        <ul v-if="multicast_info.data && multicast_info.data.length > 0">
             <li>
                 <span class="multi-ip">{{ lanMap['multi_ip'] }}</span>
                 <span class="vid">{{ lanMap['vid'] }}</span>

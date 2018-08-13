@@ -458,7 +458,7 @@ var en = {
 	"vid":"multicast vlan",
 	"action":"multicast type",
 	"program_range_tips":"Effective address range：224.0.1.0-239.255.255.255",
-	"port_list_tips": "The router port can be a single number or a continuous range,ex: 1,3-5"
+	"port_list_tips": "The routing port is only for the uplink port, 1 for GE1, and 2 for GE2..."
 }
 
 export default en

@@ -19,7 +19,7 @@
             </div>
             <div>
                 <span>{{ lanMap['router_portlist'] }}</span>
-                <span>{{ router_plist.router_portlist }}</span>
+                <span>{{ analysis(router_plist.router_portlist) }}</span>
             </div>
             <div>
                 <span>{{ lanMap['mc_unknown_policy'] }}</span>
@@ -129,7 +129,7 @@
 import { mapState } from 'vuex'
 export default {
     name: 'multicastVlan',
-    computed: mapState(['lanMap','change_url']),
+    computed: mapState(['lanMap','change_url','port_name','system']),
     data(){
         return {
             mv_info: {},
@@ -169,6 +169,7 @@ export default {
                             if(res.data.data[i].mvlan === this.mvlan){ 
                                 this.get_mc_unknow();
                                 this.get_program();
+                                this.router_plist = res.data.data[i];
                                 return
                             }
                         }
@@ -203,7 +204,7 @@ export default {
         get_program(){
             var url = this.change_url.get_program ;
             if(this.change_url.beta === 'beta'){
-                url = this.change_url.get_multi_vlan + this.mvlan;
+                url = this.change_url.get_program + this.mvlan;
             }
             this.$http.get(url).then(res=>{
                 if(res.data.code === 1){
@@ -295,6 +296,7 @@ export default {
                     this.modify_unknow_policy();
                 }
             }
+            this.close_cfg_modal();
         },
         //  节目库增加节目
         add_program(){
@@ -382,7 +384,7 @@ export default {
                 "method":"delete",
                 "param":{
                     "mvlan": this.mvlan,
-                    "router_portlist": this.router_portlist
+                    "router_portlist": this.router_portlist.replace(/\d/g,n=>new String(Number(n) + this.system.data.ponports))
                 }
             }
             this.$http.post('/switch_igmp?form=router_port',post_param).then(res=>{
@@ -460,13 +462,16 @@ export default {
             }
             this.is_del_mvlan = false;
         },
+        //  创建 mvlan
         open_create_mvlan(){
             this.is_create_mvlan = true;
             this.create_mvlan = '';
         },
+        //  关闭  mvlan 创建模态框
         close_create_mvlan(){
             this.is_create_mvlan = false;
         },
+        //  提交 mvlan 创建信息
         submit_create_mvlan(){
             if(this.create_mvlan < 1 || this.create_mvlan > 4094 || isNaN(this.create_mvlan)){
                 this.$message({
@@ -497,6 +502,46 @@ export default {
             }).catch(err=>{
                 // to do
             })
+        },
+        //  解析后台返回的字符串
+        analysis(str){
+            if(!str) return ''
+            var result = [];
+            var arr = str.split(',');
+            for(var i=0,len=arr.length;i<len;i++){
+                var substrs = arr[i];
+                if(substrs.indexOf('-') !== -1){
+                    var subArr = substrs.split('-');
+                    var min = Number(subArr[0]),max = Number(subArr[subArr.length - 1]);
+                    if(isNaN(min) || isNaN(max)) throw new TypeError;
+                    result.push(min);
+                    for(var j=1;j<max-min;j++){
+                        result.push(min+j);
+                    }
+                    result.push(max);
+                }else{
+                    if(isNaN(Number(substrs))) throw new TypeError;
+                    result.push(Number(substrs));
+                }
+            }
+            return this.nomenclature(result)
+        },
+        //  根据返回数据，命名端口号
+        nomenclature(arr){
+            if(!arr) return ''
+            var results = '';
+            var pon_count = this.system.data.ponports,ge_count = this.system.data.geports;
+            for(var i=0,len=arr.length;i<len;i++){
+                var m = arr[i];
+                if(m <= pon_count){
+                    results += pon_count < 10 ? 'PON0'+ m + ',' : 'PON' + m +',';
+                }else if(m > pon_count && m <= (pon_count + ge_count)){
+                    results += (m - pon_count) < 10 ? 'GE0' + (m - pon_count) + ',' : 'GE' + (m - pon_count) + ',';
+                }else{
+                    results += (m - (pon_count + ge_count)) < 10 ? 'XGE0' + (m - (pon_count + ge_count)) + ',' : 'XGE' + (m - (pon_count + ge_count)) + ',';
+                }
+            }
+            return results.replace(/\,$/,'');
         }
     },
     watch: {

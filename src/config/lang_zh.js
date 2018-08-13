@@ -458,7 +458,7 @@ var zh = {
 	"vid":"组播VLAN",
 	"action":"组播类型",
 	"program_range_tips":"节目有效地址范围：224.0.1.0-239.255.255.255",
-	"port_list_tips":"路由端口可以是单个数字，也可以是一段连续的范围,如 1,3-5"
+	"port_list_tips":"路由端口仅针对上联口，1表示GE1，2表示GE2..."
 }
 
 export default zh
