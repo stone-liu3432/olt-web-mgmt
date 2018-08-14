@@ -184,7 +184,7 @@ var zh = {
 	
 	"stormctrl" : "风暴抑制",
 	"broadcast" : "广播",
-	"multicast" : "组播",
+	"multicast" : "组播表项",
 	"unicast" : "单播",
 	
 	"mirror" : "端口镜像",

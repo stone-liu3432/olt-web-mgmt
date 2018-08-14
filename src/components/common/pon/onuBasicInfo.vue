@@ -578,11 +578,7 @@ div.onu-optical-title{
     }
     >a{
         width: 120px;
-        height: 30px;
-        display: inline-block;
-        text-align: center;
-        border-radius: 5px;
-        background: #ddd;
+        padding: 0;
         margin-right: 20px;
     }
 }
@@ -646,17 +642,8 @@ div.handle-btn{
         margin-left: 30px;
         >a{
             margin-left: 50px;
-            display: inline-block;
             width: 150px;
-            text-align: center;
-            height: 30px;
-            line-height: 30px;
-            border: 1px solid transparent;
-            border-radius: 5px;
-            background: #ddd;
-            &:active{
-                border-color: #67aef7;
-            }
+            padding: 0;
         }
     }
 }
@@ -704,13 +691,8 @@ div.onu-desc{
             }
         }
         >a{
-            display: inline-block;
+            padding: 0;
             width: 120px;
-            height: 30px;
-            text-align: center;
-            line-height: 30px;
-            border-radius: 5px;
-            background: #ddd;
             margin-left: 90px;
         }
         &:last-child{
@@ -759,10 +741,7 @@ div.onu-upgrade{
         margin: 20px 0;
         text-align: center;
         a{
-            padding: 5px 50px;
-            text-align: center;
-            border-radius: 3px;
-            background: #ddd;
+            padding: 0 50px;
         }
     }
 }

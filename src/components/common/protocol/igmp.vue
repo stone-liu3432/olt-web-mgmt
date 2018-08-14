@@ -1,14 +1,19 @@
 <template>
     <div class="igmp">
         <h2>IGMP</h2>
-        <div>
+        <div class="portvlan-tab">
+            <div :class="{actived: show_index === 1}" @click="select_page(1)">IGMP {{ lanMap['info'] }}</div>
+            <div :class="{actived: show_index === 2}" @click="select_page(2)">{{ lanMap['multicast'] }}</div>
+            <div :class="{actived: show_index === 3}" @click="select_page(3)">{{ lanMap['mvlan'] }}</div>
+        </div>
+        <div v-if="show_index === 1">
             <span>IGMP{{ lanMap['info'] }}</span>
             <span>
                 <a href="javascript:void(0);" @click="open_multicast_st">{{ lanMap['config'] }}</a>
             </span>
         </div>
         <!-- 组播配置信息  根据Mode不同时的不同显示项 -->
-        <ul v-if="igmp_info.data">
+        <ul v-if="igmp_info.data && show_index === 1">
             <li>
                 <span>{{ lanMap['mode'] }}</span>
                 <span>{{ mode[igmp_info.data.mode] }}</span>
@@ -34,8 +39,8 @@
                 <span v-if="key === 'protocol_policy'">{{ item ? 'discard' : 'pass' }}</span>
             </li>
         </ul>
-        <multicast></multicast>
-        <multi-vlan></multi-vlan>
+        <multicast v-if="show_index === 2"></multicast>
+        <multi-vlan v-if="show_index === 3"></multi-vlan>
         <div class="modal-dialog" v-if="show_multicast">
             <div class="cover"></div>
             <div class="igmp-group-modal">
@@ -139,6 +144,7 @@ export default {
             igmp_info: {},
             //  组播模态框打开/关闭
             show_multicast: false,
+            show_index: 1,
             //  数据绑定
             igmp_param: {
                 "mode": 0,
@@ -162,6 +168,9 @@ export default {
         this.get_igmp_info();
     },
     methods: {
+        select_page(num){
+            this.show_index = num;
+        },
         get_igmp_info(){
             this.$http.get(this.change_url.get_igmp).then(res=>{
                 if(res.data.code === 1){
@@ -389,6 +398,11 @@ div.igmp{
         >span{
             font-size: 18px;
             color: #67aef7;
+            display: inline-block;
+            width: 200px;
+            a{
+                margin: 0;
+            }
         }
     }
 }
@@ -445,6 +459,35 @@ div.igmp-group-modal{
             margin-left: 105px;
             margin-top: 20px;
         }
+    }
+}
+div.portvlan-tab{
+    margin-top: 30px !important;
+    border-bottom: 3px solid #67aef7;
+    padding-left: 10px;
+    &::after{
+        content: '';
+        display: table;
+        clear: both;
+    }
+    >div{
+        float: left;
+        margin-left: 5px;
+        border: 1px solid #67aef7;
+        margin-bottom: -1px;
+        border-radius: 3px 3px 0 0;
+        cursor: pointer;
+        padding: 0 30px;
+        text-align: center;
+        height: 30px;
+        line-height: 30px;
+    }
+    .actived{
+        border: 1px solid #67aef7;
+        border-radius: 3px 3px 0 0;
+        color: #fff;
+        background: #67aef7;
+        font-weight: 500;
     }
 }
 </style>

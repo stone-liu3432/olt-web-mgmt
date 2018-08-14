@@ -956,20 +956,11 @@ div.no-data{
     line-height: 30px;
 }
 a{
-    display: inline-block;
     width: 180px;
     height: 28px;
-    text-align: center;
     line-height: 30px;
-    border-radius: 5px;
-    background: #ddd;
-    vertical-align: middle;
-    color: #333;
-    border: 1px solid transparent;
+    padding: 0;
     margin-left: 20px;
-    &:active{
-        border: 1px solid #67aef7;
-    }
 }
 div.onu-port{
     padding:20px 0 20px 30px;
@@ -1077,6 +1068,7 @@ div.onu-vlan-info{
         a{
             font-size: 16px;
             width: 300px;
+            padding: 0;
         }
         &:last-child>span{
             border-top: none;
@@ -1126,6 +1118,7 @@ div.onu-vlan-info>div.port-item-vlan{
                 height: 25px;
                 line-height: 25px;
                 margin: 0;
+                padding: 0;
             } 
         }
     }
@@ -1197,7 +1190,7 @@ div.dialog-body{
         a{
             width: 120px;
             margin: 25px 0 0 85px;
-            color: #000;
+            padding: 0;
         }
     }
 }
@@ -1278,8 +1271,8 @@ div.dialog-content{
         }
         a{
             width: 120px;
+            padding: 0;
             margin: 25px 0 0 85px;
-            color: #000;
         }
     }
 }

@@ -390,26 +390,13 @@ select{
     text-indent: 10px;
 }
 a{
-    display: inline-block;
     width: 120px;
-    height: 30px;
-    line-height: 30px;
-    border-radius: 5px;
-    background: #ddd;
-    text-align: center;
+    padding: 0;
     margin-left: 10px;
 }
 div.dialog{
-    position: absolute;
-    top: 0;
-    right: 0;
-    bottom : 0;
-    left: 0;
-    margin: auto;
     width: 600px;
     height: 380px;
-    background: #fff;
-    border-radius: 5px;
 }
 div.dialog>h2{
     margin: 20px 0;

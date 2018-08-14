@@ -28,7 +28,9 @@
             <div class="program">
                 <span>{{ lanMap['program'] }}</span>
                 <span>
-                    <span v-for="(item,index) in program.data" :key="index"> {{ item.program_s  + ' - ' + item.program_e}} </span>
+                    <span v-for="(item,index) in program.data" :key="index"> 
+                        {{ item.program_s === item.program_e ? item.program_s : item.program_s  + ' - ' + item.program_e}} 
+                    </span>
                 </span>
             </div>
         </div>
@@ -470,6 +472,7 @@ export default {
         //  关闭  mvlan 创建模态框
         close_create_mvlan(){
             this.is_create_mvlan = false;
+            this.create_mvlan = '';
         },
         //  提交 mvlan 创建信息
         submit_create_mvlan(){
@@ -548,10 +551,14 @@ export default {
     watch: {
         'mvlan'(){
             if(!this.mvlan) return
+            this.mv_info.data.forEach(item=>{
+                if(item.mvlan === this.mvlan){
+                    this.router_plist = item;
+                }
+            })
             this.get_mc_unknow();
             this.get_program();
         },
-        //  router_plist.router_portlist
         'mark_mode'(){
             if(this.mark_mode === 2){
                 this.mark_type = 2;
@@ -609,12 +616,14 @@ select{
 }
 div.multi-vlan{
     >div:first-child{
-        span{
+        span:first-child{
             font-size: 18px;
             color: #67aef7;
+            display: inline-block;
+            width: 200px;
         }
-        a:last-child{
-            margin-left: 30px;
+        a{
+            margin: 0;
         }
     }
 }

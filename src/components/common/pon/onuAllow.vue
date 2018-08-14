@@ -675,13 +675,7 @@ select+a{
     margin-left: 60px;
 }
 a{
-    display: inline-block;
     padding: 0 20px;
-    height: 36px;
-    line-height: 36px;
-    border-radius: 5px;
-    background: #ddd;
-    text-align: center;
     margin-left: 10px;
 }
 .onu-allow-btn{
@@ -769,7 +763,8 @@ div.modal-btn{
     margin: 15px;
 }
 div.modal-btn>a{
-    margin-left: 120px;
+    margin-left: 125px;
+    padding: 0 30px;
 }
 i.verified-actived{
     background: url('../../../assets/authstatus-hover.png') no-repeat;

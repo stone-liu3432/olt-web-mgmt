@@ -344,11 +344,7 @@ export default {
 <style lang="less" scoped>
 a{
     width: 120px;
-    height: 30px;
-    line-height: 30px;
-    background: #ccc;
-    text-align: center;
-    border-radius: 3px;
+    padding: 0;
 }
 div.service-title{
     font-size: 24px;
@@ -384,11 +380,7 @@ div.snmp-item{
             >a{
                 float: right;
                 width: 120px;
-                height: 30px;
-                line-height: 30px;
-                background: #ccc;
-                text-align: center;
-                border-radius: 3px;
+                padding: 0;
                 margin: 10px 20px 0 0;
             }
         }

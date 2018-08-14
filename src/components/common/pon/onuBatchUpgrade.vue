@@ -483,9 +483,10 @@ export default {
 
 <style lang="less" scoped>
 a{
-    padding: 5px 20px;
+    padding: 0 20px;
+    height: 30px;
+    line-height: 30px;
     border: 1px solid transparent;
-    background: #ccc;
     border-radius: 3px;
     &:active{
         border: 1px solid #67aef7;
@@ -563,7 +564,7 @@ div.onu-upgrade{
         width: 180px;
     }
     >a{
-        padding: 8px 50px;
+        padding: 0 50px;
     }
 }
 div.cover+div{
@@ -604,7 +605,7 @@ div.onu-type-modal{
         margin-top: 26px;
     }
     a{
-        margin: 20px 0 0 110px;
+        margin: 0 0 0 110px;
     }
     div.close{
         margin: 0;
@@ -661,7 +662,7 @@ div.bind-upgrade-type{
                 margin-top: 30px;
                 a{
                     margin: 0 50px;
-                    padding: 5px 50px;
+                    padding: 0 50px;
                 }
             }
         }

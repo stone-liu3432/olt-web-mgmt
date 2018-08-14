@@ -141,10 +141,6 @@ q:before,q:after {
 abbr,acronym {
   border: 0;
 }
-a {
-  text-decoration: none;
-  color: #000;
-}
 .lf {
   float: left;
 }
@@ -164,21 +160,32 @@ input[type="text"] {
   height: 30px;
   line-height: 30px;
   border: 1px solid #c8cccf;
-  border-radius: 5px;
+  border-radius: 3px;
   color: #000;
   outline: 0;
   text-decoration: none;
 }
 input[type="text"]:focus {
   border: 1px solid #1e90ff;
-  border-radius: 5px;
+  border-radius: 3px;
 }
 a {
-  border: 1px solid transparent;
-  user-select: none;
+    border: 1px solid transparent;
+    user-select: none;
+    text-decoration: none;
+    border-radius: 3px;
+    font-size: 16px;
+    display: inline-block;
+    padding: 0 30px;
+    height: 30px;
+    line-height: 30px;
+    text-align: center;
+    background: #666;
+    color: #fff;
+    vertical-align: middle;
 }
 a:active {
-  border: 1px solid #1e90ff;
+    border: 1px solid #1e90ff;
 }
 /* 复用模态框类 */
 .modal-dialog {

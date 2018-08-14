@@ -161,13 +161,6 @@ div.pon-setting{
 div.ponmgmt-cfg{
     width: 500px;
     height: 300px;
-    background: #fff;
-    position: absolute;
-    left: 0;
-    right: 0;
-    top: 0;
-    bottom: 0;
-    margin: auto;
     border-radius: 10px;
     >div{
         margin: 20px;
@@ -203,15 +196,8 @@ div.ponmgmt-cfg{
     }
 }
 a{
-    font-size: 16px;
-    display: inline-block;
     width: 120px;
-    height: 30px;
-    line-height: 30px;
-    text-align: center;
-    background: #666;
-    border-radius: 5px;
-    color: #fff;
+    padding: 0;
     margin-left: 70px;
     margin-top: 20px;
 }

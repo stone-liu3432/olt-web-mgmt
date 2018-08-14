@@ -744,21 +744,9 @@ li>span:nth-child(2),li>span:nth-child(3){
     width: 32%;
 }
 a{
-    display: inline-block;
     width: 100px;
-    height: 30px;
-    font-size: 16px;
-    line-height: 30px;
-    text-align: center;
-    border-radius: 5px;
-    background: #ddd;
-    transition: all .1s linear;
-    vertical-align: middle;
     margin: 0 5px;
-}
-a:active{
-    border: 1px solid #67AEF7;
-    background: #ccc;
+    padding: 0;
 }
 span.vlan-cfg-title{
     width: 200px;

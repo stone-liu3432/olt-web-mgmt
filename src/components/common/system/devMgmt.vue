@@ -394,16 +394,11 @@ form{
     cursor: pointer;
 }
 a{
-    font-size: 16px;
-    display: inline-block;
     width: 200px;
     height: 40px;
     line-height: 40px;
-    text-align: center;
-    background: #666;
-    border-radius: 5px;
-    color: #fff;
     margin-left: 320px;
+    padding: 0;
 }
 input{
     font-size: 16px;

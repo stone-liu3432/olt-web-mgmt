@@ -522,8 +522,7 @@ p>span{
     line-height: 30px;
     text-align: center;
     border: 1px solid #ddd;
-    border-radius: 5px;
-    background: #ddd;
+    border-radius: 3px;
     margin-left: 100px;
     border: 1px solid transparent;
 }
@@ -587,7 +586,7 @@ p>span{
     width: 100px;
     height: 30px;
     line-height: 30px;
-    background: #ddd;
+    padding: 0;
     text-align: center;
     border-radius: 5px;
     margin-top: 15px;

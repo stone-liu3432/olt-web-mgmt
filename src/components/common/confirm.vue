@@ -73,13 +73,8 @@ div.tool-tips+div{
     bottom: 30px;
 }
 a{
-    display: inline-block;
+    padding: 0;
     width: 120px;
-    height: 30px;
-    line-height: 30px;
-    border: 1px solid #ccc;
-    border-radius: 5px;
-    text-align: center;
     margin-left: 10px;
 }
 a:hover{

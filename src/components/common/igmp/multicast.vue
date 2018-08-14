@@ -6,6 +6,7 @@
                 <a href="javascript:void(0);" @click="open_add_modal">{{ lanMap['add'] }}</a>
                 <a href="javascript:void(0);" @click="open_del_modal" v-if="static_multi.length > 0">{{ lanMap['delete'] }}</a>
             </span>
+            <i @click="getData"></i>
         </div>
         <ul v-if="multicast_info.data && multicast_info.data.length > 0">
             <li>
@@ -315,12 +316,26 @@ select{
 }
 div.multicast{
     >div:first-child{
-        span{
+        span:first-child{
             font-size: 18px;
             color: #67aef7;
+            display: inline-block;
+            width: 200px;
         }
-        a:last-child{
+        a{
+            margin: 0;
+            &:last-child{
+                margin-left: 20px;
+            }
+        }
+        i{
+            display: inline-block;
+            width: 32px;
+            height: 32px;
+            background: url('../../../assets/refresh.png') no-repeat;
+            vertical-align: middle;
             margin-left: 30px;
+            cursor: pointer;
         }
     }
     div+ul{

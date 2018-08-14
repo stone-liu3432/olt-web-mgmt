@@ -366,14 +366,8 @@ export default {
 a{
     font-size: 16px;
     font-weight: normal;
-    display: inline-block;
     width: 120px;
-    height: 30px;
-    line-height: 30px;
-    vertical-align: middle;
-    text-align: center;
-    background: #ccc;
-    border-radius: 3px;
+    padding: 0;
 }
 select{
     width: 120px;

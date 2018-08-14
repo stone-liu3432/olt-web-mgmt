@@ -123,6 +123,10 @@ export default {
     font-size:42px;
     font-weight:bold;
     color:#fff;
+    background: transparent;
+    &:active{
+        border: none;
+    }
   }
   .product-type{
     width:200px;

@@ -478,17 +478,9 @@ div.rstp{
             color: #67aef7;
         }
         >a{
-            font-size: 16px;
-            display: inline-block;
             width: 120px;
-            height: 30px;
-            line-height: 30px;
-            text-align: center;
-            background: #666;
-            border-radius: 3px;
-            color: #fff;
             margin-left: 100px;
-            vertical-align: middle;
+            padding: 0;
         }
     }
     >ul{
@@ -579,15 +571,8 @@ div.rstp{
                 border-radius: 3px;
             }
             a{
-                font-size: 16px;
-                display: inline-block;
                 width: 120px;
-                height: 30px;
-                line-height: 30px;
-                text-align: center;
-                background: #666;
-                border-radius: 3px;
-                color: #fff;
+                padding: 0;
                 margin: 20px 0 0 60px;
             }
         }
@@ -638,15 +623,8 @@ div.rstp{
                 border-radius: 3px;
             }
             a{
-                font-size: 16px;
-                display: inline-block;
+                padding: 0;
                 width: 120px;
-                height: 30px;
-                line-height: 30px;
-                text-align: center;
-                background: #666;
-                border-radius: 3px;
-                color: #fff;
                 margin: 20px 0 0 60px;
             }
         }

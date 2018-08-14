@@ -328,7 +328,7 @@ div.onu-list{
 }
 div.onu-card{
     float: left;
-    width: 185px;
+    width: 182px;
     height: 200px;
     margin: 5px;
     padding: 5px;

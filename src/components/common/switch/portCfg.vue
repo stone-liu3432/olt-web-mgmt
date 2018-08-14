@@ -677,14 +677,8 @@ h3{
     font-weight: 500;
 }
 a.delete-mirror{
-    display: inline-block;
     width: 100px;
-    height: 30px;
-    line-height: 30px;
-    background: #ddd;
-    text-align: center;
     margin: 4px 15px 0 0;
-    border-radius: 5px;
 }
 .item-align>select{
     width: 100px;
@@ -726,18 +720,9 @@ a.delete-mirror{
 }
 .btn-submit>a{
     width: 100px;
-    height: 30px;
-    display: inline-block;
-    border: 1px solid transparent;
-    border-radius: 3px;
-    background: #ddd;
-    line-height: 30px;
-    text-align: center;
+    padding: 0;
     margin-top: 10px;
     margin-right: 30px;
-}
-a:active{
-    border:1px solid #1E90FF;
 }
 .btn-submit:after{
     content: "";
@@ -833,14 +818,9 @@ div.tips{
 div.port-cfg-title{
     overflow: hidden;
     >a{
-        display: inline-block;
         width: 120px;
-        height: 30px;
-        line-height: 30px;
-        text-align: center;
         margin: 10px 0 20px 10px;
-        border-radius: 3px;
-        background: #ddd;
+        padding: 0;
     }
 }
 </style>

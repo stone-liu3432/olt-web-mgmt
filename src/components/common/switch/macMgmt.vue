@@ -754,20 +754,9 @@ div.mac-age>span:first-child{
     color: #666;
 }
 a{
-    display: inline-block;
     width: 120px;
-    height: 30px;
-    font-size: 16px;
-    line-height: 30px;
-    text-align: center;
-    border-radius: 5px;
-    background: #ddd;
-    transition: all .1s linear;
     margin: 5px;
-}
-a:active{
-    border: 1px solid #67AEF7;
-    background: #ccc;
+    padding: 0;
 }
 ul.mac-table{
     margin: 20px 0 20px 10px;

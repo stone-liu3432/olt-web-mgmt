@@ -276,13 +276,10 @@ select+a{
     margin-left: 60px;
 }
 a{
-    display: inline-block;
     width: 120px;
     height: 32px;
     line-height: 32px;
-    border-radius: 5px;
-    background: #ddd;
-    text-align: center;
+    padding: 0;
     margin-left: 10px;
 }
 .inline-btn{
