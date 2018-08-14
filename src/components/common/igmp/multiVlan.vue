@@ -111,7 +111,7 @@
                     <div>
                         <span>{{ lanMap['vlan_id'] }}</span>
                         <input type="text" v-model.number="create_mvlan" v-focus 
-                         :style="{ 'border-color': create_mvlan > 4094 || create_mvlan < 1 || isNaN(create_mvlan) ? 'red' : ''}">
+                         :style="{ 'border-color': create_mvlan !== '' && (create_mvlan > 4094 || create_mvlan < 1 || isNaN(create_mvlan)) ? 'red' : ''}">
                     </div>
                     <div>
                         <a href="javascript:void(0);" @click="submit_create_mvlan">{{ lanMap['apply'] }}</a>
@@ -358,7 +358,7 @@ export default {
                 "method":"add",
                 "param":{
                     "mvlan": this.mvlan,
-                    "router_portlist": this.router_portlist
+                    "router_portlist": this.router_portlist.replace(/\d/g,n=>new String(Number(n) + this.system.data.ponports))
                 }
             }
             this.$http.post('/switch_igmp?form=router_port',post_param).then(res=>{
@@ -486,11 +486,11 @@ export default {
                     "mvlan": this.create_mvlan
                 }
             }
-            this.$http.post('',post_param).then(res=>{
+            this.$http.post('/switch_igmp?form=multicast_vlan',post_param).then(res=>{
                 if(res.data.code === 1){
                     this.$message({
                         type: 'success',
-                        text: this.lanMap['create'] + this.lanMap['T_success']
+                        text: this.lanMap['create'] + this.lanMap['st_success']
                     })
                     this.get_multi_vlan();
                 }else if(res.data.code > 1){
@@ -502,6 +502,7 @@ export default {
             }).catch(err=>{
                 // to do
             })
+            this.close_create_mvlan();
         },
         //  解析后台返回的字符串
         analysis(str){
@@ -550,6 +551,7 @@ export default {
             this.get_mc_unknow();
             this.get_program();
         },
+        //  router_plist.router_portlist
         'mark_mode'(){
             if(this.mark_mode === 2){
                 this.mark_type = 2;
@@ -558,7 +560,7 @@ export default {
                     this.mark_mode = 1;
                     return
                 }
-                this.router_portlist = this.router_plist.router_portlist;
+                this.router_portlist = this.router_plist.router_portlist.replace(/\d/g,n=>new String(Number(n) - this.system.data.ponports));
                 if(this.mark_type === 0 &&(!this.mc_unknow_info.data)){
                     this.mark_mode = 1;
                     return

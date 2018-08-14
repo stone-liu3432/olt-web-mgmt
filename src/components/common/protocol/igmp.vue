@@ -296,40 +296,39 @@ export default {
                 return
             }
             var param_mode = {
-                    "method":"set",
-                    "param":{
-                        "mode": this.igmp_param.mode
-                    }
+                "method":"set",
+                "param":{
+                    "mode": this.igmp_param.mode
                 }
+            }
             this.$http.post('/switch_igmp?form=mode',param_mode).then(res=>{
                 if(res.data.code === 1){
-                    this.set_multicast(flags);
-                }else{
+                    this.cfg_multicast(flags);
+                }else if(res.data.code > 1){
                     this.$message({
                         type: 'error',
-                        text: 'err:' + res.data.code + ' ' + res.data.message
+                        text: '(' + res.data.code + ') ' + res.data.message
                     })
                 }
             }).catch(err=>{
                 // to do
             })
-            this.close_multicast_st();
         },
         //  设置mode成功后的回调
-        set_multicast(flag){
+        cfg_multicast(flag){
             var param_multicast = {
                 "method":"set",
                 "param":{
-                    "flags": falg,
-                    "protocol-policy": this.igmp_param.protocol_policy,
+                    "flags": flag,
+                    "protocol_policy": this.igmp_param.protocol_policy,
                     "fast_leave": this.igmp_param.fast_leave,
                     "group_aging_time": this.igmp_param.group_aging_time,
                     "robustness": this.igmp_param.robustness,
                     "gen_response_time": this.igmp_param.gen_response_time,
                     "gen_query_interval": this.igmp_param.gen_query_interval,
-                    "query_src_ip": this.query_src_ip,
-                    "query_src_mac": this.query_src_mac,
-                    "sp_query_interval": this.sp_query_interval, 
+                    "query_src_ip": this.igmp_param.query_src_ip,
+                    "query_src_mac": this.igmp_param.query_src_mac,
+                    "sp_query_interval": this.igmp_param.sp_query_interval,
                     "sp_response_time": this.igmp_param.sp_response_time,
                     "sp_query_number": this.igmp_param.sp_query_number
                 }
