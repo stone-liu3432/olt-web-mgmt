@@ -38,7 +38,6 @@ const rstp = () => import(/* webpackChunkName: "protocol-page" */  '@/components
 const igmp = () => import(/* webpackChunkName: "protocol-page" */  '@/components/common/protocol/igmp')
 
 const router = new Router({
-	linkActiveClass: 'active',
 	routes: [
 		{
 			path: "/",

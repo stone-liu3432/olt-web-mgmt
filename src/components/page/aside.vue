@@ -3,14 +3,14 @@
         <ul class="menu" v-if="menu.data && lanMap">
             <!-- 主菜单/左侧导航栏 -->
             <li v-for="(item,index) in menu.data.menu" :key="index">
-                <p class="menu-item" @click="handleClick(item)" :class="[ item.isHidden ? 'active' : '' ]"> 
+                <p class="menu-item" @click="select_first_menu(item)" :class="[ item.isHidden ? 'active' : '' ]"> 
                     {{ lanMap[item.name] }}
                 </p>
                 <!-- 二级菜单 -->
                 <transition name="bounce">
                     <ul class="sub-menu" v-if="item.children" :class="{ hide: item.isHidden }">
-                        <li v-for="(_item,_index) in item.children" :key="_index" @click="selectEvent($event,_item.name)">
-                            <p class="sub-item" @click="selectItem(_item)">
+                        <li v-for="(_item,_index) in item.children" :key="_index" @click="select_second_menu($event,_item.name)">
+                            <p class="sub-item" @click="select_page(_item)">
                                 {{ lanMap[_item.name] }}
                             </p>
                         </li>
@@ -30,7 +30,7 @@ export default {
         return {}
     },
     methods:{
-        handleClick(node){
+        select_first_menu(node){
             // 检查 菜单项下面是否有子菜单
             if(!node.children){
                 for(var key in this.menu.data.menu){
@@ -58,7 +58,7 @@ export default {
             sessionStorage.setItem('first_menu',node.name);
         },
         //  子菜单被选中时样式
-        selectEvent(e,str){
+        select_second_menu(e,str){
             var sub_item = document.querySelectorAll('p.sub-item');
             for(var i=0;i<sub_item.length;i++){
                 sub_item[i].className = 'sub-item';
@@ -67,7 +67,7 @@ export default {
             sessionStorage.setItem('sec_menu',str);
         },
         //  点击切换页面
-        selectItem(node){
+        select_page(node){
             this.$router.replace(node.name);
         }
     },
@@ -92,7 +92,6 @@ export default {
                             }
                         }
                     })
-                    
                 }
             }
         }
@@ -100,7 +99,7 @@ export default {
 }
 </script>
 
-<style scoped>
+<style scoped lang="less">
 #left-aside{
     width: 200px;;
     height: 100%;
