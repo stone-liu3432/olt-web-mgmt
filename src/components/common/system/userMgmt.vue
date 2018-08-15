@@ -356,17 +356,8 @@ export default {
 
 <style lang="less" scoped>
 a{
-    font-size: 16px;
-    display: inline-block;
     padding: 0 20px;
-    height: 30px;
-    line-height: 30px;
-    text-align: center;
-    background: #666;
-    border-radius: 3px;
     margin-left: 30px;
-    color: #fff;
-    vertical-align: middle;
 }
 input[type="password"] {
     text-indent: 10px;

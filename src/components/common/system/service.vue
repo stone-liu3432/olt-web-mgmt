@@ -301,14 +301,14 @@ export default {
             if(!this.ssh_name || !this.reg_name.test(this.ssh_name)){
                 this.$message({
                     type: 'error',
-                    text: this.lamMap['param_error'] + ': ' + this.lanMap['title']
+                    text: this.lanMap['param_error'] + ': ' + this.lanMap['title']
                 })
                 return
             }
             if(!this.ssh_key){
                 this.$message({
                     type: 'error',
-                    text: this.lamMap['param_error'] + ': ' + this.lanMap['key']
+                    text: this.lanMap['param_error'] + ': ' + this.lanMap['key']
                 })
                 return
             }

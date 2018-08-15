@@ -541,12 +541,12 @@ p>span{
 }
 .clear-btn:active,.remote-mgmt>a:active,.modal-item>a:active{
     border: 1px solid #67AEF7;
-    background: #ccc;
+    background: #444;
 }
 .modal-item>a.not-allowed:hover,.modal-item>a.not-allowed:active{
     cursor: not-allowed;
     border: 1px solid transparent;
-    background: #ddd;
+    background: #666;
 }
 .modal-content{
     width:550px;

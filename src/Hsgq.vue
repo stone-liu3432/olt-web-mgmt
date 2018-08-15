@@ -183,9 +183,11 @@ a {
     background: #666;
     color: #fff;
     vertical-align: middle;
+    transition: all .2s linear;
 }
 a:active {
     border: 1px solid #1e90ff;
+    background: #444;
 }
 /* 复用模态框类 */
 .modal-dialog {

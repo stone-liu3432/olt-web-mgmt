@@ -1,7 +1,7 @@
 <template>
     <div id="detail" class="lf" v-if="port_name.pon && port_name.ge">
-        <keep-alive :include="['onuAllow','ponSetting','onuDeny','onuBasicInfo','slaCfg','onuPortCfg','perfInfo','portCfg','portVlan']">
-            <router-view v-if="isRouterAlive" :key="isRouterRefresh"></router-view>
+        <keep-alive :include="['onuAllow','ponSetting','onuDeny','onuBasicInfo','slaCfg','onuPortCfg','perfInfo','portCfg','portVlan','igmp','multicast','multiVlan']">
+            <router-view v-if="isRouterAlive"></router-view>
         </keep-alive>
     </div>
 </template>
@@ -12,8 +12,7 @@
         name: 'detail',
         data(){
             return {
-                isRouterAlive: true,
-                isRouterRefresh: 0
+                isRouterAlive: true
             }
         },
         computed: mapState(['lanMap','change_url','system','port_name']),
@@ -70,7 +69,7 @@
                         }
                     }
                     this.portName(portName);
-                    this.isRouterRefresh = new Date().getTime();
+                    this.reload();
                 }).catch(err=>{
                     // to do
                 })
@@ -89,11 +88,6 @@
         },
         beforeDestroy(){
             document.body.removeEventListener('keydown',this.preventRefresh);
-        },
-        watch: {
-            '$route'(){
-                this.isRouterRefresh = new Date().getTime() + Math.random();
-            }
         }
     }
 </script>

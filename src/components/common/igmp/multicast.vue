@@ -118,6 +118,9 @@ export default {
     created(){
         this.getData();
     },
+    activated(){
+        this.getData();
+    },
     methods: {
         getData(){
             this.$http.get(this.change_url.get_multicast).then(res=>{
@@ -294,19 +297,6 @@ export default {
 </script>
 
 <style lang="less" scoped>
-a{
-    font-size: 16px;
-    display: inline-block;
-    padding: 0 30px;
-    height: 30px;
-    line-height: 30px;
-    text-align: center;
-    background: #666;
-    border-radius: 3px;
-    color: #fff;
-    margin-left: 100px;
-    vertical-align: middle;
-}
 select{
     width: 200px;
     height: 30px;
@@ -322,11 +312,8 @@ div.multicast{
             display: inline-block;
             width: 200px;
         }
-        a{
-            margin: 0;
-            &:last-child{
-                margin-left: 20px;
-            }
+        a+a{
+            margin-left: 20px;
         }
         i{
             display: inline-block;
@@ -431,7 +418,7 @@ div.multicast{
                 }
             }
             a{
-                margin-left: 105px;
+                margin-left: 100px;
                 margin-top: 20px;
             }
         }

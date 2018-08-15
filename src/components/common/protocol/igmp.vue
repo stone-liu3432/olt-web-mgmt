@@ -167,6 +167,9 @@ export default {
     created(){
         this.get_igmp_info();
     },
+    activated(){
+        this.get_igmp_info();
+    },
     methods: {
         select_page(num){
             this.show_index = num;
@@ -366,17 +369,7 @@ export default {
 
 <style lang="less" scoped>
 a{
-    font-size: 16px;
-    display: inline-block;
-    padding: 0 30px;
-    height: 30px;
-    line-height: 30px;
-    text-align: center;
-    background: #666;
-    border-radius: 3px;
-    color: #fff;
     margin-left: 100px;
-    vertical-align: middle;
 }
 h2{
     font-size: 24px;
@@ -456,7 +449,7 @@ div.igmp-group-modal{
             }
         }
         a{
-            margin-left: 105px;
+            margin-left: 100px;
             margin-top: 20px;
         }
     }

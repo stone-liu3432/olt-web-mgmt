@@ -155,6 +155,9 @@ export default {
     created(){
         this.get_multi_vlan();
     },
+    activated(){
+        this.get_multi_vlan();
+    },
     methods: {
         //  获取组播VLAN列表
         get_multi_vlan(){
@@ -595,17 +598,7 @@ export default {
 
 <style lang="less" scoped>
 a{
-    font-size: 16px;
-    display: inline-block;
-    padding: 0 30px;
-    height: 30px;
-    line-height: 30px;
-    text-align: center;
-    background: #666;
-    border-radius: 3px;
-    color: #fff;
     margin-left: 100px;
-    vertical-align: middle;
 }
 select{
     width: 200px;
