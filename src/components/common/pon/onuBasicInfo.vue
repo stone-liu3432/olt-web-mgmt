@@ -577,7 +577,7 @@ div.onu-optical-title{
         border: none;
     }
     >a{
-        width: 120px;
+        width: 115px;
         padding: 0;
         margin-right: 20px;
     }

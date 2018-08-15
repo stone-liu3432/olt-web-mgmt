@@ -1189,7 +1189,7 @@ div.dialog-body{
         }
         a{
             width: 120px;
-            margin: 25px 0 0 85px;
+            margin: 25px 0 0 98px;
             padding: 0;
         }
     }
@@ -1272,7 +1272,7 @@ div.dialog-content{
         a{
             width: 120px;
             padding: 0;
-            margin: 25px 0 0 85px;
+            margin: 25px 0 0 98px;
         }
     }
 }
