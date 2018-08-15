@@ -358,7 +358,8 @@ import { mapState } from 'vuex'
                                     arr.splice(index,1);
                                     if(this.search_id === ''){
                                         this.getPage();
-                                        this.pagination.page = Math.ceil(this.vlan_list.data.length/this.pagination.display);
+                                        if(this.vlan_list.data && this.vlan_list.data.length > 0)
+                                            this.pagination.page = Math.ceil(this.vlan_list.data.length/this.pagination.display);
                                         if(this.vlan_tab.length === 0 && this.vlan_list.data.length > 0){
                                             this.pagination.index--;
                                             this.getPage();
