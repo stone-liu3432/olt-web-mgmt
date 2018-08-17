@@ -34,6 +34,7 @@
         <confirm :tool-tips="lanMap['if_sure'] + lanMap['upgrade_firmware'] + '?' " @choose="result_firmware" v-if="firmware_confirm"></confirm>
         <confirm :tool-tips="lanMap['if_sure'] + lanMap['upgrade_system'] + '?' " @choose="result_system" v-if="system_confirm"></confirm>
         <loading v-if="isReboot"></loading>
+        <loading v-if="load_file"></loading>
     </div>
 </template>
 
@@ -53,7 +54,8 @@ import loading from '@/components/common/loading'
                 width: 0,
                 timer: null,
                 interval: null,
-                reboot_timer: null
+                reboot_timer: null,
+                load_file: false
             }
         },
         computed: mapState(['lanMap']),
@@ -115,6 +117,7 @@ import loading from '@/components/common/loading'
                         })
                         return 
                     }
+                    this.load_file = true;
                     formData.append('file',files);
                     document.body.addEventListener('keydown',this.preventRefresh,false);
                     document.body.addEventListener('contextmenu',this.preventMouse,false);
@@ -124,6 +127,7 @@ import loading from '@/components/common/loading'
                     }).then(res=>{
                         document.body.removeEventListener('keydown',this.preventRefresh);
                         document.body.removeEventListener('contextmenu',this.preventMouse);
+                        this.load_file = false;
                         if(res.data.code === 1){
                             this.isLoading = true;
                             this.upgrade_callback(this.lanMap['fw_upgrade_succ'],this.lanMap['upgrade_buzy'],this.lanMap['file_header_error'],this.lanMap['fw_upgrade_fail']);
@@ -138,6 +142,7 @@ import loading from '@/components/common/loading'
                         this.width = 0;
                     }).catch(error=>{
                         // to do
+                        this.load_file = false;
                     });
                 }
                 this.firmware_confirm = false;
@@ -164,6 +169,7 @@ import loading from '@/components/common/loading'
                         })
                         return 
                     }
+                    this.load_file = true;
                     formData.append('file',files);
                     document.body.addEventListener('keydown',this.preventRefresh,false);
                     document.body.addEventListener('contextmenu',this.preventMouse,false);
@@ -173,6 +179,7 @@ import loading from '@/components/common/loading'
                     }).then(res=>{
                         document.body.removeEventListener('keydown',this.preventRefresh);
                         document.body.removeEventListener('contextmenu',this.preventMouse);
+                        this.load_file = false;
                         if(res.data.code === 1){
                             this.isLoading = true;
                             this.upgrade_callback(this.lanMap['sys_upgrade_succ'],this.lanMap['upgrade_buzy'],this.lanMap['file_header_error'],this.lanMap['sys_upgrade_fail']);
@@ -187,6 +194,7 @@ import loading from '@/components/common/loading'
                         this.width = 0;
                     }).catch(error=>{
                         // to do
+                        this.load_file = false;
                     });
                 }
                 this.system_confirm = false;
