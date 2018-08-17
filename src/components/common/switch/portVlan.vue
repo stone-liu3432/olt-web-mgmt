@@ -12,15 +12,11 @@
                 <option v-if="port_name.xge" v-for="(item,index) in port_name.xge" :key="index" :value="item.id">{{ item.name }}</option>
             </select>
         </div>
-        <div class="portvlan-tab">
-            <div :class="{actived: show_index === 1}" @click="pv_set">{{ lanMap['vlan_cfg'] }}</div>
-            <div :class="{actived: show_index === 2}" @click="pv_translate">VLAN Translate</div>
-            <div :class="{actived: show_index === 3}" @click="pv_qinq">VLAN QinQ</div>
-        </div>
+        <tabBar :tab="['vlan_cfg','VLAN Translate','VLAN QinQ']" @togglePage="select_page"></tabBar>
         <div>
-            <pvSet :pv-data="pv_set_d" v-if="show_index === 1 && pv_set_d.data"></pvSet>
-            <pvTranslate :pv-data="pv_translate_d" v-if="show_index === 2"></pvTranslate>
-            <pvQinq :pv-data="pv_qinq_d" v-if="show_index === 3"></pvQinq>
+            <pvSet :pv-data="pv_set_d" v-if="show_index === 'vlan_cfg' && pv_set_d.data"></pvSet>
+            <pvTranslate :pv-data="pv_translate_d" v-if="show_index === 'VLAN Translate'"></pvTranslate>
+            <pvQinq :pv-data="pv_qinq_d" v-if="show_index === 'VLAN QinQ'"></pvQinq>
         </div>
     </div>
 </template>
@@ -37,7 +33,7 @@ export default {
     data(){
         return {
             portid: 0,
-            show_index: 1,
+            show_index: 'vlan_cfg',
             pv_set_d: {},
             pv_translate_d: {},
             pv_qinq_d: {}
@@ -49,29 +45,31 @@ export default {
     },
     activated(){
         switch(this.show_index){
-            case 1:
+            case 'vlan_cfg':
                 this.get_pv_set();
                 break;
-            case 2: 
+            case 'VLAN Translate': 
                 this.get_pv_translate();
                 break;
-            case 3: 
+            case 'VLAN QinQ': 
                 this.get_pv_qinq();
                 break;
         }
     },
     methods: {
-        pv_set(){
-            this.show_index = 1;
-            this.get_pv_set();
-        },
-        pv_translate(){
-            this.show_index = 2;
-            this.get_pv_translate();
-        },
-        pv_qinq(){
-            this.show_index = 3;
-            this.get_pv_qinq();
+        select_page(page){
+            this.show_index = page;
+            switch(page){
+                case 'vlan_cfg':
+                    this.get_pv_set();
+                    break;
+                case 'VLAN Translate': 
+                    this.get_pv_translate();
+                    break;
+                case 'VLAN QinQ': 
+                    this.get_pv_qinq();
+                    break;
+            }
         },
         get_pv_set(){
             this.$http.get('/switch_port?form=vlan&port_id=' + this.portid).then(res=>{
@@ -108,13 +106,13 @@ export default {
         },
         refresh_page(){
             switch(this.show_index){
-                case 1:
+                case 'vlan_cfg':
                     this.get_pv_set();
                     break;
-                case 2: 
+                case 'VLAN Translate': 
                     this.get_pv_translate();
                     break;
-                case 3: 
+                case 'VLAN QinQ': 
                     this.get_pv_qinq();
                     break;
             }
@@ -124,13 +122,13 @@ export default {
         'portid'(){
             sessionStorage.setItem('portid',this.portid);
             switch(this.show_index){
-                case 1:
+                case 'vlan_cfg':
                     this.get_pv_set();
                     break;
-                case 2: 
+                case 'VLAN Translate': 
                     this.get_pv_translate();
                     break;
-                case 3: 
+                case 'VLAN QinQ': 
                     this.get_pv_qinq();
                     break;
             }

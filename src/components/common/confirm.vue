@@ -17,19 +17,19 @@
 
 <script>
 import { mapState } from 'vuex'
-    export default {
-        name: 'confirm',
-        props: ['toolTips'],
-        computed: mapState(['lanMap']),
-        data(){
-            return {}
-        },
-        methods: {
-            choose(bool){
-                this.$emit('choose',bool);
-            }
+export default {
+    name: 'confirm',
+    props: ['toolTips'],
+    computed: mapState(['lanMap']),
+    data(){
+        return {}
+    },
+    methods: {
+        choose(bool){
+            this.$emit('choose',bool);
         }
     }
+}
 </script>
 
 <style scoped>

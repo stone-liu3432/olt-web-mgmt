@@ -169,6 +169,13 @@ input[type="text"]:focus {
   border: 1px solid #1e90ff;
   border-radius: 3px;
 }
+select{
+    border-radius: 3px;
+    font-size: 16px;
+    height: 30px;
+    line-height: 30px;
+    text-indent: 6px;
+}
 a {
     border: 1px solid transparent;
     user-select: none;
