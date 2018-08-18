@@ -44,7 +44,7 @@
                 </div>
             </div>
         </div>
-        <onuPortVlan v-if="show_page === 'mvlan'" :portid="portid" :onuid="onuid"></onuPortVlan>
+        <onuPortVlan v-if="show_page === 'mvlan'" :portid="portid" :onuid="onuid" ref="opvlan"></onuPortVlan>
         <div class="modal-dialog" v-if="modal_index === 1 || modal_index === 2">
             <div class="cover"></div>
             <div class="onu-multi-cfg">
@@ -241,10 +241,15 @@ export default {
                     this.onuid = oid;
                     if(!oid || _onu_list.indexOf(Number(oid)) === -1) {
                         this.onuid = Number(this.onu_list.data[0]);
+                        //  onuid 变化时，会触发watcher，避免重复调用
                         return
                     };
                     this.get_mc_config();
                     this.get_mc_table();
+                    //  portid 变化， onuid 无变化时调用
+                    if(this.show_page === 'mvlan'){
+                        this.$refs.opvlan.getData();
+                    }
                 }else{
                     this.onu_list = {};
                 }

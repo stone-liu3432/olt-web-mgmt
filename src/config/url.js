@@ -30,7 +30,8 @@ var change_url = {
         get_multicast: './multicast_info.json',
         get_multi_vlan: './multicast_vlan.json',
         get_mc_unknow: './mc_unknow.json',
-        get_program: './program.json'
+        get_program: './program.json',
+        get_mc_eth_config: "./mc_eth_config.json"
     },
     betaUrl: {
         menu: "/board?info=menu",
@@ -63,7 +64,8 @@ var change_url = {
         get_multicast: '/switch_igmp?form=entry',
         get_multi_vlan: '/switch_igmp?form=multicast_vlan',
         get_mc_unknow: '/switch_igmp?form=mc_unknown&mvlan=',
-        get_program: '/switch_igmp?form=program&mvlan='
+        get_program: '/switch_igmp?form=program&mvlan=',
+        get_mc_eth_config: "/onumgmt?form=mc_eth_config"
     }
 }
 
