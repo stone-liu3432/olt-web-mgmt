@@ -192,6 +192,9 @@ a {
     vertical-align: middle;
     transition: all .2s linear;
 }
+a:hover{
+    color: #67aef6;
+}
 a:active {
     border: 1px solid #1e90ff;
     background: #444;
