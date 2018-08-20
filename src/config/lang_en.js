@@ -464,7 +464,9 @@ var en = {
 	"mc_mode": "multicast mode",
 	"mc_mac": "multicast MAC",
 	"group_num_max": "multicast max group",
-	"tag_mode": "multicast vlan mode"
+	"tag_mode": "multicast vlan mode",
+	"mv_conversion_table":"multicast VLAN conversion table",
+	"op_multicast":"ONU port multicast"
 	             
 }
 

@@ -1,6 +1,6 @@
 <template>
     <div class="onu-port-vlan">
-        <h4>ONU端口组播</h4>
+        <h4>{{ lanMap['op_multicast'] }}</h4>
         <div class="opv-item">
             <span>port id</span>
             <select v-model.number="opid">
@@ -21,11 +21,11 @@
             <span>{{ lanMap['mvlan'] }}</span>
             <span>{{ mv_list }}</span>
             <a href="javascript:void(0);" @click="open_modal(4)">{{ lanMap['add'] }}</a>
-            <a href="javascript:void(0);" @click="open_modal(5)">{{ lanMap['delete'] }}</a>
+            <a href="javascript:void(0);" @click="open_modal(5)" v-if="mvlan_list.data && mvlan_list.data.length > 0">{{ lanMap['delete'] }}</a>
         </div>
         <hr>
         <div class="opv-translate" v-if="mc_eth_cfg_port.tag_mode === 2">
-            <h4>组播VLAN转换表</h4>
+            <h4>{{ lanMap['mv_conversion_table'] }}</h4>
             <div>
                 <div>
                     <span>svlan</span>
@@ -43,7 +43,7 @@
         </div>
         <div class="modal-dialog" v-if="flag">
             <div class="cover"></div>
-            <div :class="{ 'simple-modal' : mc_eth_cfg_port.tag_mode !== 2 }">
+            <div :class="{ 'simple-modal' : flag !== 2 && flag !== 3 }">
                 <div class="opv-modal">
                     <h3 v-if="flag === 1">{{ lanMap['group_num_max'] + ' ' + lanMap['config'] }}</h3>
                     <h3 v-if="flag === 2">{{ lanMap['tag_mode'] + '' + lanMap['config'] }}</h3>
@@ -52,7 +52,8 @@
                     <h3 v-if="flag === 5">{{ lanMap['delete'] + ' ' + lanMap['mvlan'] }}</h3>
                     <div v-if="flag === 1">
                         <span>{{ lanMap['group_num_max'] }}</span>
-                        <input type="text" v-model.number="group_num_max">
+                        <input type="text" v-model.number="group_num_max" v-focus
+                         :style="{ 'border-color': group_num_max < 0 || group_num_max > 255 || isNaN(group_num_max) ? 'red' : '' }">
                     </div>
                     <div v-if="flag === 2 || flag === 3">
                         <span>{{ lanMap['tag_mode'] }}</span>
@@ -62,17 +63,22 @@
                             <option value="2">translate</option>
                         </select>
                     </div>
-                    <div v-if="(flag === 2 || flag === 3) && mc_eth_cfg_port.tag_mode === 2">
+                    <div v-if="(flag === 2 || flag === 3) && tag_mode === 2">
                         <span>svlan</span>
-                        <input type="text" v-model.number="svlan">
+                        <input type="text" v-model.number="svlan" v-focus 
+                         :style="{ 'border-color': svlan !== '' && (svlan < 1 || svlan > 4094 || isNaN(svlan)) ? 'red' : '' }">
                     </div>
-                    <div v-if="(flag === 2 || flag === 3) && mc_eth_cfg_port.tag_mode === 2">
+                    <div v-if="flag === 2 && tag_mode !== 2"></div>
+                    <div v-if="(flag === 2 || flag === 3) && tag_mode === 2">
                         <span>cvlan</span>
-                        <input type="text" v-model.number="cvlan">
+                        <input type="text" v-model.number="cvlan" 
+                         :style="{ 'border-color': cvlan !== '' && (cvlan < 1 || cvlan > 4094 || isNaN(cvlan)) ? 'red' : '' }">
                     </div>
+                    <div v-if="flag === 2 && tag_mode !== 2"></div>
                     <div v-if="flag === 4 || flag === 5">
                         <span>{{ lanMap['mvlan'] }}</span>
-                        <input type="text" v-model.number="mvlan">
+                        <input type="text" v-model.number="mvlan" v-focus 
+                         :style="{ 'border-color': mvlan !== '' && (mvlan < 1 || mvlan > 4094 || isNaN(mvlan)) ? 'red' : '' }">
                     </div>
                     <div>
                         <a href="javascript:void(0);" v-if="flag === 1" @click="submit_set_group">{{ lanMap['apply'] }}</a>
@@ -179,6 +185,7 @@ export default {
             this.cfm_del_vlan = true;
             this.svlan = node.svlan;
             this.cvlan = node.cvlan;
+            this.flag = 2;
         },
         open_modal(flag){
             this.flag = flag;
@@ -186,7 +193,7 @@ export default {
                 this.mc_eth_config.data.forEach(item=>{
                     if(item.op_id === this.opid){
                         this.group_num_max = item.group_num_max;
-                        this.tag_mode === item.tag_mode;
+                        this.tag_mode = item.tag_mode;
                     }
                 })
             }
@@ -200,7 +207,7 @@ export default {
             this.cvlan = '';
         },
         submit_set_group(){
-            if(this.group_num_max < 0 || this.group_num_max > 255 || isNaN(this.group_num_max)){
+            if(this.group_num_max === '' || this.group_num_max < 0 || this.group_num_max > 255 || isNaN(this.group_num_max)){
                 this.$message({
                     type: 'error',
                     text: this.lanMap['param_error'] + ': ' + this.lanMap['group_num_max']
@@ -398,6 +405,10 @@ export default {
 </script>
 
 <style lang="less" scoped>
+a{
+    width: 100px;
+    padding: 0;
+}
 div.onu-port-vlan{
     h4{
         font-size: 18px;
@@ -431,10 +442,10 @@ div.opv-translate{
     line-height: 30px;
     h4{
         float: left;
-        width: 200px;
+        width: 300px;
     }
     >div{
-        width: 400px;
+        width: 300px;
         float: left;
         span{
             display: inline-block;

@@ -464,7 +464,9 @@ var zh = {
 	"mc_mode": "组播模式",
 	"mc_mac": "组播MAC地址",
 	"group_num_max": "最大组播组",
-	"tag_mode": "组播VLAN模式"
+	"tag_mode": "组播VLAN模式",
+	"mv_conversion_table":"组播VLAN转换表",
+	"op_multicast":"ONU端口组播"
 }
 
 export default zh

@@ -17,8 +17,8 @@
             <div v-else class="no-data lf">{{ lanMap['no_onu_info'] }}</div>
         </div>
         <hr>
-        <tabBar :tab="['onu_multicast','mvlan']" @togglePage="select_tab"></tabBar>
-        <div class="multicast-detail" v-if="show_page === 'onu_multicast'">
+        <tabBar :tab="['onu_multicast','mvlan']" @togglePage="select_tab" v-if="onu_list.data"></tabBar>
+        <div class="multicast-detail" v-if="show_page === 'onu_multicast' && onu_list.data">
             <h3>{{ lanMap['onu_multicast'] + lanMap['info'] }}</h3>
             <div>
                 <span>{{ lanMap['mc_mode'] }}</span>
@@ -37,10 +37,10 @@
                     <span>{{ lanMap['mc_mac'] }}</span>
                     <span>{{ lanMap['mvlan'] }}</span>
                 </div>
-                <div>
-                    <span>1212</span>
-                    <span>ewqe</span>
-                    <span>ewqdsda</span>
+                <div v-for="(item,index) in mc_table.data" :key="index" v-if="mc_table.data && mc_table.data.length > 0">
+                    <span>{{ item.op_id }}</span>
+                    <span>{{ item.mc_mac }}</span>
+                    <span>{{ item.mvlan }}</span>
                 </div>
             </div>
         </div>
