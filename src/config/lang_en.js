@@ -61,7 +61,7 @@ var en = {
 	"modify_user_pwd":"Modify current user password",
 	"title":" Title",
 	"key":" Key",
-	"info": "Information",
+	"info": " Information",
 
 	"upgrade_firmware":" upgrade firmware",
 	"upgrade_system": " upgrade system",
@@ -458,7 +458,16 @@ var en = {
 	"vid":"multicast vlan",
 	"action":"multicast type",
 	"program_range_tips":"Effective address range：224.0.1.0-239.255.255.255",
-	"port_list_tips": "The routing port is only for the uplink port, 1 for GE1, and 2 for GE2..."
+	"port_list_tips": "The routing port is only for the uplink port, 1 for GE1, and 2 for GE2...",
+
+	"onu_multicast": 'ONU Multicast',
+	"mc_mode": "multicast mode",
+	"mc_mac": "multicast MAC",
+	"group_num_max": "multicast max group",
+	"tag_mode": "multicast vlan mode",
+	"mv_conversion_table":"multicast VLAN conversion table",
+	"op_multicast":"ONU port multicast"
+	             
 }
 
 export default en

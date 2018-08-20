@@ -149,7 +149,7 @@ export default {
             is_del_mvlan: false,
             is_create_mvlan: false,
             create_mvlan: '',
-            reg_ip: /^(([1-9]|[1-9]\d|1\d\d|2[0-4]\d|25[0-5])\.){1}((\d|[1-9]\d|1\d\d|2[0-4]\d|25[0-5])\.){2}([1-9]|[1-9]\d|1\d\d|2[0-4]\d|25[0-4]){1}$/,
+            reg_ip: /^(([1-9]|[1-9]\d|1\d\d|2[0-4]\d|25[0-5])\.){1}((\d|[1-9]\d|1\d\d|2[0-4]\d|25[0-5])\.){2}([1-9]|[1-9]\d|1\d\d|2[0-4]\d|25[0-4]){1}$/
         }
     },
     created(){
@@ -166,11 +166,14 @@ export default {
                 if(res.data.code === 1){
                     this.mv_info = res.data;
                     if(res.data.data && res.data.data.length > 0){
+                        //  created  第一次创建组件时
                         if(!this.mvlan){
                             this.mvlan = res.data.data[0].mvlan;
                             this.router_plist = res.data.data[0];
+                            return
                         }
                         for(var i=0,len=res.data.data.length;i<len;i++){
+                            //  mvlan存在  且在列表中时
                             if(res.data.data[i].mvlan === this.mvlan){ 
                                 this.get_mc_unknow();
                                 this.get_program();
@@ -178,6 +181,7 @@ export default {
                                 return
                             }
                         }
+                        //  mvlan存在 并且不在返回列表中时
                         this.mvlan = 0;     //  触发 watcher
                         this.mvlan = res.data.data[0].mvlan;
                         this.router_plist = res.data.data[0];

@@ -1,19 +1,15 @@
 <template>
     <div class="igmp">
         <h2>IGMP</h2>
-        <div class="portvlan-tab">
-            <div :class="{actived: show_index === 1}" @click="select_page(1)">IGMP {{ lanMap['info'] }}</div>
-            <div :class="{actived: show_index === 2}" @click="select_page(2)">{{ lanMap['multicast'] }}</div>
-            <div :class="{actived: show_index === 3}" @click="select_page(3)">{{ lanMap['mvlan'] }}</div>
-        </div>
-        <div v-if="show_index === 1">
+        <tabBar :tab="['info','multicast','mvlan']" @togglePage="select_page"></tabBar>
+        <div v-if="show_index === 'info'">
             <span>IGMP{{ lanMap['info'] }}</span>
             <span>
                 <a href="javascript:void(0);" @click="open_multicast_st">{{ lanMap['config'] }}</a>
             </span>
         </div>
         <!-- 组播配置信息  根据Mode不同时的不同显示项 -->
-        <ul v-if="igmp_info.data && show_index === 1">
+        <ul v-if="igmp_info.data && show_index === 'info'">
             <li>
                 <span>{{ lanMap['mode'] }}</span>
                 <span>{{ mode[igmp_info.data.mode] }}</span>
@@ -39,8 +35,8 @@
                 <span v-if="key === 'protocol_policy'">{{ item ? 'discard' : 'pass' }}</span>
             </li>
         </ul>
-        <multicast v-if="show_index === 2"></multicast>
-        <multi-vlan v-if="show_index === 3"></multi-vlan>
+        <multicast v-if="show_index === 'multicast'"></multicast>
+        <multi-vlan v-if="show_index === 'mvlan'"></multi-vlan>
         <div class="modal-dialog" v-if="show_multicast">
             <div class="cover"></div>
             <div class="igmp-group-modal">
@@ -144,7 +140,7 @@ export default {
             igmp_info: {},
             //  组播模态框打开/关闭
             show_multicast: false,
-            show_index: 1,
+            show_index: 'info',
             //  数据绑定
             igmp_param: {
                 "mode": 0,
@@ -171,8 +167,11 @@ export default {
         this.get_igmp_info();
     },
     methods: {
-        select_page(num){
-            this.show_index = num;
+        select_page(page){
+            this.show_index = page;
+            if(this.show_index === 'info'){
+                this.get_igmp_info();
+            }
         },
         get_igmp_info(){
             this.$http.get(this.change_url.get_igmp).then(res=>{

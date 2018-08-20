@@ -1,0 +1,21 @@
+{
+    "code":1,	
+    "message":"success",
+    "data":[{
+        "op_id": 1,
+        "group_num_max": 1,
+        "tag_mode": 2
+    },{
+        "op_id": 2,
+        "group_num_max": 12,
+        "tag_mode": 1
+    },{
+        "op_id": 3,
+        "group_num_max": 123,
+        "tag_mode": 1
+    },{
+        "op_id": 4,
+        "group_num_max": 1234,
+        "tag_mode": 2
+    }]
+}

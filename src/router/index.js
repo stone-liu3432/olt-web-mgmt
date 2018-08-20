@@ -26,6 +26,7 @@ const ponSetting = () => import(/* webpackChunkName: "ponmgmt-page" */  '@/compo
 const onuBasicInfo = () => import(/* webpackChunkName: "ponmgmt-page" */  '@/components/common/pon/onuBasicInfo')
 const onuPortCfg = () => import(/* webpackChunkName: "ponmgmt-page" */  '@/components/common/pon/onuPortCfg')
 const onuBatchUpgrade = () => import(/* webpackChunkName: "ponmgmt-page" */  '@/components/common/pon/onuBatchUpgrade')
+const onuMulticast = () => import(/* webpackChunkName: "ponmgmt-page" */  '@/components/common/pon/onuMulticast')
 // switch
 const portInfo = () => import(/* webpackChunkName: "switch-page" */  '@/components/common/switch/portInfo')
 const perfInfo = () => import(/* webpackChunkName: "switch-page" */  '@/components/common/switch/perfInfo')
@@ -155,6 +156,14 @@ const router = new Router({
 				{
 					path: "/onu_port_cfg",
 					component: onuPortCfg,
+					meta: {
+						requireAuth: true,
+						keepAlive: true
+					}
+				},
+				{
+					path: "/onu_multicast",
+					component: onuMulticast,
 					meta: {
 						requireAuth: true,
 						keepAlive: true
