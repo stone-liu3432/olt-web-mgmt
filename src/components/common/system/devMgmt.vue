@@ -1,5 +1,20 @@
 <template>
     <div>
+        <div class="dev-mgmt restore-cfg">
+            <div>{{ lanMap["restore_config"] }}</div>
+            <div>
+                <div>
+                    <form> 
+                        <input type="file" name="file1" size="80" class="hide" id="file" @change="changeFile()"/>
+                        <span class="updateFile" id="fileName">{{ lanMap['file_click'] }}</span>
+                        <a href="javascript:;" @click="restore_cfg">{{ lanMap["restore_config"] }}</a>
+                    </form>
+                </div>
+                <p>
+                    {{ lanMap['res_cfg_info'] }}
+                </p>
+            </div>
+        </div>
         <div class="dev-mgmt">
             <div>{{ lanMap["reboot"] }}</div>
             <div>
@@ -19,21 +34,6 @@
                 </div>
                 <p>
                     {{ lanMap['bkup_cfg_info'] }}
-                </p>
-            </div>
-        </div>
-        <div class="dev-mgmt">
-            <div>{{ lanMap["restore_config"] }}</div>
-            <div>
-                <div>
-                    <form> 
-                        <input type="file" name="file1" size="80" class="hide" id="file" @change="changeFile()"/>
-                        <span class="updateFile" id="fileName">{{ lanMap['file_click'] }}</span>
-                        <a href="javascript:;" @click="restore_cfg">{{ lanMap["restore_config"] }}</a>
-                    </form>
-                </div>
-                <p>
-                    {{ lanMap['res_cfg_info'] }}
                 </p>
             </div>
         </div>
@@ -352,13 +352,30 @@ export default {
 
 <style scoped lang="less">
 .dev-mgmt{
-    width: 100%;
+    float: left;
+    width: 49%;
     border: 1px solid #aaa;
     margin-top: 20px;
     box-shadow: 3px 3px 3px #ddd;
+    margin-left: 0.8%;
+    height: 160px;
+}
+div.restore-cfg{
+    width: 99%;
+    a{
+        margin-left: 330px;
+    }
+    >div{
+        >div{
+            text-align: left;
+        }
+    }
 }
 .dev-mgmt>div{
     padding: 10px 20px;
+    >div{
+        text-align: center;
+    }
 }
 .dev-mgmt>div:first-child{
     font-size: 18px;
@@ -395,9 +412,8 @@ form{
 }
 a{
     width: 200px;
-    height: 40px;
-    line-height: 40px;
-    margin-left: 320px;
+    height: 36px;
+    line-height: 36px;
     padding: 0;
 }
 input{

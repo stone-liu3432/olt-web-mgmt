@@ -23,8 +23,9 @@ export default {
                 if(top){
                     document.body.scrollTop -= this.distance;
                     document.documentElement.scrollTop -= this.distance;
-                }else {
+                }else if(top <= 0){
                     clearInterval(timer);
+                    document.body.scrollTop ? document.body.scrollTop = 0 : document.documentElement.scrollTop = 0;
                 }
             },Math.floor(this.distance/top))
         },

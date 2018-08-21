@@ -17,59 +17,63 @@
             <div v-else class="error-msg">{{ lanMap['no_onu_info'] }}</div>
 		</div>
 		<hr>
-        <div class="handle-btn" v-if="onu_basic_info.data">
-            <h3 class="lf">{{ lanMap['onu_mgmt'] }}</h3>
-            <div class="lf">
-                <a href="javascript:;" @click="open_onu_desc">{{ lanMap['config'] + lanMap['onu_info'] }}</a>
-                <a href="javascript:;" @click="open_reboot_onu">{{ lanMap['reboot_onu'] }}</a>
-                <a href="javascript:;" @click="open_un_auth_onu">{{ lanMap['deregister_onu'] }}</a>
-                <a href="javascript:;" @click="open_set_fec_mode">{{ lanMap['set_fec_mode'] }}</a>
+        <tabBar :tab="['onu_info','onu_alarm']" @togglePage="select_page"></tabBar>
+        <div v-if="show_page === 'onu_info'">
+            <div class="handle-btn" v-if="onu_basic_info.data">
+                <h3 class="lf">{{ lanMap['onu_mgmt'] }}</h3>
+                <div class="lf">
+                    <a href="javascript:;" @click="open_onu_desc">{{ lanMap['config'] + lanMap['onu_info'] }}</a>
+                    <a href="javascript:;" @click="open_reboot_onu">{{ lanMap['reboot_onu'] }}</a>
+                    <a href="javascript:;" @click="open_un_auth_onu">{{ lanMap['deregister_onu'] }}</a>
+                    <a href="javascript:;" @click="open_set_fec_mode">{{ lanMap['set_fec_mode'] }}</a>
+                </div>
+            </div>
+            <div>
+                <div class="lf onu-info">
+                    <div v-for="(item,key) in onu_basic_info.data" :key="key" v-if=" key != 'port_id' && onu_basic_info.data" class="onu-info-item">
+                        <span>
+                            {{ lanMap[key] }}
+                        </span>
+                        <span>
+                            {{ item }}
+                        </span>
+                    </div>
+                    <div class="onu-info-item" v-for="(item,key) in onu_fec_mode.data" :key="key" v-if="onu_fec_mode.data && onu_basic_info.data">
+                        <span>{{ key.replace(/_/,'-') }}</span>
+                        <span>{{ item ? 'Enable' : 'Disable' }}</span>
+                    </div>
+                </div>
+                <div class="lf onu-optical-diagnose" v-if="onuid">
+                    <div>
+                        <div class="onu-optical-title">
+                            <span>{{ lanMap['onu_optical_diagnose'] }}</span>
+                            <a href="javascript:;" class="rt" @click="getOpticalData()">{{ lanMap['refresh'] }}</a>
+                        </div>
+                        <div class="onu-optical" v-for="(item,key) in optical_diagnose.data" :key="key" v-if="key != 'port_id' && key !== 'onu_id' && optical_diagnose.data">
+                            <span>{{ lanMap[key] }}</span>
+                            <span>{{ item }}</span>
+                        </div>
+                        <div v-if="!(optical_diagnose.data)"  class="no-more-data">{{ lanMap['flush_page_retry'] }}</div>
+                    </div>
+                    <div class="onu-upgrade">
+                        <div class="onu-optical-title">
+                            <span>ONU {{ lanMap['upgrade'] }}</span>
+                            <span></span>
+                        </div>
+                        <div class="upgrade-item">
+                            <form class="upload-form">
+                                <input type="file" id="onu-upgrade-file1" class="hide" @change="changeFile('onu-upgrade-file1','onu-upgrade-filename1')" />
+                                <span class="updateFile" id="onu-upgrade-filename1">{{ lanMap['file_click'] }}</span>
+                            </form>
+                        </div>
+                        <div class="upgrade-item">
+                            <a href="javascript:void(0);" @click="upload_file">{{ lanMap['apply'] }}</a>
+                        </div>
+                    </div>
+                </div>
             </div>
         </div>
-        <div>
-            <div class="lf onu-info">
-                <div v-for="(item,key) in onu_basic_info.data" :key="key" v-if=" key != 'port_id' && onu_basic_info.data" class="onu-info-item">
-                    <span>
-                        {{ lanMap[key] }}
-                    </span>
-                    <span>
-                        {{ item }}
-                    </span>
-                </div>
-                <div class="onu-info-item" v-for="(item,key) in onu_fec_mode.data" :key="key" v-if="onu_fec_mode.data && onu_basic_info.data">
-                    <span>{{ key.replace(/_/,'-') }}</span>
-                    <span>{{ item ? 'Enable' : 'Disable' }}</span>
-                </div>
-            </div>
-            <div class="lf onu-optical-diagnose" v-if="onuid">
-                <div>
-                    <div class="onu-optical-title">
-                        <span>{{ lanMap['onu_optical_diagnose'] }}</span>
-                        <a href="javascript:;" class="rt" @click="getOpticalData()">{{ lanMap['refresh'] }}</a>
-                    </div>
-                    <div class="onu-optical" v-for="(item,key) in optical_diagnose.data" :key="key" v-if="key != 'port_id' && key !== 'onu_id' && optical_diagnose.data">
-                        <span>{{ lanMap[key] }}</span>
-                        <span>{{ item }}</span>
-                    </div>
-                    <div v-if="!(optical_diagnose.data)"  class="no-more-data">{{ lanMap['flush_page_retry'] }}</div>
-                </div>
-                <div class="onu-upgrade">
-                    <div class="onu-optical-title">
-                        <span>ONU {{ lanMap['upgrade'] }}</span>
-                        <span></span>
-                    </div>
-                    <div class="upgrade-item">
-                        <form class="upload-form">
-                            <input type="file" id="onu-upgrade-file1" class="hide" @change="changeFile('onu-upgrade-file1','onu-upgrade-filename1')" />
-                            <span class="updateFile" id="onu-upgrade-filename1">{{ lanMap['file_click'] }}</span>
-                        </form>
-                    </div>
-                    <div class="upgrade-item">
-                        <a href="javascript:void(0);" @click="upload_file">{{ lanMap['apply'] }}</a>
-                    </div>
-                </div>
-            </div>
-        </div>
+        <onuAlarm v-if="show_page === 'onu_alarm'"></onuAlarm>
         <div class="modal-dialog" v-if="onu_cfg_name">
             <div class="cover"></div>
             <div class="onu-desc">
@@ -101,9 +105,11 @@
 
 <script>
 import { mapState,mapMutations } from 'vuex'
+import onuAlarm from '@/components/common/pon/onuAlarm'
     export default {
         name: 'onuBasicInfo',
-		computed: mapState(['lanMap','port_name','port_info','change_url','onu_list']),
+        computed: mapState(['lanMap','port_name','port_info','change_url','onu_list']),
+        components: { onuAlarm },
         data(){
             return {
                 onu_basic_info: {},
@@ -120,7 +126,8 @@ import { mapState,mapMutations } from 'vuex'
                 onu_name: '',
                 onu_desc: '',
                 //  升级确认框
-                upgrade_confirm: false
+                upgrade_confirm: false,
+                show_page: 'onu_info'
             }
         },
         created(){
@@ -158,8 +165,9 @@ import { mapState,mapMutations } from 'vuex'
         activated(){
             var pid = sessionStorage.getItem('pid');
             this.portid = this.$route.query.port_id || pid || 1;
-            this.get_resource();
-            this.getOpticalData();
+            if(pid === this.portid){
+                this.get_resource();
+            }
         },
 		methods:{
             ...mapMutations({
@@ -168,6 +176,9 @@ import { mapState,mapMutations } from 'vuex'
             //  打开onu描述信息模态框
             open_onu_desc(){
                 this.onu_cfg_name = true;
+            },
+            select_page(page){
+                this.show_page = page;
             },
             //  onu描述信息模态框内按钮绑定的事件
             onu_cfg_info(bool){
@@ -367,13 +378,6 @@ import { mapState,mapMutations } from 'vuex'
                     })
                     return
                 }
-                // if(!this.onu_basic_info.data.upgrade_type){
-                //     this.$message({
-                //         type: 'error',
-                //         text: this.lanMap['no_upgrade_type']
-                //     })
-                //     return
-                // }
                 this.upgrade_confirm = true;
             },
             upgrade_result(bool){
@@ -445,6 +449,7 @@ import { mapState,mapMutations } from 'vuex'
                         this.onuid = this.$route.query.onu_id || oid;
                         if(!this.$route.query.onu_id && (!oid || _onu_list.indexof(Number(oid)) === -1)){
                             this.onuid = this.onu_list.data[0];
+                            return
                         }
                         if(this.$route.query.onu_id){
                             this.$route.query.onu_id = null;
@@ -462,44 +467,11 @@ import { mapState,mapMutations } from 'vuex'
 		},
 		watch: {
 			portid(){
-                // 请求url:  请求url: /onumgmt?form=base-info&port_id=1&onu_id=1
                 if(!this.portid) return
                 sessionStorage.setItem('pid',Number(this.portid));
-				// this.$http.get('/onu_allow_list?form=resource&port_id='+this.portid).then(res=>{
-				// 	if(res.data.code === 1){
-                //         var _onu_list = this.analysis(res.data.data.resource);
-                //         if(!_onu_list){
-                //              this.addonu_list({});
-                //              this.onu_basic_info = {}; 
-                //              this.onuid = 0;
-                //              return
-                //         }
-                //         var obj = {
-                //             port_id: res.data.data.port_id,
-                //             data: _onu_list
-                //         }
-                //         this.addonu_list(obj);
-                //         var oid = sessionStorage.getItem('oid');
-                //         this.onuid = this.$route.query.onu_id || oid;
-                //         if(!this.$route.query.onu_id && (!oid || _onu_list.indexof(Number(oid)) === -1)){
-                //             this.onuid = this.onu_list.data[0];
-                //         }
-                //         if(this.$route.query.onu_id){
-                //             this.$route.query.onu_id = null;
-                //         }
-                //         this.getData();
-                //     }else{
-                //         this.addonu_list({});
-                //         this.onu_basic_info = {}; 
-                //         this.onuid = 0;
-                //     }
-				// }).catch(err=>{
-				// 	// to do
-                // })
                 this.get_resource();
 			},
 			onuid(){
-            	// 请求url:  请求url: /onumgmt?form=base-info&port_id=1&onu_id=1
                 if(this.onuid === 0) return
                 sessionStorage.setItem('oid',Number(this.onuid));
 				this.getData();

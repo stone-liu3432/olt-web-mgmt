@@ -3,12 +3,14 @@
         <div class="alarm-title">
             {{ lanMap['alarm_info'] }}
             <a href="javascript:void(0);" @click="getData">{{ lanMap['refresh'] }}</a>
-            <a href="javascript:void(0);" v-if="count < 4" @click="getData">{{ lanMap['loadmore'] }}</a>
+            <a href="javascript:void(0);" @click="open_cfm">{{ lanMap['download'] }}</a>
         </div>
         <ul v-if="alarm_data.data && alarm_data.data.length > 0" v-for="(item,index) in alarm_data.data" :key="index">
             <li>{{ item }}</li>
         </ul>
+        <div  v-if="!alarm_data.data" class="no-more-data">{{ lanMap['no_more_data'] }}</div>
         <scroll-top></scroll-top>
+        <confirm v-if="isShow" @choose="view_result"></confirm>
     </div>
 </template>
 
@@ -22,40 +24,52 @@ export default {
     data(){
         return {
             alarm_data: {},
-            count: 0
+            isShow: false
         }
     },
     created(){
         this.getData();
     },
     methods: {
-        getData(){
-            if(this.count > 3) return
-            this.$http.get('/alarm?form=info',{ params: { count: this.count } }).then(res=>{
+        getData(bool){
+            this.$http.get('/alarm?form=info').then(res=>{
                 if(res.data.code === 1){
-                    if(this.count === 0){
-                        this.alarm_data = res.data;
-                        if(res.data.data.length === 256){
-                            this.count++;
-                            return
-                        }else{
-                            this.count = 9;
-                        }
-                    }else{
-                        if(res.data.data){
-                            this.alarm_data.data = this.alarm_data.data.concat(res.data.data);
-                            this.count++;
-                        }
-                        if(!res.data.data || res.data.data.length < 256){
-                            this.count = 9;
-                        }
-                    }
+                    this.alarm_data = res.data;
                 }else{
                     this.alarm_data = {}
                 }
             }).catch(err=>{
                 // to do
             })
+        },
+        open_cfm(){
+            this.isShow = true;
+        },
+        view_result(bool){
+            if(bool){
+                this.$http.get('/alarm?form=download').then(res=>{
+                    if(res.data.code === 1){
+                        try{
+                            var a = document.createElement('a');  
+                            var str = window.location.href;
+                            var _url = str.substr(0,str.indexOf('/#/')+1);
+                            a.href = _url + res.data.filename;
+                            a.download = res.data.filename;
+                            a.click();
+                        }catch(e){
+                            this.view_result(true);
+                        }
+                    }else if(res.data.code > 1){
+                        this.$message({
+                            type: 'error',
+                            text: '(' + res.data.code + ') ' + res.data.message
+                        })
+                    }
+                }).catch(err=>{
+                    // to do
+                })
+            }
+            this.isShow = false;
         }
     }
 }
@@ -80,5 +94,9 @@ ul{
     li{
         margin: 10px 0;
     }
+}
+div.no-more-data{
+    margin: 20px 10px;
+    color: red;
 }
 </style>
