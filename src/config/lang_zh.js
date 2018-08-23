@@ -474,7 +474,9 @@ var zh = {
     group_num_max: "最大组播组",
     tag_mode: "组播VLAN模式",
     mv_conversion_table: "组播VLAN转换表",
-    op_multicast: "ONU端口组播"
+	op_multicast: "ONU端口组播",
+
+	onu_alarm: "ONU告警信息"
 };
 
 export default zh;

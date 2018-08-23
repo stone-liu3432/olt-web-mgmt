@@ -31,7 +31,7 @@ export default {
         this.getData();
     },
     methods: {
-        getData(bool){
+        getData(){
             this.$http.get('/alarm?form=info').then(res=>{
                 if(res.data.code === 1){
                     this.alarm_data = res.data;
@@ -50,11 +50,11 @@ export default {
                 this.$http.get('/alarm?form=download').then(res=>{
                     if(res.data.code === 1){
                         try{
-                            var a = document.createElement('a');  
+                            var a = document.createElement('a');
                             var str = window.location.href;
                             var _url = str.substr(0,str.indexOf('/#/')+1);
-                            a.href = _url + res.data.filename;
-                            a.download = res.data.filename;
+                            a.href = _url + res.data.data.filename;
+                            a.download = res.data.data.filename;
                             a.click();
                         }catch(e){
                             this.view_result(true);

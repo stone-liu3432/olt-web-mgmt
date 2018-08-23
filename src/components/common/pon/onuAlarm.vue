@@ -12,24 +12,27 @@ import { mapState } from 'vuex'
 export default {
     name: 'onuAlarm',
     computed: mapState(['lanMap']),
+    props: ['portData'],
     data(){
         return {
             onu_alarm_list: {}
         }
     },
     created(){
-        this.$http.get('/onumgmt?form=alarm-info',{ params: { port_id : 0, onu_id: 0} }).then(res=>{
-            if(res.data.code === 1){
-                this.onu_alarm_list = res.data;
-            }else{
-                this.onu_alarm_list = {}
-            }
-        }).catch(err=>{
-            // to do
-        })
+        this.getData();
     },
     methods: {
-
+        getData(){
+            this.$http.get('/onumgmt?form=alarm-info',{ params: { port_id : this.portData.portid, onu_id: this.portData.onuid } }).then(res=>{
+                if(res.data.code === 1){
+                    this.onu_alarm_list = res.data;
+                }else{
+                    this.onu_alarm_list = {}
+                }
+            }).catch(err=>{
+                // to do
+            })
+        }
     }
 }
 </script>

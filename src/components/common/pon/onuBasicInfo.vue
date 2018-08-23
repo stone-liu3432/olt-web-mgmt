@@ -73,7 +73,7 @@
                 </div>
             </div>
         </div>
-        <onuAlarm v-if="show_page === 'onu_alarm'"></onuAlarm>
+        <onuAlarm v-if="show_page === 'onu_alarm'" :port-data="{ portid,onuid }" ref="onuAlarm"></onuAlarm>
         <div class="modal-dialog" v-if="onu_cfg_name">
             <div class="cover"></div>
             <div class="onu-desc">
@@ -131,7 +131,7 @@ import onuAlarm from '@/components/common/pon/onuAlarm'
             }
         },
         created(){
-            var pid = sessionStorage.getItem('pid');
+            var pid = Number(sessionStorage.getItem('pid'));
             this.portid = this.$route.query.port_id || pid || 1;
             if(this.change_url.beta === 'test'){
                 this.$http.get('./onu_resource.json').then(res=>{
@@ -163,7 +163,7 @@ import onuAlarm from '@/components/common/pon/onuAlarm'
             }
         },
         activated(){
-            var pid = sessionStorage.getItem('pid');
+            var pid = Number(sessionStorage.getItem('pid'));
             this.portid = this.$route.query.port_id || pid || 1;
             if(pid === this.portid){
                 this.get_resource();
@@ -454,7 +454,14 @@ import onuAlarm from '@/components/common/pon/onuAlarm'
                         if(this.$route.query.onu_id){
                             this.$route.query.onu_id = null;
                         }
-                        this.getData();
+                        if(this.show_page === 'onu_info'){
+                            this.getData();
+                            this.getOpticalData();
+                        }else{
+                            this.$nextTick(()=>{
+                                this.$refs.onuAlarm.getData();
+                            })
+                        }
                     }else{
                         this.addonu_list({});
                         this.onu_basic_info = {}; 
@@ -474,8 +481,14 @@ import onuAlarm from '@/components/common/pon/onuAlarm'
 			onuid(){
                 if(this.onuid === 0) return
                 sessionStorage.setItem('oid',Number(this.onuid));
-				this.getData();
-                this.getOpticalData();
+                if(this.show_page === 'onu_info'){
+                    this.getData();
+                    this.getOpticalData();
+                }else{
+                    this.$nextTick(()=>{
+                        this.$refs.onuAlarm.getData();
+                    })
+                }
 			}
 		}
     }
