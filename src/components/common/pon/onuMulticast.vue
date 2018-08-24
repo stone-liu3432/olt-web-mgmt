@@ -30,7 +30,7 @@
                 <span>disable</span>
                 <a href="javascript:void(0);" @click="open_fast_leave">{{ lanMap['config'] }}</a>
             </div>
-            <div class="op-multicast">
+            <!-- <div class="op-multicast">
                 <h3>ONU {{ lanMap['multicast'] }}</h3>
                 <div>
                     <span>{{ lanMap['op_id'] }}</span>
@@ -42,7 +42,7 @@
                     <span>{{ item.mc_mac }}</span>
                     <span>{{ item.mvlan }}</span>
                 </div>
-            </div>
+            </div> -->
         </div>
         <onuPortVlan v-if="show_page === 'mvlan'" :portid="portid" :onuid="onuid" ref="opvlan"></onuPortVlan>
         <div class="modal-dialog" v-if="modal_index === 1 || modal_index === 2">
@@ -245,7 +245,7 @@ export default {
                         return
                     };
                     this.get_mc_config();
-                    this.get_mc_table();
+                    //this.get_mc_table();
                     //  portid 变化， onuid 无变化时调用
                     if(this.show_page === 'mvlan'){
                         this.$refs.opvlan.getData();
@@ -261,7 +261,7 @@ export default {
             if(!this.onuid) return
             sessionStorage.setItem('oid',Number(this.onuid));
             this.get_mc_config();
-            this.get_mc_table();
+            //this.get_mc_table();
         }
     }
 }
