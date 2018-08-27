@@ -14,7 +14,7 @@
         </div>
         <div class="opv-item">
             <span>{{ lanMap['tag_mode'] }}</span>
-            <span>{{ mc_eth_cfg_port.tag_mode }}</span>
+            <span>{{ mc_eth_cfg_port.tag_mode ? mc_eth_cfg_port.tag_mode === 1 ? 'untag' : 'translate' : 'tag' }}</span>
             <a href="javascript:void(0);" @click="open_modal(2)">{{ lanMap['config'] }}</a>
         </div>
         <div class="opv-item">
@@ -30,6 +30,7 @@
                 <div>
                     <span>svlan</span>
                     <span>cvlan</span>
+                    <span>{{ lanMap['config'] }}</span>
                 </div>
                 <div v-for="(item,index) in mv_translate.data" :key="index">
                     <span>{{ item.svlan }}</span>
@@ -148,6 +149,9 @@ export default {
                                 if(item.op_id === this.opid){
                                     this.mc_eth_cfg_port = item;
                                     this.getMvlan();
+                                    if(this.mc_eth_cfg_port.tag_mode === 2){
+                                        this.get_mv_translate();
+                                    }
                                 }
                             })
                         }
@@ -185,7 +189,6 @@ export default {
             this.cfm_del_vlan = true;
             this.svlan = node.svlan;
             this.cvlan = node.cvlan;
-            this.flag = 2;
         },
         open_modal(flag){
             this.flag = flag;
@@ -217,9 +220,9 @@ export default {
             var post_param = {
                 "method":"set",
                 "param":{
-                    "port_id": this.portid,
-                    "onu_id": this.onuid,
-                    "op_id": this.opid,
+                    "port_id": Number(this.portid),
+                    "onu_id": Number(this.onuid),
+                    "op_id": Number(this.opid),
                     "group_num_max": this.group_num_max
                 }
             }
@@ -261,9 +264,9 @@ export default {
             var post_param = {
                 "method":"set",
                 "param":{
-                    "port_id": this.portid,
-                    "onu_id": this.onuid,
-                    "op_id": this.opid,
+                    "port_id": Number(this.portid),
+                    "onu_id": Number(this.onuid),
+                    "op_id": Number(this.opid),
                     "tag_mode": this.tag_mode,
                     "svlan": this.svlan,
                     "cvlan": this.cvlan
@@ -292,10 +295,10 @@ export default {
                 var post_param = {
                     "method":"delete",
                     "param":{
-                        "port_id": this.portid,
-                        "onu_id": this.onuid,
-                        "op_id": this.opid,
-                        "tag_mode": this.tag_mode,
+                        "port_id": Number(this.portid),
+                        "onu_id": Number(this.onuid),
+                        "op_id": Number(this.opid),
+                        "tag_mode": 2,
                         "svlan": this.svlan,
                         "cvlan": this.cvlan
                     }
@@ -318,6 +321,7 @@ export default {
                 })
             }
             this.cfm_del_vlan = false;
+            this.flag = 0;
         },
         submit_add_mvlan(){
             if(this.mvlan < 1 || this.mvlan > 4094 || isNaN(this.mvlan)){
@@ -330,9 +334,9 @@ export default {
             var post_param = {
                 "method":"add",
                 "param":{
-                    "port_id": this.portid,
-                    "onu_id": this.onuid,
-                    "op_id": this.opid,
+                    "port_id": Number(this.portid),
+                    "onu_id": Number(this.onuid),
+                    "op_id": Number(this.opid),
                     "mvlan": this.mvlan       //1-4094
                 }
             }
@@ -358,9 +362,9 @@ export default {
             var post_param = {
                 "method":"delete",
                 "param":{
-                    "port_id": this.portid,
-                    "onu_id": this.onuid,
-                    "op_id": this.opid,
+                    "port_id": Number(this.portid),
+                    "onu_id": Number(this.onuid),
+                    "op_id": Number(this.opid),
                     "mvlan": this.mvlan       //  1-4094
                 }
             }
@@ -449,7 +453,10 @@ div.opv-translate{
         float: left;
         span{
             display: inline-block;
-            width: 120px;
+            width: 97px;
+            &+a{
+                width: 95px;
+            }
         }
         &:last-child{
             margin-left: 9px;

@@ -487,7 +487,7 @@ var en = {
     mc_mac: "multicast MAC",
     group_num_max: "multicast max group",
     tag_mode: "multicast vlan mode",
-    mv_conversion_table: "multicast VLAN conversion table",
+    mv_conversion_table: "multicast VLAN translate table",
     op_multicast: "ONU port multicast",
 
 	onu_alarm: "ONU Alarm"

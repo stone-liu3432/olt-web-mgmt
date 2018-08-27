@@ -212,6 +212,14 @@ import { mapState } from 'vuex'
                 }
                 this.$http.get(url).then(res=>{
                     if(res.data.code === 1){
+                        if(!res.data.data) {
+                            this.is_loadmore = false;
+                            if(this.count === 0){
+                                this.vlan_list = {};
+                                this.vlan_tab = [];
+                            }
+                            return
+                        }
                         if(res.data.data && res.data.data.length === 200){
                             this.is_loadmore = true;
                         }
@@ -234,12 +242,6 @@ import { mapState } from 'vuex'
                                 vlan_map[this.vlan_list.data[key].vlan_id] = this.vlan_list.data[key];
                             }
                             this.vlan_map = vlan_map;
-                        }
-                        if(!res.data.data){
-                            this.is_loadmore = false;
-                            this.vlan_list = {};
-                            this.vlan_tab = [];
-                            return
                         }
                         this.pagination.page = Math.ceil(this.vlan_list.data.length/this.pagination.display);
                         this.getPage();

@@ -17,7 +17,7 @@
             <div v-else class="error-msg">{{ lanMap['no_onu_info'] }}</div>
 		</div>
 		<hr>
-        <tabBar :tab="['onu_info','onu_alarm']" @togglePage="select_page"></tabBar>
+        <tabBar :tab="['onu_info','onu_alarm']" @togglePage="select_page" v-if="!onu_list.data"></tabBar>
         <div v-if="show_page === 'onu_info'">
             <div class="handle-btn" v-if="onu_basic_info.data">
                 <h3 class="lf">{{ lanMap['onu_mgmt'] }}</h3>

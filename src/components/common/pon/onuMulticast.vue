@@ -20,14 +20,14 @@
         <tabBar :tab="['onu_multicast','mvlan']" @togglePage="select_tab" v-if="onu_list.data"></tabBar>
         <div class="multicast-detail" v-if="show_page === 'onu_multicast' && onu_list.data">
             <h3>{{ lanMap['onu_multicast'] + lanMap['info'] }}</h3>
-            <div>
+            <div v-if="mc_cfg.data">
                 <span>{{ lanMap['mc_mode'] }}</span>
-                <span>igmp-snooping</span>
+                <span>{{ mc_cfg.data.mc_mode ? 'ctc' : 'igmp-snooping' }}</span>
                 <a href="javascript:void(0);" @click="open_mc_mode">{{ lanMap['config'] }}</a>
             </div>
-            <div>
+            <div v-if="mc_cfg.data">
                 <span>{{ lanMap['fast_leave'] }}</span>
-                <span>disable</span>
+                <span>{{ mc_cfg.data.fast_leave === 1 ? lanMap['enable'] : lanMap['disable'] }}</span>
                 <a href="javascript:void(0);" @click="open_fast_leave">{{ lanMap['config'] }}</a>
             </div>
             <!-- <div class="op-multicast">
@@ -60,8 +60,8 @@
                 <div v-if="modal_index === 2">
                     <span>{{ lanMap['fast_leave'] }}</span>
                     <select v-model.number="fast_leave">
-                        <option value="1">enable</option>
-                        <option value="2">disable</option>
+                        <option value="1">{{ lanMap['enable'] }}</option>
+                        <option value="2">{{ lanMap['disable'] }}</option>
                     </select>
                 </div>
                 <div>
@@ -90,7 +90,7 @@ export default {
             mc_cfg: {},
             mc_table: {},
             show_page: 'onu_multicast',
-            modal_index: 0,
+            modal_index: 0,                 //  1 -> mc_mode   2 -> fast leave
             mc_mode: 0,
             fast_leave: 0
         }
@@ -127,6 +127,7 @@ export default {
         },
         open_mc_mode(){
             this.modal_index = 1;
+            this.mc_mode = this.mc_cfg.data.mc_mode;
         },
         submit_mc_mode(){
             if(this.mc_mode === this.mc_cfg.data.mc_mode){
@@ -139,8 +140,8 @@ export default {
             var post_param = {
                 "method":"set",
                 "param":{
-                    "port_id": this.portid,
-                    "onu_id": this.onuid,
+                    "port_id": Number(this.portid),
+                    "onu_id": Number(this.onuid),
                     "mc_mode": this.mc_mode
                 }
             }
@@ -160,9 +161,11 @@ export default {
             }).catch(err=>{
                 // to do
             })
+            this.close_set_modal();
         },
         open_fast_leave(){
             this.modal_index = 2;
+            this.fast_leave = this.mc_cfg.data.fast_leave;
         },
         submit_fast_leave(){
             if(this.fast_leave === this.mc_cfg.data.fast_leave){
@@ -175,8 +178,8 @@ export default {
             var post_param = {
                 "method":"set",
                 "param":{
-                    "port_id": this.portid,
-                    "onu_id": this.onuid,
+                    "port_id": Number(this.portid),
+                    "onu_id": Number(this.onuid),
                     "fast_leave": this.fast_leave
                 }
             }
@@ -196,6 +199,7 @@ export default {
             }).catch(err=>{
                 // to do
             })
+            this.close_set_modal();
         },
         close_set_modal(){
             this.modal_index = 0;
