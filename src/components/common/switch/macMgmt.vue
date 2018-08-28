@@ -322,6 +322,14 @@ import loading from '@/components/common/loading'
                 }
                 this.$http.post('/switch_mac?form=table',post_param).then(res=>{
                     if(res.data.code === 1){
+                        if(!res.data.data){
+                            this.is_loadmore = false;
+                            if(this.count === 0){
+                                this.tab = [];
+                                this.mac_table = [];
+                            }
+                            return
+                        }
                         if(res.data.data && res.data.data.length === 200){
                             this.is_loadmore = true;
                         }
@@ -333,13 +341,6 @@ import loading from '@/components/common/loading'
                         }else if(res.data.data){
                             var data = Object.assign([],this.tab.concat(res.data.data));
                             this.tab = data;
-                        }
-                        if(!res.data.data){
-                            this.is_loadmore = false;
-                            this.tab = [];
-                            this.mac_table = [];
-                            this.count = 0;
-                            return
                         }
                         this.pagination.page = Math.ceil(this.tab.length/this.pagination.display);
                         this.getPage();

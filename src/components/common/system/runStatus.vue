@@ -13,9 +13,9 @@
                     {{ item.port_id < 10 ? 'PON0' + item.port_id : 'PON' + item.port_id }} : {{ item.status >= 1 ? lanMap['online'] : lanMap['offline'] }}
                 </p>
                 <div class="pon-modal">
-                    <p>{{ lanMap['registered_onu'] }}:{{ item.online + item.offline }}</p>
-                    <p>{{ lanMap['online'] }}：{{ item.online }}</p>
-                    <p class="tips">{{ lanMap['offline'] }}：{{ item.offline }}</p>
+                    <p>{{ lanMap['registered_onu'] }}: {{ item.online + item.offline }}</p>
+                    <p>{{ lanMap['online'] }}: {{ item.online }}</p>
+                    <p class="tips">{{ lanMap['offline'] }}: {{ item.offline }}</p>
                     <span>{{ lanMap['clk_onu_allow'] }}</span>
                 </div>
             </div>
@@ -33,11 +33,11 @@
                     <img src="../../../assets/uplink-rj45-disable.png" v-if="item.media == 'copper' && item.admin_status < 1">
                 </div>
                 <p :style="{'color' : item.admin_status >=1 ? item.link_status >=1 ? '#29BDFA' : '#aaa' : 'red'}">
-                    {{ index < 10 ? "GE0"+(index+1) : 'GE'+(index+1) }}：{{ item.admin_status >= 1 ? item.link_status >=1 ? lanMap['link_up'] : lanMap['link_down'] : lanMap['forbidden'] }}
+                    {{ index < 10 ? "GE0"+(index+1) : 'GE'+(index+1) }}: {{ item.admin_status >= 1 ? item.link_status >=1 ? lanMap['link_up'] : lanMap['link_down'] : lanMap['forbidden'] }}
                 </p>
                 <div class="pon-modal">
                     <p :style="{'color' : item.admin_status >=1 ? item.link_status >=1 ? '#29BDFA' : '#aaa' : 'red'}" class="tips">
-                        {{ lanMap['admin_status'] }}：{{ item.admin_status >= 1 ? item.link_status >= 1 ? lanMap['enable'] : lanMap['disable'] : lanMap['disable'] }}
+                        {{ lanMap['admin_status'] }}: {{ item.admin_status >= 1 ? item.link_status >= 1 ? lanMap['enable'] : lanMap['disable'] : lanMap['disable'] }}
                     </p>
                     <span>{{ lanMap['clk_port_cfg'] }}</span>
                 </div>
@@ -53,11 +53,11 @@
                     <img src="../../../assets/uplink-rj45-disable.png" v-if="item.media == 'copper' && item.admin_status < 1">
                 </div>
                 <p :style="{'color' : item.admin_status >=1 ? item.link_status >=1 ? '#29BDFA' : '#aaa' : 'red'}">
-                    {{ key < 10 ? "XGE0"+(key+1) : 'XGE'+(key+1) }}：{{ item.admin_status >= 1 ? item.link_status >=1 ? lanMap['link_up'] : lanMap['link_down'] : lanMap['forbidden'] }}
+                    {{ key < 10 ? "XGE0"+(key+1) : 'XGE'+(key+1) }}: {{ item.admin_status >= 1 ? item.link_status >=1 ? lanMap['link_up'] : lanMap['link_down'] : lanMap['forbidden'] }}
                 </p>
                 <div class="pon-modal">
                     <p :style="{'color' : item.admin_status >=1 ? item.link_status >=1 ? '#29BDFA' : '#aaa' : 'red'}" class="tips">
-                        {{ lanMap['admin_status'] }}：{{ item.admin_status >= 1 ? item.link_status >= 1 ? lanMap['enable'] : lanMap['disable'] : lanMap['disable'] }}
+                        {{ lanMap['admin_status'] }}: {{ item.admin_status >= 1 ? item.link_status >= 1 ? lanMap['enable'] : lanMap['disable'] : lanMap['disable'] }}
                     </p>
                     <span>{{ lanMap['clk_port_cfg'] }}</span>
                 </div>

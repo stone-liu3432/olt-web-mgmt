@@ -27,7 +27,7 @@
             </div>
             <div v-if="mc_cfg.data">
                 <span>{{ lanMap['fast_leave'] }}</span>
-                <span>{{ mc_cfg.data.fast_leave === 1 ? lanMap['enable'] : lanMap['disable'] }}</span>
+                <span>{{ mc_cfg.data.fast_leave === 2 ? lanMap['enable'] : lanMap['disable'] }}</span>
                 <a href="javascript:void(0);" @click="open_fast_leave">{{ lanMap['config'] }}</a>
             </div>
             <!-- <div class="op-multicast">
@@ -60,8 +60,8 @@
                 <div v-if="modal_index === 2">
                     <span>{{ lanMap['fast_leave'] }}</span>
                     <select v-model.number="fast_leave">
-                        <option value="1">{{ lanMap['enable'] }}</option>
-                        <option value="2">{{ lanMap['disable'] }}</option>
+                        <option value="2">{{ lanMap['enable'] }}</option>
+                        <option value="1">{{ lanMap['disable'] }}</option>
                     </select>
                 </div>
                 <div>

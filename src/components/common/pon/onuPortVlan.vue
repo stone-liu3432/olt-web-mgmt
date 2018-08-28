@@ -21,7 +21,7 @@
             <span>{{ lanMap['mvlan'] }}</span>
             <span>{{ mv_list }}</span>
             <a href="javascript:void(0);" @click="open_modal(4)">{{ lanMap['add'] }}</a>
-            <a href="javascript:void(0);" @click="open_modal(5)" v-if="mvlan_list.data && mvlan_list.data.length > 0">{{ lanMap['delete'] }}</a>
+            <a href="javascript:void(0);" @click="open_modal(5)" v-if="mvlan_list.length">{{ lanMap['delete'] }}</a>
         </div>
         <hr>
         <div class="opv-translate" v-if="mc_eth_cfg_port.tag_mode === 2">
@@ -103,12 +103,8 @@ export default {
     computed: {
         ...mapState(['lanMap','port_name','change_url']),
         mv_list(){
-            if(!this.mvlan_list.data || this.mvlan_list.data.length < 1) return ''
-            var result = [];
-            this.mvlan_list.data.forEach(item=>{
-                result.push(item.mvlan);
-            })
-            return result.toString();
+            if(!this.mvlan_list.length) return ''
+            return this.mvlan_list.toString();
         }
     },
     props: ['portid','onuid'],
@@ -119,7 +115,7 @@ export default {
             //  onu 单个端口组播配置
             mc_eth_cfg_port: {},
             //  onu 端口组播vlan表
-            mvlan_list: {},
+            mvlan_list: [],
             //  onu 端口组播vlan转换表
             mv_translate: {},
             opid: 0,
@@ -166,9 +162,19 @@ export default {
         getMvlan(){
             this.$http.get('/onumgmt?form=mc_vlan',{ params: { port_id: this.portid,onu_id: this.onuid }}).then(res=>{
                 if(res.data.code === 1){
-                    this.mvlan_list = res.data;
+                    if(res.data.data && res.data.data.length > 0){
+                        var result = [];
+                        res.data.data.forEach(item=>{
+                            if(item.op_id === this.opid){
+                                result.push(item.mvlan);
+                            }
+                        })
+                        this.mvlan_list = result;
+                    }else{
+                        this.mvlan_list = [];
+                    }
                 }else{
-                    this.mvlan_list = {}
+                    this.mvlan_list = [];
                 }
             }).catch(err=>{
                 // to do
@@ -400,6 +406,7 @@ export default {
                     this.mc_eth_cfg_port = item;
                 }
             })
+            this.getMvlan();
             if(this.mc_eth_cfg_port.tag_mode === 2){
                 this.get_mv_translate();
             }
