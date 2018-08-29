@@ -17,7 +17,7 @@
             <div v-else class="error-msg">{{ lanMap['no_onu_info'] }}</div>
 		</div>
 		<hr>
-        <tabBar :tab="['onu_info','onu_alarm']" @togglePage="select_page" v-if="!onu_list.data"></tabBar>
+        <tabBar :tab="['onu_info','onu_alarm']" @togglePage="select_page" v-if="onu_list.data"></tabBar>
         <div v-if="show_page === 'onu_info'">
             <div class="handle-btn" v-if="onu_basic_info.data">
                 <h3 class="lf">{{ lanMap['onu_mgmt'] }}</h3>
@@ -164,7 +164,7 @@ import onuAlarm from '@/components/common/pon/onuAlarm'
         },
         activated(){
             var pid = Number(sessionStorage.getItem('pid'));
-            this.portid = this.$route.query.port_id || pid || 1;
+            this.portid = Number(this.$route.query.port_id) || pid || 1;
             if(pid === this.portid){
                 this.get_resource();
             }
@@ -464,7 +464,7 @@ import onuAlarm from '@/components/common/pon/onuAlarm'
                         }
                     }else{
                         this.addonu_list({});
-                        this.onu_basic_info = {}; 
+                        this.onu_basic_info = {};
                         this.onuid = 0;
                     }
 				}).catch(err=>{
@@ -479,7 +479,7 @@ import onuAlarm from '@/components/common/pon/onuAlarm'
                 this.get_resource();
 			},
 			onuid(){
-                if(this.onuid === 0) return
+                if(this.onuid == 0) return
                 sessionStorage.setItem('oid',Number(this.onuid));
                 if(this.show_page === 'onu_info'){
                     this.getData();
@@ -489,7 +489,7 @@ import onuAlarm from '@/components/common/pon/onuAlarm'
                         this.$refs.onuAlarm.getData();
                     })
                 }
-			}
+            }
 		}
     }
 </script>

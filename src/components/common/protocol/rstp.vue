@@ -474,13 +474,10 @@ div.rstp{
     >div{
         margin: 30px 0 20px 10px;
         >span{
+            display: inline-block;
+            width: 150px;
             font-size: 18px;
             color: #67aef7;
-        }
-        >a{
-            width: 120px;
-            margin-left: 100px;
-            padding: 0;
         }
     }
     >ul{
