@@ -490,7 +490,9 @@ var en = {
     mv_conversion_table: "multicast VLAN translate table",
     op_multicast: "ONU port multicast",
 
-	onu_alarm: "ONU Alarm"
+    onu_alarm: "ONU Alarm",
+    mvlan_desc: "VLAN infomation",
+    program_desc: "program infomation"
 };
 
 export default en;

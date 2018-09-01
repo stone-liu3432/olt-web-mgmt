@@ -476,7 +476,9 @@ var zh = {
     mv_conversion_table: "组播VLAN转换表",
 	op_multicast: "ONU端口组播",
 
-	onu_alarm: "ONU告警信息"
+    onu_alarm: "ONU告警信息",
+    mvlan_desc: "组播VLAN描述信息",
+    program_desc: "组播节目描述信息"
 };
 
 export default zh;

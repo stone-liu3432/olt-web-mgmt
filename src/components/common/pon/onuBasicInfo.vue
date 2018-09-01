@@ -326,7 +326,6 @@ import onuAlarm from '@/components/common/pon/onuAlarm'
                 })
             },
             getData(){
-                if(!this.onuid) return
                 this.$http.get('/onumgmt?form=base-info&port_id='+this.portid+'&onu_id='+this.onuid).then(res=>{
                     if(res.data.code === 1){
                         this.onu_basic_info = res.data;
@@ -347,7 +346,6 @@ import onuAlarm from '@/components/common/pon/onuAlarm'
                 })
             },
             getOpticalData(){
-                if(!this.onuid) return
                 this.$http.get("/onumgmt?form=optical-diagnose&port_id="+this.portid+"&onu_id="+this.onuid).then(res=>{
                     if(res.data.code === 1){
                         this.optical_diagnose = res.data;
@@ -445,10 +443,10 @@ import onuAlarm from '@/components/common/pon/onuAlarm'
                             data: _onu_list
                         }
                         this.addonu_list(obj);
-                        var oid = sessionStorage.getItem('oid');
+                        var oid = Number(sessionStorage.getItem('oid'));
                         this.onuid = this.$route.query.onu_id || oid;
-                        if(!this.$route.query.onu_id && (!oid || _onu_list.indexof(Number(oid)) === -1)){
-                            this.onuid = this.onu_list.data[0];
+                        if(!this.$route.query.onu_id && (!oid || _onu_list.indexOf(Number(oid)) === -1)){
+                            this.onuid = _onu_list.data[0];
                             return
                         }
                         if(this.$route.query.onu_id){

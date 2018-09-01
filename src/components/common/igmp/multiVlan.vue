@@ -18,6 +18,10 @@
                 </span>
             </div>
             <div>
+                <span>{{ lanMap['mvlan_desc'] }}</span>
+                <span>{{ router_plist.mvlan_desc }}</span>
+            </div>
+            <div>
                 <span>{{ lanMap['router_portlist'] }}</span>
                 <span>{{ analysis(router_plist.router_portlist) }}</span>
             </div>
@@ -28,15 +32,18 @@
             <div class="program">
                 <span>{{ lanMap['program'] }}</span>
                 <span>
-                    <span v-for="(item,index) in program.data" :key="index"> 
-                        {{ item.program_s === item.program_e ? item.program_s : item.program_s  + ' - ' + item.program_e}} 
+                    <span v-for="(item,index) in program.data" :key="index">
+                        <span>
+                            {{ item.program_s === item.program_e ? item.program_s : item.program_s  + ' - ' + item.program_e}}
+                        </span>
+                        <span>{{ item.program_desc }}</span>
                     </span>
                 </span>
             </div>
         </div>
         <div class="modal-dialog" v-if="is_cfg_mv">
             <div class="cover"></div>
-            <div class="multi-vlan-set">
+            <div class="multi-vlan-set" :style="{ 'height' : mark_type === 0 && mark_mode === 1 ? '400px' : '' }">
                 <div>
                     <h3>{{ lanMap['config'] }}</h3>
                     <div>
@@ -97,6 +104,11 @@
                         {{ lanMap['port_list_tips'] }}
                     </div>
                     <div v-else></div>
+                    <div class="program-desc" v-if="mark_type === 0 && mark_mode === 1">
+                        <span>{{ lanMap['program_desc'] }}</span>
+                        <textarea spellcheck="false" v-model="program_desc" placeholder="0-64 characters"
+                         :style="{ 'border-color': program_desc.length > 64 ? 'red' : '' }"></textarea>
+                    </div>
                     <div>
                         <a href="javascript:void(0);" @click="submit_cfg">{{ lanMap['apply'] }}</a>
                         <a href="javascript:void(0);" @click="close_cfg_modal">{{ lanMap['cancel'] }}</a>
@@ -109,11 +121,16 @@
             <div class="cover"></div>
             <div class="create-mvlan-modal">
                 <div>
-                    <h3>{{ lanMap['create'] }}</h3>
+                    <h3>{{ lanMap['create'] + ' ' + lanMap['mvlan']}}</h3>
                     <div>
                         <span>{{ lanMap['vlan_id'] }}</span>
                         <input type="text" v-model.number="create_mvlan" v-focus 
                          :style="{ 'border-color': create_mvlan !== '' && (create_mvlan > 4094 || create_mvlan < 1 || isNaN(create_mvlan)) ? 'red' : ''}">
+                    </div>
+                    <div>
+                        <span>{{ lanMap['mvlan_desc'] }}</span>
+                        <textarea spellcheck="false" v-model="mvlan_desc" placeholder="0-64 characters"
+                         :style="{ 'border-color': mvlan_desc.length > 64 ? 'red' : '' }"></textarea>
                     </div>
                     <div>
                         <a href="javascript:void(0);" @click="submit_create_mvlan">{{ lanMap['apply'] }}</a>
@@ -137,12 +154,14 @@ export default {
             mv_info: {},
             router_plist: {},
             mvlan: 0,
+            mvlan_desc: '',
             mc_unknow_info: {},
             program: {},
             mark_type: 0,       //  set which one
             mark_mode: 1,       //  add or delete or config
             program_s: '',
             program_e: '',
+            program_desc: '',
             router_portlist: '',
             mc_unknown_policy: 0,
             is_cfg_mv: false,
@@ -280,6 +299,13 @@ export default {
                         })
                         return
                     }
+                    if(this.program_desc.length > 64){
+                        this.$message({
+                            type: 'error',
+                            text: this.lanMap['param_error'] + ': ' + this.lanMap['program_desc']
+                        })
+                        return
+                    }
                     this.add_program();
                 }
                 if(this.mark_type === 1){       //  添加路由端口
@@ -314,7 +340,8 @@ export default {
                 "param":{
                     "mvlan": this.mvlan,
                     "program_s": this.program_s,
-                    "program_e": this.program_e
+                    "program_e": this.program_e,
+                    "program_desc": this.program_desc
                 }
             }
             this.$http.post('/switch_igmp?form=program',post_param).then(res=>{
@@ -341,7 +368,8 @@ export default {
                 "param":{
                     "mvlan": this.mvlan,
                     "program_s": this.program_s, 
-                    "program_e": this.program_e
+                    "program_e": this.program_e,
+                    "program_desc": ''
                 }
             }
             this.$http.post('/switch_igmp?form=program',post_param).then(res=>{
@@ -449,7 +477,8 @@ export default {
                 var post_param = {
                     "method":"destroy",
                     "param":{
-                        "mvlan": this.mvlan
+                        "mvlan": this.mvlan,
+                        "mvlan_desc": ""
                     }
                 }
                 this.$http.post('/switch_igmp?form=multicast_vlan',post_param).then(res=>{
@@ -490,10 +519,18 @@ export default {
                 })
                 return
             }
+            if(this.mvlan_desc.length > 64){
+                this.$message({
+                    type: 'error',
+                    text: this.lanMap['param_error'] + ': ' + this.lanMap['mvlan_desc']
+                })
+                return
+            }
             var post_param = {
                 "method":"create",
                 "param":{
-                    "mvlan": this.create_mvlan
+                    "mvlan": this.create_mvlan,
+                    "mvlan_desc": this.mvlan_desc
                 }
             }
             this.$http.post('/switch_igmp?form=multicast_vlan',post_param).then(res=>{
@@ -630,6 +667,7 @@ div.multi-vlan-content{
         line-height: 36px;
         border: 1px solid #ccc;
         border-bottom: none;
+        overflow: hidden;
         &:first-child{
             margin-top: 15px;
         }
@@ -663,9 +701,19 @@ div.multi-vlan-content{
             float: left;
         }
         >span:last-child{
-            span{
+            >span{
                 display: block;
                 line-height: 28px;
+                height: 28px;
+                overflow: hidden;
+                >span{
+                    display: inline-block;
+                    &:last-child{
+                        margin-left: 30px;
+                    }
+                    overflow: hidden;
+                    text-overflow: ellipsis;
+                }
             }
         }
     }
@@ -702,6 +750,20 @@ div.multi-vlan-set{
             }
         }
     }
+    textarea{
+        width: 280px;
+        height: 100px;
+        border-color: #ccc;
+        line-height: 24px;
+        padding: 0 6px;
+        font-size: 16px;
+        resize: none;
+        vertical-align: top;
+        margin: 10px 0 0 0;
+    }
+    div.program-desc{
+        height: 110px;
+    }
     div{
         height: 36px;
         line-height: 36px;
@@ -714,7 +776,7 @@ div.multi-vlan-set{
 }
 div.create-mvlan-modal{
     width: 500px;
-    height: 160px;
+    height: 260px;
     h3{
         height: 50px;
         line-height: 50px;
@@ -723,6 +785,20 @@ div.create-mvlan-modal{
         font-weight: 500;
         padding-left: 20px;
     } 
+    textarea{
+        width: 240px;
+        height: 100px;
+        border-color: #ccc;
+        line-height: 24px;
+        padding: 0 6px;
+        font-size: 16px;
+        resize: none;
+        vertical-align: top;
+        margin: 10px 0 0 0;
+    }
+    input{
+        width: 252px;
+    }
     div:first-child{
         height: 36px;
         line-height: 36px;
@@ -732,7 +808,7 @@ div.create-mvlan-modal{
             text-align: center;
         }
         div:last-child{
-            margin-top: 18px;
+            margin-top: 10px;
         }
         div.ip-range{
             input{
