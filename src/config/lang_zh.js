@@ -478,7 +478,9 @@ var zh = {
 
     onu_alarm: "ONU告警信息",
     mvlan_desc: "组播VLAN描述信息",
-    program_desc: "组播节目描述信息"
+    program_desc: "组播节目描述信息",
+
+    batch_cfg_vlan: "批量配置VLAN端口"
 };
 
 export default zh;

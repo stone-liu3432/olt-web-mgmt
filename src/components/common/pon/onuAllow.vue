@@ -573,6 +573,7 @@ import onuCard from '@/components/common/pon/onuCard'
             portid(){
                 sessionStorage.setItem('pid',Number(this.portid));
                 this.getData();
+                this.batch_onulist = [];
             },
             add_macaddr(){
                 var reg = /^([0-9abcdefABCDEF]{2}\:){5}[0-9abcdefABCDEF]{2}$/;

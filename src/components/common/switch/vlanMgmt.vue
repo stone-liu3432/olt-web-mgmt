@@ -3,10 +3,11 @@
         <div>
             <h2>{{ lanMap['vlan_cfg'] }}</h2>
         </div>
-        <div>
-            <a href="javascript:;" @click="createVlan">{{ lanMap['create'] }}VLAN</a>
+        <div class="btn-group-vlan">
+            <a href="javascript:void(0);" @click="createVlan()">{{ lanMap['create'] }}VLAN</a>
             <!-- <span>{{ lanMap['tips_create_vlan'] }}</span> -->
             <a href="javascript:void(0);" @click="open_batch_del">{{ lanMap['delete'] }} VLAN</a>
+            <a href="javascript:void(0);" @click="createVlan(1)">{{ lanMap['batch_cfg_vlan'] }}</a>
         </div>
         <div class="search">
             <p class="lf">{{  lanMap['vlan_list'] }}</p>
@@ -52,9 +53,11 @@
         </ul>
         <div class="modal-dialog" v-if="modalDialog">
             <div class="cover"></div>
-            <div class="modal-content">
+            <div class="modal-content" :style="{ 'height': create_vlan ? '300px' : '275px' }">
+                <h3 v-if="create_vlan && !batch_set_vlan">{{ lanMap['create'] }}</h3>
+                <h3 v-if="create_vlan && batch_set_vlan">{{ lanMap['config'] }}</h3>
                 <div class="modal-title">
-                    <div v-if="!create_vlan">
+                    <div v-if="!create_vlan" class="set-vlan">
                         <span>VLAN ID:</span>
                         <span>{{ vlanid }}</span>
                     </div>
@@ -118,12 +121,13 @@
                         </div>
                     </div>
                     <div class="vlan-mode" v-if="!create_vlan">
-                        <a href="javascript:;" class="rt" @click="handle_cfg(false)">{{ lanMap['cancel'] }}</a>
-                        <a href="javascript:;" class="rt" @click="handle_cfg(true)">{{ lanMap['apply'] }}</a>
+                        <a href="javascript:void(0);" class="rt" @click="handle_cfg(false)">{{ lanMap['cancel'] }}</a>
+                        <a href="javascript:void(0);" class="rt" @click="handle_cfg(true)">{{ lanMap['apply'] }}</a>
                     </div>
                     <div class="vlan-mode" v-if="create_vlan">
-                        <a href="javascript:;" class="rt" @click="handle_create(false)">{{ lanMap['cancel'] }}</a>
-                        <a href="javascript:;" class="rt" @click="handle_create(true)">{{ lanMap['apply'] }}</a>
+                        <a href="javascript:void(0);" class="rt" @click="handle_create(false)">{{ lanMap['cancel'] }}</a>
+                        <a href="javascript:void(0);" class="rt" @click="handle_create(true)" v-if="!batch_set_vlan">{{ lanMap['apply'] }}</a>
+                        <a href="javascript:void(0);" class="rt" @click="set_vlan(0,vlanid_s,vlanid_e,false)" v-if="batch_set_vlan">{{ lanMap['apply'] }}</a>
                     </div>
                 </div>
                 <div class="close" @click="closeModal"></div>
@@ -180,7 +184,7 @@ import { mapState } from 'vuex'
                 // 分页数据(懒加载)
                 count: 0,
                 //  是否提示创建VLAN成功的tips
-                create_tips: false,
+                batch_set_vlan: false,
                 // vlan映射
                 vlan_map: {},
                 // 分页插件数据
@@ -297,10 +301,15 @@ import { mapState } from 'vuex'
                 }
             },
             //  创建VLAN
-            createVlan(){
+            createVlan(flag){
                 this.modalDialog = true;
                 this.create_vlan = true;
                 this.vlanid = 0;
+                if(flag){
+                    this.batch_set_vlan = true;
+                }else{
+                    this.batch_set_vlan = false;
+                }
             },
             //  删除VLAN
             deleteVlan(vlanid){
@@ -339,6 +348,7 @@ import { mapState } from 'vuex'
             closeModal(){
                 this.create_vlan = false;
                 this.modalDialog = false;
+                this.batch_set_vlan = false;
             },
             //  模态框控件 => 删除VLAN
             result(bool){
@@ -408,10 +418,10 @@ import { mapState } from 'vuex'
                 this.modalDialog = false;
             },
             //  配置VLAN ID 的端口
-            set_vlan(vid){
+            set_vlan(vid,vid_s,vid_e,create_flag){
                 var tagged = document.querySelectorAll('span.tagged>input');
                 var untagged = document.querySelectorAll('span.untagged>input');
-                var tag_str = '',untag_str = ''
+                var tag_str = '',untag_str = '',post_param,url;
                 for(var i=0,len=tagged.length;i<len;i++){
                     if(tagged[i].checked){
                         tag_str += tagged[i].name;
@@ -424,20 +434,40 @@ import { mapState } from 'vuex'
                         untag_str += ',';
                     }
                 }
-                var post_param = {
-                    "method":"set",
-                    "param":{
-                        "vlan_id": vid,
-                        "tagged_portlist": tag_str.replace(/\,$/,''),
-                        "untagged_portlist": untag_str.replace(/\,$/,'')
+                if(vid || (!!vid_s && vid_s === vid_e)){
+                    post_param = {
+                        "method":"set",
+                        "param":{
+                            "vlan_id": vid || vid_s,
+                            "tagged_portlist": tag_str.replace(/\,$/,''),
+                            "untagged_portlist": untag_str.replace(/\,$/,'')
+                        }
                     }
+                    url = '/switch_vlan';
+                }else{
+                    post_param = {
+                        "method":"set",
+                        "param":{
+                         	"vlanid_s": vid_s > vid_e ? vid_e : vid_s,
+                            "vlanid_e": vid_s > vid_e ? vid_s : vid_e,
+                            "tagged_portlist": tag_str.replace(/\,$/,''),
+                            "untagged_portlist": untag_str.replace(/\,$/,'')
+                        }
+                    }
+                    url = '/switch_vlanlist';
                 }
-                this.$http.post('/switch_vlan',post_param).then(res=>{
+                this.$http.post(url,post_param).then(res=>{
                     if(res.data.code === 1){
-                        if(!this.tip_flag){
+                        if(!this.tip_flag && !create_flag){
                             this.$message({
                                 type: 'success',
                                 text: this.lanMap['setting_ok']
+                            })
+                        }
+                        if(create_flag){
+                            this.$message({
+                                type: 'success',
+                                text: this.lanMap['create_vlan_info']
                             })
                         }
                         this.count = 0;
@@ -449,11 +479,10 @@ import { mapState } from 'vuex'
                             text: '(' + res.data.code + ') ' + res.data.message
                         })
                     }
-                    this.create_vlan = false;
-                    this.modalDialog = false;
                     this.vlanid_s = '';
                     this.vlanid_e = '';
                     this.tip_flag = false;
+                    this.closeModal();
                 }).catch(err=>{
                     // to do
                 })
@@ -463,16 +492,9 @@ import { mapState } from 'vuex'
                 if(bool){
                     var vid_s = Number(this.vlanid_s);
                     var vid_e = Number(this.vlanid_e);
-                    if(isNaN(vid_s) || vid_s > 4094 || vid_s < 1 || isNaN(vid_e) || vid_e > 4094 || vid_e < 1) {
-                        this.$message({
-                            type: 'error',
-                            text: this.lanMap['vlanid_range_hit']
-                        })
-                        return
-                    }
                     var tagged = document.querySelectorAll('span.tagged>input');
                     var untagged = document.querySelectorAll('span.untagged>input');
-                    var tag_str = '',untag_str = ''
+                    var tag_str = '',untag_str = '';
                     for(var i=0,len=tagged.length;i<len;i++){
                         if(tagged[i].checked){
                             tag_str += tagged[i].name;
@@ -485,30 +507,38 @@ import { mapState } from 'vuex'
                             untag_str += ',';
                         }
                     }
+                    if(isNaN(vid_s) || vid_s > 4094 || vid_s < 1 || isNaN(vid_e) || vid_e > 4094 || vid_e < 1) {
+                        this.$message({
+                            type: 'error',
+                            text: this.lanMap['vlanid_range_hit']
+                        })
+                        return
+                    }
                     var post_param = {
                         "method":"create",
                         "param":{
                             "type": 1,
                          	"vlanid_s": vid_s > vid_e ? vid_e : vid_s,
-                            "vlanid_e": vid_s > vid_e ? vid_s : vid_e,
-                            "tagged_portlist": tag_str.replace(/\,$/,''),
-                            "untagged_portlist": untag_str.replace(/\,$/,'')
+                            "vlanid_e": vid_s > vid_e ? vid_s : vid_e
                         }
                     }
                     this.$http.post('/switch_vlanlist',post_param).then(res=>{
                         if(res.data.code === 1){
-                            this.$message({
-                                type: 'success',
-                                text: this.lanMap['create_vlan_info']
-                            })
-                            this.create_vlan = false;
-                            this.modalDialog = false;
-                            this.vlanid_s = '';
-                            this.vlanid_e = '';
-                            this.tip_flag = false;
-                            this.count = 0;
-                            this.pagination.index = 1;
-                            this.getData();
+                            if(tag_str || untag_str){
+                                this.set_vlan(0,vid_s,vid_e,true);
+                            }else{
+                                this.$message({
+                                    type: 'success',
+                                    text: this.lanMap['create_vlan_info']
+                                })
+                                this.count = 0;
+                                this.pagination.index = 1;
+                                this.getData();
+                                this.vlanid_s = '';
+                                this.vlanid_e = '';
+                                this.tip_flag = false;
+                                this.closeModal();
+                            }
                         }else if(res.data.code > 1){
                             this.$message({
                                 type: 'error',
@@ -670,6 +700,12 @@ a+span{
     margin-left: 10px;
     color: #666;
 }
+div.btn-group-vlan{
+    a{
+        width: auto;
+        padding: 0 10px;
+    }
+}
 div>h2{
     font-size: 20px;
     font-weight: 600;
@@ -770,11 +806,20 @@ div.cover+div{
 div.modal-content{
     padding: 20px;
     border-radius: 10px;
+    >h3{
+        font-size: 20px;
+        color: #67aef6;
+        font-weight: 600;
+        margin-left: 10px;
+    }
 }
 div.modal-title{
-    margin: 20px 20px;
-    font-size: 20px;
-    color: #67aef7;
+    margin: 10px 20px;
+    >div.set-vlan{
+        font-size: 20px;
+        color: #67aef6;
+        font-weight: 600;
+    }
 }
 div.modal-body{
     margin: 0 20px;

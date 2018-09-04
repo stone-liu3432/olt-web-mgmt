@@ -132,7 +132,7 @@ import onuAlarm from '@/components/common/pon/onuAlarm'
         },
         created(){
             var pid = Number(sessionStorage.getItem('pid'));
-            this.portid = this.$route.query.port_id || pid || 1;
+            this.portid = Number(this.$route.query.port_id) || pid || 1;
             if(this.change_url.beta === 'test'){
                 this.$http.get('./onu_resource.json').then(res=>{
                     if(res.data.code === 1){
@@ -241,7 +241,7 @@ import onuAlarm from '@/components/common/pon/onuAlarm'
                         result.push(Number(substrs));
                     }
                 }
-                return result
+                return result.filter(item=>!!item)
             },
             open_reboot_onu(){
                 this.reboot_onu_confirm = true;
@@ -444,9 +444,9 @@ import onuAlarm from '@/components/common/pon/onuAlarm'
                         }
                         this.addonu_list(obj);
                         var oid = Number(sessionStorage.getItem('oid'));
-                        this.onuid = this.$route.query.onu_id || oid;
+                        this.onuid = Number(this.$route.query.onu_id) || oid;
                         if(!this.$route.query.onu_id && (!oid || _onu_list.indexOf(Number(oid)) === -1)){
-                            this.onuid = _onu_list.data[0];
+                            this.onuid = _onu_list[0];
                             return
                         }
                         if(this.$route.query.onu_id){

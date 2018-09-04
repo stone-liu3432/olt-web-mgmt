@@ -31,7 +31,7 @@
                 <div class="pv-qinq-modal-item">
                     <span>cvlan</span>
                     <span>
-                        <input type="text" v-model.number="cvlan" v-focus :disabled="cvlan_s != 0 || cvlan_e != 0"
+                        <input type="text" v-model.number="cvlan" v-focus :disabled="cvlan_s != 0 || cvlan_e != 0 || flags === 2"
                           :style="{ 'border-color' : cvlan < 0 || cvlan > 4094 || isNaN(cvlan) ? 'red' : '' }">
                     </span>
                 </div>
@@ -43,7 +43,7 @@
                     </span>
                 </div>
                 <div class="pv-qinq-modal-item">
-                    <span>vlan end</span>
+                    <span>cvlan end</span>
                     <span>
                         <input type="text" v-model.number="cvlan_e" :disabled="cvlan != 0"
                           :style="{ 'border-color' : cvlan_e < 0 || cvlan_e > 4094 || isNaN(cvlan_e) ? 'red' : '' }">

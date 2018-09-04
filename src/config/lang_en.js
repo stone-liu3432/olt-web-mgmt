@@ -492,7 +492,10 @@ var en = {
 
     onu_alarm: "ONU Alarm",
     mvlan_desc: "VLAN infomation",
-    program_desc: "program infomation"
+    program_desc: "program infomation",
+
+    batch_cfg_vlan: "Configure VLAN ports in batches"
+
 };
 
 export default en;
