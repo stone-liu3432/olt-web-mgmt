@@ -90,13 +90,13 @@ export default {
                 this.$http.post('/onu_allow_list',this.post_params).then(res=>{
                     if(res.data.code === 1){
                         this.$message({
-                            type: 'success',
+                            type: res.data.type,
                             text: this.lanMap['setting_ok']
                         })
                         this.getData();
                     }else if(res.data.code >1){
                         this.$message({
-                            type: 'error',
+                            type: res.data.type,
                             text: this.lanMap['setting_fail']
                         })
                     }
@@ -148,13 +148,13 @@ export default {
                 this.$http.post('/onumgmt?form=config',this.post_params).then(res=>{
                     if(res.data.code === 1){
                         this.$message({
-                            type: 'success',
+                            type: res.data.type,
                             text: this.lanMap['reboot_onu'] + this.lanMap['st_success']
                         })
                         this.getData();
                     }else if(res.data.code > 1){
                         this.$message({
-                            type: 'error',
+                            type: res.data.type,
                             text: '(' + res.data.code + ') ' + res.data.message
                         })
                     }
@@ -191,13 +191,13 @@ export default {
                 this.$http.post('/onu_allow_list',this.post_params).then(res=>{
                     if(res.data.code === 1){
                         this.$message({
-                            type: 'success',
+                            type: res.data.type,
                             text: this.lanMap['setting_ok']
                         })
                         this.getData();
                     }else if(res.data.code > 1){
                         this.$message({
-                            type: 'error',
+                            type: res.data.type,
                             text: '(' + res.data.code + ') ' + res.data.message
                         })
                     }
@@ -214,13 +214,13 @@ export default {
                 this.$http.post('/onu_allow_list',this.post_params).then(res=>{
                     if(res.data.code === 1){
                         this.$message({
-                            type: 'success',
+                            type: res.data.type,
                             text: this.lanMap['setting_ok']
                         })
                         this.getData();
                     }else if(res.data.code > 1){
                         this.$message({
-                            type: 'error',
+                            type: res.data.type,
                             text: '(' + res.data.code + ') ' + res.data.message
                         })
                     }

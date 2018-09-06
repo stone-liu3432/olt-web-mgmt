@@ -116,13 +116,13 @@ export default {
             this.$http.post('/ponmgmt?form=authorize',params).then(res=>{
                 if(res.data.code === 1){
                     this.$message({
-                        type: 'success',
+                        type: res.data.type,
                         text: this.lanMap['st_success']
                     })
                     this.getData();
                 }else if(res.data.code > 1){
                     this.$message({
-                        type: 'error',
+                        type: res.data.type,
                         text: '(' + res.data.code + ') ' + res.data.message
                     })
                 }

@@ -151,13 +151,13 @@ export default {
             this.$http.post('/vlan_action?form=translate',post_params).then(res=>{
                 if(res.data.code === 1){
                     this.$message({
-                        type: 'success',
+                        type: res.data.type,
                         text: this.lanMap['setting_ok']
                     })
                     this.$parent.get_pv_translate();
                 }else if(res.data.code > 1){
                     this.$message({
-                        type: 'error',
+                        type: res.data.type,
                         text: '(' + res.data.code + ') ' + res.data.message
                     })
                 }
@@ -185,13 +185,13 @@ export default {
                 this.$http.post('/vlan_action?form=translate',post_params).then(res=>{
                     if(res.data.code === 1){
                         this.$message({
-                            type: 'success',
+                            type: res.data.type,
                             text: this.lanMap['delete'] + this.lanMap['se_success']
                         })
                         this.$parent.get_pv_translate();
                     }else if(res.data.code > 1){
                         this.$message({
-                            type: 'error',
+                            type: res.data.type,
                             text: '(' + res.data.code + ') ' + res.data.message
                         })
                     }

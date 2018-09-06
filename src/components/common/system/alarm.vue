@@ -61,7 +61,7 @@ export default {
                         }
                     }else if(res.data.code > 1){
                         this.$message({
-                            type: 'error',
+                            type: res.data.type,
                             text: '(' + res.data.code + ') ' + res.data.message
                         })
                     }

@@ -226,13 +226,13 @@ export default {
             this.$http.post('/onu_upgrade?form=upgrade_type',post_params).then(res=>{
                 if(res.data.code === 1){
                     this.$message({
-                        type: 'success',
+                        type: res.data.type,
                         text: this.lanMap['setting_ok']
                     })
                     this.get_upgrade_type();
                 }else if(res.data.code > 1){
                     this.$message({
-                        type: 'error',
+                        type: res.data.type,
                         text: '(' + res.data.code + ') ' + res.data.message
                     })
                 }
@@ -259,13 +259,13 @@ export default {
             this.$http.post('/onu_upgrade?form=upgrade_type',post_params).then(res=>{
                 if(res.data.code === 1){
                     this.$message({
-                        type: 'success',
+                        type: res.data.type,
                         text: this.lanMap['etting_ok']
                     })
                     this.get_upgrade_type();
                 }else if(res.data.code > 1){
                     this.$message({
-                        type: 'error',
+                        type: res.data.type,
                         text: '(' + res.data.code + ') ' + res.data.message
                     })
                 }
@@ -337,7 +337,7 @@ export default {
                     this.start_upgrade_onu();
                 }else if(res.data.code > 1){
                     this.$message({
-                        type: 'error',
+                        type: res.data.type,
                         text: '(' + res.data.code + ') ' + res.data.message
                     })
                 }
@@ -358,12 +358,12 @@ export default {
             this.$http.post('/onu_upgrade?form=upgrade',post_params).then(res=>{
                 if(res.data.code === 1){
                     this.$message({
-                        type: 'success',
+                        type: res.data.type,
                         text: this.lanMap['onu_upgrade_start']
                     })
                 }else if(res.data.code > 1){
                     this.$message({
-                        type: 'error',
+                        type: res.data.type,
                         text: '(' + res.data.code + ') ' + res.data.message
                     })
                 }
@@ -446,12 +446,12 @@ export default {
             this.$http.post('/onu_upgrade?form=bind_upgrade_type',post_params).then(res=>{
                 if(res.data.code === 1){
                     this.$message({
-                        type: 'success',
+                        type: res.data.type,
                         text: this.lanMap['setting_ok']
                     })
                 }else if(res.data.code > 1){
                     this.$message({
-                        type: 'error',
+                        type: res.data.type,
                         text: '(' + res.data.code + ') ' + res.data.message
                     })
                 }

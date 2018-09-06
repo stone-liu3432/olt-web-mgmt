@@ -259,13 +259,13 @@ import axios from 'axios'
                     this.$http.post('/system?form=inbound',post_params).then(res=>{
                         if(res.data.code === 1){
                             this.$message({
-                                type: 'success',
+                                type: res.data.type,
                                 text: this.lanMap['add'] + this.lanMap['st_success']
                             })
                             this.getData();
                         }else if(res.data.code > 1){
                             this.$message({
-                                type: 'error',
+                                type: res.data.type,
                                 text: '(' + res.data.code + ') ' + res.data.message
                             })
                         }
@@ -292,13 +292,13 @@ import axios from 'axios'
                     this.$http.post('/system?form=inbound',post_params).then(res=>{
                         if(res.data.code === 1){
                             this.$message({
-                                type: 'success',
+                                type: res.data.type,
                                 text: this.lanMap['delete'] + this.lanMap['st_success']
                             })
                             this.getData();
                         }else if(res.data.code > 1){
                             this.$message({
-                                type: 'error',
+                                type: res.data.type,
                                 text: '(' + res.data.code + ') ' + res.data.message
                             })
                         }
@@ -346,7 +346,7 @@ import axios from 'axios'
                     // 请求url: /system?form=outbound   -->  str.substring(str.indexOf("//") + 2,str.indexOf("/#/"));
                     this.$http.post('/system?form=outbound',post_params,{ timeout : 5000 }).then(res=>{
                         this.$message({
-                            type: 'error',
+                            type: res.data.type,
                             text: this.lanMap['setting_fail']
                         })
                     }).catch(err=>{
@@ -392,13 +392,13 @@ import axios from 'axios'
                     this.$http.post('/system?form=inbound',post_params,{ timeout : 5000 }).then(res=>{
                         if(res.data.code === 1){
                             this.$message({
-                                type: 'success',
+                                type: res.data.type,
                                 text: this.lanMap['setting_ok']
                             })
                             this.getData();
                         }else if(res.data.code > 1){
                             this.$message({
-                                type: 'error',
+                                type: res.data.type,
                                 text: '(' + res.data.code + ') ' + res.data.message
                             })
                         }

@@ -166,7 +166,7 @@ export default {
                     //  成功恢复出厂设置时重启设备
                     if(res.data.code === 1){
                         this.$message({
-                            type: 'success',
+                            type: res.data.type,
                             text: this.lanMap['def_cfg_succ']
                         })
                         this.rebootChoose = true;
@@ -175,7 +175,7 @@ export default {
                         },10000)
                     }else{
                         this.$message({
-                            type: 'error',
+                            type: res.data.type,
                             text: this.lanMap['default_config_fail']
                         })
                     }
@@ -203,9 +203,9 @@ export default {
                     }catch(e){
                         this.backup_cfg();
                     }
-                }else if(res.data.code >1){
+                }else if(res.data.code > 1){
                     this.$message({
-                        type: 'error',
+                        type: res.data.type,
                         text: this.lanMap['st_fail']
                     })
                 }
@@ -255,14 +255,14 @@ export default {
                     clearInterval(this.timer2);
                     this.isProgress = false;
                     this.$message({
-                        type: 'success',
+                        type: res.data.type,
                         text: this.lanMap['restore_config_succ']
                     })
                     this.restoreChoose = true;
                     this.width = 0;
                 }else if(res.data.code >1){
                     this.$message({
-                        type: 'error',
+                        type: res.data.type,
                         text: this.lanMap['restore_config_fail']
                     })
                     clearInterval(this.timer2);
@@ -294,12 +294,12 @@ export default {
                 this.$http.get('/system_save').then(res=>{
                     if(res.data.code === 1){
                         this.$message({
-                            type: 'success',
+                            type: res.data.type,
                             text: this.lanMap['save_succ']
                         })
                     }else if(res.data.code > 1){
                         this.$message({
-                            type: 'error',
+                            type: res.data.type,
                             text: '(' + res.data.code + ') ' + res.data.message
                         })
                     }
@@ -328,7 +328,7 @@ export default {
                         }
                     }else if(res.data.code > 1){
                         this.$message({
-                            type: 'error',
+                            type: res.data.type,
                             text: '(' + res.data.code + ') ' + res.data.message
                         })
                     }

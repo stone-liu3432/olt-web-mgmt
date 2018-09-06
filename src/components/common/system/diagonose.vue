@@ -126,7 +126,7 @@ import { mapState } from 'vuex'
                         this.ping_result();
                     }else if(res.data.code > 1){
                         this.$message({
-                            type: 'error',
+                            type: res.data.type,
                             text: '(' + res.data.code + ') ' + res.data.message
                         })
                     }
@@ -147,7 +147,7 @@ import { mapState } from 'vuex'
                         }
                     }else if(res.data.code > 1){
                         this.$message({
-                            type: 'error',
+                            type: res.data.type,
                             text: '(' + res.data.code + ') ' + res.data.message
                         })
                         this.result = 'The device is ready!'

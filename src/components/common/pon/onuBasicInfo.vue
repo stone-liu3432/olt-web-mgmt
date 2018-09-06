@@ -310,14 +310,14 @@ import onuAlarm from '@/components/common/pon/onuAlarm'
                 this.$http.post('/onumgmt?form=config',data).then(res=>{
                     if(res.data.code === 1){
                         this.$message({
-                            type: 'success',
+                            type: res.data.type,
                             text: this.lanMap['setting_ok']
                         })
                         this.getData();
                         this.getOpticalData();
                     }else if(res.data.code > 1){
                         this.$message({
-                            type: 'error',
+                            type: res.data.type,
                             text: '(' + res.data.code + ') ' + res.data.message
                         })
                     }
@@ -392,7 +392,7 @@ import onuAlarm from '@/components/common/pon/onuAlarm'
                             this.start_upgrade_onu();
                         }else if(res.data.code > 1){
                             this.$message({
-                                type: 'error',
+                                type: res.data.type,
                                 text: '(' + res.data.code + ') ' + res.data.message
                             })
                         }
@@ -415,12 +415,12 @@ import onuAlarm from '@/components/common/pon/onuAlarm'
                 this.$http.post('/onu_upgrade?form=upgrade',post_params).then(res=>{
                     if(res.data.code === 1){
                         this.$message({
-                            type: 'success',
+                            type: res.data.type,
                             text: this.lanMap['onu_upgrade_start']
                         })
                     }else if(res.data.code > 1){
                         this.$message({
-                            type: 'error',
+                            type: res.data.type,
                             text: '(' + res.data.code + ') ' + res.data.message
                         })
                     }

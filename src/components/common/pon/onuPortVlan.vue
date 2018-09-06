@@ -235,13 +235,13 @@ export default {
             this.$http.post('/onumgmt?form=mc_group_max',post_param).then(res=>{
                 if(res.data.code === 1){
                     this.$message({
-                        type: 'success',
+                        type: res.data.type,
                         text: this.lanMap['st_success']
                     })
                     this.getData();
                 }else if(res.data.code > 1){
                     this.$message({
-                        type: 'error',
+                        type: res.data.type,
                         text: '(' + res.data.code + ') ' + res.data.message
                     })
                 }
@@ -281,13 +281,13 @@ export default {
             this.$http.post('/onumgmt?form=mc_tag_mode',post_param).then(res=>{
                 if(res.data.code === 1){
                     this.$message({
-                        type: 'success',
+                        type: res.data.type,
                         text: this.lanMap['st_success']
                     })
                     this.getData();
                 }else if(res.data.code > 1){
                     this.$message({
-                        type: 'error',
+                        type: res.data.type,
                         text: '(' + res.data.code + ') ' + res.data.message
                     })
                 }
@@ -312,13 +312,13 @@ export default {
                 this.$http.post('/onumgmt?form=mc_tag_mode',post_param).then(res=>{
                     if(res.data.code === 1){
                         this.$message({
-                            type: 'success',
+                            type: res.data.type,
                             text: this.lanMap['st_success']
                         })
                         this.getData();
                     }else if(res.data.code > 1){
                         this.$message({
-                            type: 'error',
+                            type: res.data.type,
                             text: '(' + res.data.code + ') ' + res.data.message
                         })
                     }
@@ -349,13 +349,13 @@ export default {
             this.$http.post('/onumgmt?form=mc_vlan',post_param).then(res=>{
                 if(res.data.code === 1){
                     this.$message({
-                        type: 'success',
+                        type: res.data.type,
                         text: this.lanMap['st_success']
                     })
                     this.getMvlan();
                 }else if(res.data.code > 1){
                     this.$message({
-                        type: 'error',
+                        type: res.data.type,
                         text: '(' + res.data.code + ') ' + res.data.message
                     })
                 }
@@ -377,13 +377,13 @@ export default {
             this.$http.post('/onumgmt?form=mc_vlan',post_param).then(res=>{
                 if(res.data.code === 1){
                     this.$message({
-                        type: 'success',
+                        type: res.data.type,
                         text: this.lanMap['st_success']
                     })
                     this.getMvlan();
                 }else if(res.data.code > 1){
                     this.$message({
-                        type: 'error',
+                        type: res.data.type,
                         text: '(' + res.data.code + ') ' + res.data.message
                     })
                 }

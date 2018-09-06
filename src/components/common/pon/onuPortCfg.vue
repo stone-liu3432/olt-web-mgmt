@@ -487,13 +487,13 @@ import { mapState } from 'vuex'
                     this.$http.post('/onumgmt?form=port_cfg',post_params).then(res=>{
                         if(res.data.code === 1){
                             this.$message({
-                                type: 'success',
+                                type: res.data.type,
                                 text: this.lanMap['setting_ok']
                             })
                             this.getOnuInfo();
                         }else if(res.data.code > 1){
                             this.$message({
-                                type: 'error',
+                                type: res.data.type,
                                 text: '(' + res.data.code + ') ' + res.data.message
                             })
                         }
@@ -555,13 +555,13 @@ import { mapState } from 'vuex'
                     this.$http.post('/onumgmt?form=port_vlan',post_params).then(res=>{
                         if(res.data.code === 1){
                             this.$message({
-                                type: 'success',
+                                type: res.data.type,
                                 text: this.lanMap['setting_ok']
                             })
                             this.getOnuVlan();
                         }else if(res.data.code > 1){
                             this.$message({
-                                type: 'error',
+                                type: res.data.type,
                                 text: '(' + res.data.code + ') ' + res.data.message
                             })
                         }
@@ -626,13 +626,13 @@ import { mapState } from 'vuex'
                     this.$http.post('/onumgmt?form=port_vlanlist',post_params).then(res=>{
                         if(res.data.code === 1){
                             this.$message({
-                                type: 'success',
+                                type: res.data.type,
                                 text: this.lanMap['add'] + ' ' + this.lanMap['st_success']
                             })
                             this.getOnuVlan();
                         }else if(res.data.code > 1){
                             this.$message({
-                                type: 'error',
+                                type: res.data.type,
                                 text: '(' + res.data.code + ') ' + res.data.message
                             })
                         }
@@ -671,13 +671,13 @@ import { mapState } from 'vuex'
                     this.$http.post('/onumgmt?form=port_vlanlist',post_params).then(res=>{
                         if(res.data.code === 1){
                             this.$message({
-                                type: 'success',
+                                type: res.data.type,
                                 text: this.lanMap['delete'] + ' ' + this.lanMap['st_success']
                             })
                             this.getOnuVlan();
                         }else if(res.data.code > 1){
                             this.$message({
-                                type: 'error',
+                                type: res.data.type,
                                 text: '(' + res.data.code + ') ' + res.data.message
                             })
                         }
@@ -740,13 +740,13 @@ import { mapState } from 'vuex'
                     this.$http.post('/onumgmt?form=port_vlanlist',post_params).then(res=>{
                         if(res.data.code === 1){
                             this.$message({
-                                type: 'success',
+                                type: res.data.type,
                                 text: this.lanMap['add'] + ' ' + this.lanMap['st_success']
                             })
                             this.getOnuVlan();
                         }else if(res.data.code > 1){
                             this.$message({
-                                type: 'error',
+                                type: res.data.type,
                                 text: '(' + res.data.code + ') ' + res.data.message
                             })
                         }
@@ -788,13 +788,13 @@ import { mapState } from 'vuex'
                     this.$http.post('/onumgmt?form=port_vlanlist',post_params).then(res=>{
                         if(res.data.code === 1){
                             this.$message({
-                                type: 'success',
+                                type: res.data.type,
                                 text: this.lanMap['delete'] + ' ' + this.lanMap['st_success']
                             })
                             this.getOnuVlan();
                         }else if(res.data.code > 1){
                             this.$message({
-                                type: 'error',
+                                type: res.data.type,
                                 text: '(' + res.data.code + ') ' + res.data.message
                             })
                         }
@@ -910,7 +910,7 @@ import { mapState } from 'vuex'
                             data: _onu_list
                         }
                         var oid = sessionStorage.getItem('oid');
-                        this.onuid = oid;
+                        this.onuid = Number(oid);
                         if(!oid || _onu_list.indexOf(Number(oid)) === -1){
                             this.onuid = Number(this.onu_list.data[0]);
                             return

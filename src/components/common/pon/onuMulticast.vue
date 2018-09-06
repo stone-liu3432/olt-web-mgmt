@@ -148,13 +148,13 @@ export default {
             this.$http.post('/onumgmt?form=mc_mode',post_param).then(res=>{
                 if(res.data.code === 1){
                     this.$message({
-                        type: 'success',
+                        type: res.data.type,
                         text: this.lanMap['st_success']
                     })
                     this.get_mc_config();
                 }else if(res.data.code > 1){
                     this.$message({
-                        type: 'error',
+                        type: res.data.type,
                         text: '(' + res.data.code + ') ' + res.data.message
                     })
                 }
@@ -186,13 +186,13 @@ export default {
             this.$http.post('/onumgmt?form=mc_fast_leave',post_param).then(res=>{
                 if(res.data.code === 1){
                     this.$message({
-                        type: 'success',
+                        type: res.data.type,
                         text: this.lanMap['st_success']
                     })
                     this.get_mc_config();
                 }else if(res.data.code > 1){
                     this.$message({
-                        type: 'error',
+                        type: res.data.type,
                         text: '(' + res.data.code + ') ' + res.data.message
                     })
                 }
@@ -242,7 +242,7 @@ export default {
                         data: _onu_list
                     }
                     var oid = sessionStorage.getItem('oid');
-                    this.onuid = oid;
+                    this.onuid = Number(oid);
                     if(!oid || _onu_list.indexOf(Number(oid)) === -1) {
                         this.onuid = Number(this.onu_list.data[0]);
                         //  onuid 变化时，会触发watcher，避免重复调用

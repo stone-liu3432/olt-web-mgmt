@@ -41,7 +41,7 @@ export default {
     },
     created(){
         var portid = sessionStorage.getItem('portid');
-        this.portid = portid || 1;
+        this.portid = Number(portid) || 1;
     },
     activated(){
         switch(this.show_index){
@@ -120,7 +120,7 @@ export default {
     },
     watch: {
         'portid'(){
-            sessionStorage.setItem('portid',this.portid);
+            sessionStorage.setItem('portid',Number(this.portid));
             switch(this.show_index){
                 case 'vlan_cfg':
                     this.get_pv_set();

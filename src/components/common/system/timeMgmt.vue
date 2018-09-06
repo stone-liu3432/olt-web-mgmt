@@ -225,13 +225,13 @@ import timezone from '@/config/timezone'
                     this.$http.post('/time?form=ntp',post_params).then(res=>{
                         if(res.data.code === 1){
                             this.$message({
-                                type: 'success',
+                                type: res.data.type,
                                 text: this.lanMap['setting_ok']
                             })
                             this.get_ntp();
                         }else if(res.data.code > 1){
                             this.$message({
-                                type: 'error',
+                                type: res.data.type,
                                 text: '(' + res.data.code + ') ' + res.data.message
                             })
                         }
@@ -299,7 +299,7 @@ import timezone from '@/config/timezone'
                         this.get_time();
                     }else if(res.data.code > 1){
                         this.$message({
-                            type: 'error',
+                            type: res.data.type,
                             text: '(' + res.data.code + ') ' + res.data.message
                         })
                     }
@@ -321,12 +321,12 @@ import timezone from '@/config/timezone'
                         this.set_time.sec = this.now_time.sec = arr[5];
                         this.timezone = this.timer.data.timezone;
                         this.$message({
-                            type: 'success',
+                            type: res.data.type,
                             text: this.lanMap['update_time'] + this.lanMap['st_success']
                         })
                     }else if(res.data.code > 1){
                         this.$message({
-                            type: 'error',
+                            type: res.data.type,
                             text: '(' + res.data.code + ') ' + res.data.message
                         })
                     }
@@ -348,7 +348,7 @@ import timezone from '@/config/timezone'
                         this.handle_update_time();
                     }else if(res.data.code > 1){
                         this.$message({
-                            type: 'error',
+                            type: res.data.type,
                             text: '(' + res.data.code + ') ' + res.data.message
                         })
                     }

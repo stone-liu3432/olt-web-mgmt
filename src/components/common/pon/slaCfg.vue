@@ -279,13 +279,13 @@ import { mapState } from 'vuex'
                     this.$http.post('/onu_bandwidth',post_param).then(res=>{
                         if(res.data.code === 1){
                             this.$message({
-                                type: 'success',
+                                type: res.data.type,
                                 text: this.lanMap['setting_ok']
                             })
                            this.getData();
                         }else if(res.data.code > 1){
                             this.$message({
-                                type: 'error',
+                                type: res.data.type,
                                 text: '(' + res.data.code + ') ' + res.data.message
                             })
                         }
@@ -300,7 +300,7 @@ import { mapState } from 'vuex'
         computed: mapState(['lanMap','port_name','port_info','change_url']),
         watch: {
             portid(){
-                sessionStorage.setItem('pid',this.portid);
+                sessionStorage.setItem('pid',Number(this.portid));
                 this.getData();
             },
             'post_params.sla_type'(){

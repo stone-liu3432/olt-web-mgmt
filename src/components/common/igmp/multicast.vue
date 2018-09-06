@@ -191,13 +191,13 @@ export default {
             this.$http.post('/switch_igmp?form=static_entry',post_param).then(res=>{
                 if(res.data.code === 1){
                     this.$message({
-                        type: 'success',
+                        type: res.data.type,
                         text: this.lanMap['setting_ok']
                     })
                     this.getData();
                 }else if(res.data.code > 1){
                     this.$message({
-                        type: 'error',
+                        type: res.data.type,
                         text: '(' + res.data.code + ') ' + res.data.message
                     })
                 }
@@ -227,13 +227,13 @@ export default {
             this.$http.post('/switch_igmp?form=static_entry',post_param).then(res=>{
                 if(res.data.code === 1){
                     this.$message({
-                        type: 'success',
+                        type: res.data.type,
                         text: this.lanMap['setting_ok']
                     })
                     this.getData();
                 }else{
                     this.$message({
-                        type: 'error',
+                        type: res.data.type,
                         text: '(' + res.data.code + ') ' + res.data.message
                     })
                 }

@@ -362,7 +362,7 @@ import { mapState } from 'vuex'
                     this.$http.post('/switch_vlan',post_param).then(res=>{
                         if(res.data.code === 1){
                             this.$message({
-                                type: 'success',
+                                type: res.data.type,
                                 text: this.lanMap['delete'] + this.lanMap['st_success']
                             })
                             this.vlan_list.data.forEach((item,index,arr)=>{
@@ -388,7 +388,7 @@ import { mapState } from 'vuex'
                             this.vlanid = 0;
                         }else if(res.data.code > 1){
                             this.$message({
-                                type: 'error',
+                                type: res.data.type,
                                 text: '(' + res.data.code + ') ' + res.data.message
                             })
                         }
@@ -460,13 +460,13 @@ import { mapState } from 'vuex'
                     if(res.data.code === 1){
                         if(!this.tip_flag && !create_flag){
                             this.$message({
-                                type: 'success',
+                                type: res.data.type,
                                 text: this.lanMap['setting_ok']
                             })
                         }
                         if(create_flag){
                             this.$message({
-                                type: 'success',
+                                type: res.data.type,
                                 text: this.lanMap['create_vlan_info']
                             })
                         }
@@ -475,7 +475,7 @@ import { mapState } from 'vuex'
                         this.getData();
                     }else if(res.data.code > 1){
                         this.$message({
-                            type: 'error',
+                            type: res.data.type,
                             text: '(' + res.data.code + ') ' + res.data.message
                         })
                     }
@@ -528,7 +528,7 @@ import { mapState } from 'vuex'
                                 this.set_vlan(0,vid_s,vid_e,true);
                             }else{
                                 this.$message({
-                                    type: 'success',
+                                    type: res.data.type,
                                     text: this.lanMap['create_vlan_info']
                                 })
                                 this.count = 0;
@@ -541,7 +541,7 @@ import { mapState } from 'vuex'
                             }
                         }else if(res.data.code > 1){
                             this.$message({
-                                type: 'error',
+                                type: res.data.type,
                                 text: '(' + res.data.code + ') ' + res.data.message
                             })
                         }
@@ -628,7 +628,7 @@ import { mapState } from 'vuex'
                 this.$http.post('/switch_vlanlist',post_param).then(res=>{
                     if(res.data.code === 1){
                         this.$message({
-                            type: 'success',
+                            type: res.data.type,
                             text: this.lanMap['setting_ok']
                         })
                         this.count = 0;
@@ -636,7 +636,7 @@ import { mapState } from 'vuex'
                         this.getData();
                     }else if(res.data.code > 1){
                         this.$message({
-                            type: 'error',
+                            type: res.data.type,
                             text: '(' + res.data.code + ') ' + res.data.message
                         })
                     }

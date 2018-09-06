@@ -291,7 +291,7 @@ import { mapState } from 'vuex'
                     if(res.data.code === 1){
                         this.getData();
                         this.$message({
-                            type: 'success',
+                            type: res.data.type,
                             text: this.lanMap['setting_ok']
                         })
                         if(this.bridge_info.status === 1){
@@ -299,7 +299,7 @@ import { mapState } from 'vuex'
                         }
                     }else if(res.data.code > 1){
                         this.$message({
-                            type: 'error',
+                            type: res.data.type,
                             text: '(' + res.data.code + ') ' + res.data.message
                         })
                     }
@@ -400,12 +400,12 @@ import { mapState } from 'vuex'
                         this.modal_priority = false;
                         this.getPortData();
                         this.$message({
-                            type: 'success',
+                            type: res.data.type,
                             text: this.lanMap['setting_ok']
                         })
                     }else if(res.data.code > 1){
                         this.$message({
-                            type: 'error',
+                            type: res.data.type,
                             text: '(' + res.data.code + ') ' + res.data.message
                         })
                     }

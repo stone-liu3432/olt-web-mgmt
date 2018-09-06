@@ -73,6 +73,17 @@ export default {
                     sessionStorage.removeItem('x-token');
                     this.$router.push('/login');
                 }
+                if(response.data.code > 1){
+                    if(/^\s*error/i.test(response.data.message)){
+                        response.data.type = 'error';
+                    }else if(/^\s*warning/i.test(response.data.message)){
+                        response.data.type = 'warning';
+                    }else{
+                        response.data.type = 'info';
+                    }
+                }else if(response.data.code === 1){
+                    response.data.type = 'success';
+                }
                 return response;
             },err=>{
                 return Promise.reject(err);

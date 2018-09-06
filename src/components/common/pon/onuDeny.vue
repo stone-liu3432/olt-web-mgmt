@@ -86,7 +86,7 @@ export default {
     created(){
         // 请求 url: /onu_deny_list?port_id=1
         var pid = sessionStorage.getItem('pid');
-        this.portid = pid || 1;
+        this.portid = Number(pid) || 1;
         if(this.change_url.beta === 'test'){
             var url;
             if(this.change_url.onu_allow[this.change_url.onu_allow.length - 1] != '='){
@@ -128,7 +128,7 @@ export default {
                 this.post_param.add = {
                     "method":"add",
                     "param":{
-                        "port_id":this.portid,
+                        "port_id": Number(this.portid),
                         "macaddr": this.addItem.macaddr,
                         "onu_desc" : this.addItem.desc
                     }
@@ -136,13 +136,13 @@ export default {
                 this.$http.post('/onu_deny_list',this.post_param.add).then(res=>{
                     if(res.data.code === 1){
                         this.$message({
-                            type: 'success',
+                            type: res.data.type,
                             text: this.lanMap['add'] + this.lanMap['st_success']
                         })
                         this.getData();
                     }else if(res.data.code > 1){
                         this.$message({
-                            type: 'error',
+                            type: res.data.type,
                             text: '(' + res.data.code + ') ' + res.data.message
                         })
                     }
@@ -166,13 +166,13 @@ export default {
                 this.$http.post('/onu_deny_list',this.post_param.delete).then(res=>{
                     if(res.data.code === 1){
                         this.$message({
-                            type: 'success',
+                            type: res.data.type,
                             text: this.lanMap['delete'] + this.lanMap['st_success']
                         })
                         this.getData();
                     }else if(res.data.code > 1){
                         this.$message({
-                            type: 'error',
+                            type: res.data.type,
                             text: '(' + res.data.code + ') ' + res.data.message
                         })
                     }
@@ -211,7 +211,7 @@ export default {
         },
         //  切换端口的操作
         portid(){
-            sessionStorage.setItem('pid',this.portid);
+            sessionStorage.setItem('pid',Number(this.portid));
             this.getData();
         }
     }

@@ -158,13 +158,13 @@ export default {
                 this.$http.post('/system_service?form=sshd',post_param).then(res=>{
                     if(res.data.code === 1){
                         this.$message({
-                            type: 'success',
+                            type: res.data.type,
                             text: this.lanMap['delete'] + ': ' + this.lanMap['st_success']
                         })
                         this.get_ssh();
                     }else if(res.data.code > 1){
                         this.$message({
-                            type: 'error',
+                            type: res.data.type,
                             text: '(' + res.data.code + ') ' + res.data.message
                         })
                     }
@@ -219,13 +219,13 @@ export default {
             this.$http.post('/snmp_cfg?form=trap',params).then(res=>{
                 if(res.data.code === 1){
                     this.$message({
-                        type: 'success',
+                        type: res.data.type,
                         text: this.lanMap['setting_ok']
                     })
                     this.get_trap();
                 }else if(res.data.code > 1){
                     this.$message({
-                        type: 'error',
+                        type: res.data.type,
                         text: '(' + res.data.code + ') ' + res.data.message
                     })
                 }
@@ -274,13 +274,13 @@ export default {
             this.$http.post('/snmp_cfg?form=community',params).then(res=>{
                 if(res.data.code === 1){
                     this.$message({
-                        type: 'success',
+                        type: res.data.type,
                         text: this.lanMap['setting_ok']
                     })
                     this.get_community();
                 }else if(res.data.code > 1){
                     this.$message({
-                        type: 'error',
+                        type: res.data.type,
                         text: '(' + res.data.code + ') ' + res.data.message
                     })
                 }
@@ -322,13 +322,13 @@ export default {
             this.$http.post('/system_service?form=sshd',post_param).then(res=>{
                 if(res.data.code === 1){
                     this.$message({
-                        type: 'success',
+                        type: res.data.type,
                         text: this.lanMap['add'] + this.lanMap['st_success']
                     })
                     this.get_ssh();
                 }else if(res.data.code > 1){
                     this.$message({
-                        type: 'error',
+                        type: res.data.type,
                         text: '(' + res.data.code + ') ' + res.data.message
                     })
                 }

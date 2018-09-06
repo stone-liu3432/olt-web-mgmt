@@ -379,7 +379,7 @@ import loading from '@/components/common/loading'
                     this.$http.post('/switch_mac?form=table',post_params).then(res=>{
                         if(res.data.code === 1){
                             this.$message({
-                                type: 'success',
+                                type: res.data.type,
                                 text: this.lanMap['delete'] + this.lanMap['st_success']
                             })
                             this.count = 0;
@@ -387,7 +387,7 @@ import loading from '@/components/common/loading'
                             this.getData();
                         }else if(res.data.code > 1){
                             this.$message({
-                                type: 'error',
+                                type: res.data.type,
                                 text: '(' + res.data.code + ') ' + res.data.message
                             })
                         }
@@ -422,7 +422,7 @@ import loading from '@/components/common/loading'
                     this.$http.get('/switch_mac?form=age&value=' + this.macage).then(res=>{
                         if(res.data.code == 1){
                             this.$message({
-                                type: 'success',
+                                type: res.data.type,
                                 text: this.lanMap['setting_ok']
                             })
                             this.$http.get(this.change_url.macage).then(res=>{
@@ -430,7 +430,7 @@ import loading from '@/components/common/loading'
                             })
                         }else if(res.data.code > 1){
                             this.$message({
-                                type: 'error',
+                                type: res.data.type,
                                 text: '(' + res.data.code + ') ' + res.data.message
                             })
                         }
@@ -534,7 +534,7 @@ import loading from '@/components/common/loading'
                 this.$http.post('/switch_mac?form=table',post_params).then(res=>{
                     if(res.data.code === 1){
                         this.$message({
-                            type: 'success',
+                            type: res.data.type,
                             text: this.lanMap['setting_ok']
                         })
                         this.count = 0;
@@ -543,7 +543,7 @@ import loading from '@/components/common/loading'
                         this.add_mac_close_dialog();
                     }else if(res.data.code > 1){
                         this.$message({
-                            type: 'error',
+                            type: res.data.type,
                             text: '(' + res.data.code + ') ' + res.data.message
                         })
                     }
@@ -615,7 +615,7 @@ import loading from '@/components/common/loading'
                 this.$http.post('/switch_mac?form=table',post_params).then(res=>{
                     if(res.data.code === 1){
                         this.$message({
-                            type: 'success',
+                            type: res.data.type,
                             text: this.lanMap['flush'] + this.lanMap['st_success']
                         })
                         this.count = 0;
@@ -624,7 +624,7 @@ import loading from '@/components/common/loading'
                         this.flush_mac_close_dialog();
                     }else if(res.data.code > 1){
                         this.$message({
-                            type: 'error',
+                            type: res.data.type,
                             text: '(' + res.data.code + ') ' + res.data.message
                         })
                     }

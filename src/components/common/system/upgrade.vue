@@ -135,7 +135,7 @@ import loading from '@/components/common/loading'
                             clearInterval(this.timer);
                             this.isLoading = false;
                             this.$message({
-                                type: 'error',
+                                type: res.data.type,
                                 text: '(' + res.data.code + ') ' + res.data.message
                             })
                         }
@@ -187,7 +187,7 @@ import loading from '@/components/common/loading'
                             clearInterval(this.timer);
                             this.isLoading = false;
                             this.$message({
-                                type: 'error',
+                                type: res.data.type,
                                 text: '(' + res.data.code + ') ' + res.data.message
                             })
                         }

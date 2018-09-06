@@ -201,13 +201,13 @@ export default {
             this.$http.post('/vlan_action?form=qinq',post_params).then(res=>{
                 if(res.data.code === 1){
                     this.$message({
-                        type: 'success',
+                        type: res.data.type,
                         text: this.lanMap['setting_ok']
                     })
                     this.$parent.get_pv_qinq();
                 }else if(res.data.code > 1){
                     this.$message({
-                        type: 'error',
+                        type: res.data.type,
                         text: '(' + res.data.code + ') ' + res.data.message
                     })
                 }
@@ -237,13 +237,13 @@ export default {
                 this.$http.post('/vlan_action?form=qinq',post_params).then(res=>{
                     if(res.data.code === 1){
                         this.$message({
-                            type: 'success',
+                            type: res.data.type,
                             text: this.lanMap['delete'] + ': ' + this.lanMap['setting_ok']
                         })
                         this.$parent.get_pv_qinq();
                     }else if(res.data.code > 1){
                         this.$message({
-                            type: 'error',
+                            type: res.data.type,
                             text: '(' + res.data.code + ') ' + res.data.message
                         })
                     }

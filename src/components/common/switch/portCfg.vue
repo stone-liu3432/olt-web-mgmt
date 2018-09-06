@@ -240,7 +240,7 @@ import { mapState } from 'vuex'
         },
         created(){
             var pid = sessionStorage.getItem('portid');
-            this.portid = this.$route.query.port_id || pid || 1;
+            this.portid = Number(this.$route.query.port_id) || pid || 1;
             if(this.change_url.beta == 'test'){
                 this.$http.get('./swich_port_info.json').then(res=>{
                     if(res.data.code ===1){
@@ -369,12 +369,12 @@ import { mapState } from 'vuex'
                     this.$http.post('/switch_port?form=stormctrl',post_params).then(res=>{
                         if(res.data.code === 1){
                             this.$message({
-                                type: 'success',
+                                type: res.data.type,
                                 text: this.lanMap['setting_ok']
                             })
                         }else if(res.data.code > 1){
                             this.$message({
-                                type: 'error',
+                                type: res.data.type,
                                 text: '(' + res.data.code + ') ' + res.data.message
                             })
                         }
@@ -467,12 +467,12 @@ import { mapState } from 'vuex'
                     this.$http.post('/switch_port?form=port_info',post_params).then(res=>{
                         if(res.data.code === 1){
                             this.$message({
-                                type: 'success',
+                                type: res.data.type,
                                 text: this.lanMap['setting_ok']
                             })
                         }else if(res.data.code > 1){
                             this.$message({
-                                type: 'error',
+                                type: res.data.type,
                                 text: '(' + res.data.code + ') ' + res.data.message
                             })
                         }
@@ -502,12 +502,12 @@ import { mapState } from 'vuex'
                     this.$http.post("/switch_port?form=mirror",post_param).then(res=>{
                         if(res.data.code === 1){
                             this.$message({
-                                type: 'success',
+                                type: res.data.type,
                                 text: this.lanMap['setting_ok']
                             })
                         }else if(res.data.code > 1){
                             this.$message({
-                                type: 'error',
+                                type: res.data.type,
                                 text: '(' + res.data.code + ') ' + res.data.message
                             })
                         }
@@ -557,12 +557,12 @@ import { mapState } from 'vuex'
                     this.$http.post('/switch_port?form=mirror',post_params).then(res=>{
                         if(res.data.code ===1){
                             this.$message({
-                                type: 'success',
+                                type: res.data.type,
                                 text: this.lanMap['setting_ok']
                             })
                         }else if(res.data.code > 1){
                             this.$message({
-                                type: 'error',
+                                type: res.data.type,
                                 text: '(' + res.data.code + ') ' + res.data.message
                             })
                         }
@@ -593,7 +593,7 @@ import { mapState } from 'vuex'
                     if(res.data.code === 1){
                         this.stormctrl_data = res.data;
                         this.storm_data = Object.assign({},res.data.data);
-                    }else if(res.data.code >1){
+                    }else if(res.data.code > 1){
                         this.stormctrl_data = {};
                     }
                     this.storm_flags = 0;

@@ -44,7 +44,7 @@ import { mapState } from 'vuex'
         },
         created(){
             var pid = sessionStorage.getItem('portid');
-            this.portid = pid || 1;
+            this.portid = Number(pid) || 1;
             //请求url: /switch_port?form=statistic&port_id=1   //  打包时删除
             if(this.change_url.beta === 'test'){
                 var url;
@@ -75,7 +75,7 @@ import { mapState } from 'vuex'
         },
         watch:{
             portid(){
-                sessionStorage.setItem('portid',this.portid);
+                sessionStorage.setItem('portid',Number(this.portid));
                 this.getData();
             }
         }
