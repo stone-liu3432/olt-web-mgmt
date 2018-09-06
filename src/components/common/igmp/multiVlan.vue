@@ -44,9 +44,10 @@
                         <span>
                             {{ item.program_s === item.program_e ? item.program_s : item.program_s  + ' - ' + item.program_e }}
                         </span>
-                        <span>{{ item.program_desc }}</span>
+                        <span :title="item.program_desc">{{ item.program_desc }}</span>
                         <span>
                             <a href="javascript:void(0);" @click="open_cfg_pro_desc(item)">{{ lanMap['config'] }}</a>
+                            <a href="javascript:void(0);" @click="open_del_single_program(item)">{{ lanMap['delete'] }}</a>
                         </span>
                     </span>
                 </span>
@@ -184,6 +185,7 @@
             </div>
         </div>
         <confirm v-if="is_del_mvlan" @choose="result_delmvlan"></confirm>
+        <confirm v-if="is_del_program" @choose="del_single_program"></confirm>
     </div>
 </template>
 
@@ -212,6 +214,7 @@ export default {
             is_create_mvlan: false,
             is_set_mvdesc: false,
             is_set_program_desc: false,
+            is_del_program: false,
             program_item: {},
             create_mvlan: '',
             reg_ip: /^(([1-9]|[1-9]\d|1\d\d|2[0-4]\d|25[0-5])\.){1}((\d|[1-9]\d|1\d\d|2[0-4]\d|25[0-5])\.){2}([1-9]|[1-9]\d|1\d\d|2[0-4]\d|25[0-4]){1}$/
@@ -297,6 +300,9 @@ export default {
         //  关闭配置模态框
         close_cfg_modal(){
             this.is_cfg_mv = false;
+            this.program_s = '';
+            this.program_e = '';
+            this.program_desc = '';
         },
         //  提交修改
         submit_cfg(){
@@ -603,7 +609,7 @@ export default {
         },
         //  设置MVLAN描述信息
         submit_set_mvdesc(){
-            if(!this.mvlan_desc){
+            if(!this.mvlan_desc || this.mvlan_desc.length > 64){
                 this.$message({
                     type: 'error',
                     text: this.lanMap['param_error'] + ': ' + this.lanMap['desc']
@@ -647,6 +653,13 @@ export default {
             this.program_desc = '';
         },
         submit_program_desc(){
+            if(this.program_desc.length > 64){
+                this.$message({
+                    type: 'error',
+                    text: this.lanMap['param_error'] + ': ' + this.lanMap['program_desc']
+                })
+                return
+            }
             var post_param = {
                 "method":"add",
                 "param":{
@@ -672,6 +685,43 @@ export default {
             }).catch(err=>{
                 // to do
             })
+            this.close_cfg_pro_desc();
+        },
+        //  单个节目库删除处理函数
+        open_del_single_program(node){
+            this.is_del_program = true;
+            this.program_item = node;
+        },
+        del_single_program(bool){
+            if(bool){
+                var post_param = {
+                    "method":"delete",
+                    "param":{
+                        "mvlan": this.mvlan,
+                        "program_s": this.program_item.program_s,
+                        "program_e": this.program_item.program_e,
+                        "program_desc": this.program_item.program_desc
+                    }
+                }
+                this.$http.post('/switch_igmp?form=program',post_param).then(res=>{
+                    if(res.data.code === 1){
+                        this.$message({
+                            type: res.data.type,
+                            text: this.lanMap['delete'] + this.lanMap['st_success']
+                        })
+                        this.get_program();
+                    }else if(res.data.code > 1){
+                        this.$message({
+                            type: res.data.type,
+                            text: '(' + res.data.code + ') ' + res.data.message
+                        })
+                    }
+                }).catch(err=>{
+                    // to do
+                })
+            }
+            this.is_del_program = false;
+            this.program_item = {};
         },
         //  解析后台返回的字符串
         analysis(str){
@@ -846,22 +896,22 @@ div.multi-vlan-content{
                     text-overflow: ellipsis;
                     vertical-align: middle;
                     box-sizing: border-box;
-                    width: 58%;
+                    width: 50%;
                     &:first-child{
                         width: 25%;
                     }
                 }
                 >span:last-child{
-                    width: 15%;
+                    width: 24%;
                     padding: 0;
                     margin-left: 0;
                     text-align: center;
                     float: right;
                     height: 28px;
                     line-height: 28px;
-                    margin-right: 10px;
                 }
                 a{
+                    width: 80px;
                     height: 24px;
                     line-height: 24px;
                     margin-left: 0;
