@@ -48,9 +48,9 @@
                 </div>
             </div>
             <div v-for="(item,index) in onu_vlan_info.data" :key="index" class="port-item-vlan">
-                <div>
-                    <span v-for="(item,key) in onu_vlan_info.data[0]" :key="key" v-if="key !== 'vlan_list'">{{ lanMap[key] }}</span>
-                    <span v-if="item.op_vlan_mode === 2 || item.op_vlan_mode === 4">{{ lanMap['config'] }}</span>
+                <div class="opv-title">
+                    <span v-for="(item,key) in onu_vlan_info.data[0]" :key="key" v-if="key !== 'vlan_list'" class="bg-title">{{ lanMap[key] }}</span>
+                    <span v-if="item.op_vlan_mode === 2 || item.op_vlan_mode === 4" class="bg-title">{{ lanMap['config'] }}</span>
                 </div>
                 <div>
                     <span v-for="(_item,_key) in item" :key="_key" v-if="_key !== 'vlan_list'">{{ _key !== 'op_vlan_mode' ? _item : vlan_mode_map[item.op_vlan_mode] }}</span>
@@ -967,7 +967,7 @@ a{
     margin-left: 20px;
 }
 div.onu-port{
-    padding:20px 0 20px 30px;
+    padding:20px 0 20px 0;
     &:after{
         content: "";
         display: table;
@@ -976,13 +976,14 @@ div.onu-port{
     >h2{
         float: left;
         width: 200px;
-        font-size: 20px;
+        font-size: 24px;
         font-weight: 600;
         color: 	#67AEF7;
     }
     >div{
         >span{
             padding: 0 30px;
+            border-right: 1px solid #ccc;
         }
         >select{
             width: 120px;
@@ -994,6 +995,7 @@ div.onu-port{
     }
 }
 div.onu-port-info{
+    margin: 0 0 0 10px;
     >div{
         height: 40px;
         line-height: 36px;
@@ -1046,6 +1048,7 @@ ul.vertical-font{
     >li{
         display: table-cell;
         overflow: hidden;
+        background: #67aef6;
         width: 8.89%;
         text-align: center;
         height: 40px;
@@ -1057,7 +1060,11 @@ ul.vertical-font{
         }
     }
 }
+.bg-title{
+    background: #67aef6;
+}
 div.onu-vlan-info{
+    margin: 0 0 0 10px;
     >div{
         height: 36px;
         line-height: 36px;
@@ -1094,6 +1101,9 @@ div.onu-vlan-info{
             &:last-child{
                 border-right: 1px solid #ccc;
             }
+        }
+        span.opv-title{
+            background: #67aef6;
         }
     }
 }

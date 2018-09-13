@@ -28,9 +28,9 @@
                 <span>{{ lanMap['router_portlist'] }}</span>
                 <span>{{ analysis(router_plist.router_portlist) }}</span>
             </div>
-            <div>
+            <div v-if="mc_unknown_info.data">
                 <span>{{ lanMap['mc_unknown_policy'] }}</span>
-                <span>{{ mc_unknow_info.mc_unknown_policy ? lanMap['discard'] : lanMap['transparent'] }}</span>
+                <span>{{ mc_unknown_info.data.mc_unknown_policy ? lanMap['discard'] : lanMap['transparent'] }}</span>
             </div>
             <div class="program">
                 <span>{{ lanMap['program'] }}</span>
@@ -200,7 +200,7 @@ export default {
             router_plist: {},
             mvlan: 0,
             mvlan_desc: '',
-            mc_unknow_info: {},
+            mc_unknown_info: {},
             program: {},
             mark_type: 0,       //  set which one
             mark_mode: 1,       //  add or delete or config
@@ -269,9 +269,9 @@ export default {
             }
             this.$http.get(url).then(res=>{
                 if(res.data.code === 1){
-                    this.mc_unknow_info = res.data;
+                    this.mc_unknown_info = res.data;
                 }else{
-                    this.mc_unknow_info = {};
+                    this.mc_unknown_info = {};
                 }
             }).catch(err=>{
                 // to do
@@ -373,7 +373,7 @@ export default {
             }
             if(this.mark_mode === 2){
                 if(this.mark_type === 2){       //  修改未知多播策略
-                    if(this.mc_unknow_info.data.mc_unknown_policy === this.modify_unknow_policy){
+                    if(this.mc_unknown_info.data.mc_unknown_policy === this.modify_unknow_policy){
                         this.$message({
                             type: 'info',
                             text: this.lanMap['mofidy_tips']
@@ -784,11 +784,11 @@ export default {
                     return
                 }
                 this.router_portlist = this.router_plist.router_portlist.replace(/\d/g,n=>new String(Number(n) - this.system.data.ponports));
-                if(this.mark_type === 0 &&(!this.mc_unknow_info.data)){
+                if(this.mark_type === 0 &&(!this.mc_unknown_info.data)){
                     this.mark_mode = 1;
                     return
                 }
-                this.mc_unknown_policy = this.mc_unknow_info.data.mc_unknown_policy;
+                this.mc_unknown_policy = this.mc_unknown_info.data.mc_unknown_policy;
             }else{
                 this.mark_type = 1;
             }
@@ -799,11 +799,11 @@ export default {
                 return
             }
             this.router_portlist = this.router_plist.router_portlist;
-            if(this.mark_type === 0 &&(!this.mc_unknow_info.data)){
+            if(this.mark_type === 0 &&(!this.mc_unknown_info.data)){
                 this.mark_mode = 1;
                 return
             }
-            this.mc_unknown_policy = this.mc_unknow_info.data.mc_unknown_policy;
+            this.mc_unknown_policy = this.mc_unknown_info.data.mc_unknown_policy;
         }
     }
 }

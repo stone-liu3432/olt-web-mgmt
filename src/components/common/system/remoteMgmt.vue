@@ -479,7 +479,7 @@ select{
 .remote-content{
     border: 1px solid #ddd;
     padding: 10px;
-    margin-top: 20px;
+    margin: 20px 0 0 10px;
 }
 .remote-content>div,p{
     border-bottom: 1px solid #ddd;
@@ -508,7 +508,7 @@ p>span{
     border-right:1px solid #ccc;
 }
 .remote-mgmt{
-    margin:20px 10px;
+    margin:20px 0;
 }
 .remote-mgmt>span{
     font-size: 24px;

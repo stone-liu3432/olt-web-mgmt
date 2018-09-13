@@ -1,6 +1,7 @@
 <template>
     <div class="pon-setting">
         <h2>{{ lanMap['pon_setting'] }}</h2>
+        <hr>
         <div v-if="pon_authorize.data && pon_authorize.data.length > 0">
             <h3>{{ lanMap['pon_auth'] }}</h3>
             <ul>
@@ -156,6 +157,15 @@ div.pon-setting{
         font-size: 18px;
         font-weight: 500;
         color: #67aef7;
+    }
+    h3+ul{
+        margin: 0 0 0 10px;
+        li{
+            background: #67aef6;
+        }
+    }
+    ul{
+        margin: 0 0 0 10px;
     }
 }
 div.ponmgmt-cfg{

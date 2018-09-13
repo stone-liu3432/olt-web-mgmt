@@ -1,15 +1,15 @@
 <template>
     <div class="multicast">
         <div>
-            <span>{{ lanMap['multicast'] }}</span>
+            <span>{{ lanMap['multicast_table'] }}</span>
             <span>
-                <a href="javascript:void(0);" @click="open_add_modal">{{ lanMap['add'] }}</a>
-                <a href="javascript:void(0);" @click="open_del_modal" v-if="static_multi.length > 0">{{ lanMap['delete'] }}</a>
+                <a href="javascript:void(0);" @click="open_add_modal">{{ lanMap['add'] + lanMap['static_table'] }}</a>
+                <a href="javascript:void(0);" @click="open_del_modal" v-if="static_multi.length > 0">{{ lanMap['delete'] + lanMap['static_table'] }}</a>
             </span>
             <i @click="getData"></i>
         </div>
         <ul v-if="multicast_info.data && multicast_info.data.length > 0">
-            <li>
+            <li class="bg-title">
                 <span class="multi-ip">{{ lanMap['multi_ip'] }}</span>
                 <span class="vid">{{ lanMap['vid'] }}</span>
                 <span class="action">{{ lanMap['action'] }}</span>
@@ -37,8 +37,8 @@
             <div class="cover"></div>
             <div class="add-content">
                 <div>
-                    <h3 v-if="is_add">{{ lanMap['add'] }}</h3>
-                    <h3 v-else>{{ lanMap['delete'] }}</h3>
+                    <h3 v-if="is_add">{{ lanMap['add'] + lanMap['static_table'] }}</h3>
+                    <h3 v-else>{{ lanMap['delete'] + lanMap['static_table'] }}</h3>
                     <div v-if="is_add">
                         <span>{{ lanMap['multi_ip'] }}</span>
                         <input type="text" v-focus v-model.trim="multi_ip" placeholder="ex : 127.1.1.1"
@@ -133,9 +133,12 @@ export default {
                         this.static_multi = this.multicast_info.data.filter(item=>{
                             return item.action === 1;
                         })
+                    }else{
+                        this.static_multi = [];
                     }
                 }else{
                     this.multicast_info = {};
+                    this.static_multi = [];
                 }
             }).catch(err=>{
                 // to do
@@ -305,6 +308,9 @@ select{
     font-size: 16px;
 }
 div.multicast{
+    .bg-title{
+        background: #67aef6;
+    }
     >div:first-child{
         span:first-child{
             font-size: 18px;

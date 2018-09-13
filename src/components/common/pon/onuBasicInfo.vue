@@ -494,12 +494,12 @@ import onuAlarm from '@/components/common/pon/onuAlarm'
 
 <style scoped lang="less">
 .onu-basic-info{
-	padding:20px 0 20px 30px; 
+    padding:20px 0 20px 0;
 }
 .onu-basic-info>h2{
 	float: left;
 	width: 200px;
-	font-size: 20px;
+	font-size: 24px;
 	font-weight: 600;
 	color: 	#67AEF7;
 }
@@ -604,8 +604,14 @@ div.error-msg{
 div#detail div.onu-info-item:last-child{
     border: 1px solid #ccc;
 }
+hr+div{
+    margin: 0 0 0 10px;
+    &+div{
+        margin: 0 0 0 10px;
+    }
+}
 div.handle-btn{
-    margin: 20px;
+    margin: 20px 0;
     &:after{
         content: "";
         display: table;

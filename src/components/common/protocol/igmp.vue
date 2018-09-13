@@ -1,7 +1,8 @@
 <template>
     <div class="igmp">
         <h2>IGMP</h2>
-        <tabBar :tab="['info','multicast','mvlan']" @togglePage="select_page"></tabBar>
+        <hr>
+        <tabBar :tab="['info','multicast_table','mvlan']" @togglePage="select_page"></tabBar>
         <div v-if="show_index === 'info'">
             <span>IGMP{{ lanMap['info'] }}</span>
             <span>
@@ -35,7 +36,7 @@
                 <span v-if="key === 'protocol_policy'">{{ item ? 'discard' : 'pass' }}</span>
             </li>
         </ul>
-        <multicast v-if="show_index === 'multicast'"></multicast>
+        <multicast v-if="show_index === 'multicast_table'"></multicast>
         <multi-vlan v-if="show_index === 'mvlan'"></multi-vlan>
         <div class="modal-dialog" v-if="show_multicast">
             <div class="cover"></div>
@@ -67,52 +68,52 @@
                     <div>
                         <span>{{ lanMap['group_aging_time'] }}</span>
                         <input type="text" v-model.number="igmp_param.group_aging_time"  :disabled="igmp_param.mode === 0 || igmp_param.mode === 2"
-                         :style="{'border-color': igmp_param.group_aging_time !== '' &&(igmp_param.group_aging_time < 1 || igmp_param.group_aging_time > 3000 || isNaN(igmp_param.group_aging_time)) ? 'red' : ''}">
+                         :style="{'border-color': igmp_param.mode === 1 && igmp_param.group_aging_time !== '' && (igmp_param.group_aging_time < 1 || igmp_param.group_aging_time > 3000 || isNaN(igmp_param.group_aging_time)) ? 'red' : ''}">
                         <span> s</span>
                     </div>
                     <div>
                         <span>{{ lanMap['robustness'] }}</span>
                         <input type="text" v-model.number="igmp_param.robustness"  :disabled="igmp_param.mode === 0 || igmp_param.mode === 1"
-                         :style="{'border-color': igmp_param.robustness !== '' && (igmp_param.robustness < 1 || igmp_param.robustness > 10 || isNaN(igmp_param.robustness)) ? 'red' : ''}">
+                         :style="{'border-color': igmp_param.mode === 2 && igmp_param.robustness !== '' && (igmp_param.robustness < 1 || igmp_param.robustness > 10 || isNaN(igmp_param.robustness)) ? 'red' : ''}">
                     </div>
                     <div>
                         <span>{{ lanMap['gen_response_time'] }}</span>
                         <input type="text" v-model.number="igmp_param.gen_response_time"  :disabled="igmp_param.mode === 0 || igmp_param.mode === 1"
-                         :style="{'border-color': igmp_param.gen_response_time !== '' && (igmp_param.gen_response_time < 1 || igmp_param.gen_response_time > 25 || isNaN(igmp_param.gen_response_time)) ? 'red' : ''}">
+                         :style="{'border-color': igmp_param.mode === 2 && igmp_param.gen_response_time !== '' && (igmp_param.gen_response_time < 1 || igmp_param.gen_response_time > 25 || isNaN(igmp_param.gen_response_time)) ? 'red' : ''}">
                         <span> s</span>
                     </div>
                     <div>
                         <span>{{ lanMap['gen_query_interval'] }}</span>
                         <input type="text" v-model.number="igmp_param.gen_query_interval"  :disabled="igmp_param.mode === 0 || igmp_param.mode === 1"
-                         :style="{'border-color': igmp_param.gen_query_interval !== '' && (igmp_param.gen_query_interval < 2 || igmp_param.gen_query_interval > 3000 || isNaN(igmp_param.gen_query_interval)) ? 'red' : ''}">
+                         :style="{'border-color': igmp_param.mode === 2 && igmp_param.gen_query_interval !== '' && (igmp_param.gen_query_interval < 2 || igmp_param.gen_query_interval > 3000 || isNaN(igmp_param.gen_query_interval)) ? 'red' : ''}">
                         <span> s</span>
                     </div>
                     <div>
                         <span>{{ lanMap['query_src_ip'] }}</span>
                         <input type="text" v-model.trim="igmp_param.query_src_ip"  :disabled="igmp_param.mode === 0 || igmp_param.mode === 1"
-                         :style="{'border-color': igmp_param.query_src_ip !== '' && reg_ip.test(igmp_param.query_src_ip) ? '' : 'red'}">
+                         :style="{'border-color': igmp_param.mode === 2 && igmp_param.query_src_ip !== '' && reg_ip.test(igmp_param.query_src_ip) ? '' : 'red'}">
                     </div>
                     <div>
                         <span>{{ lanMap['query_src_mac'] }}</span>
                         <input type="text" v-model.trim="igmp_param.query_src_mac"  :disabled="igmp_param.mode === 0 || igmp_param.mode === 1"
-                         :style="{'border-color': igmp_param.query_src_mac !== '' && reg_mac.test(igmp_param.query_src_mac) ? '' : 'red'}">
+                         :style="{'border-color': igmp_param.mode === 2 && igmp_param.query_src_mac !== '' && reg_mac.test(igmp_param.query_src_mac) ? '' : 'red'}">
                     </div>
                     <div>
                         <span>{{ lanMap['sp_query_interval'] }}</span>
                         <input type="text" v-model.number="igmp_param.sp_query_interval"  :disabled="igmp_param.mode === 0 || igmp_param.mode === 1"
-                         :style="{'border-color': igmp_param.sp_query_interval !== '' && (igmp_param.sp_query_interval < 100 || igmp_param.sp_query_interval > 10000 || isNaN(igmp_param.sp_query_interval)) ? 'red' : ''}">
+                         :style="{'border-color': igmp_param.mode === 2 && igmp_param.sp_query_interval !== '' && (igmp_param.sp_query_interval < 100 || igmp_param.sp_query_interval > 10000 || isNaN(igmp_param.sp_query_interval)) ? 'red' : ''}">
                         <span> ms</span>
                     </div>
                     <div>
                         <span>{{ lanMap['sp_response_time'] }}</span>
                         <input type="text" v-model.number="igmp_param.sp_response_time"  :disabled="igmp_param.mode === 0 || igmp_param.mode === 1"
-                         :style="{'border-color': igmp_param.sp_response_time !== '' && (igmp_param.sp_response_time < 100 || igmp_param.sp_response_time > 10000 || isNaN(igmp_param.sp_response_time)) ? 'red' : ''}">
+                         :style="{'border-color': igmp_param.mode === 2 && igmp_param.sp_response_time !== '' && (igmp_param.sp_response_time < 100 || igmp_param.sp_response_time > 10000 || isNaN(igmp_param.sp_response_time)) ? 'red' : ''}">
                         <span> ms</span>
                     </div>
                     <div>
                         <span>{{ lanMap['sp_query_number'] }}</span>
                         <input type="text" v-model.number="igmp_param.sp_query_number"  :disabled="igmp_param.mode === 0 || igmp_param.mode === 1"
-                         :style="{'border-color': igmp_param.sp_query_number !== '' && (igmp_param.sp_query_number < 1 || igmp_param.sp_query_number > 10 || isNaN(igmp_param.sp_query_number)) ? 'red' : ''}">
+                         :style="{'border-color': igmp_param.mode === 2 && igmp_param.sp_query_number !== '' && (igmp_param.sp_query_number < 1 || igmp_param.sp_query_number > 10 || isNaN(igmp_param.sp_query_number)) ? 'red' : ''}">
                     </div>
                     <div>
                         <a href="javascript:void(0);" @click="submit_multicast_st">{{ lanMap['apply'] }}</a>
@@ -373,6 +374,8 @@ a{
 h2{
     font-size: 24px;
     color: #67AEF7;
+    font-weight: 600;
+    margin: 10px 0;
 }
 select{
     width: 200px;

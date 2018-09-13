@@ -4,6 +4,7 @@
         <div>
             <h2>{{ lanMap['mac_mgmt'] }}</h2>
         </div>
+        <hr>
         <div v-if="mac_age.data" class="mac-age">
             <span>{{ lanMap['age'] }} : </span>
             <span>{{ mac_age.data.age }}</span>
@@ -723,6 +724,9 @@ import loading from '@/components/common/loading'
 <style scoped lang="less">
 ul.mac-table{
     border: 1px solid #ddd;
+    >li:first-child{
+        background: #67aef6;
+    }
 }
 div.nomore-data{
     margin: 0 50px;
@@ -730,10 +734,10 @@ div.nomore-data{
     color: red;
 }
 div>h2{
-    font-size: 20px;
+    font-size: 24px;
     font-weight: 600;
     color: #67AEF7;
-    margin: 10px 0 20px 10px;
+    margin: 10px 0 20px 0;
 }
 div.mac-age{
     margin: 20px 0;
@@ -749,10 +753,10 @@ div.mac-age>input{
     vertical-align: middle;
 }
 div.mac-age>span:first-child{
-    margin-left: 30px;
+    margin-left: 10px;
     font-size: 18px;
     font-weight: 600;
-    color: #666;
+    color: #67aef6;
 }
 a{
     width: 120px;
@@ -771,7 +775,6 @@ ul.mac-table>li>span{
     width: 16%;
     font-size: 16px;
     text-align: center;
-    padding: 5px 0;
     word-wrap: break-word;
 }
 ul.mac-table>li.paginations{
@@ -814,13 +817,13 @@ ul.pagination>li.disabled{
     opacity: .65;
 }
 div.query-select{
-    margin: 20px 0 10px 30px;
+    margin: 20px 0 10px 10px;
     vertical-align: middle;
 }
 div.query-select>p{
     font-size: 18px;
     font-weight: 600;
-    color: #666;
+    color: #67aef6;
 }
 div.query-select:after{
     content: "";

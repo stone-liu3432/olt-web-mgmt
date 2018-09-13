@@ -27,6 +27,7 @@ const onuBasicInfo = () => import(/* webpackChunkName: "ponmgmt-page" */  '@/com
 const onuPortCfg = () => import(/* webpackChunkName: "ponmgmt-page" */  '@/components/common/pon/onuPortCfg')
 const onuBatchUpgrade = () => import(/* webpackChunkName: "ponmgmt-page" */  '@/components/common/pon/onuBatchUpgrade')
 const onuMulticast = () => import(/* webpackChunkName: "ponmgmt-page" */  '@/components/common/pon/onuMulticast')
+const ponOptical = () => import(/* webpackChunkName: "ponmgmt-page" */  '@/components/common/pon/ponOptical')
 // switch
 const portInfo = () => import(/* webpackChunkName: "switch-page" */  '@/components/common/switch/portInfo')
 const perfInfo = () => import(/* webpackChunkName: "switch-page" */  '@/components/common/switch/perfInfo')
@@ -187,6 +188,14 @@ const router = new Router({
 				{
 					path: "/port_cfg",
 					component: portCfg,
+					meta: {
+						requireAuth: true,
+						keepAlive: true
+					}
+				},
+				{
+					path: "/pon_optical",
+					component: ponOptical,
 					meta: {
 						requireAuth: true,
 						keepAlive: true

@@ -3,8 +3,9 @@
         <div>
             <h2>{{ lanMap['port_info'] }}</h2>
         </div>
+        <hr>
         <ul class="port-info-title"  onselectstart="return false;" v-if="port_info.data">
-            <li>
+            <li class="bg-title">
                 <span>{{ lanMap['port_id']}}</span>
                 <span v-for="(item,key) of port_info.data[0]" :key="key" 
                 v-if="port_info.data && key !== 'port_id' && key !== 'ingress_rate' && key !== 'int_media' && key !== 'int_speed' && key !== 'egress_rate'"
@@ -88,11 +89,20 @@ import { mapState } from 'vuex'
     max-width:1200px;
 }
 h2{
-    width: 200px;
-	font-size: 20px;
+    width: 300px;
+	font-size: 24px;
 	font-weight: 600;
 	color: 	#67AEF7;
-    margin: 10px 0 20px 10px;
+    margin: 10px 0 20px 0;
+}
+ul{
+    margin: 0 0 0 10px;
+}
+hr+ul{
+    margin-top: 20px;
+}
+li.bg-title>span{
+    background: #67aef6;
 }
 li{
     height: 32px;

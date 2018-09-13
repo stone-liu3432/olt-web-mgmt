@@ -23,7 +23,7 @@
         <ul v-if="vlan_tab[0]">
             <li>
                 <!-- <input type="radio" name="checkedVlan" style="visibility:hidden"> -->
-                <span v-for="(item,key) in vlan_tab[0]" :key="key">{{ key }}</span>
+                <span v-for="(item,key) in vlan_tab[0]" :key="key">{{ lanMap[key] }}</span>
                 <span class="vlan-cfg-title">{{ lanMap['config'] }}</span>
             </li>
             <li v-for="(item,index) in vlan_tab" :key="index">
@@ -695,6 +695,11 @@ div.vlan-mgmt{
 div.vlan-mgmt>div:nth-child(2){
     margin: 0 0 0 30px;
 }
+div+ul{
+    >li:first-child{
+        background: #67aef6;
+    }
+}
 a+span{
     font-size: 14px;
     margin-left: 10px;
@@ -707,13 +712,13 @@ div.btn-group-vlan{
     }
 }
 div>h2{
-    font-size: 20px;
+    font-size: 24px;
     font-weight: 600;
     color: #67AEF7;
-    margin: 10px 0 20px 10px;
+    margin: 10px 0 20px 0;
 }
 div.search{
-    margin: 20px 10px;
+    margin: 20px 0;
     line-height: 40px;
 }
 div.search>div{
@@ -749,9 +754,12 @@ h2+div:after{
     clear: both;
 }
 p{
-    font-size: 20px;
+    font-size: 24px;
     font-weight: 600;
     color:#67AEF7;
+}
+div+ul{
+    margin: 0 0 0 10px;
 }
 li{
     word-wrap: break-word;

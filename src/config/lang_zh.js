@@ -480,7 +480,16 @@ var zh = {
     mvlan_desc: "组播VLAN描述信息",
     program_desc: "组播节目描述信息",
 
-    batch_cfg_vlan: "批量配置VLAN端口"
+    batch_cfg_vlan: "批量配置VLAN端口",
+
+    pon_optical: "PON口光诊断",
+    pon_optical_tips: "这里是PON模块的RSSI，您需要选择您想要触发的ONU的位置",
+    loading: "加载数据中，请稍候...",
+    multicast_table: "组播表项",
+    static_table: "静态表项",
+    tagged_portlist: "Tagged",
+    untagged_portlist : "Untagged",
+    onu_optical_tips: "你需要手动刷新来获取光功率数据"
 };
 
 export default zh;

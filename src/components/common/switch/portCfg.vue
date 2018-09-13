@@ -4,6 +4,7 @@
             <h2 class="lf">{{ lanMap['port_cfg'] }}</h2>
             <a href="javascript:void(0);" @click="refresh_port">{{ lanMap['refresh'] }}</a>
         </div>
+        <hr>
         <div class="vlan-config" v-if="port_name.pon && port_name.ge">
             <p class="item-align">
                 <span>{{ lanMap['port_id'] + '：' }}</span>
@@ -665,11 +666,11 @@ input{
     border-radius: 3px;
 }
 h2{
-    width: 200px;
-	font-size: 20px;
+    width: 300px;
+	font-size: 24px;
 	font-weight: 600;
 	color: 	#67AEF7;
-    margin: 10px 0 20px 10px;
+    margin: 10px 0;
 }
 h3{
     color: #67aef7;
@@ -819,7 +820,7 @@ div.port-cfg-title{
     overflow: hidden;
     >a{
         width: 120px;
-        margin: 10px 0 20px 10px;
+        margin: 10px 0 10px 10px;
         padding: 0;
     }
 }

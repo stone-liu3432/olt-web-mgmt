@@ -1,16 +1,17 @@
 <template>
     <div class="onu-deny">
-        <h2>{{ lanMap['onu_deny'] }}</h2>
         <div>
+            <h2>{{ lanMap['onu_deny'] }}</h2>
+            <span>{{ lanMap['port_id'] }}</span>
             <select v-model.number="portid">
                 <option v-for="(item,key) in port_name.pon" :key="key" :value="item.id">
                     {{ item.name }}
                 </option>
             </select>
-            <span>
-                <a href="javascript:;" @click="add">{{ lanMap['add'] }}</a>
-            </span>
-            <div class="rt tool-tips">
+        </div>
+        <hr>
+        <div class="add-deny">
+            <div class="tool-tips">
                 <i></i>
                 <div>
                     <div>
@@ -22,6 +23,9 @@
                         <p>{{ lanMap['click'] }}<i class="icon-delete"></i>{{ lanMap['onudeny_del_tips'] }}</p>
                     </div>
                 </div>
+            </div>
+            <div>
+                <a href="javascript:;" @click="add">{{ lanMap['add'] }}</a>
             </div>
         </div>
         <div class="add-item" v-if="addItem.isShow">
@@ -37,7 +41,7 @@
             </span>
         </div>
         <ul v-if="onu_deny_list.data">
-            <li>
+            <li class="bg-title">
                 <span v-for="(item,key) in onu_deny_list.data[0]" :key="key" v-if="key != 'port_id'">
                     {{ lanMap[key] }}
                 </span>
@@ -219,8 +223,36 @@ export default {
 </script>
 
 <style scoped lang="less">
+h2{
+	font-size: 24px;
+	font-weight: 600;
+	color: 	#67AEF7;
+}
+hr{
+    margin: 20px 0;
+}
 .onu-deny{
     margin-top: 20px;
+    >div:first-child{
+        height: 30px;
+        line-height: 30px;
+        h2{
+            float: left;
+            width: 300px;
+        }
+    }
+}
+div.add-deny{
+    height: 36px;
+    line-height: 36px;
+    >div{
+        float: right;
+    }
+    &:after{
+        content: "";
+        display: table;
+        clear: both;
+    }
 }
 .add-item{
     height: 40px;
@@ -230,9 +262,15 @@ export default {
     line-height: 40px;
     vertical-align: middle;
     line-height: 40px;
+    input{
+        width: 23%;
+    }
+}
+.bg-title{
+    background: #67aef6;
 }
 .add-item>span{
-    width: 15%;
+    width: 12%;
     line-height: 32px;
     display: inline-block;
     height: 32px;
@@ -241,7 +279,7 @@ export default {
 }
 ul{
     border:1px solid #ddd;
-    margin-top: 30px;
+    margin: 20px 0 0 10px;
     min-width: 1020px;
 }
 ul>li{
@@ -261,24 +299,25 @@ ul span{
     display: inline-block;
     vertical-align: middle;
     height: 32px;
-    width: 24%;
+    width: 23%;
     text-align: center;
     font-size: 16px;
 }
 select{
     width: 160px;
-    height: 36px;
+    height: 30px;
     font-size: 16px;
-    border-radius: 5px;
+    border-radius: 3px;
     text-indent: 10px;
+    margin-left: 6px;
 }
 select+a{
     margin-left: 60px;
 }
 a{
     width: 120px;
-    height: 32px;
-    line-height: 32px;
+    height: 30px;
+    line-height: 30px;
     padding: 0;
     margin-left: 10px;
 }
@@ -299,7 +338,8 @@ div.data-failed{
     color: red;
 }
 div.tool-tips{
-    margin-right: 30px;
+    margin: 0 0 0 20px;
+    display: inline-block;
     position: relative;
     height: 36px;
     line-height: 36px;
@@ -340,11 +380,5 @@ div.tool-tips{
             }
         }
     }
-}
-div.onu-deny>h2{
-	font-size: 20px;
-	font-weight: 600;
-	color: 	#67AEF7;
-    margin: 10px 0 20px 10px;
 }
 </style>

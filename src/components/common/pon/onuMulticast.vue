@@ -279,7 +279,7 @@ div.no-data{
     line-height: 30px;
 }
 div.onu-multicast{
-    padding:20px 0 20px 30px;
+    padding:20px 0 20px 0;
     &:after{
         content: "";
         display: table;
@@ -288,13 +288,14 @@ div.onu-multicast{
     >h2{
         float: left;
         width: 200px;
-        font-size: 20px;
+        font-size: 24px;
         font-weight: 600;
         color: 	#67AEF7;
     }
     >div{
         >span{
             padding: 0 30px;
+            border-right: 1px solid #ccc;
         }
         >select{
             width: 120px;

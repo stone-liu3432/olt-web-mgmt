@@ -8,7 +8,7 @@
                 <a href="javascript:void(0);" @click="open_del_user" v-if="user_info.data && user_info.data.length > 0">{{ lanMap['delete'] + lanMap['user'] }}</a>
                 <a href="javascript:void(0);" @click="open_modify_user">{{ lanMap['modify_user_pwd'] }}</a>
             </div>
-            <div class="user-item">
+            <div class="user-item bg-title">
                 <span>{{ lanMap['user'] }}</span>
                 <span>{{ lanMap['status'] }}</span>
                 <span>{{ lanMap['user_level'] }}</span>
@@ -423,6 +423,9 @@ div.user-mgmt{
             &:last-child>span{
                 border-bottom: 1px solid #ccc;
             }
+        }
+        .bg-title>span{
+            background: #67aef6;
         }
     }
 }

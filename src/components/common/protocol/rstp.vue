@@ -1,6 +1,7 @@
 <template>
     <div class="rstp">
         <h2>RSTP</h2>
+        <hr>
         <div>
             <span>{{ lanMap['rstp_b_info'] }}</span>
             <a href="javascript:;" @click="open_modal" v-if="rstp.data">{{ lanMap['config'] }}</a>
@@ -18,7 +19,7 @@
             <a href="javascript:;" @click="open_priority" v-if="rstp_port.data">{{ lanMap['rstp_p_pri_b'] }}</a>
         </div>
         <ul class="rstp-port-info" v-if="rstp_port.data">
-            <li>
+            <li class="bg-title">
                 <span v-for="(item,key) in rstp_port.data[0]" :key="key">{{ lanMap[key] }}</span>
             </li>
             <li v-for="(item,key) in rstp_port.data" :key="key">
@@ -470,6 +471,8 @@ div.rstp{
     >h2{
         font-size: 24px;
         color: #67AEF7;
+        font-weight: 600;
+        margin: 10px 0;
     }
     >div{
         margin: 30px 0 20px 10px;
@@ -481,7 +484,7 @@ div.rstp{
         }
     }
     >ul{
-        margin: 20px 0 20px 20px;
+        margin: 20px 0 20px 10px;
         li{
             height: 30px;
             line-height: 30px;
@@ -499,6 +502,9 @@ div.rstp{
                 }
             }
         }
+    }
+    .bg-title{
+        background: #67aef6;
     }
     ul.rstp-port-info{
         li{

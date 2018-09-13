@@ -1,15 +1,17 @@
 <template>
     <div class="onu-bandwidth">
-        <h2>{{ lanMap['sla_cfg'] }}</h2>
         <div>
+            <h2>{{ lanMap['sla_cfg'] }}</h2>
+            <span>{{ lanMap['port_id'] }}</span>
             <select v-model.number="portid">
                 <option v-for="(item,key) in port_name.pon" :key="key" :value="item.id">
                     {{ item.name }}
                 </option>
             </select>
         </div>
+        <hr>
         <ul v-if="band_width.data && band_width.data.length > 0">
-            <li>
+            <li class="bg-title">
                 <span v-for="(item,key) in this.band_width.data[0]" :key="key" v-if=" key != 'port_id'">
                     {{ lanMap[key] }}
                 </span>
@@ -351,17 +353,33 @@ import { mapState } from 'vuex'
 </script>
 
 <style scoped lang="less">
+h2{
+    font-size: 24px;
+    font-weight: 600;
+    float: left;
+    width: 300px;
+    color: #67aef7;
+    &+span{
+        display: inline;
+    }
+}
 .onu-bandwidth{
     margin-top: 20px;
+    >div:first-child{
+        margin: 20px 0;
+    }
 }
 ul{
     border:1px solid #ddd;
-    margin-top: 30px;
+    margin: 30px 0 0 10px;
     min-width: 1020px;
 }
 ul>li{
     font-size: 0;
     border-bottom: 1px solid #ddd;
+}
+.bg-title{
+    background: #67aef6;
 }
 ul>li:last-child{
     border-bottom: none;
@@ -386,8 +404,9 @@ select{
     width: 140px;
     height: 32px;
     font-size: 16px;
-    border-radius: 5px;
+    border-radius: 3px;
     text-indent: 10px;
+    margin-left: 6px;
 }
 a{
     width: 120px;
@@ -397,12 +416,6 @@ a{
 div.dialog{
     width: 600px;
     height: 380px;
-}
-div.dialog>h2{
-    margin: 20px 0;
-    text-align: center;
-    font-size: 22px;
-    color: #67aef7;
 }
 div.dialog-item{
     margin: 10px;

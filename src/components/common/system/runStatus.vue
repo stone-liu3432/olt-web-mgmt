@@ -477,7 +477,6 @@ div.pon-modal>span{
 }
 .container>h2{
     height:30px;
-    padding-left:10px;
     line-height:30px;
     border-bottom:1px solid #ddd;
 }
@@ -510,7 +509,7 @@ h2{
 .system-info{
     width:500px;
     padding-bottom:10px;
-    margin-top: 10px;
+    margin: 10px 0 0 10px;
     float: left;
 }
 .system-info>div.system-info-detail:last-child{
@@ -518,7 +517,6 @@ h2{
 }
 .system-info>h2{
     height:30px;
-    padding-left:10px;
     line-height:30px;
     border-bottom:1px solid #ddd;
 }
@@ -534,7 +532,7 @@ h2{
 .cpu-info{
     float:left;
     width:500px;
-    margin:10px 0 0 20px;
+    margin:10px 0 0 10px;
     padding-bottom: 20px;
 }
 div.cpu-info>div.container{

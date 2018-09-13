@@ -300,8 +300,7 @@ var en = {
     bkup_cfg_info: " Notice:  You can backup the configuration file",
     reboot_olt: " Notice:  Click the button, you can restart the OLT",
     view_cfg: " View current config",
-    view_cfg_tips:
-        " Click to download all current configurations (including unsaved configurations)",
+    view_cfg_tips:  " Click to download all current configurations (including unsaved configurations)",
 
     sys_upgrade_fail: " Upgrade system failed",
     sys_upgrade_succ: " Upgrade system success, take it effect as restart OLT",
@@ -491,10 +490,19 @@ var en = {
     op_multicast: " ONU port multicast",
 
     onu_alarm: " ONU Alarm",
-    mvlan_desc: " VLAN infomation",
-    program_desc: " program infomation",
+    mvlan_desc: " description",
+    program_desc: " program description",
 
-    batch_cfg_vlan: " Configure VLAN ports in batches" 
+    batch_cfg_vlan: " Configure VLAN ports in batches" ,
+
+    pon_optical: "Optical diagnose",
+    pon_optical_tips: "Here it is the PON Module's RSSI, you need select the location of which ONU you want to trigger",
+    loading: "Loading data, please wait ...",
+    multicast_table: "Multicast table",
+    static_table: " static table",
+    tagged_portlist: "Tagged",
+    untagged_portlist : "Untagged",
+    onu_optical_tips: "You need to manually refresh to get the optical power data"
 
 };
 

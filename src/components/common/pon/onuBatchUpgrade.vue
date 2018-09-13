@@ -501,16 +501,12 @@ select{
     border-radius: 3px;
 }
 .onu-batch-upgrade{
+    margin: 20px 0 0 0;
     h2{
-        font-size: 20px;
+        font-size: 24px;
         font-weight: 600;
         color: 	#67AEF7;
-        margin: 10px 0 20px 10px;
     }
-    h2+div{
-        margin: 0 0 0 20px;
-    }
-    
 }
 form.upload-form{
     position: relative;
@@ -553,6 +549,9 @@ form.upload-form{
         font-size: 18px;
         margin: 20px 0;
         color: #67aef6;
+    }
+    >div{
+        margin-left: 10px;
     }
     >div+div{
         margin-top: 20px;

@@ -1,17 +1,18 @@
 <template>
     <div class="port-vlan" v-if="port_name.pon && port_name.ge">
         <div class="portvlan-title">
-            {{ lanMap['port_vlan'] }}
-            <a href="javascript:void(0);" @click="refresh_page">{{ lanMap['refresh'] }}</a>
-        </div>
-        <div class="portvlan-port">
-            <span>{{ lanMap['port_id'] + ': ' }}</span>
+            <h2>
+                {{ lanMap['port_vlan'] }}
+            </h2>
+            <span>{{ lanMap['port_id'] }}</span>
             <select v-model.number="portid">
                 <option v-for="(item,index) in port_name.pon" :key="index" :value="item.id">{{ item.name }}</option>
                 <option v-for="(item,index) in port_name.ge" :key="index" :value="item.id">{{ item.name }}</option>
                 <option v-if="port_name.xge" v-for="(item,index) in port_name.xge" :key="index" :value="item.id">{{ item.name }}</option>
             </select>
+            <a href="javascript:void(0);" @click="refresh_page">{{ lanMap['refresh'] }}</a>
         </div>
+        <hr>
         <tabBar :tab="['vlan_cfg','VLAN Translate','VLAN QinQ']" @togglePage="select_page"></tabBar>
         <div>
             <pvSet :pv-data="pv_set_d" v-if="show_index === 'vlan_cfg' && pv_set_d.data"></pvSet>
@@ -158,16 +159,26 @@ select{
 }
 /****************  通用样式结束 ****************/
 div.port-vlan{
+    >div:first-child{
+        margin: 20px 0;
+    }
     >div{
-        margin: 20px 10px;
+        margin: 0 0 0 10px;
     }
 }
 div.portvlan-title{
-    font-size: 24px;
-    font-weight: bold;
-    color: #67AEF7;
+    h2{
+        font-size: 24px;
+        font-weight: 600;
+        color: #67aef6;
+        float: left;
+        width: 300px;
+    }
     a{
         margin-left: 80px;
+    }
+    select{
+        margin-left: 6px;
     }
 }
 div.portvlan-port{
@@ -175,7 +186,6 @@ div.portvlan-port{
     span{
         display: inline-block;
         padding-right: 20px;
-        margin-left: 10px;
     }
     
 }

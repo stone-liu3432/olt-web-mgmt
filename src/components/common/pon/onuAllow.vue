@@ -1,13 +1,17 @@
 <template>
     <div class="onu-allow">
-        <h2>{{ lanMap['onu_allow'] }}</h2>
         <div>
+            <h2>{{ lanMap['onu_allow'] }}</h2>
+            <span>{{ lanMap['port_id'] }}</span>
             <select v-model.number="portid">
                 <option v-for="(item,key) in port_name.pon" :key="key" :value="item.id">
                     {{ item.name }}
                 </option>
             </select>
-            <i class="reload" :title="lanMap['tips_page_refresh']" @click="reload"></i>
+        </div>
+        <hr>
+        <div>
+            <a href="javascript:void(0);" @click="reload">{{ lanMap['refresh'] }}</a>
             <a href="javascript:void(0);" @click="add_onu">{{ lanMap['add'] }}</a>
             <a href="javascript:void(0);" @click="onu_bandwieth">{{ lanMap['sla_cfg'] }}</a>
             <a href="javascript:void(0);" @click="switch_display_mode">{{ lanMap['switch_display'] }}</a>
@@ -597,28 +601,58 @@ import onuCard from '@/components/common/pon/onuCard'
                 }
             },
             batch_onulist(){
-                var onulist = document.getElementsByName('onulist');
-                if(this.batch_onulist.length === onulist.length){
-                    this.select_all = true;
-                    this.selectall_state = true;
-                }else{
-                    this.select_all = false;
-                    this.selectall_state = false;
-                }
+                this.$nextTick(()=>{
+                    var onulist = document.getElementsByName('onulist');
+                    if(this.batch_onulist.length === onulist.length){
+                        this.select_all = true;
+                        this.selectall_state = true;
+                    }else{
+                        this.select_all = false;
+                        this.selectall_state = false;
+                    }
+                    if(!onulist.length){
+                        this.select_all = false;
+                        this.selectall_state = false;
+                    }
+                })
             }
         }
     }
 </script>
 
 <style scoped lang="less">
+h2{
+	font-size: 24px;
+	font-weight: 600;
+	color: 	#67AEF7;
+}
 .onu-allow{
     margin-top: 20px;
+    >div:first-child{
+        height: 36px;
+        line-height: 36px;
+        margin-bottom: 20px;
+        h2{
+            float: left;
+            width: 300px;
+            vertical-align: middle;
+        }
+        h2+span{
+            display: inline;
+        }
+    }
+}
+hr+div{
+    margin: 30px 0 0 0;
 }
 ul{
     border:1px solid #ddd;
-    margin-top: 20px;
+    margin: 20px 0 0 10px;
     min-width: 1020px;
     overflow: hidden;
+    >li:first-child{
+        background: #67aef6;
+    }
 }
 ul>li{
     font-size: 0;
@@ -667,10 +701,11 @@ input[type='checkbox']{
 }
 select{
     width: 160px;
-    height: 36px;
+    height: 30px;
     font-size: 16px;
-    border-radius: 5px;
+    border-radius: 3px;
     text-indent: 10px;
+    margin-left: 6px;
 }
 select+a{
     margin-left: 60px;
@@ -856,17 +891,11 @@ div.search-onu{
         font-size: 14px;
     }
 }
-div.onu-allow>h2{
-	font-size: 20px;
-	font-weight: 600;
-	color: 	#67AEF7;
-    margin: 10px 0 20px 10px;
+h3{
+    font-weight: 600;
+    color: #67aef7;
 }
 div.batch-onu{
-    h3{
-        font-weight: 500px;
-        color: #67aef7;
-    }
     h3+div{
         >div{
             margin: 0 20px;

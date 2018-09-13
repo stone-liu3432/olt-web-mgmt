@@ -11,6 +11,7 @@
                 </select>
             </div>
         </div>
+        <hr>
         <div v-if="data.data">
             <ul class="lf">
                 <li v-for="(item,key) in this.data.data" :key="key"  v-if=" key !== 'port_id' && key.substring(0,2).indexOf('rx') !== -1">
@@ -84,15 +85,18 @@ import { mapState } from 'vuex'
 
 <style scoped>
 .perf-info{
-    margin: 10px 0 20px 10px;
+    margin: 10px 0 20px 0;
 }
 .perf-info>h2,.perf-info>select{
     float: left;
-}.perf-info>div>span{
-    width: 120px;
+}
+select{
+    margin-left: 6px;
+}
+.perf-info>div>span{
+    display: inline;
     padding: 0;
     border: none;
-    text-align: center;
     font-size: 16px;
     font-weight: 500;
 }
@@ -103,6 +107,7 @@ import { mapState } from 'vuex'
 }
 div.perf-info+div{
     overflow: hidden;
+    margin: 0 0 0 10px;
 }
 select{
     width: 120px;
@@ -112,10 +117,18 @@ select{
 }
 h2{
     display: inline-block;
-	width: 200px;
-	font-size: 20px;
+	width: 300px;
+	font-size: 24px;
 	font-weight: 600;
 	color: 	#67AEF7;
+}
+hr+div{
+    margin: 20px 0 0 10px;
+}
+hr+div:after{
+    content: "";
+    display: table;
+    clear: both;
 }
 ul{
     width: 50%;
