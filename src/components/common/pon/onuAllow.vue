@@ -422,7 +422,7 @@ import onuCard from '@/components/common/pon/onuCard'
                 var sub_item = document.querySelectorAll('p.sub-item');
                 for(var i=0;i<sub_item.length;i++){
                     sub_item[i].className = 'sub-item';
-                    if(sub_item[i].innerText.replace(/\s/g,'') == this.lanMap['sla_cfg']){
+                    if(sub_item[i].innerText.replace(/(^\s*)|(\s*$)/g,'') === this.lanMap['sla_cfg'].replace(/(^\s*)|(\s*$)/g, "")){
                         sub_item[i].className += ' actived';
                     }
                 }
@@ -478,7 +478,7 @@ import onuCard from '@/components/common/pon/onuCard'
                 var sub_item = document.querySelectorAll('p.sub-item');
                 for(var i=0;i<sub_item.length;i++){
                     sub_item[i].className = 'sub-item';
-                    if(sub_item[i].innerText.replace(/(^\s*)|(\s*$)/g, "") == this.lanMap['onu_basic_info']){
+                    if(sub_item[i].innerText.replace(/(^\s*)|(\s*$)/g, "") == this.lanMap['onu_basic_info'].replace(/(^\s*)|(\s*$)/g, "")){
                         sub_item[i].className += ' actived';
                     }
                 }
@@ -493,7 +493,7 @@ import onuCard from '@/components/common/pon/onuCard'
                     sub_menu[i].className = 'sub-menu';
                     var text = sub_menu[i].firstElementChild.innerText;
                     text = text.replace(/(^\s*)|(\s*$)/g, "");
-                    if(text === this.lanMap['onu_basic_info']){
+                    if(text === this.lanMap['onu_basic_info'].replace(/(^\s*)|(\s*$)/g, "")){
                         sub_menu[i].className += ' hide';
                         sub_menu[i].previousElementSibling.className += ' active';
                     }

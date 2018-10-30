@@ -67,52 +67,52 @@
                     </div>
                     <div>
                         <span>{{ lanMap['group_aging_time'] }}</span>
-                        <input type="text" v-model.number="igmp_param.group_aging_time"  :disabled="igmp_param.mode === 0 || igmp_param.mode === 2"
+                        <input type="text" v-model.number="igmp_param.group_aging_time"  :disabled="igmp_param.mode === 0 || igmp_param.mode === 2" placeholder="1-3000s"
                          :style="{'border-color': igmp_param.mode === 1 && igmp_param.group_aging_time !== '' && (igmp_param.group_aging_time < 1 || igmp_param.group_aging_time > 3000 || isNaN(igmp_param.group_aging_time)) ? 'red' : ''}">
                         <span> s</span>
                     </div>
                     <div>
                         <span>{{ lanMap['robustness'] }}</span>
-                        <input type="text" v-model.number="igmp_param.robustness"  :disabled="igmp_param.mode === 0 || igmp_param.mode === 1"
+                        <input type="text" v-model.number="igmp_param.robustness"  :disabled="igmp_param.mode === 0 || igmp_param.mode === 1" placeholder="1-10"
                          :style="{'border-color': igmp_param.mode === 2 && igmp_param.robustness !== '' && (igmp_param.robustness < 1 || igmp_param.robustness > 10 || isNaN(igmp_param.robustness)) ? 'red' : ''}">
                     </div>
                     <div>
                         <span>{{ lanMap['gen_response_time'] }}</span>
-                        <input type="text" v-model.number="igmp_param.gen_response_time"  :disabled="igmp_param.mode === 0 || igmp_param.mode === 1"
+                        <input type="text" v-model.number="igmp_param.gen_response_time"  :disabled="igmp_param.mode === 0 || igmp_param.mode === 1" placeholder="1-25s"
                          :style="{'border-color': igmp_param.mode === 2 && igmp_param.gen_response_time !== '' && (igmp_param.gen_response_time < 1 || igmp_param.gen_response_time > 25 || isNaN(igmp_param.gen_response_time)) ? 'red' : ''}">
                         <span> s</span>
                     </div>
                     <div>
                         <span>{{ lanMap['gen_query_interval'] }}</span>
-                        <input type="text" v-model.number="igmp_param.gen_query_interval"  :disabled="igmp_param.mode === 0 || igmp_param.mode === 1"
+                        <input type="text" v-model.number="igmp_param.gen_query_interval"  :disabled="igmp_param.mode === 0 || igmp_param.mode === 1" placeholder="2-3000s"
                          :style="{'border-color': igmp_param.mode === 2 && igmp_param.gen_query_interval !== '' && (igmp_param.gen_query_interval < 2 || igmp_param.gen_query_interval > 3000 || isNaN(igmp_param.gen_query_interval)) ? 'red' : ''}">
                         <span> s</span>
                     </div>
                     <div>
                         <span>{{ lanMap['query_src_ip'] }}</span>
-                        <input type="text" v-model.trim="igmp_param.query_src_ip"  :disabled="igmp_param.mode === 0 || igmp_param.mode === 1"
-                         :style="{'border-color': igmp_param.mode === 2 && igmp_param.query_src_ip !== '' && reg_ip.test(igmp_param.query_src_ip) ? '' : 'red'}">
+                        <input type="text" v-model.trim="igmp_param.query_src_ip"  :disabled="igmp_param.mode === 0 || igmp_param.mode === 1" placeholder="127.0.0.1"
+                         :style="{'border-color': igmp_param.mode === 2 && igmp_param.query_src_ip !== '' && !reg_ip.test(igmp_param.query_src_ip) ? 'red' : ''}">
                     </div>
                     <div>
                         <span>{{ lanMap['query_src_mac'] }}</span>
-                        <input type="text" v-model.trim="igmp_param.query_src_mac"  :disabled="igmp_param.mode === 0 || igmp_param.mode === 1"
-                         :style="{'border-color': igmp_param.mode === 2 && igmp_param.query_src_mac !== '' && reg_mac.test(igmp_param.query_src_mac) ? '' : 'red'}">
+                        <input type="text" v-model.trim="igmp_param.query_src_mac"  :disabled="igmp_param.mode === 0 || igmp_param.mode === 1" placeholder="00:00:00:00:00:00"
+                         :style="{'border-color': igmp_param.mode === 2 && igmp_param.query_src_mac !== '' && !reg_mac.test(igmp_param.query_src_mac) ? 'red' : ''}">
                     </div>
                     <div>
                         <span>{{ lanMap['sp_query_interval'] }}</span>
-                        <input type="text" v-model.number="igmp_param.sp_query_interval"  :disabled="igmp_param.mode === 0 || igmp_param.mode === 1"
+                        <input type="text" v-model.number="igmp_param.sp_query_interval"  :disabled="igmp_param.mode === 0 || igmp_param.mode === 1" placeholder="100-10000ms"
                          :style="{'border-color': igmp_param.mode === 2 && igmp_param.sp_query_interval !== '' && (igmp_param.sp_query_interval < 100 || igmp_param.sp_query_interval > 10000 || isNaN(igmp_param.sp_query_interval)) ? 'red' : ''}">
                         <span> ms</span>
                     </div>
                     <div>
                         <span>{{ lanMap['sp_response_time'] }}</span>
-                        <input type="text" v-model.number="igmp_param.sp_response_time"  :disabled="igmp_param.mode === 0 || igmp_param.mode === 1"
+                        <input type="text" v-model.number="igmp_param.sp_response_time"  :disabled="igmp_param.mode === 0 || igmp_param.mode === 1" placeholder="100-10000ms"
                          :style="{'border-color': igmp_param.mode === 2 && igmp_param.sp_response_time !== '' && (igmp_param.sp_response_time < 100 || igmp_param.sp_response_time > 10000 || isNaN(igmp_param.sp_response_time)) ? 'red' : ''}">
                         <span> ms</span>
                     </div>
                     <div>
                         <span>{{ lanMap['sp_query_number'] }}</span>
-                        <input type="text" v-model.number="igmp_param.sp_query_number"  :disabled="igmp_param.mode === 0 || igmp_param.mode === 1"
+                        <input type="text" v-model.number="igmp_param.sp_query_number"  :disabled="igmp_param.mode === 0 || igmp_param.mode === 1" placeholder="1-10"
                          :style="{'border-color': igmp_param.mode === 2 && igmp_param.sp_query_number !== '' && (igmp_param.sp_query_number < 1 || igmp_param.sp_query_number > 10 || isNaN(igmp_param.sp_query_number)) ? 'red' : ''}">
                     </div>
                     <div>
@@ -157,7 +157,7 @@ export default {
                 "sp_query_interval": 0,
                 "sp_query_number": 0
             },
-            reg_ip: /^((25[0-5]|2[0-4]\d|((1\d{2})|([1-9]?\d)))\.){3}(25[0-5]|2[0-4]\d|((1\d{2})|([1-9]?\d)))$/,
+            reg_ip: /^((25[0-5]|2[0-4]\d|((1\d{2})|([1-9]?\d)))\.){3}(25[0-5]|2[0-4]\d|((1\d{2})|([1-9]?\d)|\d))$/,
             reg_mac: /^[0-9abcdefABCDEF]{2}(\:[0-9abcdefABCDEFF]{2}){5}$/
         }
     },
@@ -305,6 +305,10 @@ export default {
                     type: 'error',
                     text: this.lanMap['param_error'] + ': ' + this.lanMap['query_src_mac']
                 })
+                return
+            }
+            if(this.igmp_info.data.mode === this.igmp_param.mode){
+                this.cfg_multicast(flags);
                 return
             }
             var param_mode = {

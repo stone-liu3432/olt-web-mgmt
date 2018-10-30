@@ -217,7 +217,7 @@ export default {
             is_del_program: false,
             program_item: {},
             create_mvlan: '',
-            reg_ip: /^(([1-9]|[1-9]\d|1\d\d|2[0-4]\d|25[0-5])\.){1}((\d|[1-9]\d|1\d\d|2[0-4]\d|25[0-5])\.){2}([1-9]|[1-9]\d|1\d\d|2[0-4]\d|25[0-4]){1}$/
+            reg_ip:  /^((25[0-5]|2[0-4]\d|((1\d{2})|([1-9]?\d)))\.){3}(25[0-5]|2[0-4]\d|((1\d{2})|([1-9]?\d)|\d))$/
         }
     },
     created(){
@@ -896,9 +896,11 @@ div.multi-vlan-content{
                     text-overflow: ellipsis;
                     vertical-align: middle;
                     box-sizing: border-box;
-                    width: 50%;
+                    width: 43%;
                     &:first-child{
-                        width: 25%;
+                        width: 32%;
+                        border-left: 1px solid #ddd;
+                        text-indent: 6px;
                     }
                 }
                 >span:last-child{

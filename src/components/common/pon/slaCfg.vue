@@ -416,6 +416,15 @@ a{
 div.dialog{
     width: 600px;
     height: 380px;
+    >h2{
+        float: none;
+        height: 60px;
+        line-height: 60px;
+        padding: 0 0 0 20px;
+    }
+    select{
+        margin-left: 0;
+    }
 }
 div.dialog-item{
     margin: 10px;

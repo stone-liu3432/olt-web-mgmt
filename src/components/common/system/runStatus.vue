@@ -237,7 +237,7 @@
                 var sub_item = document.querySelectorAll('p.sub-item');
                 for(var i=0;i<sub_item.length;i++){
                     sub_item[i].className = 'sub-item';
-                    if(sub_item[i].innerText.replace(/(^\s*)|(\s*$)/g, "") == this.lanMap['onu_allow']){
+                    if(sub_item[i].innerText.replace(/(^\s*)|(\s*$)/g, "") == this.lanMap['onu_allow'].replace(/(^\s*)|(\s*$)/g, "")){
                         sub_item[i].className += ' actived';
                     }
                 }
@@ -252,7 +252,7 @@
                     sub_menu[i].className = 'sub-menu';
                     var text = sub_menu[i].firstElementChild.innerText;
                     text = text.replace(/(^\s*)|(\s*$)/g, "");
-                    if(text === this.lanMap['onu_allow']){
+                    if(text === this.lanMap['onu_allow'].replace(/(^\s*)|(\s*$)/g, "")){
                         sub_menu[i].className += ' hide';
                         sub_menu[i].previousElementSibling.className += ' active';
                     }
@@ -279,7 +279,7 @@
                 var sub_item = document.querySelectorAll('p.sub-item');
                 for(var i=0;i<sub_item.length;i++){
                     sub_item[i].className = 'sub-item';
-                    if(sub_item[i].innerText.replace(/(^\s*)|(\s*$)/g, "") == this.lanMap['port_cfg']){
+                    if(sub_item[i].innerText.replace(/(^\s*)|(\s*$)/g, "") == this.lanMap['port_cfg'].replace(/(^\s*)|(\s*$)/g, "")){
                         sub_item[i].className += ' actived';
                     }
                 }
@@ -294,7 +294,7 @@
                     sub_menu[i].className = 'sub-menu';
                     var text = sub_menu[i].firstElementChild.innerText;
                     text = text.replace(/(^\s*)|(\s*$)/g, "");
-                    if(text === this.lanMap['port_cfg']){
+                    if(text === this.lanMap['port_cfg'].replace(/(^\s*)|(\s*$)/g, "")){
                         sub_menu[i].className += ' hide';
                         sub_menu[i].previousElementSibling.className += ' active';
                     }
