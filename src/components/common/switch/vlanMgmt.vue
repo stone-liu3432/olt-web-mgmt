@@ -31,6 +31,7 @@
                 <span>{{ item.vlan_id }}</span>
                 <span>{{ analysis(item.tagged_portlist) || '—' }}</span>
                 <span>{{ analysis(item.untagged_portlist) || '—' }}</span>
+                <span>{{ analysis(item.default_vlan_portlist) || '—' }}</span>
                 <a href="javascript:;"  @click="config_port(item.vlan_id)">{{ lanMap['config'] }}</a>
                 <a href="javascript:;"  @click="deleteVlan(item.vlan_id)" v-if="item.vlan_id !== 1">{{ lanMap['delete'] }}</a>
             </li>
@@ -54,12 +55,17 @@
         <div class="modal-dialog" v-if="modalDialog">
             <div class="cover"></div>
             <div class="modal-content" :style="{ 'height': create_vlan ? '300px' : '275px' }">
-                <h3 v-if="create_vlan && !batch_set_vlan">{{ lanMap['create'] }}</h3>
-                <h3 v-if="create_vlan && batch_set_vlan">{{ lanMap['config'] }}</h3>
+                <h3 v-if="create_vlan && !batch_set_vlan">
+                    {{ lanMap['create'] }}
+                </h3>
+                <h3 v-if="create_vlan && batch_set_vlan">
+                    {{ lanMap['config'] }}
+                </h3>
                 <div class="modal-title">
                     <div v-if="!create_vlan" class="set-vlan">
                         <span>VLAN ID:</span>
                         <span>{{ vlanid }}</span>
+                        <span class="def-vlan-tips">{{ lanMap['def_vlan_tips'] }}</span>
                     </div>
                     <div class="add-vlan" v-if="create_vlan">
                         <span>VLAN ID：</span>
@@ -326,6 +332,18 @@ import { mapState } from 'vuex'
                     var untagged = document.querySelectorAll('span.untagged>input');
                     var tag_checked = this.analysis(this.vlan_map[this.vlanid].tagged_portlist).split(',');
                     var untag_checked = this.analysis(this.vlan_map[this.vlanid].untagged_portlist).split(',');
+                    var def_vlan = this.analysis(this.vlan_map[this.vlanid].default_vlan_portlist).split(',');
+                    var port_all = document.querySelectorAll('div.vlan-port span input');
+                    for(var n = 0,len = port_all.length; n < len; n++){
+                        for(var m = 0, len1 = def_vlan.length;m < len1; m++){
+                            if(port_all[n].nextElementSibling.innerText.replace(/\s/g,'') === def_vlan[m].replace(/\s/g,'')){
+                                port_all[n].disabled = 'disabled';
+                                port_all[n].style = 'cursor: not-allowed;';
+                                port_all[n].nextElementSibling.style = 'cursor: not-allowed;';
+                                port_all[n].style = 'cursor: not-allowed;';
+                            }
+                        }
+                    }
                     for(var i=0,len1=tagged.length;i<len1;i++){
                         for(var j=0,len2=tag_checked.length;j<len2;j++){
                             if(tagged[i].nextElementSibling.innerText.replace(/\s/g,'') === tag_checked[j].replace(/\s/g,'')){
@@ -787,8 +805,8 @@ li>a{
 li>span:first-child{
     width: 9%;
 }
-li>span:nth-child(2),li>span:nth-child(3){
-    width: 32%;
+li>span:nth-child(2),li>span:nth-child(3),li>span:nth-child(4){
+    width: 21%;
 }
 a{
     width: 100px;
@@ -797,6 +815,11 @@ a{
 }
 span.vlan-cfg-title{
     width: 200px;
+}
+span.def-vlan-tips{
+    margin-left: 20px;
+    font-size: 15px;
+    color: #67aef6;
 }
 div.cover+div{
     width:850px;

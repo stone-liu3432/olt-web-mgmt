@@ -489,7 +489,10 @@ var zh = {
     static_table: "静态表项",
     tagged_portlist: "Tagged",
     untagged_portlist : "Untagged",
-    onu_optical_tips: "你需要手动刷新来获取光功率数据"
+    onu_optical_tips: "你需要手动刷新来获取光功率数据",
+
+    default_vlan_portlist: "作为默认VLAN的端口列表",
+    def_vlan_tips: "当端口已配置该VLAN为缺省VLAN时，不允许配置该端口"
 };
 
 export default zh;
