@@ -504,7 +504,7 @@ var en = {
     untagged_portlist : "Untagged",
     onu_optical_tips: "You need to manually refresh to get the optical power data",
 
-    default_vlan_portlist: "Port default vlan list",
+    default_vlan_portlist: "As Default VLAN Port",
     def_vlan_tips: "When the port is configured with the default VLAN and is not allowed to be configured."
 };
 
