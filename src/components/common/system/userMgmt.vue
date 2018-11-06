@@ -340,7 +340,7 @@ export default {
             var post_params = {
                 "method":"set",
                 "param":{
-                    "name": this.uName
+                    "name": this.user_name
                 }
             }
             this.$http.post('/userlogin?form=logout',post_params).then(res=>{
