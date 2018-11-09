@@ -82,7 +82,7 @@
         <div class="search-onu" v-if="!is_batch_mgmt">
             <h3 class="lf">{{ lanMap['find'] }} ONU</h3>
             <div class="lf">
-                <input type="text" v-model="search_macaddr">
+                <input type="text" v-model="search_macaddr" @input="searchonu_by_macaddr">
                 <i></i>
             </div>
             <p class="lf">{{ lanMap['search_by_macaddr'] }}</p>
@@ -571,6 +571,19 @@ import onuCard from '@/components/common/pon/onuCard'
                         this.batch_onulist.push(item.value);
                     })
                 }
+            },
+            searchonu_by_macaddr(){
+                if(!this.search_macaddr){
+                    this.onu_allow_list = Object.assign({},this.onu_arrow);
+                }else{
+                    var list = Object.assign({},this.onu_arrow).data,arr = [];
+                    for(var key in list){
+                        if(list[key].macaddr.includes(this.search_macaddr)){
+                            arr.push(list[key]);
+                        }
+                    }
+                    this.onu_allow_list.data = arr;
+                }
             }
         },
         watch: {
@@ -588,17 +601,17 @@ import onuCard from '@/components/common/pon/onuCard'
                 }
             },
             search_macaddr(){
-                if(!this.search_macaddr){
-                    this.onu_allow_list = Object.assign({},this.onu_arrow);
-                }else{
-                    var list = Object.assign({},this.onu_arrow).data,arr = [];
-                    for(var key in list){
-                        if(list[key].macaddr.includes(this.search_macaddr)){
-                            arr.push(list[key]);
-                        }
-                    }
-                    this.onu_allow_list.data = arr;
-                }
+                // if(!this.search_macaddr){
+                //     this.onu_allow_list = Object.assign({},this.onu_arrow);
+                // }else{
+                //     var list = Object.assign({},this.onu_arrow).data,arr = [];
+                //     for(var key in list){
+                //         if(list[key].macaddr.includes(this.search_macaddr)){
+                //             arr.push(list[key]);
+                //         }
+                //     }
+                //     this.onu_allow_list.data = arr;
+                // }
             },
             batch_onulist(){
                 this.$nextTick(()=>{

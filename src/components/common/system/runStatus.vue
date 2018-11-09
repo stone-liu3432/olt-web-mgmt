@@ -72,13 +72,18 @@
         </div>
         <div class="cpu-info" v-if="this.cpuInfo.data">
             <h2>{{ lanMap['hw_status'] }}</h2>
-            <div>
-                <p>{{ lanMap['cpu_usage'] }}</p>
-                <canvas width="200" height="200" id="cpu-detail"></canvas>
+            <div v-if="usageRates.length <= 1">
+                <div>
+                    <p>{{ lanMap['cpu_usage'] }}</p>
+                    <canvas width="200" height="200" id="cpu-detail"></canvas>
+                </div>
+                <div>
+                    <P>{{ lanMap['memory_usage'] }}</P>
+                    <canvas width="200" height="200" id="memory-detail"></canvas>
+                </div>
             </div>
-            <div>
-                <P>{{ lanMap['memory_usage'] }}</P>
-                <canvas width="200" height="200" id="memory-detail"></canvas>
+            <div v-else>
+                <canvas id="usage-rates"></canvas>
             </div>
             <div class="container" v-if="this.timer.data">
                 <h2>{{ lanMap['sys_run_time'] }}</h2>
@@ -108,6 +113,7 @@
 
 <script>
     import { mapState,mapMutations } from 'vuex'
+    import drawChart from './../../../utils/drawChart.js'
     export default {
         name: 'runStatus',
         data(){
@@ -131,7 +137,8 @@
                     hour: 0,
                     min: 0,
                     sec: 0
-                }
+                },
+                usageRates: []
             }
         },
         computed: mapState(['lanMap','port_info','system','change_url','menu','port_name']),
@@ -214,6 +221,7 @@
             this.interval = setInterval(()=>{
                 this.get_pon();
                 this.get_ge();
+                this.getUsageRate();
             },5000)
             sessionStorage.setItem('first_menu','running_status');
             sessionStorage.removeItem('sec_menu');
@@ -361,6 +369,22 @@
                 }
                 return obj;
             },
+            getUsageRate(){
+                this.$http.get(this.change_url.cpu).then(res=>{
+                    if(res.data.code === 1){
+                        this.cpuInfo = res.data;
+                        //this.cpuInfo.data.cpu_usage,this.cpuInfo.data.memory_usage
+                        if(this.usageRates.length < 6){
+                            this.usageRates.push( { cpu: this.cpuInfo.data.cpu_usage, memory: this.cpuInfo.data.memory_usage } );
+                        }else{
+                            this.usageRates.shift();
+                            this.usageRates.push( { cpu: this.cpuInfo.data.cpu_usage, memory: this.cpuInfo.data.memory_usage } );
+                        }
+                    }
+                }).catch(err=>{
+                    // to do
+                })
+            },
             drawing(cpuNum,memoryNum){
                 var cpu = document.getElementById('cpu-detail');
                 if(!cpu) return
@@ -423,6 +447,15 @@
                 memoryCtx.textBaseline = 'middle';
                 memoryCtx.textAlign = 'center';
                 memoryCtx.fillText(memoryNum+'%', 100, 100);
+            }
+        },
+        watch: {
+            'usageRates'(){
+                if(this.usageRates.length > 1){
+                    this.$nextTick(()=>{
+                        drawChart(this.usageRates,document.getElementById('usage-rates'));
+                    })
+                }
             }
         }
     }
@@ -548,6 +581,10 @@ div.cpu-info>div.container{
 .cpu-info>div{
     float: left;
     margin-left:30px;
+}
+.cpu-info>div>div{
+    float: left;
+    margin: 15px 0 0 10px;
 }
 .cpu-info>div>p{
     padding:10px;
