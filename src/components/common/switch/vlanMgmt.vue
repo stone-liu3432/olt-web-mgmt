@@ -29,9 +29,9 @@
             <li v-for="(item,index) in vlan_tab" :key="index">
                 <!-- <input type="radio" v-model="vlanid" :value="item.vlan_id"> -->
                 <span>{{ item.vlan_id }}</span>
-                <span>{{ analysis(item.tagged_portlist) || '—' }}</span>
-                <span>{{ analysis(item.untagged_portlist) || '—' }}</span>
-                <span>{{ analysis(item.default_vlan_portlist) || '—' }}</span>
+                <span>{{ item.tagged_portlist | analysis(system.data.ponports,system.data.geports) || '—' }}</span>
+                <span>{{ item.untagged_portlist | analysis(system.data.ponports,system.data.geports) || '—' }}</span>
+                <span>{{ item.default_vlan_portlist | analysis(system.data.ponports,system.data.geports) || '—' }}</span>
                 <a href="javascript:;"  @click="config_port(item.vlan_id)">{{ lanMap['config'] }}</a>
                 <a href="javascript:;"  @click="deleteVlan(item.vlan_id)" v-if="item.vlan_id !== 1">{{ lanMap['delete'] }}</a>
             </li>

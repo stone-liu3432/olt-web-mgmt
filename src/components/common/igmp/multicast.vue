@@ -20,8 +20,8 @@
                 <span class="multi-ip">{{ item.multi_ip }}</span>
                 <span class="vid">{{ item.vid }}</span>
                 <span class="action">{{ item.action ? lanMap['static'] : lanMap['dynamic'] }}</span>
-                <span class="port-list">{{ analysis(item.host_portlist) }}</span>
-                <span class="port-list">{{ analysis(item.router_portlist) }}</span>
+                <span class="port-list">{{ item.host_portlist | analysis(system.data.ponports,system.data.geports) }}</span>
+                <span class="port-list">{{ item.router_portlist | analysis(system.data.ponports,system.data.geports) }}</span>
             </li>
         </ul>
         <div class="tab-bar" v-if="page > 1">
@@ -244,46 +244,6 @@ export default {
                 // to do
             })
             this.close_add_modal();
-        },
-        //  解析后台返回的字符串
-        analysis(str){
-            if(!str) return ''
-            var result = [];
-            var arr = str.split(',');
-            for(var i=0,len=arr.length;i<len;i++){
-                var substrs = arr[i];
-                if(substrs.indexOf('-') !== -1){
-                    var subArr = substrs.split('-');
-                    var min = Number(subArr[0]),max = Number(subArr[subArr.length - 1]);
-                    if(isNaN(min) || isNaN(max)) throw new TypeError;
-                    result.push(min);
-                    for(var j=1;j<max-min;j++){
-                        result.push(min+j);
-                    }
-                    result.push(max);
-                }else{
-                    if(isNaN(Number(substrs))) throw new TypeError;
-                    result.push(Number(substrs));
-                }
-            }
-            return this.nomenclature(result)
-        },
-        //  根据返回数据，命名端口号
-        nomenclature(arr){
-            if(!arr) return ''
-            var results = '';
-            var pon_count = this.system.data.ponports,ge_count = this.system.data.geports;
-            for(var i=0,len=arr.length;i<len;i++){
-                var m = arr[i];
-                if(m <= pon_count){
-                    results += pon_count < 10 ? 'PON0'+ m + ',' : 'PON' + m +',';
-                }else if(m > pon_count && m <= (pon_count + ge_count)){
-                    results += (m - pon_count) < 10 ? 'GE0' + (m - pon_count) + ',' : 'GE' + (m - pon_count) + ',';
-                }else{
-                    results += (m - (pon_count + ge_count)) < 10 ? 'XGE0' + (m - (pon_count + ge_count)) + ',' : 'XGE' + (m - (pon_count + ge_count)) + ',';
-                }
-            }
-            return results.replace(/\,$/,'');
         }
     },
     watch: {
