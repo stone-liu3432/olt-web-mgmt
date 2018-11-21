@@ -43,6 +43,7 @@ var en = {
     modify: " Modify ",
     find: " Find",
     apply: " Apply",
+    commit: "Commit",
     cancel: " Cancel",
     config: " Setting ",
     enable: " Enable",
@@ -505,7 +506,19 @@ var en = {
     onu_optical_tips: "You need to manually refresh to get the optical power data",
 
     default_vlan_portlist: "As Default VLAN Port",
-    def_vlan_tips: "When the port is configured with the default VLAN and is not allowed to be configured."
+    def_vlan_tips: "When the port is configured with the default VLAN and is not allowed to be configured.",
+
+    logosize_tips: "LOGO size limit is 240*70px",
+    product_name: "Product model",
+    company_info: "Company information",
+    company_name: "Company name",
+    company_addr: "Company address",
+    company_email: "Company email",
+    company_phone: "Contact number",
+    product_name_tips: 'Product name cannot exceed 16 characters',
+    sysinfo_set: "Logo, model, company information settings",
+    goback_devmgmt: "Back to device management",
+    imagesize_tips: "The maximum image size is 200kb"
 };
 
 export default en;

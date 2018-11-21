@@ -43,6 +43,7 @@ var zh = {
     modify: "修改",
     find: "查找",
     apply: "确认",
+    commit: "提交",
     cancel: "取消",
     config: "配置",
     enable: "使能",
@@ -492,7 +493,19 @@ var zh = {
     onu_optical_tips: "你需要手动刷新来获取光功率数据",
 
     default_vlan_portlist: "As Default VLAN Port",
-    def_vlan_tips: "当端口已配置该VLAN为缺省VLAN时，不允许配置该端口"
+    def_vlan_tips: "当端口已配置该VLAN为缺省VLAN时，不允许配置该端口",
+
+    logosize_tips: "LOGO大小限制为240*70px",
+    product_name: "产品型号",
+    company_info: "公司信息",
+    company_name: "公司名称",
+    company_addr: "公司地址",
+    company_email: "公司邮箱",
+    company_phone: "联系电话",
+    product_name_tips: '产品名称不得多于16个字符',
+    sysinfo_set: "Logo，型号，公司信息设置",
+    goback_devmgmt: "回到设备管理",
+    imagesize_tips: "图片大小最大为200kb"
 };
 
 export default zh;

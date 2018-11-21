@@ -18,7 +18,24 @@
                 </transition>
             </li>
         </ul>
-        <!-- <div class="menu-footer">公司信息<br>版权信息等</div> -->
+        <div class="menu-footer">
+            <div v-if="company_name">
+                <h4>{{ lanMap['company_name'] }}</h4>
+                <p>{{ company_name }}</p>
+            </div>
+            <div v-if="company_addr">
+                <h4>{{ lanMap['company_addr'] }}</h4>
+                <p>{{ company_addr }}</p>
+            </div>
+            <div v-if="company_email">
+                <h4>{{ lanMap['company_email'] }}</h4>
+                <p>{{ company_email }}</p>
+            </div>
+            <div v-if="company_phone">
+                <h4>{{ lanMap['company_phone'] }}</h4>
+                <p>{{ company_phone }}</p>
+            </div>
+        </div>
     </div>
 </template>
 
@@ -27,9 +44,35 @@ import { mapState,mapMutations } from 'vuex'
 export default {
     name: 'leftAside',
     data(){
-        return {}
+        return {
+            company_name: '',
+            company_addr: '',
+            company_email: '',
+            company_phone: ''
+        }
+    },
+    created(){
+        this.getData();
     },
     methods:{
+        getData(){
+            this.$http.get('/board?info=setting_board').then(res=>{
+                if(res.data.code === 1){
+                    var data = res.data.data;
+                    this.company_name = data.name || '';
+                    this.company_addr = data.addr || '';
+                    this.company_email = data.email || '';
+                    this.company_phone = data.phone || '';
+                }else{
+                    this.company_name = '';
+                    this.company_addr = '';
+                    this.company_email = '';
+                    this.company_phone = '';
+                }
+            }).catch(err=>{
+                // to do
+            })
+        },
         select_first_menu(node){
             // 检查 菜单项下面是否有子菜单
             if(!node.children){
@@ -87,7 +130,7 @@ export default {
                     this.$nextTick(()=>{
                         var sub_item = document.querySelectorAll('p.sub-item');
                         for(var i=0;i<sub_item.length;i++){
-                            if(sub_item[i].innerHTML.replace(/^\s*|\s*$/g,'') === this.lanMap[sec_menu]){
+                            if(sub_item[i].innerHTML.replace(/^\s*|\s*$/g,'') === this.lanMap[sec_menu].replace(/^\s*|\s*$/g,'')){
                                 sub_item[i].className += ' actived';
                             }
                         }
@@ -101,7 +144,7 @@ export default {
 
 <style scoped lang="less">
 #left-aside{
-    width: 200px;;
+    width: 220px;;
     height: 100%;
     overflow: auto;
     position: fixed;
@@ -176,5 +219,22 @@ export default {
 .sub-item:hover{
     color:#fff;
     background: #666666;
+}
+.menu-footer{
+    color: #afafaf;
+    div{
+        margin: 20px 0;
+    }
+    h4{
+        text-align: left;
+        padding-left: 10px;
+        margin-bottom: 10px;
+    }
+    p{
+        padding-left: 15px;
+        word-wrap: break-word;
+        word-break: break-all;
+        text-align: left;
+    }
 }
 </style>

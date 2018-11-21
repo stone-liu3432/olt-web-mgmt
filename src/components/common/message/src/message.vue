@@ -16,6 +16,9 @@
             <div>
                 <span class="mei-message-con">{{ text }}</span>
             </div>
+            <div :class="['msg-close',type ? `close-${type}` : '']" @click="close_msg">
+                X
+            </div>
         </div>
     </transition>
 </template>
@@ -38,6 +41,14 @@ export default {
     computed: {
         iconClass() {
             return this.type ? `mei-message-icon mei-icon-${typeMap[this.type]}` : "";
+        },
+        closeClass(){
+            return this.type ? `close-${typeMap[this.type]}` : "";
+        }
+    },
+    methods: {
+        close_msg(){
+            this.show = false;
         }
     }
 };
@@ -101,5 +112,32 @@ div.mei-message-warning {
 .mei-message-fade-enter,
 .mei-message-fade-leave-to {
     opacity: 0;
+}
+.msg-close{
+    color: #000;
+    border: 1px solid #909399;
+    font-size: 20px;
+    text-align: center;
+    line-height: 24px;
+    width: 24px;
+    height: 24px;
+    border-radius: 50%;
+    background-color: #fff;
+    position: absolute;
+    right: -6px;
+    top: -6px;
+    cursor: pointer;
+}
+div.close-success {
+    border-color: #67c23a;
+    color: #67c23a;
+}
+div.close-error {
+    border-color: #ff5000;
+    color: #ff5000;
+}
+div.close-warning {
+    border-color: #e6a23c;
+    color: #e6a23c;
 }
 </style>

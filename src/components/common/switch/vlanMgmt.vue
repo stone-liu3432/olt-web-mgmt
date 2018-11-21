@@ -496,6 +496,11 @@ import { mapState } from 'vuex'
                             type: res.data.type,
                             text: '(' + res.data.code + ') ' + res.data.message
                         })
+                        if(res.data.type === 'warning'){
+                            this.count = 0;
+                            this.pagination.index = 1;
+                            this.getData();
+                        }
                     }
                     this.vlanid_s = '';
                     this.vlanid_e = '';

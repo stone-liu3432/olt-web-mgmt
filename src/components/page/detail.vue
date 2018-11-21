@@ -96,7 +96,7 @@
 
 <style>
 #detail{
-    margin:70px 0 0 200px;
+    margin:70px 0 0 220px;
     padding:20px;
     width: 81%;
     min-width: 1020px;

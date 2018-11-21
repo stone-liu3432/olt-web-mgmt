@@ -2,6 +2,7 @@ import Vue from "vue";
 import Router from "vue-router";
 import store from "../vuex/store";
 import login from "../components/page/login";
+import sysSetting from '../components/page/sys-setting';
 
 Vue.use(Router);
 
@@ -48,6 +49,14 @@ const router = new Router({
 		{
 			path: "/login",
 			component: login
+		},
+		{
+			path: "/sys-setting",
+			meta: {
+				// 添加该字段，表示进入这个路由是需要登录的
+				requireAuth: true
+			},
+			component: sysSetting
 		},
 		{
 			path: "/main",

@@ -1,17 +1,18 @@
 <template>
     <div class="top-banner">
       <div class="top-banner-logo lf" v-if="system.data">
-        <a href="#">{{ system.data.vendor ? system.data.vendor.length > 16 ? system.data.vendor.substring(0,16) : system.data.vendor : "HSGQ"  }}</a>
+            <img v-if="has_logo" id="logo">
+            <a href="#" v-else>{{ system.data.vendor ? system.data.vendor.length > 16 ? system.data.vendor.substring(0,16) : system.data.vendor : "HSGQ"  }}</a>
       </div>
       <h1 class="lf">|</h1>
       <div class="product-type lf" v-if="system.data">{{ system.data.product_name }}</div>
       <div class="user-login rt">
         <div class="change-lang lf">
             <span>{{ lanMap['lang'] }}</span>
-                <select v-model="lang">
-                    <option value="zh">简体中文</option>
-                    <option value="en">English</option>
-                </select>
+            <select v-model="lang">
+                <option value="zh">简体中文</option>
+                <option value="en">English</option>
+            </select>
         </div>
         <div class="lf show-user">
           <i></i>
@@ -41,12 +42,23 @@ export default {
        return {
            lang: '',
            uName: '',
-           login_out_modal: false
+           login_out_modal: false,
+           has_logo: false
        }
    },
    created(){
        this.uName = sessionStorage.getItem('uname');
        this.lang = this.language;
+   },
+   mounted(){
+       this.$http.get('../../logo.png').then(res=>{
+           this.has_logo = true;
+           this.$nextTick(()=>{
+               document.getElementById('logo').src = '../../logo.png';
+           })
+       }).catch(err=>{
+           this.has_logo = false;
+       })
    },
    methods: {
         ...mapMutations({
