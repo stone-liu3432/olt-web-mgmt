@@ -50,22 +50,22 @@ export default {
        this.uName = sessionStorage.getItem('uname');
        this.lang = this.language;
    },
-   mounted(){
-       this.$http.get('../../logo.png').then(res=>{
-           this.has_logo = true;
-           this.$nextTick(()=>{
-               document.getElementById('logo').src = '../../logo.png';
-           })
-       }).catch(err=>{
-           this.has_logo = false;
-       })
-   },
    methods: {
         ...mapMutations({
             change_lang: 'updateLang'
         }),
         login_out(){
             this.login_out_modal = true;
+        },
+        update_img(){
+            this.$http.get('../../logo.png').then(res=>{
+                this.has_logo = true;
+                this.$nextTick(()=>{
+                    document.getElementById('logo').src = '../../logo.png';
+                })
+            }).catch(err=>{
+                this.has_logo = false;
+            })
         },
         //  退出登录
         result(bool){
@@ -91,11 +91,16 @@ export default {
         }
    },
    watch: {
-       language(){
-           this.lang = this.language;
-       },
-       lang(){
+        language(){
+            this.lang = this.language;
+        },
+        lang(){
             this.change_lang(this.lang);
+        },
+        system(){
+            if(this.system.data){
+                this.update_img();
+            }
         }
    }
 }

@@ -16,7 +16,7 @@
             <div>
                 <span class="mei-message-con">{{ text }}</span>
             </div>
-            <div :class="['msg-close',type ? `close-${type}` : '']" @click="close_msg">
+            <div :class="['msg-close',type ? `close-${type}` : '']" @click="close_msg" v-if="type !== 'success' && type !== 'info'">
                 X
             </div>
         </div>

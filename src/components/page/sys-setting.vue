@@ -59,7 +59,7 @@ export default {
     },
     created(){
         this.lang = sessionStorage.getItem('def_lang') || 'en';
-        if(sessionStorage.getItem('uName') !== 'devol'){
+        if(sessionStorage.getItem('uname') !== 'devol'){
             this.$router.back();
         }
     },
