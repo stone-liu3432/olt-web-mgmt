@@ -109,13 +109,13 @@ export default {
         },
         //  onu认证 / 取消认证
         authstate(node){
-            if(node.status.toLowerCase() !== 'online'){
-                this.$message({
-                    type: 'error',
-                    text: this.lanMap['tips_authstate_error']
-                })
-                return
-            }
+            // if(node.status.toLowerCase() !== 'online'){
+            //     this.$message({
+            //         type: 'error',
+            //         text: this.lanMap['tips_authstate_error']
+            //     })
+            //     return
+            // }
             this.post_params = {
                 "method": "set",
                 "param":{

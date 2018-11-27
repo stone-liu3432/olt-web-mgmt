@@ -687,6 +687,7 @@ li.onulist-item>span.onu-name-ellipsis{
     padding: 0 20px;
     overflow: hidden;
     text-overflow: ellipsis;
+    white-space: nowrap;
     box-sizing: border-box;
 }
 li.onulist-item>span{
