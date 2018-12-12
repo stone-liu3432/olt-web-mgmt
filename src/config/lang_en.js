@@ -1,6 +1,7 @@
 var en = {
     advanced: " advanced",
     running_status: " Running Status",
+    port_status: "Port Status",
     system_mgmt: " System",
     dev_mgmt: " Device",
     default_config: " Default Factory Config",
@@ -508,7 +509,7 @@ var en = {
     default_vlan_portlist: "As Default VLAN Port",
     def_vlan_tips: "When the port is configured with the default VLAN and is not allowed to be configured.",
 
-    logosize_tips: "LOGO size limit is 240*70px",
+    logosize_tips: "LOGO size limit is 220*100px",
     product_name: "Product model",
     company_info: "Company information",
     company_name: "Company name",

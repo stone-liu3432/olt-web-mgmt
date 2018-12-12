@@ -84,7 +84,7 @@ export default {
             var img = new Image();
             img.src = myImg;
             img.onload = function(){
-                if(img.width !== 240 || img.height !== 70){
+                if(img.width !== 220 || img.height !== 100){
                     file.value = '';
                     fileName.innerText = _this.lanMap['file_click'];
                 }

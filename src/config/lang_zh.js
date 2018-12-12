@@ -1,6 +1,7 @@
 var zh = {
     advanced: "用户权限",
     running_status: "运行状态",
+    port_status: "端口状态",
     system_mgmt: "系统管理",
     dev_mgmt: "设备管理",
     default_config: "恢复出厂配置",
@@ -495,7 +496,7 @@ var zh = {
     default_vlan_portlist: "As Default VLAN Port",
     def_vlan_tips: "当端口已配置该VLAN为缺省VLAN时，不允许配置该端口",
 
-    logosize_tips: "LOGO大小限制为240*70px",
+    logosize_tips: "LOGO大小限制为220*100px",
     product_name: "产品型号",
     company_info: "公司信息",
     company_name: "公司名称",

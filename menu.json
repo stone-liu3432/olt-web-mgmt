@@ -4,7 +4,13 @@
     "data":{
         "page":"advanced",
         "menu":[
-            {"name":"running_status"},
+            {
+                "name":"running_status",
+                "children":[
+                    { "name": "running_status"},
+                    { "name": "port_status"}
+                ]
+            },
             {
                 "name":"system_mgmt",
                 "isHidden":false	

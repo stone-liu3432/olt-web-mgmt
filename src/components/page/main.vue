@@ -1,7 +1,7 @@
 <template>
   <div id="main-content">
       <topBanner></topBanner>
-      <leftAside></leftAside>
+      <leftAside :sub-menu="sub_menu"></leftAside>
       <detail v-if="port_info && system"></detail>
   </div>
 </template>
@@ -25,7 +25,9 @@ import topBanner from '@/components/page/header'
                 max_time: 300,
                 time: 0,
                 interval: null,
-                uName: ''
+                uName: '',
+                sub_menu: [],
+                active_menu: ''
             }
         },
         created(){
@@ -40,12 +42,21 @@ import topBanner from '@/components/page/header'
             this.$http.get(this.change_url.menu).then(res=>{
                 if(res.data.code === 1){
                     this.addmenu(res.data);
+                    var first_menu = sessionStorage.getItem('first_menu') || 'running_status';
+                    res.data.data.menu.forEach(item=>{
+                        if(first_menu === item.name){
+                            if(item.children){
+                                this.sub_menu = item.children;
+                            }
+                        }
+                    })
                 }
             }).catch(err=>{
                 // to do
             })
             // this.$router.push('/main');
             this.uName = sessionStorage.getItem('uname');
+            this.active_menu = sessionStorage.getItem('first_menu') || 'running_status';
         },
         mounted(){
             this.time = this.max_time;
@@ -91,13 +102,18 @@ import topBanner from '@/components/page/header'
             }),
             user_timeout(e){
                 this.time = this.max_time;
+            },
+            menu_click(menu){
+                this.active_menu = menu.name;
+                sessionStorage.setItem('first_menu', menu.name);
+                this.sub_menu = menu.children ? menu.children : [{name: 'running_status'}];
             }
         },
-        computed: mapState(['port_info','system','change_url','lanMap'])
+        computed: mapState(['port_info','system','change_url','lanMap','menu'])
     }
 </script>
 
-<style>
+<style lang="less">
 #main-content{
     height:100%;
 }
@@ -119,5 +135,35 @@ div.tips-body>div{
     color: red;
     text-align: center;
     margin-top: 130px;
+}
+ul.first-menu{
+    margin: 100px 0 0 0;
+    border-bottom: 1px solid #666;
+    height: 50px;
+    box-sizing: border-box;
+    background: #eee;
+    li{
+        float: left;
+        padding: 0 30px;
+        text-align: center;
+        line-height: 50px;
+        border-bottom: 2px solid transparent;
+        height: 48px;
+        font-size: 18px;
+        user-select: none;
+        &:hover{
+            cursor: pointer;
+        }
+    }
+    li.active{
+        border-color: #67aef6;
+        color: #67aef6;
+        font-weight: 500;
+    }
+    &:after{
+        content: '';
+        display: table;
+        clear: both;
+    }
 }
 </style>

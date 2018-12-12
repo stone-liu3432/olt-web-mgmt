@@ -14,7 +14,6 @@
             <a href="javascript:void(0);" @click="reload">{{ lanMap['refresh'] }}</a>
             <a href="javascript:void(0);" @click="add_onu">{{ lanMap['add'] }}</a>
             <a href="javascript:void(0);" @click="onu_bandwieth">{{ lanMap['sla_cfg'] }}</a>
-            <a href="javascript:void(0);" @click="switch_display_mode">{{ lanMap['switch_display'] }}</a>
             <a href="javascript:void(0);" @click="show_batchmgmt" v-if="!is_batch_mgmt">{{ lanMap['batch_mgmt_onu'] }}</a>
             <a href="javascript:void(0);" @click="show_batchmgmt" v-else>{{ lanMap['exit_batch_onu'] }}</a>
             <div class="rt tool-tips">
@@ -102,7 +101,7 @@
                 <!-- <a href="javascript:boid(0);" @click="authstate()">{{ lanMap['modify'] + lanMap['auth_state'] }}</a> -->
             </div>
         </div>
-        <ul v-if="onu_allow_list.data && onu_allow_list.data.length>0 && onu_display_style === 1">
+        <ul v-if="onu_allow_list.data && onu_allow_list.data.length> 0">
             <li class="onulist-item">
                 <span></span>
                 <span v-for="(item,key) in onu_allow_list.data[0]" :key="key" v-if=" key != 'port_id' && key !== 'onu_name'">
@@ -134,8 +133,6 @@
                 </span>
             </li>
         </ul>
-        <onuCard v-if="onu_allow_list.data && onu_allow_list.data.length > 0 && onu_display_style === 2" :onu-allow-list="onu_allow_list" 
-            :batch-onulist="batch_onulist" :is-batch-mgmt="is_batch_mgmt" @updateData="getData"></onuCard>
         <p v-if="!onu_allow_list.data || onu_allow_list.data.length <= 0">{{ lanMap['no_more_data'] }}</p>
         <confirm :tool-tips="lanMap['tips_del_onu']" @choose="result_delete" v-if="delete_confirm"></confirm>
         <confirm :tool-tips="lanMap['tips_add_deny_onu']" @choose="result_deny" v-if="deny_confirm"></confirm>
@@ -146,10 +143,8 @@
 
 <script>
 import { mapState,mapMutations } from 'vuex'
-import onuCard from '@/components/common/pon/onuCard'
     export default {
         name: 'onuAllow',
-        components: { onuCard },
         data(){
             return {
                 onu_arrow: {},
@@ -214,14 +209,6 @@ import onuCard from '@/components/common/pon/onuCard'
             //  手动刷新
             reload(){
                 this.$parent.reload();
-            },
-            //  切换Oun列表显示模式
-            switch_display_mode(){
-                if(this.onu_display_style === 1){
-                    this.onu_display_style = 2;
-                }else{
-                    this.onu_display_style = 1;
-                }
             },
             getData(){
                 this.search_macaddr = '';

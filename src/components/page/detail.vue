@@ -96,8 +96,8 @@
 
 <style>
 #detail{
-    margin:70px 0 0 220px;
-    padding:20px;
+    margin: 100px 0 0 220px;
+    padding: 20px;
     width: 81%;
     min-width: 1020px;
     min-height:800px;

@@ -11,6 +11,7 @@ Vue.use(Router);
 const main = () => import(/* webpackChunkName: "main-page" */  '@/components/page/main')
 //  system page
 const runStatus = () => import(/* webpackChunkName: "system-page" */  '@/components/common/system/runStatus')
+const portStatus = () => import(/* webpackChunkName: "system-page" */  '@/components/common/system/portStatus')
 const devMgmt = () => import(/* webpackChunkName: "system-page" */  '@/components/common/system/devMgmt')
 const diagonose = () => import(/* webpackChunkName: "system-page" */  '@/components/common/system/diagonose')
 const remoteMgmt = () => import(/* webpackChunkName: "system-page" */  '@/components/common/system/remoteMgmt')
@@ -262,6 +263,13 @@ const router = new Router({
 				{
 					path: "/igmp",
 					component: igmp,
+					meta: {
+						requireAuth: true
+					}
+				},
+				{
+					path: "/port_status",
+					component: portStatus,
 					meta: {
 						requireAuth: true
 					}

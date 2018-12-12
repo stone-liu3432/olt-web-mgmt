@@ -2,11 +2,7 @@
     <div>
         <div class="dev-mgmt restore-cfg">
             <div>{{ lanMap["restore_config"] }}</div>
-            <hr>
             <div>
-                <p>
-                    {{ lanMap['res_cfg_info'] }}
-                </p>
                 <div>
                     <form> 
                         <input type="file" name="file1" size="80" class="hide" id="file" @change="changeFile()"/>
@@ -18,11 +14,7 @@
         </div>
         <div class="dev-mgmt">
             <div>{{ lanMap["reboot"] }}</div>
-            <hr>
             <div>
-                <p>
-                    {{ lanMap['reboot_olt'] }}
-                </p>
                 <div>
                     <a href="javascript:;" @click="reboot()">{{ lanMap["reboot"] }}</a>
                 </div>
@@ -30,11 +22,7 @@
         </div>
         <div class="dev-mgmt">
             <div>{{ lanMap["backup_config"] }}</div>
-            <hr>
             <div>
-                <p>
-                    {{ lanMap['bkup_cfg_info'] }}
-                </p>
                 <div>
                     <a href="javascript:;" @click="backup_cfg">{{ lanMap["backup_config"] }}</a>
                 </div>
@@ -42,11 +30,7 @@
         </div>
         <div class="dev-mgmt">
             <div>{{ lanMap["default_config"] }}</div>
-            <hr>
             <div>
-                <p>
-                    {{ lanMap['def_cfg_info'] }}
-                </p>
                 <div>
                     <a href="javascript:;" @click="default_cfg">{{ lanMap["default_config"] }}</a>
                 </div>
@@ -54,11 +38,7 @@
         </div>
         <div class="dev-mgmt">
             <div>{{ lanMap["save_config"] }}</div>
-            <hr>
             <div>
-                <p>
-                    {{ lanMap['save_cfg_info'] }}
-                </p>
                 <div>
                     <a href="javascript:;" @click="save_cfg">{{ lanMap["save_config"] }}</a>
                 </div>
@@ -66,11 +46,7 @@
         </div>
         <div class="dev-mgmt">
             <div>{{ lanMap['view_cfg'] }}</div>
-            <hr>
             <div>
-                <p>
-                    {{ lanMap['view_cfg_tips'] }}
-                </p>
                 <div>
                     <a href="javascript:void(0);" @click="open_view_confirm">{{ lanMap['view_cfg'] }}</a>
                 </div>
@@ -358,57 +334,50 @@ export default {
 
 <style scoped lang="less">
 .dev-mgmt{
-    float: left;
-    width: 49%;
-    border: 1px solid #aaa;
     margin-top: 20px;
-    box-shadow: 3px 3px 3px #ddd;
-    margin-left: 0.8%;
-    height: 175px;
-}
-div.restore-cfg{
-    width: 99%;
-    a{
-        margin-left: 330px;
-    }
-    >div{
-        >div{
-            text-align: left;
-        }
+    &::after{
+        content: '';
+        display: table;
+        clear: both;
     }
 }
 .dev-mgmt>div{
-    padding: 10px 20px;
+    //padding: 10px 20px;
+    float: left;
     >div{
         text-align: center;
     }
 }
 .dev-mgmt>div:first-child{
     font-size: 18px;
+    width: 220px;
     font-weight: 600;
     color: #3487DA;
 }
 form{
     position: relative;
+    span+a{
+        margin-left: 240px;
+    }
 }
 .updateFile{
     position: absolute;
     left: 0;
     top: 0;
-    width: 300px;
-    height: 38px;
+    width: 220px;
+    height: 30px;
     overflow: hidden;
     white-space: nowrap;
     text-overflow: ellipsis;
     border: 1px solid #ddd;
     text-align: center;
-    line-height: 38px;
+    line-height: 30px;
     z-index: 9;
     border-radius: 5px;
     background: #eee;
 }
 .hide{
-    height: 40px;
+    height: 30px;
     position: absolute;
     left: 0;
     top: 0;
@@ -418,18 +387,12 @@ form{
 }
 a{
     width: 200px;
-    height: 36px;
-    line-height: 36px;
+    height: 30px;
+    line-height: 30px;
     padding: 0;
 }
 input{
     font-size: 16px;
-}
-p{
-    color: #666;
-    height: 38px;
-    margin: 0 0 10px 0;
-    font-size: 14px;
 }
 div.load{
     position: fixed;
