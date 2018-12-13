@@ -85,11 +85,11 @@
                                 <option value="0">{{ lanMap['link_down'] }}</option>
                                 <option value="1">{{ lanMap['link_up'] }}</option>
                             </select>
-                            <select v-if="key === 'duplex'" v-model.number="port_data.duplex">
+                            <select v-if="key === 'duplex'" v-model.number="port_data.duplex" :disabled="swich_port_info.data.port_id <= system.data.ponports">
                                 <option value="0">{{ lanMap['half'] }}</option>
                                 <option value="1">{{ lanMap['full'] }}</option>
                             </select>
-                            <select v-if="key === 'speed'" v-model="port_data.speed">
+                            <select v-if="key === 'speed'" v-model="port_data.speed" :disabled="swich_port_info.data.port_id <= system.data.ponports">
                                 <option value="0M" disabled>Auto</option>
                                 <option v-if="swich_port_info.data.port_id <= (system.data.ponports + system.data.geports)" value="10M">10M</option>
                                 <option v-if="swich_port_info.data.port_id <= (system.data.ponports + system.data.geports)" value="100M">100M</option>
