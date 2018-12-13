@@ -253,6 +253,9 @@ export default {
                         type: res.data.type,
                         text: '(' + res.data.code + ') ' + res.data.message
                     })
+                    if(res.data.type === 'warning'){
+                        this.$parent.get_pv_set();
+                    }
                 }
                 this.close_pv_def_vlan();
             }).catch(err=>{
