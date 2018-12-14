@@ -78,7 +78,7 @@
                             <span v-if="key !== 'port_id'">{{ lanMap[key] }}</span>
                             <!-- <span v-if="key === 'port_id'">{{ item }}</span> -->
                             <select v-if="key === 'admin_status' || key === 'auto_neg' || key === 'flow_ctrl'" v-model.number="port_data[key]"
-                             :disabled="swich_port_info.data.port_id <= system.data.ponports && (key === 'auto_neg' || key === 'admin_status' || key === 'flow_ctrl' )">
+                             :disabled="swich_port_info.data.port_id <= system.data.ponports && (key === 'auto_neg' || key === 'admin_status' )">
                                 <option value="0">{{ lanMap['disable'] }}</option>
                                 <option value="1">{{ lanMap['enable'] }}</option>
                             </select>
