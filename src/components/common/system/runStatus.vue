@@ -72,7 +72,7 @@
         </div>
         <div class="cpu-info" v-if="this.cpuInfo.data">
             <h2>{{ lanMap['hw_status'] }}</h2>
-            <div v-if="usageRates.length <= 1">
+            <div>
                 <div>
                     <p>{{ lanMap['cpu_usage'] }}</p>
                     <canvas width="200" height="200" id="cpu-detail"></canvas>
@@ -81,9 +81,6 @@
                     <P>{{ lanMap['memory_usage'] }}</P>
                     <canvas width="200" height="200" id="memory-detail"></canvas>
                 </div>
-            </div>
-            <div v-else>
-                <canvas id="usage-rates"></canvas>
             </div>
             <div class="container" v-if="this.timer.data">
                 <h2>{{ lanMap['sys_run_time'] }}</h2>
@@ -113,7 +110,6 @@
 
 <script>
     import { mapState,mapMutations } from 'vuex'
-    import drawChart from './../../../utils/drawChart.js'
     export default {
         name: 'runStatus',
         data(){
@@ -137,8 +133,7 @@
                     hour: 0,
                     min: 0,
                     sec: 0
-                },
-                usageRates: []
+                }
             }
         },
         computed: mapState(['lanMap','port_info','system','change_url','menu','port_name']),
@@ -373,13 +368,6 @@
                 this.$http.get(this.change_url.cpu).then(res=>{
                     if(res.data.code === 1){
                         this.cpuInfo = res.data;
-                        //this.cpuInfo.data.cpu_usage,this.cpuInfo.data.memory_usage
-                        if(this.usageRates.length < 6){
-                            this.usageRates.push( { cpu: this.cpuInfo.data.cpu_usage, memory: this.cpuInfo.data.memory_usage } );
-                        }else{
-                            this.usageRates.shift();
-                            this.usageRates.push( { cpu: this.cpuInfo.data.cpu_usage, memory: this.cpuInfo.data.memory_usage } );
-                        }
                     }
                 }).catch(err=>{
                     // to do
