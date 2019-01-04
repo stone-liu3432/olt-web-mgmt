@@ -19,6 +19,14 @@
             <span class="updateFile" id="fileName2">{{ lanMap['file_click'] }}</span>
             <a href="javascript:;" @click="system">{{ lanMap["apply"] }}</a>
         </form>
+        <div class="upgrade">
+            <h3>{{ lanMap['fullversion'] }}</h3>
+        </div>
+        <form class="upload-form">
+            <input type="file" class="hide" id="file3" @change="changeFile('file3','fileName3')" accept=".zip"/>
+            <span class="updateFile" id="fileName3">{{ lanMap['file_click'] }}</span>
+            <a href="javascript:;" @click="fullversion">{{ lanMap["apply"] }}</a>
+        </form>
         <div class="modal-dialog" v-if="isLoading">
             <div class="cover"></div>
             <div class="load-body">
@@ -33,6 +41,7 @@
         <confirm :tool-tips="lanMap['upgrade_success'] + '?' " @choose="upgrade_result" v-if="reboot_confirm"></confirm>
         <confirm :tool-tips="lanMap['if_sure'] + lanMap['upgrade_firmware'] + '?' " @choose="result_firmware" v-if="firmware_confirm"></confirm>
         <confirm :tool-tips="lanMap['if_sure'] + lanMap['upgrade_system'] + '?' " @choose="result_system" v-if="system_confirm"></confirm>
+        <confirm :tool-tips="lanMap['if_sure'] + lanMap['fullversion'] + '?' " @choose="result_fullversion" v-if="fullversion_confirm"></confirm>
         <loading v-if="isReboot"></loading>
         <loading v-if="load_file"></loading>
     </div>
@@ -51,6 +60,7 @@ import loading from '@/components/common/loading'
                 reboot_confirm: false,
                 firmware_confirm: false,
                 system_confirm: false,
+                fullversion_confirm: false,
                 width: 0,
                 timer: null,
                 interval: null,
@@ -204,6 +214,61 @@ import loading from '@/components/common/loading'
             },
             system(){
                 this.system_confirm = true;
+            },
+            fullversion(){
+                this.fullversion_confirm = true;
+            },
+            result_fullversion(bool){
+                if(bool){
+                    var formData = new FormData();
+                    var file = document.getElementById('file3');
+                    var files = file.files[0];
+                    var fileName = document.getElementById('fileName3');
+                    var reg = /\.zip$/;
+                    if(!files) {
+                        fileName.innerText = this.lanMap['file_click'];
+                        this.$message({
+                            type: 'error',
+                            text: this.lanMap['file_not_select']
+                        })
+                        return
+                    }
+                    if(!reg.test(fileName.innerText)){
+                        this.$message({
+                            type: 'error',
+                            text: this.lanMap['restore_file_nr']
+                        })
+                        return 
+                    }
+                    this.load_file = true;
+                    formData.append('file',files);
+                    document.body.addEventListener('keydown',this.preventRefresh,false);
+                    document.body.addEventListener('contextmenu',this.preventMouse,false);
+                    this.$http.post('/upgrade?type=fullversion', formData,{
+                        headers: {'Content-Type': 'multipart/form-data'},
+                        timeout: 0
+                    }).then(res=>{
+                        document.body.removeEventListener('keydown',this.preventRefresh);
+                        document.body.removeEventListener('contextmenu',this.preventMouse);
+                        this.load_file = false;
+                        if(res.data.code === 1){
+                            this.isLoading = true;
+                            this.upgrade_callback(this.lanMap['fv_upgrade_succ'],this.lanMap['upgrade_buzy'],this.lanMap['file_header_error'],this.lanMap['fv_upgrade_fail']);
+                        }else if(res.data.code > 1){
+                            clearInterval(this.timer);
+                            this.isLoading = false;
+                            this.$message({
+                                type: res.data.type,
+                                text: '(' + res.data.code + ') ' + res.data.message
+                            })
+                        }
+                        this.width = 0;
+                    }).catch(error=>{
+                        // to do
+                        this.load_file = false;
+                    });
+                }
+                this.fullversion_confirm = false;
             },
             //  固件或系统升级期间，禁用F5刷新浏览器
             preventRefresh(e){

@@ -236,8 +236,7 @@ var zh = {
     shared: "Shared",
 
     interface_cfg: "接口项不同时的可配置选项",
-    bound_tips:
-        "带外接口和带内接口可配置IP地址和IP掩码，须为有效的IP地址和IP掩码",
+    bound_tips: "带外接口和带内接口可配置IP地址和IP掩码，须为有效的IP地址和IP掩码",
     add_inbound_tips: "增加只能增加带内接口，须配置IP地址，IP掩码和VLAN ID",
 
     http_login_timeout: "登录超时，请重试",
@@ -293,6 +292,9 @@ var zh = {
     view_cfg: "查看当前配置",
     view_cfg_tips: "点击下载当前所有配置(包含未保存的配置)",
 
+    fullversion: "全版本升级",
+    fv_upgrade_succ: "全版本升级成功",
+    fv_upgrade_fail: "全版本升级失败",
     sys_upgrade_fail: "系统升级失败",
     sys_upgrade_succ: "系统升级成功，重启设备后生效",
     upgrade_buzy: "升级失败，当前有其他用户正在升级此设备",

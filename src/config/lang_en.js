@@ -303,6 +303,9 @@ var en = {
     view_cfg: " View current config",
     view_cfg_tips:  " Click to download all current configurations (including unsaved configurations)",
 
+    fullversion: " Full version upgrade",
+    fv_upgrade_succ: " Full version upgrade success, take it effect as restart OLT",
+    fv_upgrade_fail: " Full version upgrade falied",
     sys_upgrade_fail: " Upgrade system failed",
     sys_upgrade_succ: " Upgrade system success, take it effect as restart OLT",
     fw_upgrade_fail: " Upgrade firmware failed",
