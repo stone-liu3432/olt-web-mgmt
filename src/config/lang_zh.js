@@ -186,7 +186,7 @@ var zh = {
 
     stormctrl: "风暴抑制",
     broadcast: "广播",
-    multicast: "组播表项",
+    multicast: "组播",
     unicast: "单播",
 
     mirror: "端口镜像",
@@ -496,6 +496,7 @@ var zh = {
 
     default_vlan_portlist: "As Default VLAN Port",
     def_vlan_tips: "当端口已配置该VLAN为缺省VLAN时，不允许配置该端口",
+    auto_neg_tips : "自适应为未使能状态时，才能配置速率",
 
     logosize_tips: "LOGO大小限制为240*70px",
     product_name: "产品型号",

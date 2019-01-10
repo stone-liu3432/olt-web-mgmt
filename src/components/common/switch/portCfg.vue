@@ -78,7 +78,7 @@
                             <span v-if="key !== 'port_id'">{{ lanMap[key] }}</span>
                             <!-- <span v-if="key === 'port_id'">{{ item }}</span> -->
                             <select v-if="key === 'admin_status' || key === 'auto_neg' || key === 'flow_ctrl'" v-model.number="port_data[key]" 
-                             :disabled="(key === 'auto_neg' || key === 'admin_status' ) && swich_port_info.data.port_id <= system.data.ponports">
+                             :disabled="(key === 'admin_status' && swich_port_info.data.port_id <= system.data.ponports)">
                                 <option value="0">{{ lanMap['disable'] }}</option>
                                 <option value="1">{{ lanMap['enable'] }}</option>
                             </select>
@@ -290,14 +290,25 @@ import { mapState } from 'vuex'
             swich_port_cfg(){
                 this.flags = 0;
                 var original = this.swich_port_info.data;
+                if(original.auto_neg === this.port_data.auto_neg && original.auto_neg === 1 && original.speed != this.port_data.speed){
+                    this.$message({
+                        type: 'error',
+                        text: this.lanMap['auto_neg_tips']
+                    })
+                    return
+                }
                 if(original.admin_status != this.port_data.admin_status){
                     this.flags += 1;
                 }
                 if(original.auto_neg != this.port_data.auto_neg){
-                    this.flags += 2;
-                }
-                if(original.speed != this.port_data.speed){
                     this.flags += 64;
+                    if(this.port_data.auto_neg === 1){
+                        this.port_data.speed = 'auto';
+                    }
+                }else{
+                    if(original.speed != this.port_data.speed){
+                        this.flags += 64;
+                    }
                 }
                 if(original.duplex != this.port_data.duplex){
                     this.flags += 4;

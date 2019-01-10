@@ -510,6 +510,7 @@ var en = {
 
     default_vlan_portlist: "As Default VLAN Port",
     def_vlan_tips: "When the port is configured with the default VLAN and is not allowed to be configured.",
+    auto_neg_tips : "The speed can be configured when the Auto Negonation is disabled.",
 
     logosize_tips: "LOGO size limit is 240*70px",
     product_name: "Product model",
