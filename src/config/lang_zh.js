@@ -64,6 +64,8 @@ var zh = {
     key: "密钥",
     info: "信息",
     download: "下载",
+    on: "开启",
+    off: "关闭",
 
     upgrade_firmware: "升级固件",
     upgrade_system: "升级系统",

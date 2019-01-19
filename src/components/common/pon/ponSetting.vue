@@ -25,6 +25,24 @@
             </ul>
         </div>
         <div v-else class="no-more-data">{{ lanMap['no_more_data'] }}</div>
+        <div v-if="p2p && p2p.length">
+            <h3>P2P</h3>
+            <ul>
+                <li>{{ lanMap['port_id'] }}</li>
+                <li>{{ lanMap['status'] }}</li>
+                <li>{{ lanMap['config'] }}</li>
+            </ul>
+            <ul v-for="(item,index) in p2p" :key="index">
+                <li>{{ port_name.pon[item.port_id].name }}</li>
+                <li>{{ item.flag === 1 ? lanMap['enable'] : lanMap['disable'] }}</li>
+                <li v-if="item.flag === 1">
+                    <a href="javascript:void(0);" @click="openP2PCfm(item)">{{ lanMap['off'] }}</a>
+                </li>
+                <li v-else>
+                    <a href="javascript:void(0);" @click="openP2PCfm(item)">{{ lanMap['on'] }}</a>
+                </li>
+            </ul>
+        </div>
         <div class="modal-dialog" v-if="isSetAuth">
             <div class="cover"></div>
             <div class="ponmgmt-cfg">
@@ -58,6 +76,7 @@
                 <div class="close" @click="cancel_confirm"></div>
             </div>
         </div>
+        <confirm :tool-tips="p2pMsg" @choose="setP2PStatus" v-if="isSetP2P"></confirm>
     </div>
 </template>
 
@@ -74,14 +93,33 @@ export default {
             def_auth_type: ['Auto', 'Manual'],
             def_auth_mode: ['mac','LOID','Loid+password','hybrid'],
             pon_authorize: {},
-            isSetAuth: false
+            isSetAuth: false,
+            isSetP2P: false,
+            p2pCache: {},
+            p2pMsg: '',
+            p2p: [
+                {
+                    "port_id": 1,
+                    "flag": 1
+                },{
+                    "port_id": 2,
+                    "flag": 1
+                },{
+                    "port_id": 3,
+                    "flag": 1
+                },{
+                    "port_id": 4,
+                    "flag": 0
+                }
+            ]
         }
     },
     created(){
-        this.getData();
+        //this.getData();
     },
     activated(){
         this.getData();
+        this.getP2PData();
     },
     methods: {
         getData(){
@@ -90,6 +128,17 @@ export default {
                     this.pon_authorize = res.data;
                 }else{
                     this.pon_authorize = {};
+                }
+            }).catch(err=>{
+                // to do
+            })
+        },
+        getP2PData(){
+            this.$http.get('/ponmgmt?form=p2p').then(res=>{
+                if(res.data.code === 1){
+                    this.p2p = res.data.data;
+                }else{
+                    this.p2p = [];
                 }
             }).catch(err=>{
                 // to do
@@ -138,6 +187,42 @@ export default {
             this.port_id = 0;
             this.auth_type = 0;
             this.auth_mode = 0;
+        },
+        setP2PStatus(bool){
+            if(bool){
+                var post_data = {
+                    "method": "set",
+                    "param": {
+                        "port_id": this.p2pCache.port_id,
+                        "flag": this.p2pCache.flag ? 0 : 1
+                    }
+                }
+                this.$http.post('/ponmgmt?form=p2p',post_data).then(res=>{
+                    if(res.data.code === 1){
+                        this.$message({
+                            type: res.data.type,
+                            text: this.lanMap['setting_ok']
+                        })
+                        this.getP2PData();
+                    }else if(res.data.code > 1){
+                        this.$message({
+                            type: res.data.type,
+                            text: '(' + res.data.code + ') ' + res.data.message
+                        })
+                    }
+                    this.p2pCache = {};
+                }).catch(err=>{
+                    // to do
+                })
+            }else{
+                this.p2pCache = {};
+            }
+            this.isSetP2P = false;
+        },
+        openP2PCfm(node){
+            this.p2pMsg = this.lanMap['if_sure'] + (node.flag ? this.lanMap['off'] : this.lanMap['on']) + ' ' + this.port_name.pon[node.port_id].name + ' P2P ?';
+            this.isSetP2P = true;
+            this.p2pCache = node;
         }
     }
 }

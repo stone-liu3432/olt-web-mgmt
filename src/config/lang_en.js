@@ -64,6 +64,8 @@ var en = {
     key: "  Key",
     info: "  Information",
     download: " download",
+    on: " ON",
+    off: " OFF",
 
     upgrade_firmware: "  upgrade firmware",
     upgrade_system: "  upgrade system",
