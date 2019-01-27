@@ -30,7 +30,7 @@ var zh = {
     vlan_cfg: "VLAN配置",
     stormctrl_cfg: "风暴控制",
     port_mirror: "端口镜像",
-    layer2_mgmt: "layer2管理",
+    layer2_mgmt: "交换管理",
     vlan_mgmt: "VLAN管理",
     mac_mgmt: "MAC地址管理",
     protocol_mgmt: "协议管理",

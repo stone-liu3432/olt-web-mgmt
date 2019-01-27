@@ -30,7 +30,7 @@ var en = {
     vlan_cfg: " VLAN Config",
     stormctrl_cfg: " Stormctrl",
     port_mirror: " Port Mirror",
-    layer2_mgmt: " layer2",
+    layer2_mgmt: " Switch",
     vlan_mgmt: " VLAN",
     mac_mgmt: " MAC Address Table",
     protocol_mgmt: " Protocol",
