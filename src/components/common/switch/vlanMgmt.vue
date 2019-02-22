@@ -714,6 +714,7 @@ import { mapState } from 'vuex'
 <style scoped lang="less">
 div.vlan-mgmt{
     min-width: 1020px;
+    padding-top: 70px;
 }
 div.vlan-mgmt>div:nth-child(2){
     margin: 0 0 0 30px;
@@ -738,10 +739,10 @@ div>h2{
     font-size: 24px;
     font-weight: 600;
     color: #67AEF7;
-    margin: 10px 0 20px 0;
+    margin: 10px 0 20px 20px;
 }
 div.search{
-    margin: 20px 0;
+    margin: 20px 0 20px 20px;
     line-height: 40px;
 }
 div.search>div{
@@ -782,7 +783,7 @@ p{
     color:#67AEF7;
 }
 div+ul{
-    margin: 0 0 0 10px;
+    margin: 0 0 0 30px;
 }
 li{
     word-wrap: break-word;

@@ -5,6 +5,7 @@
             <li v-for="(item,index) in menu.data.menu" :key="index">
                 <p class="menu-item" @click="select_first_menu(item)" :class="[ item.isHidden ? 'active' : '' ]"> 
                     {{ lanMap[item.name] }}
+                    <i class="icon-arrows" v-if="item.children"></i>
                 </p>
                 <!-- 二级菜单 -->
                 <transition name="bounce">
@@ -52,9 +53,19 @@ export default {
         }
     },
     created(){
-        this.getData();
+        //this.getData();
+        if(this.menu.data && this.menu.data.menu){
+            this.menu.data.menu.forEach(item=>{
+                if(item.name === 'running_status'){
+                    item.isHidden = true;
+                }
+            })
+        }
     },
     methods:{
+        ...mapMutations({
+            addmenu: 'updateMenu'
+        }),
         getData(){
             this.$http.get('/board?info=setting_board').then(res=>{
                 if(res.data.code === 1){
@@ -114,7 +125,7 @@ export default {
             this.$router.replace(node.name);
         }
     },
-    computed: mapState(['lanMap','menu']),
+    computed: mapState(['lanMap','menu','change_url']),
     watch: {
         //  页面刷新时的menu状态恢复
         'menu'(){
@@ -150,29 +161,30 @@ export default {
     position: fixed;
     left: 0;
     top: 70px;
-    background: #2F2F39;
-    box-shadow: 5px 0 3px #666;
+    background: #eee;
+    box-shadow: 5px 0 3px #eee;
     z-index: 999;
     user-select: none;
 }
 .menu>li>ul{
-    transition: all 0.3s ease-out;
+    transition: all 0.2s ease-out;
 }
 .active{
+    border-left: 5px solid #3990e5;
     color:#3990e5;
+    background: #fff;
+    i.icon-arrows{
+        background-position: -48px -6px;
+    }
 }
 .sub-menu>li>p.actived{
-    border-left: 5px solid #3990e5;
-    background: #666;
-    color: #fff;
+    //background: #fff;
+    color: #3990e5;
+    font-weight: 500;
 }
 .menu>li>ul.hide{
     max-height: 330px;
     transition: max-height 0.3s ease-in;
-}
-.menu{
-    color:#9AAABA;
-    background: #393946;
 }
 .menu>li{
     overflow: hidden;
@@ -180,11 +192,15 @@ export default {
 .menu-item{
     padding:15px 0 15px 30px;
     cursor: pointer;
-    transition:all 0.3s linear;
+    transition:all 0.2s linear;
+    height: 32px;
+    line-height: 32px;
+    position: relative;
+    font-weight: 500;
 }
 .menu-item:hover{
-    color:#fff;
-    background: #666666;
+    //color:#666;
+    background: #F0E5D8;
 } 
 .expressConfig{
     width: 168px;
@@ -212,13 +228,13 @@ export default {
 .sub-item{
     padding:10px 0 10px 40px;
     cursor: pointer;
-    background: #2F2F39;
-    transition: all 0.3s linear;
+    background: #E8E8E8;
+    transition: all 0.2s linear;
     border-left: 5px solid transparent;
 }
 .sub-item:hover{
-    color:#fff;
-    background: #666666;
+    //color:#666;
+    background: #F0E5D8;
 }
 .menu-footer{
     color: #afafaf;
@@ -236,5 +252,13 @@ export default {
         word-break: break-all;
         text-align: left;
     }
+}
+i.icon-arrows{
+    position: absolute;
+    right: 10px;
+    width: 32px;
+    height: 32px;
+    background: url('../../assets/arrows.png') -7px -48px no-repeat;
+    vertical-align: middle;
 }
 </style>

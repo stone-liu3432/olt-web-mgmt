@@ -327,7 +327,7 @@ var en = {
     clk_port_cfg: " Click to setting port",
     ge_port_info: " GE infomations",
     clk_onu_allow: " Click to setting ONU-allow-list",
-    registered_onu: " Registered: ",
+    registered_onu: " Registered ",
     pon_info: " PON Informations",
     rstp_port_pri: " Setting rstp port priority",
     rstp_global_info: " Setting rstp gloabal",

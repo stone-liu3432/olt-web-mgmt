@@ -97,7 +97,7 @@ var zh = {
     offline: "离线",
 
     admin_status: "管理状态",
-    link_status: "状态",
+    link_status: "链路状态",
     link_up: "连接",
     link_down: "未连接",
     auto_neg: "自适应",
@@ -316,7 +316,7 @@ var zh = {
     clk_port_cfg: "点击可进入端口配置",
     ge_port_info: "GE信息",
     clk_onu_allow: "点击可进入onu允许列表",
-    registered_onu: "已注册设备数:",
+    registered_onu: "已注册设备数",
     pon_info: "PON口信息",
     rstp_port_pri: "设置rstp端口优先级",
     rstp_global_info: "设置rstp全局信息",

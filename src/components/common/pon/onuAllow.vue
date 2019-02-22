@@ -637,10 +637,12 @@ import onuCard from '@/components/common/pon/onuCard'
 h2{
 	font-size: 24px;
 	font-weight: 600;
-	color: 	#67AEF7;
+    color: 	#67AEF7;
+    margin: 0 0 0 20px;
 }
 .onu-allow{
     margin-top: 20px;
+    padding-top: 70px;
     >div:first-child{
         height: 36px;
         line-height: 36px;
@@ -656,11 +658,11 @@ h2{
     }
 }
 hr+div{
-    margin: 30px 0 0 0;
+    margin: 30px 0 0 10px;
 }
 ul{
     border:1px solid #ddd;
-    margin: 20px 0 0 10px;
+    margin: 20px 0 0 20px;
     min-width: 1020px;
     overflow: hidden;
     >li:first-child{
@@ -878,7 +880,7 @@ div.tool-tips{
     }
 }
 div.search-onu{
-    margin: 20px 0 0 10px;
+    margin: 20px 0 0 20px;
     height: 36px;
     line-height: 36px;
     &:after{
