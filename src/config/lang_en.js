@@ -66,6 +66,7 @@ var en = {
     download: " download",
     on: " ON",
     off: " OFF",
+    advanced_setting: "Advanced setting",
 
     upgrade_firmware: "  upgrade firmware",
     upgrade_system: "  upgrade system",

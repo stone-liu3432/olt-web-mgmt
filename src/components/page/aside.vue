@@ -3,15 +3,15 @@
         <ul class="menu" v-if="menu.data && lanMap">
             <!-- 主菜单/左侧导航栏 -->
             <li v-for="(item,index) in menu.data.menu" :key="index">
-                <p class="menu-item" @click="select_first_menu(item)" :class="[ item.isHidden ? 'active' : '' ]"> 
+                <p class="menu-item" @click="select_first_menu(item)" :class="[ adv_f_menu === item.name ? 'active' : '' ]"> 
                     {{ lanMap[item.name] }}
                     <i class="icon-arrows" v-if="item.children"></i>
                 </p>
                 <!-- 二级菜单 -->
                 <transition name="bounce">
-                    <ul class="sub-menu" v-if="item.children" :class="{ hide: item.isHidden }">
-                        <li v-for="(_item,_index) in item.children" :key="_index" @click="select_second_menu($event,_item.name)">
-                            <p class="sub-item" @click="select_page(_item)">
+                    <ul class="sub-menu" v-if="item.children" :class="{ hide: adv_f_menu === item.name }">
+                        <li v-for="(_item,_index) in item.children" :key="_index" @click="select_second_menu(_item.name)">
+                            <p :class="['sub-item' , adv_menu === _item.name ? 'actived' : '']" @click="select_page(_item)">
                                 {{ lanMap[_item.name] }}
                             </p>
                         </li>
@@ -53,18 +53,16 @@ export default {
         }
     },
     created(){
-        //this.getData();
-        if(this.menu.data && this.menu.data.menu){
-            this.menu.data.menu.forEach(item=>{
-                if(item.name === 'running_status'){
-                    item.isHidden = true;
-                }
-            })
-        }
+        // this.changeFMenu('running_status');
+    },
+    beforeDestroy(){
+        this.changeFMenu('running_status');
     },
     methods:{
         ...mapMutations({
-            addmenu: 'updateMenu'
+            addmenu: 'updateMenu',
+            changeAdvMenu: 'updateAdvMenu',
+            changeFMenu: 'updateAdvFMenu'
         }),
         getData(){
             this.$http.get('/board?info=setting_board').then(res=>{
@@ -85,39 +83,12 @@ export default {
             })
         },
         select_first_menu(node){
-            // 检查 菜单项下面是否有子菜单
-            if(!node.children){
-                for(var key in this.menu.data.menu){
-                    this.menu.data.menu[key].isHidden = false;
-                }
-                node.isHidden = true;
-                this.$router.replace(node.name);
-                var sub_item = document.querySelectorAll('p.sub-item');
-                for(var i=0;i<sub_item.length;i++){
-                    sub_item[i].className = 'sub-item';
-                }
-            }else{
-            // 如有，加上打开折叠效果
-                if(node.isHidden){
-                    for(var key in this.menu.data.menu){
-                        this.menu.data.menu[key].isHidden = false;
-                    }
-                }else{
-                    for(var key in this.menu.data.menu){
-                        this.menu.data.menu[key].isHidden = false;
-                    }
-                    node.isHidden = true;
-                }
-            }
+            this.changeFMenu(node.name);
             sessionStorage.setItem('first_menu',node.name);
         },
         //  子菜单被选中时样式
-        select_second_menu(e,str){
-            var sub_item = document.querySelectorAll('p.sub-item');
-            for(var i=0;i<sub_item.length;i++){
-                sub_item[i].className = 'sub-item';
-            }
-            e.target.className += ' actived';
+        select_second_menu(str){
+            this.changeAdvMenu(str);
             sessionStorage.setItem('sec_menu',str);
         },
         //  点击切换页面
@@ -125,29 +96,14 @@ export default {
             this.$router.replace(node.name);
         }
     },
-    computed: mapState(['lanMap','menu','change_url']),
+    computed: mapState(['lanMap', 'menu', 'change_url', 'adv_menu', 'adv_f_menu']),
     watch: {
         //  页面刷新时的menu状态恢复
         'menu'(){
             var first_menu = sessionStorage.getItem('first_menu');
             var sec_menu = sessionStorage.getItem('sec_menu');
-            if(first_menu){
-                this.menu.data.menu.forEach(item=>{
-                    if(item.name === first_menu){
-                        item.isHidden = true;
-                    }
-                })
-                if(sec_menu){
-                    this.$nextTick(()=>{
-                        var sub_item = document.querySelectorAll('p.sub-item');
-                        for(var i=0;i<sub_item.length;i++){
-                            if(sub_item[i].innerHTML.replace(/^\s*|\s*$/g,'') === this.lanMap[sec_menu].replace(/^\s*|\s*$/g,'')){
-                                sub_item[i].className += ' actived';
-                            }
-                        }
-                    })
-                }
-            }
+            this.changeFMenu(first_menu);
+            this.changeAdvMenu(sec_menu);
         }
     }
 }

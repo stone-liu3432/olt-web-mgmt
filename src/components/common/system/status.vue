@@ -61,6 +61,8 @@ export default {
 <style lang="less" scoped>
 #home{
     padding-top: 70px;
+    width: 1280px;
+    margin: 0 auto;
 }
 div.port-info{
     cursor: pointer;

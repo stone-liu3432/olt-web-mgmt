@@ -23,7 +23,6 @@
                 "name":"pon_mgmt",
                 "isHidden":false,
                 "children":[
-                    {"name":"onu_allow"},
                     {"name":"onu_deny"},
                     {"name":"sla_cfg"},
                     {"name":"pon_setting"},
@@ -51,7 +50,6 @@
                 "name":"layer2_mgmt",
                 "isHidden":false,
                 "children":[
-                    {"name":"vlan_mgmt"},
                     {"name":"mac_mgmt"}
                 ]
             },{

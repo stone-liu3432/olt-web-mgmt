@@ -66,6 +66,7 @@ var zh = {
     download: "下载",
     on: "开启",
     off: "关闭",
+    advanced_setting: "高级设置",
 
     upgrade_firmware: "升级固件",
     upgrade_system: "升级系统",

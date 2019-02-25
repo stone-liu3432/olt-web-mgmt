@@ -35,7 +35,11 @@
         <div class="top-banner-logo lf">HSGQ</div>
         <div class="top-banner-nav lf">
             <ul>
-                <li v-for="(item,index) in f_menu" :key="index" @click="nav_click(item)">{{ item }}</li>
+                <li v-for="(item,index) in f_menu" :key="index" 
+                    @click="nav_click(item)"
+                    :class="{ 'active' : item === nav_menu }">
+                    {{ lanMap[item] }}
+                </li>
             </ul>
         </div>
         <div class="top-banner-user lf">
@@ -53,7 +57,7 @@ import { mapState,mapMutations } from 'vuex'
 const f_menu = ['status','onu_allow','vlan_mgmt','advanced_setting']
 export default {
    name: 'topBanner',
-   computed: mapState(['system','lanMap','language','menu','change_url']),
+   computed: mapState(['system','lanMap','language','menu','change_url','nav_menu']),
    data(){
        return {
            lang: '',
@@ -66,11 +70,16 @@ export default {
    created(){
        this.uName = sessionStorage.getItem('uname');
        this.lang = this.language;
+       var first_menu = sessionStorage.getItem('f_menu');
+       if(first_menu){
+           this.changeMenu(first_menu);
+       }
    },
    methods: {
         ...mapMutations({
             change_lang: 'updateLang',
-            addmenu: 'updateMenu'
+            addmenu: 'updateMenu',
+            changeMenu: 'updateNavMenu'
         }),
         login_out(){
             this.login_out_modal = true;
@@ -118,6 +127,8 @@ export default {
                     // to do
                 })
             }
+            this.changeMenu(node);
+            sessionStorage.setItem('f_menu', node);
         }
    },
    watch: {
@@ -146,7 +157,8 @@ export default {
         top:0;
         left:0;
         z-index: 999;
-        background: #ddd;
+        background: #67aef6;
+        color: #fff;
         >div{
             height: 70px;
             line-height: 70px;
@@ -184,6 +196,10 @@ export default {
         li{
             width: 33%;
         }
+    }
+    li.active{
+        background: #fff;
+        color: #000;
     }
 
   

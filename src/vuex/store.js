@@ -32,7 +32,13 @@ export default new Vuex.Store({
         //  切换语言
         language: "",
         //  全局替换url
-        change_url: _url
+        change_url: _url,
+        //  首页导航菜单
+        nav_menu: 'status',
+        //  高级设置二级菜单
+        adv_menu: 'running_status',
+        //  高级设置一级菜单
+        adv_f_menu: 'running_status'
     },
     mutations: {
         updateSysData(state, data) {
@@ -61,6 +67,15 @@ export default new Vuex.Store({
         },
         updateTime(state, data) {
             state.system_time = data;
+        },
+        updateNavMenu(state, data){
+            state.nav_menu = data;
+        },
+        updateAdvMenu(state, data){
+            state.adv_menu = data;
+        },
+        updateAdvFMenu(state, data){
+            state.adv_f_menu = data;
         }
     }
 });

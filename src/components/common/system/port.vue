@@ -52,7 +52,7 @@
 </template>
 
 <script>
-import { mapState } from 'vuex'
+import { mapState,mapMutations } from 'vuex'
 export default {
     name: 'port',
     props: ['portInfo','portType'],
@@ -63,12 +63,24 @@ export default {
     },
     created(){},
     methods: {
+        ...mapMutations({
+            changeMenu: 'updateNavMenu',
+            changeAdvMenu: 'updateAdvMenu',
+            changeFMenu: 'updateAdvFMenu'
+        }),
         jump(node){
             if(this.portType === 'pon'){
                 this.$router.push('/onu_allow?port_id=' + this.portInfo.port_id);
+                this.changeMenu('onu_allow');
             }
             if(this.portType === 'ge'){
                 this.$router.push('/port_cfg?port_id=' + this.portInfo.id);
+                this.changeMenu('advanced_setting');
+                this.changeFMenu('swport_mgmt');
+                this.changeAdvMenu('port_cfg');
+                sessionStorage.setItem('f_menu', 'advanced_setting');
+                sessionStorage.setItem('first_menu', 'swport_mgmt');
+                sessionStorage.setItem('sec_menu', 'port_cfg');
             }
         }
     },
@@ -81,7 +93,7 @@ div.port{
     width: 290px;
     height: 130px;
     margin: 16px 8px;
-    border: 1px solid #ccc;
+    border: 1px solid #67aef6;
     &::after{
         content: "";
         display: table;

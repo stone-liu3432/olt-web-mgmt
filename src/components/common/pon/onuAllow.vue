@@ -110,7 +110,7 @@
                 </span>
                 <span>{{ lanMap['config'] }}</span>
             </li>
-            <li v-for="(item,index) in onu_allow_list.data" :key="index" class="onulist-item" :style="{ 'background-color' : item.status.toLowerCase() !== 'online' ? '#F3A9A0' : '' }">
+            <li v-for="(item,index) in onu_allow_list.data" :key="index" class="onulist-item" :style="{ 'color' : item.status.toLowerCase() !== 'online' ? 'red' : '' }">
                 <span>
                     <label :for="'ONU0'+item.port_id +'/'+ item.onu_id" v-if="is_batch_mgmt">
                         <input type="checkbox" :value="item.onu_id" v-model="batch_onulist" :id="'ONU0'+item.port_id +'/'+ item.onu_id" name="onulist">

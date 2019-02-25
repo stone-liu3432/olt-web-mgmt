@@ -1,7 +1,7 @@
 <template>
   <div id="main-content">
       <topBanner></topBanner>
-      <router-view></router-view>
+      <router-view v-if="isRouterAlive"></router-view>
   </div>
 </template>
 
@@ -22,7 +22,8 @@ import contentArea from '@/components/page/content'
                 max_time: 300,
                 time: 0,
                 interval: null,
-                uName: ''
+                uName: '',
+                isRouterAlive: true
             }
         },
         created(){
@@ -43,6 +44,11 @@ import contentArea from '@/components/page/content'
             })
             this.uName = sessionStorage.getItem('uname');
             this.getData();
+            var f_menu = sessionStorage.getItem('first_menu');
+            var sec_menu = sessionStorage.getItem('sec_menu');
+            if(f_menu || sec_menu){
+                this.changeNav('advanced_setting');
+            }
         },
         mounted(){
             this.time = this.max_time;
@@ -86,8 +92,15 @@ import contentArea from '@/components/page/content'
                 systemInfo: 'updateSysData',
                 addmenu: 'updateMenu',
                 portInfo: 'updatePortData',
-                portName: 'updatePortName'
+                portName: 'updatePortName',
+                changeNav: 'updateNavMenu'
             }),
+            reload(){
+                this.isRouterAlive = false;
+                this.$nextTick(()=>{
+                    this.isRouterAlive = true;
+                })
+            },
             user_timeout(e){
                 this.time = this.max_time;
             },
@@ -115,7 +128,7 @@ import contentArea from '@/components/page/content'
                         }
                     }
                     this.portName(portName);
-                    this.reload();
+                    //this.reload();
                 }).catch(err=>{
                     // to do
                 })
