@@ -77,6 +77,7 @@
         <div class="modal-dialog" v-if="onu_cfg_name">
             <div class="cover"></div>
             <div class="onu-desc">
+                <h3 class="modal-header">{{ lanMap['config'] + lanMap['onu_info'] }}</h3>
                 <div>
                     <span>{{ lanMap['onu_id'] }}</span>
                     <span>{{ 'ONU' + portid + '/' + onuid }}</span>
@@ -638,7 +639,7 @@ div.handle-btn{
 }
 div.onu-desc{
     width: 500px;
-    height: 300px;
+    height: 310px;
     background: #fff;
     position: absolute;
     left: 0;
@@ -649,7 +650,7 @@ div.onu-desc{
     border-radius: 10px;
     >div{
         line-height: 30px;
-        margin: 20px 0;
+        margin: 10px 0;
         >span{
             display: inline-block;
             width: 150px;

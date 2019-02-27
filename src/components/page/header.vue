@@ -32,7 +32,9 @@
       <confirm :tool-tips="lanMap['logout'] + '?'" @choose="result" v-if="login_out_modal"></confirm>
     </div> -->
     <div class="top-banner">
-        <div class="top-banner-logo lf">HSGQ</div>
+        <div class="top-banner-logo lf" v-if="system && system.data">
+            {{ system.data.vendor ? system.data.vendor.length > 16 ? system.data.vendor.substring(0,16) : system.data.vendor : "HSGQ"  }}
+        </div>
         <div class="top-banner-nav lf">
             <ul>
                 <li v-for="(item,index) in f_menu" :key="index" 
@@ -44,17 +46,21 @@
         </div>
         <div class="top-banner-user lf">
             <ul>
-                <li>logout</li>
-                <li>reboot</li>
-                <li>user</li>
+                <li @click="login_out">{{ lanMap['logout'] }}</li>
+                <li @click="reboot">{{ lanMap["reboot"] }}</li>
+                <li @click="user_mgmt">{{ uName }} devol </li>
             </ul>
         </div>
+        <confirm :tool-tips="lanMap['logout'] + '?'" @choose="result" v-if="login_out_modal"></confirm>
+        <confirm :tool-tips="lanMap['reboot_olt_hit']" @choose="reboot_result" v-if="rebootConfirm"></confirm>
+        <loading class="load" v-if="isLoading"></loading>
     </div>
 </template>
 
 <script>
 import { mapState,mapMutations } from 'vuex'
 const f_menu = ['status','onu_allow','vlan_mgmt','advanced_setting']
+import loading from '@/components/common/loading'
 export default {
    name: 'topBanner',
    computed: mapState(['system','lanMap','language','menu','change_url','nav_menu']),
@@ -64,9 +70,12 @@ export default {
            uName: '',
            login_out_modal: false,
            has_logo: false,
-           f_menu: f_menu
+           f_menu: f_menu,
+           rebootConfirm: false,
+           isLoading: false
        }
    },
+   components: { loading },
    created(){
        this.uName = sessionStorage.getItem('uname');
        this.lang = this.language;
@@ -79,7 +88,9 @@ export default {
         ...mapMutations({
             change_lang: 'updateLang',
             addmenu: 'updateMenu',
-            changeMenu: 'updateNavMenu'
+            changeMenu: 'updateNavMenu',
+            changeAdvMenu: 'updateAdvMenu',
+            changeFMenu: 'updateAdvFMenu'
         }),
         login_out(){
             this.login_out_modal = true;
@@ -129,6 +140,43 @@ export default {
             }
             this.changeMenu(node);
             sessionStorage.setItem('f_menu', node);
+        },
+        reboot(){
+            this.rebootConfirm = true;
+        },
+        reboot_result(bool){
+            if(bool){
+                this.$http.get('/system_reboot').then(res=>{
+                    // to do
+                }).catch(err=>{
+                    // to do
+                })
+                this.isLoading = true;
+                this.reboot_req();
+            }
+            this.rebootConfirm = false;
+        },
+        reboot_req(){
+            this.$http.get('/system_start',{ timeout: 3000 }).then(res=>{
+                if(res.data.code === 1){
+                    this.isLoading = false;
+                    sessionStorage.clear();
+                    this.$router.push('/login');
+                }
+            }).catch(err=>{
+                setTimeout(()=>{
+                    this.reboot_req();
+                },1000);
+            })
+        },
+        user_mgmt(){
+            this.$router.push('user_mgmt');
+            this.changeMenu('advanced_setting');
+            this.changeAdvMenu('user_mgmt');
+            this.changeFMenu('system_mgmt');
+            sessionStorage.setItem('f_menu', 'advanced_setting');
+            sessionStorage.setItem('first_menu', 'system_mgmt');
+            sessionStorage.setItem('sec_menu', 'user_mgmt');
         }
    },
    watch: {
@@ -159,10 +207,14 @@ export default {
         z-index: 999;
         background: #67aef6;
         color: #fff;
-        >div{
+        div.top-banner-logo,div.top-banner-nav,div.top-banner-user{
             height: 70px;
             line-height: 70px;
             text-align: center;
+        }
+        div.top-banner-logo{
+            font-size: 32px;
+            font-weight: 600;
         }
         ul{
             li{
@@ -183,7 +235,7 @@ export default {
         clear:both;
     }
     div.top-banner-logo{
-        width: 25%;
+        width: 20%;
     }
     div.top-banner-nav{
         width: 60%;
@@ -192,9 +244,11 @@ export default {
         }
     }
     div.top-banner-user{
-        width: 15%;
+        width: 20%;
         li{
             width: 33%;
+            overflow: hidden;
+            text-overflow: ellipsis;
         }
     }
     li.active{

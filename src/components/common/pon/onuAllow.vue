@@ -49,7 +49,7 @@
         <div class="modal-dialog" v-if="add_dialog">
             <div class="cover"></div>
             <div class="modal-content">
-                <h3>{{ lanMap['manual_bind'] }}</h3>
+                <h3 class="modal-header">{{ lanMap['manual_bind'] }}</h3>
                 <div class="modal-item">
                     <span>{{ lanMap['onu_id'] }}</span>
                     <input type="text" v-model="add_onuid" placeholder="1-64" v-focus>
@@ -209,7 +209,9 @@ import onuCard from '@/components/common/pon/onuCard'
         },
         methods:{
             ...mapMutations({
-                update_menu: 'updateMenu'
+                changeMenu: 'updateNavMenu',
+                changeAdvMenu: 'updateAdvMenu',
+                changeFMenu: 'updateAdvFMenu'
             }),
             //  手动刷新
             reload(){
@@ -419,13 +421,12 @@ import onuCard from '@/components/common/pon/onuCard'
             //  跳转带宽管理
             onu_bandwieth(){
                 this.$router.push('/sla_cfg?port_id='+this.portid);
-                var sub_item = document.querySelectorAll('p.sub-item');
-                for(var i=0;i<sub_item.length;i++){
-                    sub_item[i].className = 'sub-item';
-                    if(sub_item[i].innerText.replace(/(^\s*)|(\s*$)/g,'') === this.lanMap['sla_cfg'].replace(/(^\s*)|(\s*$)/g, "")){
-                        sub_item[i].className += ' actived';
-                    }
-                }
+                this.changeMenu('advanced_setting');
+                this.changeFMenu('pon_mgmt');
+                this.changeAdvMenu('sla_cfg');
+                sessionStorage.setItem('f_menu', 'advanced_setting');
+                sessionStorage.setItem('first_menu', 'pon_mgmt');
+                sessionStorage.setItem('sec_menu', 'sla_cfg');
             },
             //  重启模态框
             result_reboot(bool){
@@ -472,44 +473,13 @@ import onuCard from '@/components/common/pon/onuCard'
             },
             //  跳转到 onu 详情页
             onu_detail(portid,onuid){
-                //请求url:  /onu_basic_info?form=base-info&port_id=1&onu_id=1
                 this.$router.push('/onu_basic_info?form=base-info&port_id='+ portid + '&onu_id=' + onuid);
-                // 清除当前子菜单的选中效果，给被跳转的子菜单加上选中效果
-                var sub_item = document.querySelectorAll('p.sub-item');
-                for(var i=0;i<sub_item.length;i++){
-                    sub_item[i].className = 'sub-item';
-                    if(sub_item[i].innerText.replace(/(^\s*)|(\s*$)/g, "") == this.lanMap['onu_basic_info'].replace(/(^\s*)|(\s*$)/g, "")){
-                        sub_item[i].className += ' actived';
-                    }
-                }
-                // 清除一级菜单的选中效果
-                var menu_item = document.querySelectorAll('p.menu-item');
-                for(var i=0;i<menu_item.length;i++){
-                    menu_item[i].className = 'menu-item';
-                }
-                // 清除跳转的一级菜单的选中效果，并给被跳转的一级菜单添加选中效果
-                var sub_menu = document.querySelectorAll('ul.sub-menu');
-                for(var i=0;i<sub_menu.length;i++){
-                    sub_menu[i].className = 'sub-menu';
-                    var text = sub_menu[i].firstElementChild.innerText;
-                    text = text.replace(/(^\s*)|(\s*$)/g, "");
-                    if(text === this.lanMap['onu_basic_info'].replace(/(^\s*)|(\s*$)/g, "")){
-                        sub_menu[i].className += ' hide';
-                        sub_menu[i].previousElementSibling.className += ' active';
-                    }
-                }
-                //  更新菜单状态
-                var _menu = this.menu;
-                for(var key in _menu.data.menu){
-                    if(_menu.data.menu[key].name === 'pon_mgmt'){
-                        _menu.data.menu[key].isHidden = false;
-                    }
-                    if(_menu.data.menu[key].name === 'onu_mgmt'){
-                        _menu.data.menu[key].isHidden = true;
-                    }
-                }
-                // 调用 vuex Mutations方法，更新 store 状态
-                this.update_menu(_menu);
+                this.changeMenu('advanced_setting');
+                this.changeFMenu('onu_mgmt');
+                this.changeAdvMenu('onu_basic_info');
+                sessionStorage.setItem('f_menu', 'advanced_setting');
+                sessionStorage.setItem('first_menu', 'onu_mgmt');
+                sessionStorage.setItem('sec_menu', 'onu_basic_info');
             },
             //  删除确认框
             result_delete(bool){
@@ -782,13 +752,10 @@ div.modal-content{
     margin: auto;
     border-radius: 10px;
 }
-div.modal-content>h3{
-    margin-top: 20px;
-    margin-bottom: 20px;
-    text-align: center;
-    font-size: 18px;
-    font-weight: 600;
-    color: #67aef7;
+div.modal-content{
+    h3+div{
+        margin-top: 10px;
+    }
 }
 div.modal-item input{
     width: 180px;

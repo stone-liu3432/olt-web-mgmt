@@ -3,7 +3,7 @@
         <h2>{{ lanMap['user_mgmt'] }}</h2>
         <div>
             <div>
-                <h3>{{ lanMap['current_user_list'] }}</h3>
+                <h2>{{ lanMap['current_user_list'] }}</h2>
                 <a href="javascript:void(0);" @click="open_add_user">{{ lanMap['add'] + lanMap['user'] }}</a>
                 <a href="javascript:void(0);" @click="open_del_user" v-if="user_info.data && user_info.data.length > 0">{{ lanMap['delete'] + lanMap['user'] }}</a>
                 <a href="javascript:void(0);" @click="open_modify_user">{{ lanMap['modify_user_pwd'] }}</a>
@@ -27,7 +27,7 @@
             <div class="cover"></div>
             <div class="user-content">
                 <div>
-                    <h3>{{ lanMap['add'] + lanMap['user'] }}</h3>
+                    <h3 class="modal-header">{{ lanMap['add'] + lanMap['user'] }}</h3>
                     <div>
                         <span>{{ lanMap['user'] }}</span>
                         <input type="text" v-model="user_name" v-focus placeholder="4-16 characters"
@@ -71,7 +71,7 @@
             <div class="cover"></div>
             <div class="user-content del-content">
                 <div>
-                    <h3>{{ lanMap['delete'] + lanMap['user'] }}</h3>
+                    <h3 class="modal-header">{{ lanMap['delete'] + lanMap['user'] }}</h3>
                     <div>
                         <span>{{ lanMap['user'] }}</span>
                         <select v-model="user_name">
@@ -90,7 +90,7 @@
             <div class="cover"></div>
             <div class="user-content modify-user">
                 <div>
-                    <h3>{{ lanMap['modify_user_pwd'] }}</h3>
+                    <h3 class="modal-header">{{ lanMap['modify_user_pwd'] }}</h3>
                     <div>
                         <span>{{ lanMap['user'] }}</span>
                         <span>{{ user_name }}</span>
@@ -386,7 +386,7 @@ div.user-mgmt{
     margin: 20px 0 30px 10px;
     >div{
         margin: 0 0 0 10px;
-        h3{
+        h2{
             font-size: 20px;
             color: #67aef7;
             font-weight: 500;
@@ -438,14 +438,8 @@ h2{
 }
 div.user-content{
     width: 500px;
-    height: 360px;
+    height: 370px;
     >div{
-        h3{
-            float: none;
-            height: 45px;
-            line-height: 60px;
-            padding-left: 30px;
-        }
         div{
             height: 30px;
             line-height: 30px;
@@ -464,11 +458,8 @@ div.user-content{
     }
 }
 div.del-content{
-    height: 180px;
+    height: 185px;
     >div{
-        h3{
-            height: 50px;
-        }
         div{
             a{
                 margin-top: 20px;
@@ -477,11 +468,8 @@ div.del-content{
     }
 }
 div.modify-user{
-    height: 290px;
+    height: 295px;
     >div{
-        h3{
-            height: 50px;
-        }
         div{
             span:first-child{
                 width: 180px;

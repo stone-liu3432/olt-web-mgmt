@@ -2,12 +2,13 @@
     <div>
        <div class="remote-mgmt">
            <span>{{ lanMap['remote_mgmt'] }}</span>
-           <a href="javascript:;" @click="openModal()">{{ lanMap['config'] }}</a>
        </div>
        <div class="remote-content" v-if="outbound.data">
            <p>
                 <span>{{ lanMap['outbound'] }}</span>
-                <!-- <a href="javascript:;" class="clear-btn" @click="clear_statistic(outbound.data)">{{ lanMap["flush"] }}{{ lanMap['statistic']}}</a> -->
+                <a href="javascript:void(0);" @click="openModal(outbound.data)">
+                    {{ lanMap['config'] }}
+                </a>
            </p>
            <div>
                <span>{{ lanMap['ipaddr'] }}</span>
@@ -36,10 +37,22 @@
                <span>{{ lanMap['oub_con_fail'] }}</span>
            </p>
        </div>
+       <hr>
+       <h2>
+           {{ lanMap['inbound'] }}
+            <a href="javascript:void(0);" @click="openAddModal">
+                {{ lanMap['add'] }}
+            </a>
+       </h2>
        <div class="remote-content" v-if="inbound.data" v-for="(item,index) in inbound.data" :key="index">
            <p>
                 <span>{{ item.interface }}</span>
-                <!-- <a href="javascript:;" class="clear-btn" @click="clear_statistic(item)">{{ lanMap["flush"] }}{{ lanMap['statistic']}}</a> -->
+                <a href="javascript:void(0);" @click="openModal(item)">
+                    {{ lanMap['config'] }}
+                </a>
+                <a href="javascript:void(0);" @click="deleteInbound(item.vlan_id)">
+                    {{ lanMap['delete'] }}
+                </a>
            </p>
            <div>
                <span>{{ lanMap['ipaddr'] }}</span>
@@ -73,49 +86,36 @@
        <div class="modal-dialog" v-if="modalDialog && interface_data">
             <div class="cover"></div>
             <div class="modal-content">
-                <div class="modal-item">
+                <div class="modal-item modal-header">
                     <h2 class="lf"> {{ lanMap['remote_mgmt'] }} </h2>
-                    <div class="tool-tips rt">
-                        <i></i>
-                        <div>
-                            <p>{{ lanMap['interface_cfg'] }}</p>
-                            <hr>
-                            <p>{{ lanMap['outbound'] }}</p>
-                            <p>{{ lanMap['bound_tips'] }}</p>
-                            <p>{{ lanMap['add'] }}</p>
-                            <p>{{ lanMap['add_inbound_tips'] }}</p>
-                        </div>
-                    </div>
                 </div>
                 <div class="modal-item">
                     <span>{{ lanMap['interface'] }}</span>
-                    <select v-model="click_interface">
-                        <option v-for="(item,index) in interface_data" :key="index" :value="item.interface">
-                            {{ lanMap[item.interface] ? lanMap[item.interface] : item.interface }}
-                        </option>
-                        <option value="add"> {{ lanMap['add'] }} </option>
-                    </select>
+                    <span class="outbound-title">
+                        {{ lanMap[click_interface] ? lanMap[click_interface] : click_interface }}
+                    </span>
                 </div>
                 <div class="modal-item">
                     <span>{{ lanMap['ipaddr'] }}</span>
-                    <input type="text" placeholder="192.168.1.1" v-model="ipaddr" :style="{ 'border-color' : ipaddr === '' || reg_ip.test(ipaddr) ? '' : 'red' }">
+                    <input type="text" placeholder="192.168.1.1" v-model="ipaddr" 
+                        :style="{ 'border-color' : ipaddr === '' || reg_ip.test(ipaddr) ? '' : 'red' }">
                 </div>
                 <div class="modal-item">
                     <span>{{ lanMap['ipmask'] }}</span>
-                    <input type="text" placeholder="255.255.255.0" v-model="ipmask" :style="{ 'border-color' : ipmask === '' || reg_ipmask.test(ipmask) ? '' : 'red' }">
+                    <input type="text" placeholder="255.255.255.0" v-model="ipmask" 
+                        :style="{ 'border-color' : ipmask === '' || reg_ipmask.test(ipmask) ? '' : 'red' }">
                 </div>
                 <div class="modal-item">
                     <span>VLAN</span>
-                    <input type="text" id="vlanid" placeholder="0-4094" v-model="vlan" :style="{'border-color': vlan !== '' && (vlan < 1 || vlan > 4094 || isNaN(vlan)) ? 'red' : '' }" disabled>
+                    <input type="text" id="vlanid" placeholder="0-4094" v-model.number="vlan" 
+                        :style="{'border-color': click_interface !== 'outbound' && vlan !== '' && (vlan < 1 || vlan > 4094 || isNaN(vlan)) ? 'red' : '' }" 
+                        :disabled="click_interface !== 'add'">
                 </div>
                 <div class="modal-item flex-box">
-                    <a href="javascript:;" @click="isAdd" :class="[ click_interface !== 'add' ? 'not-allowed' : '' ]"> 
-                        {{ lanMap['add'] }} 
+                    <a href="javascript:;" @click="isAdd" v-if="click_interface === 'add'"> 
+                        {{ lanMap['apply'] }} 
                     </a>
-                    <a href="javascript:;" @click="isDelete" :class="[ (click_interface !== 'add' && click_interface !== 'outbound') ? '' : 'not-allowed' ]">
-                        {{ lanMap['delete'] }}
-                    </a>
-                    <a href="javascript:;" @click="isApply" :class="[ click_interface !== 'add' ? '' : 'not-allowed' ]">
+                    <a href="javascript:;" @click="isApply" v-else>
                         {{ lanMap['apply'] }}
                     </a>
                     <a href="javascript:;" @click="closeModal()">
@@ -125,6 +125,7 @@
                 <div class="close" @click="closeModal()"></div>
             </div>
         </div>
+        <confirm v-if="del_confirm" @choose="isDelete"></confirm>
     </div>
 </template>
 
@@ -141,6 +142,7 @@ import axios from 'axios'
                 interface_data: [],
                 // 控制模态框隐藏显示
                 modalDialog: false,
+                del_confirm: false,
                 // 模态框所需要的所有数据
                 interface_map: {},
                 // 模态框内下拉框绑定
@@ -210,18 +212,22 @@ import axios from 'axios'
             },
             closeModal(){
                 this.modalDialog = false;
-                // 关闭模态框时，释放内存
-                this.interface_map = {};
             },
-            openModal(){
+            openModal(node){
                 this.modalDialog = true;
-                // 打开模态框时，映射每个 option 的 value 为键，每个option的所有数据为值，保存数据，触发change事件时动态改变页面的值
-                if(this.interface_data.length > 0){
-                    for(var i=0;i<this.interface_data.length;i++){
-                        this.interface_map[this.interface_data[i].interface] = this.interface_data[i];
-                    }
-                    this.click_interface = this.interface_data[0].interface;
-                }
+                this.click_interface = node.interface;
+                this.ipaddr = node.ipaddr;
+                this.ipmask = node.ipmask;
+                this.vlan = node.vlan_id || ' - ';
+                this.interface_map = node;
+            },
+            openAddModal(){
+                this.modalDialog = true;
+                this.click_interface = 'add';
+                this.ipaddr = '';
+                this.ipmask = '';
+                this.interface_map = {};
+                this.vlan = '';
             },
             //  增加按钮
             isAdd(){
@@ -275,13 +281,13 @@ import axios from 'axios'
                     this.modalDialog = false;
                 }
             },
+            deleteInbound(vlan_id){
+                this.del_confirm = true;
+                this.vlan = vlan_id;
+            },
             //  删除按钮
-            isDelete(){
-                if(this.click_interface === 'outbound'){
-                    return
-                }else if(this.click_interface === 'add'){
-                    return
-                }else{
+            isDelete(bool){
+                if(bool){
                     var post_params = {
                         "method":"delete",
                         "param":{
@@ -305,15 +311,15 @@ import axios from 'axios'
                     }).catch(err=>{
                         // to do 
                     })
-                    this.modalDialog = false;
                 }
+                this.del_confirm = false;
             },
             //  确认按钮
             isApply(){
                 if(this.click_interface === 'add'){
                     return
                 }else if(this.click_interface === 'outbound'){
-                    var data = this.interface_map['outbound'];
+                    var data = this.interface_map;
                     if(data.ipaddr === this.ipaddr && data.ipmask === this.ipmask){
                         this.$message({
                             type: 'info',
@@ -357,7 +363,7 @@ import axios from 'axios'
                         })
                     })
                 }else{
-                    var data = this.interface_map[this.click_interface];
+                    var data = this.interface_map;
                     if(data.ipaddr === this.ipaddr && data.ipmask === this.ipmask){
                         this.$message({
                             type: 'info',
@@ -448,33 +454,27 @@ import axios from 'axios'
                     })   
                 }
             }
-        },
-        watch: {
-            click_interface(){
-                this.$nextTick(()=>{
-                    if(this.click_interface === 'add'){
-                        this.ipaddr = '';
-                        this.ipmask = '255.255.255.0';
-                        this.vlan = '';
-                        var vlanid = document.getElementById('vlanid');
-                        vlanid.disabled = false;
-                        return 
-                    }
-                    this.ipaddr = this.interface_map[this.click_interface].ipaddr;
-                    this.ipmask = this.interface_map[this.click_interface].ipmask;
-                    this.vlan = this.interface_map[this.click_interface].vlan_id || '';
-                    var vlanid = document.getElementById('vlanid');
-                    vlanid.disabled = true;
-                })
-            }
         }
     }
 </script>
 
 <style scoped lang="less">
 select{
+    width: 195px;
     height: 30px;
     font-size: 16px;
+}
+hr{
+    margin: 20px 0;
+    &+h2{
+        font-size: 20px;
+        color: #67aef7;
+        font-weight: 600;
+        a{
+            font-weight: normal;
+            margin-left: 100px;
+        }
+    }
 }
 .remote-content{
     border: 1px solid #ddd;
@@ -486,6 +486,13 @@ select{
     height: 50px;
     line-height: 50px;
     padding-left: 10px;
+}
+p{
+    height: 50px;
+    >a{
+        float: right;
+        margin: 10px 30px 0 0;
+    }
 }
 p>span{
     color: #67AEF7;
@@ -567,11 +574,8 @@ p>span{
     height: 60px;
     border-top: 1px solid #ddd;
 }
-.modal-item>h2{
-    font-size: 18px;
-    font-weight: 600;
-    margin-top: 20px;
-    color: #67AEF7;
+.modal-item.modal-header{
+    border-bottom: 1px solid #ddd;
 }
 .modal-item>span{
     display: inline-block;
@@ -580,6 +584,11 @@ p>span{
     text-align: right;
     padding-right: 50px;
     border-right: 1px solid #ccc;
+    &.outbound-title{
+        border: none;
+        padding: 0 0 0 10px;
+        text-align: left;
+    }
 }
 .modal-item>a{
     display: inline-block;

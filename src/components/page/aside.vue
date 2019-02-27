@@ -53,7 +53,7 @@ export default {
         }
     },
     created(){
-        // this.changeFMenu('running_status');
+        
     },
     beforeDestroy(){
         this.changeFMenu('running_status');
@@ -85,6 +85,10 @@ export default {
         select_first_menu(node){
             this.changeFMenu(node.name);
             sessionStorage.setItem('first_menu',node.name);
+            if(node.name === 'running_status'){
+                this.$router.replace(node.name);
+                sessionStorage.removeItem('sec_menu');
+            }
         },
         //  子菜单被选中时样式
         select_second_menu(str){

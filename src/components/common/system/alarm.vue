@@ -50,12 +50,23 @@ export default {
                 this.$http.get('/alarm?form=download').then(res=>{
                     if(res.data.code === 1){
                         try{
+                            // var a = document.createElement('a');
+                            // var str = window.location.href;
+                            // var _url = str.substr(0,str.indexOf('/#/')+1);
+                            // a.href = _url + res.data.data.filename;
+                            // a.download = res.data.data.filename;
+                            // a.click();
                             var a = document.createElement('a');
                             var str = window.location.href;
                             var _url = str.substr(0,str.indexOf('/#/')+1);
+                            var evt = document.createEvent("HTMLEvents");
+                            evt.initEvent("click", false, false);
                             a.href = _url + res.data.data.filename;
                             a.download = res.data.data.filename;
-                            a.click();
+                            document.body.appendChild(a);
+                            a.style.display = 'none';
+                            a.dispatchEvent(evt);
+                            document.body.removeChild(a);
                         }catch(e){
                             this.view_result(true);
                         }

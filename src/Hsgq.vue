@@ -100,7 +100,7 @@ export default {
 };
 </script>
 
-<style>
+<style lang="less">
 #hsgq {
   font-family: "Avenir", Helvetica, Arial, sans-serif;
   -webkit-font-smoothing: antialiased;
@@ -210,6 +210,9 @@ a:active {
     border: 1px solid #1e90ff;
     background: #444;
 }
+i{
+    user-select: none;
+}
 /* 复用模态框类 */
 .modal-dialog {
   position: fixed;
@@ -217,7 +220,7 @@ a:active {
   top: 0;
   width: 100%;
   height: 100%;
-  z-index: 1000;
+  z-index: 99999;
 }
 .cover {
   width: 100%;
@@ -251,5 +254,17 @@ div.cover+div{
     height: 400px;
     background: #fff;
     border-radius: 5px;
+    .modal-header{
+        box-sizing: border-box;
+        width: 100%;
+        height: 60px;
+        line-height: 60px;
+        font-size: 18px;
+        font-weight: 600;
+        color: #67aef6;
+        text-indent: 10px;
+        padding: 0 20px;
+        border-bottom: 2px solid #ddd;
+    }
 }
 </style>

@@ -35,7 +35,7 @@
         <div class="modal-dialog" v-if="isConfig">
             <div class="cover"></div>
             <div class="dialog" v-if="onu_detail.data">
-                <h2>{{ lanMap['onu_cfg'] }}</h2>
+                <h2 class="modal-header">{{ lanMap['onu_cfg'] }}</h2>
                 <div class="dialog-item">
                     <span>{{ lanMap['onu_id'] }}</span>
                     <span>{{ 'ONU0'+onu_detail.data.port_id +'/'+onu_detail.data.onu_id }}</span>
@@ -418,9 +418,7 @@ div.dialog{
     height: 380px;
     >h2{
         float: none;
-        height: 60px;
-        line-height: 60px;
-        padding: 0 0 0 20px;
+        width: 100%;
     }
     select{
         margin-left: 0;

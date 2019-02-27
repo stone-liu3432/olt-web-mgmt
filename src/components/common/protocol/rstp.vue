@@ -39,7 +39,7 @@
         <div class="modal-dialog" v-if="modal">
             <div class="cover"></div>
             <div class="modal-body">
-                <h2>{{ lanMap['rstp_global_info'] }}</h2>
+                <h2 class="modal-header">{{ lanMap['rstp_global_info'] }}</h2>
                 <div>
                     <span>{{ lanMap['status'] }}</span>
                     <select v-model.number="bridge_info.status">
@@ -108,7 +108,7 @@
         <div class="modal-dialog" v-if="modal_priority">
             <div class="cover"></div>
             <div class="modal-content">
-                <h2>{{ lanMap['rstp_port_pri'] }}</h2>
+                <h2 class="modal-header">{{ lanMap['rstp_port_pri'] }}</h2>
                 <div>
                     <span>{{ lanMap['port_id'] }}</span>
                     <select v-model.number="priority_info.port_id">
@@ -534,13 +534,11 @@ div.rstp{
         bottom: 0;
         margin: auto;
         width: 500px;
-        height: 400px;
+        height: 390px;
         background: #fff;
         border-radius: 5px;
-        >h2{
-            font-size: 18px;
-            color: #67aef7;
-            margin: 20px 0 20px 20px;
+        h2+div{
+            margin-top: 10px;
         }
         >div.close{
             height: 60px;
@@ -586,13 +584,11 @@ div.rstp{
         bottom: 0;
         margin: auto;
         width: 500px;
-        height: 330px;
+        height: 320px;
         background: #fff;
         border-radius: 5px;
-        h2{
-            font-size: 18px;
-            color: #67aef7;
-            margin: 20px 0 20px 20px;
+        h2+div{
+            margin-top: 10px;
         }
         >div.close{
             height: 60px;
