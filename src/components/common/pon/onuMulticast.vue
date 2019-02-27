@@ -48,8 +48,8 @@
         <div class="modal-dialog" v-if="modal_index === 1 || modal_index === 2">
             <div class="cover"></div>
             <div class="onu-multi-cfg">
-                <h4 v-if="modal_index === 1">{{ lanMap['onu_multicast'] + ' ' + lanMap['config'] }}</h4>
-                <h4 v-if="modal_index === 2">{{ lanMap['fast_leave'] + ' ' + lanMap['config'] }}</h4>
+                <h4 v-if="modal_index === 1" class="modal-header">{{ lanMap['onu_multicast'] + ' ' + lanMap['config'] }}</h4>
+                <h4 v-if="modal_index === 2" class="modal-header">{{ lanMap['fast_leave'] + ' ' + lanMap['config'] }}</h4>
                 <div v-if="modal_index === 1">
                     <span>{{ lanMap['mc_mode'] }}</span>
                     <select v-model.number="mc_mode">
@@ -374,12 +374,8 @@ div.multicast-detail{
 }
 div.onu-multi-cfg{
     height: 170px;
-    h4{
-        height: 50px;
-        line-height: 50px;
-        font-size: 20px;
-        color: #67aef6;
-        margin: 0 0 0 30px;
+    h4+div{
+        margin: 10px;
     }
     div{
         height: 30px;

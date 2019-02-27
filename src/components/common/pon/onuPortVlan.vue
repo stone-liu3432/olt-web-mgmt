@@ -46,11 +46,11 @@
             <div class="cover"></div>
             <div :class="{ 'simple-modal' : flag !== 2 && flag !== 3 }">
                 <div class="opv-modal">
-                    <h3 v-if="flag === 1">{{ lanMap['group_num_max'] + ' ' + lanMap['config'] }}</h3>
-                    <h3 v-if="flag === 2">{{ lanMap['tag_mode'] + '' + lanMap['config'] }}</h3>
-                    <h3 v-if="flag === 3">{{ lanMap['add'] }}</h3>
-                    <h3 v-if="flag === 4">{{ lanMap['add'] + ' ' + lanMap['mvlan'] }}</h3>
-                    <h3 v-if="flag === 5">{{ lanMap['delete'] + ' ' + lanMap['mvlan'] }}</h3>
+                    <h3 v-if="flag === 1" class="modal-header">{{ lanMap['group_num_max'] + ' ' + lanMap['config'] }}</h3>
+                    <h3 v-if="flag === 2" class="modal-header">{{ lanMap['tag_mode'] + '' + lanMap['config'] }}</h3>
+                    <h3 v-if="flag === 3" class="modal-header">{{ lanMap['add'] }}</h3>
+                    <h3 v-if="flag === 4" class="modal-header">{{ lanMap['add'] + ' ' + lanMap['mvlan'] }}</h3>
+                    <h3 v-if="flag === 5" class="modal-header">{{ lanMap['delete'] + ' ' + lanMap['mvlan'] }}</h3>
                     <div v-if="flag === 1">
                         <span>{{ lanMap['group_num_max'] }}</span>
                         <input type="text" v-model.number="group_num_max" v-focus
@@ -486,12 +486,8 @@ div.cover+div.simple-modal{
     height: 165px;
 }
 div.opv-modal{
-    h3{
-        height: 50px;
-        line-height: 50px;
-        font-size: 20px;
-        color: #67aef6;
-        margin: 0 0 0 30px;
+    h3+div{
+        margin-top: 10px;
     }
     div{
         height: 30px;

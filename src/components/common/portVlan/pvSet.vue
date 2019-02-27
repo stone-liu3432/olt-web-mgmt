@@ -483,10 +483,13 @@ div.modal-dialog{
             margin: 20px 0;
         }
         >div:first-child{
-            margin-top: 24px;
             h3{
-                font-size: 24px;
-                margin-left: 40px;
+                font-size: 18px;
+                height: 60px;
+                line-height: 60px;
+                padding: 0 0 0 20px;
+                text-indent: 10px;
+                border-bottom: 2px solid #ddd;
                 font-weight: 600;
                 color: #67aef7;
             }

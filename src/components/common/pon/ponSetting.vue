@@ -46,7 +46,7 @@
         <div class="modal-dialog" v-if="isSetAuth">
             <div class="cover"></div>
             <div class="ponmgmt-cfg">
-                <div>
+                <div class="modal-header">
                     {{ lanMap['pon_auth'] }}
                 </div>
                 <div>
@@ -267,8 +267,10 @@ div.ponmgmt-cfg{
             clear: both;
         }
         &:first-child{
-            text-align: center;
             color: #67aef7;
+            margin: 0;
+            height: 60px;
+            line-height: 60px;
         }
         >div{
             float: left;

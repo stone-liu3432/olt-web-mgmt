@@ -1162,7 +1162,7 @@ div.onu-vlan-info>div.port-item-vlan{
 }
 div.dialog-body{
     width: 550px;
-    height: 500px;
+    height: 505px;
     background: #fff;
     border-radius: 10px;
     position: absolute;
@@ -1176,6 +1176,10 @@ div.dialog-body{
         line-height: 36px;
         &:first-child{
             height: 60px;
+            border-bottom: 2px solid #ddd;
+            &+div{
+                margin-top: 10px;
+            }
             >h3{
                 line-height: 60px;
                 margin-left: 30px;
@@ -1258,6 +1262,10 @@ div.dialog-content{
         padding-left: 30px;
         height: 60px;
         line-height: 60px;
+        border-bottom: 2px solid #ddd;
+        &+div{
+            margin-top: 10px;
+        }
         >h3{
             line-height: 60px;
             font-size: 18px;

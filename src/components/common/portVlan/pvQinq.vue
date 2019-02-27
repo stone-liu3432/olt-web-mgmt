@@ -304,11 +304,19 @@ div.modal-dialog{
     }
     div.pv-qinq-modal{
         width: 500px;
-        height: 320px;
+        height: 335px;
         background: #fff;
         div.pv-qinq-modal-item{
             margin: 10px 0 10px 60px;
             height: 30px;
+            &:first-child{
+                margin: 0;
+                height: 60px;
+                line-height: 60px;
+                padding: 0 0 0 20px;
+                text-indent: 10px;
+                border-bottom: 2px solid #ddd;
+            }
         }
         &:first-child{
             margin-top: 24px;
@@ -321,7 +329,7 @@ div.modal-dialog{
             vertical-align: middle;
         }
         h3{
-            font-size: 24px;
+            font-size: 18px;
             font-weight: 600;
             color: #67aef7;
         }
