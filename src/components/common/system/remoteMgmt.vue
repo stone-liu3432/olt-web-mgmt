@@ -347,7 +347,7 @@ import axios from 'axios'
                     this.$http.post('/system?form=outbound',post_params,{ timeout : 5000 }).then(res=>{
                         this.$message({
                             type: res.data.type,
-                            text: this.lanMap['setting_fail']
+                            text: this.lanMap['setting_ok']
                         })
                     }).catch(err=>{
                         axios.get('http://' + this.ipaddr + '/system_start').then(res=>{

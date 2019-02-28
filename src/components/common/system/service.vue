@@ -495,7 +495,7 @@ div.add-ssh{
         float: none !important;
         display: inline-block;
         margin-top: 15px;
-        background: #20BB44;
+        background: #666;
         color: #fff;
     }
     .cancel{
