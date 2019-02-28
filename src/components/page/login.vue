@@ -40,7 +40,7 @@
                     </h4>
                     <h4 :style="{'opacity': login_failed ? 1 : 0}">{{ lanMap['service_user_password_fail'] }}</h4>
                 </div>
-                <div>
+                <div class="login-btn">
                     <a href="javascript:;" @click="userLogin">{{ lanMap['login_user'] }}</a>
                 </div>
             </form>
@@ -170,11 +170,11 @@ div.login{
     min-width: 1280px;
     height: 100%;
     min-height: 974px;
-    background: #6C6D69;
+    background: linear-gradient(#12658D, #5FB6D4);
 }
 div.login-banner{
     height: 150px;
-    background: rgb(87, 84, 84);
+    //background: rgb(87, 84, 84);
 }
 div.login-body{
     width: 700px;
@@ -228,6 +228,9 @@ div.login-tips>h4{
     height: 30px;
     line-height: 30px;
     color: red;
+    &:first-child{
+        margin-top: 20px;
+    }
 }
 div.login-tips>h4:last-child{
     position: absolute;
@@ -237,7 +240,7 @@ div.login-tips>h4:last-child{
 div.login-body a{
     display: inline-block;
     position: relative;
-    left: 25px;
+    left: 15px;
     width: 300px;
     height: 42px;
     line-height: 42px;
@@ -251,11 +254,19 @@ div.login-body a{
 div.login-body a:active{
     background: rgb(13, 113, 146);
 }
+form{
+    height: 260px;
+}
 form div{
     height: 50px;
     line-height: 50px;
-    margin: 20px 0;
-    text-align: left;
+    text-align: center;
+    &:first-child{
+        margin-top: 20px;
+    }
+}
+div.login-btn{
+    margin-top: 20px;
 }
 div.user-pwd{
     position: relative;
@@ -265,14 +276,17 @@ form span{
     width: 100px;
     height: 30px;
     text-align: right;
+    &:first-child{
+        margin-top: 20px;
+    }
 }
 form i{
     display: inline-block;
     width: 32px;
     height: 32px;
     position: absolute;
-    top: 9px;
-    right: 35px;
+    top: 30px;
+    right: 160px;
     cursor: pointer;
 }
 i.invisible{
