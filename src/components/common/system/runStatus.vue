@@ -63,6 +63,7 @@
                 </div>
             </div>
         </div> -->
+        <h1>{{ lanMap['running_status'] }}</h1>
         <div class="system-info" v-if="this.system.data">
             <h2>{{ lanMap['sys_info'] }}</h2>
             <div v-for="(item,key) of this.system.data" :key="key" class="system-info-detail"  v-if="key !== 'bl_ver' && key !== 'vendor'">
@@ -450,6 +451,12 @@
 </script>
 
 <style scoped>
+h1{
+    font-size: 24px;
+    margin: 20px 10px;
+    font-weight: 600;
+    color: #67AEF7;
+}
 .container{
     padding:5px;
 }

@@ -61,7 +61,7 @@ export default {
                         type: 'error',
                         text: this.lanMap['illegal_login_info']
                     })
-                    sessionStorage.removeItem('x-token');
+                    sessionStorage.clear();
                     this.$router.push('/login');
                 }
                 //  返回 -1，登录超时
@@ -70,7 +70,7 @@ export default {
                         type: 'error',
                         text: this.lanMap['login_timeout']
                     })
-                    sessionStorage.removeItem('x-token');
+                    sessionStorage.clear();
                     this.$router.push('/login');
                 }
                 if(response.data.code > 1){

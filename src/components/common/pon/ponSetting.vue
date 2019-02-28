@@ -232,7 +232,7 @@ export default {
 div.pon-setting{
     margin-top: 20px;
     h2{
-        font-size: 20px;
+        font-size: 24px;
         font-weight: 600;
         color: #67AEF7;
         margin: 10px 0 20px 10px;

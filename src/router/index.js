@@ -95,11 +95,13 @@ router.beforeEach((to, from, next)=>{
 				next();
 			}else{
 				next({ path: "/login" });
+				sessionStorage.clear();
 			}
 		}
 	}else{
 		if(!sessionStorage.getItem("x-token")){
 			next();
+			sessionStorage.clear();
 		}else{
 			next("/main");
 		}

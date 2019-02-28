@@ -88,6 +88,7 @@ export default {
             if(node.name === 'running_status'){
                 this.$router.replace(node.name);
                 sessionStorage.removeItem('sec_menu');
+                this.changeAdvMenu('');
             }
         },
         //  子菜单被选中时样式
