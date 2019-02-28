@@ -2,6 +2,7 @@
   <div id="main-content">
       <topBanner></topBanner>
       <router-view v-if="isRouterAlive"></router-view>
+      <bottom-footer></bottom-footer>
   </div>
 </template>
 
@@ -9,11 +10,13 @@
 import { mapState,mapMutations } from 'vuex'
 import topBanner from '@/components/page/header'
 import contentArea from '@/components/page/content'
+import bottomFooter from '@/components/page/footer'
     export default {
         name: 'mainContent',
         components: {
             topBanner,
-            contentArea
+            contentArea,
+            bottomFooter
         },
         data(){
             return {
@@ -152,6 +155,7 @@ import contentArea from '@/components/page/content'
 <style>
 #main-content{
     height:100%;
+    padding-bottom: 24px;
 }
 div.tips-body{
     width: 500px;

@@ -195,15 +195,12 @@ export default {
                 if(res.data.code === 1){
                     try{
                         var a = document.createElement('a');
-                        var str = window.location.href;
-                        var _url = str.substr(0,str.indexOf('/#/')+1);
-                        var evt = document.createEvent("HTMLEvents");
-                        evt.initEvent("click", false, false);
-                        a.href = _url + res.data.data.filename;
-                        a.download = res.data.data.filename;
-                        document.body.appendChild(a);
+                        a.href = '/' + res.data.data.filename;
+                        //a.download = res.data.data.filename;
+                        a.setAttribute('download', res.data.data.filename);
                         a.style.display = 'none';
-                        a.dispatchEvent(evt);
+                        document.body.appendChild(a);
+                        a.click();
                         document.body.removeChild(a);
                     }catch(e){
                         //this.backup_cfg();
@@ -323,25 +320,16 @@ export default {
                 this.$http.get('/system_running_config').then(res=>{
                     if(res.data.code === 1){
                         try{
-                            // var a = document.createElement('a');  
-                            // var str = window.location.href;
-                            // var _url = str.substr(0,str.indexOf('/#/')+1);
-                            // a.href = _url + 'oltconfigtmp.txt';
-                            // a.download = 'oltconfigtmp.txt';
-                            // a.click();
                             var a = document.createElement('a');
-                            var str = window.location.href;
-                            var _url = str.substr(0,str.indexOf('/#/')+1);
-                            var evt = document.createEvent("HTMLEvents");
-                            evt.initEvent("click", false, false);
-                            a.href = _url + 'oltconfigtmp.txt';
-                            a.download = 'oltconfigtmp.txt';
-                            document.body.appendChild(a);
+                            a.href = '/' + 'oltconfigtmp.txt';
+                            //a.download = 'oltconfigtmp.txt';
+                            a.setAttribute('download', 'oltconfigtmp.txt');
                             a.style.display = 'none';
-                            a.dispatchEvent(evt);
+                            document.body.appendChild(a);
+                            a.click();
                             document.body.removeChild(a);
                         }catch(e){
-                            this.view_result(true);
+                            //this.view_result(true);
                         }
                     }else if(res.data.code > 1){
                         this.$message({

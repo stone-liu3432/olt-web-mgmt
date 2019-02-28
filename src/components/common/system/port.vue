@@ -90,10 +90,11 @@ export default {
 
 <style lang="less" scoped>
 div.port{
-    width: 290px;
+    width: 300px;
     height: 130px;
-    margin: 16px 8px;
-    border: 1px solid #67aef6;
+    margin: 16px 5px;
+    border: 1px solid #ccc;
+    border-radius: 3px;
     &::after{
         content: "";
         display: table;
@@ -121,7 +122,8 @@ div.port{
     div.ge-dev-info{
         height: 120px;
         line-height: 120px;
-        margin: 0 0 0 10px;
+        //margin: 0 0 0 10px;
+        padding: 8px 8px 8px 0;
         >div{
             height: 32px;
             line-height: 32px;

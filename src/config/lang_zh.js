@@ -16,7 +16,7 @@ var zh = {
     system: "系统升级",
     time: "时间管理",
     pon_mgmt: "PON管理",
-    onu_allow: "ONU允许列表",
+    onu_allow: "ONU列表",
     onu_deny: "ONU阻止列表",
     sla_cfg: "带宽配置",
     pon_setting: "PON设置",
@@ -508,7 +508,7 @@ var zh = {
     company_addr: "公司地址",
     company_email: "公司邮箱",
     company_phone: "联系电话",
-    product_name_tips: '产品名称不得多于16个字符',
+    product_name_tips: '产品名称不得多于12个字符',
     sysinfo_set: "Logo，型号，公司信息设置",
     goback_devmgmt: "回到设备管理",
     imagesize_tips: "图片大小最大为200kb"

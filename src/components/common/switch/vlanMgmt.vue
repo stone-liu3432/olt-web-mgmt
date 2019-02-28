@@ -714,7 +714,7 @@ import { mapState } from 'vuex'
 <style scoped lang="less">
 div.vlan-mgmt{
     min-width: 1020px;
-    padding-top: 70px;
+    padding: 70px 0 24px 0;
 }
 div.vlan-mgmt>div:nth-child(2){
     margin: 0 0 0 30px;

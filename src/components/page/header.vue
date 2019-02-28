@@ -31,9 +31,9 @@
       </div>
       <confirm :tool-tips="lanMap['logout'] + '?'" @choose="result" v-if="login_out_modal"></confirm>
     </div> -->
-    <div class="top-banner">
-        <div class="top-banner-logo lf" v-if="system && system.data">
-            {{ system.data.vendor ? system.data.vendor.length > 16 ? system.data.vendor.substring(0,16) : system.data.vendor : "HSGQ"  }}
+    <div class="top-banner" v-if="system && system.data">
+        <div class="top-banner-logo lf">
+            {{ system.data.vendor ? system.data.vendor.length > 12 ? system.data.vendor.substring(0, 12) : system.data.vendor : "Neutral"  }}
         </div>
         <div class="top-banner-nav lf">
             <ul>
@@ -66,7 +66,7 @@ export default {
    computed: mapState(['system','lanMap','language','menu','change_url','nav_menu']),
    data(){
        return {
-           lang: '',
+           //lang: '',
            uName: '',
            login_out_modal: false,
            has_logo: false,
@@ -86,7 +86,7 @@ export default {
    },
    methods: {
         ...mapMutations({
-            change_lang: 'updateLang',
+            //change_lang: 'updateLang',
             addmenu: 'updateMenu',
             changeMenu: 'updateNavMenu',
             changeAdvMenu: 'updateAdvMenu',
@@ -180,17 +180,11 @@ export default {
         }
    },
    watch: {
-        language(){
-            this.lang = this.language;
-        },
-        lang(){
-            this.change_lang(this.lang);
-        },
-        system(){
-            if(this.system.data){
-                this.update_img();
-            }
-        }
+        // system(){
+        //     if(this.system.data){
+        //         this.update_img();
+        //     }
+        // }
    }
 }
 </script>

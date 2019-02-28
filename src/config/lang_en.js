@@ -16,7 +16,7 @@ var en = {
     system: " System",
     time: " Time Setting",
     pon_mgmt: " PON Port",
-    onu_allow: " ONU Allow List",
+    onu_allow: " ONU Table",
     onu_deny: " ONU Deny List",
     sla_cfg: " Bandwidth",
     pon_setting: " PON Setting",
@@ -522,7 +522,7 @@ var en = {
     company_addr: "Company address",
     company_email: "Company email",
     company_phone: "Contact number",
-    product_name_tips: 'Product name cannot exceed 16 characters',
+    product_name_tips: 'Product name cannot exceed 12 characters',
     sysinfo_set: "Logo, model, company information settings",
     goback_devmgmt: "Back to device management",
     imagesize_tips: "The maximum image size is 200kb"

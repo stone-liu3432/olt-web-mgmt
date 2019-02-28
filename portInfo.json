@@ -14,7 +14,7 @@
       "pvid": 1
     }, {
       "port_id": 2,
-      "admin_status": 1,
+      "admin_status": 0,
       "link_status": 1,
       "auto_neg": 1,
       "speed": "1000M",
@@ -26,8 +26,8 @@
     },
     {
       "port_id": 3,
-      "admin_status": 1,
-      "link_status": 1,
+      "admin_status": 0,
+      "link_status": 0,
       "auto_neg": 1,
       "speed": "1000M",
       "duplex": 1,
@@ -39,7 +39,7 @@
     {
       "port_id": 4,
       "admin_status": 1,
-      "link_status": 1,
+      "link_status": 0,
       "auto_neg": 1,
       "speed": "1000M",
       "duplex": 1,
@@ -62,7 +62,7 @@
     },
     {
       "port_id": 6,
-      "admin_status": 1,
+      "admin_status": 0,
       "link_status": 1,
       "auto_neg": 1,
       "speed": "1000M",
@@ -75,7 +75,7 @@
     {
       "port_id": 7,
       "admin_status": 1,
-      "link_status": 1,
+      "link_status": 0,
       "auto_neg": 1,
       "speed": "1000M",
       "duplex": 1,
@@ -86,8 +86,8 @@
     },
     {
       "port_id": 8,
-      "admin_status": 1,
-      "link_status": 1,
+      "admin_status": 0,
+      "link_status": 0,
       "auto_neg": 1,
       "speed": "1000M",
       "duplex": 1,
