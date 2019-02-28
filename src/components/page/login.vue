@@ -12,8 +12,13 @@
             </div>
         </div>
         <div class="login-body">
-            <h2>{{ lanMap['login_user'] }}</h2>
-            <h3>{{ lanMap['login_page_login_hit'] }}</h3>
+            <div>
+                <!-- 装饰条 -->
+            </div>
+            <div>
+                <span>{{ lanMap['login_user'] }}</span>
+                <span>{{ lanMap['login_page_login_hit'] }}</span>
+            </div>
             <form>
                 <div>
                     <span>USER</span>
@@ -173,11 +178,30 @@ div.login-banner{
 }
 div.login-body{
     width: 700px;
-    padding: 35px 15px;
     margin: 100px auto;
     background: #fff;
-    border-radius: 8px;
     text-align: center;
+    >div:first-child{
+        height: 70px;
+        background: #C5E6EB;
+        &+div{
+            position: relative;
+            left: -30px;
+            top: 20px;
+            background: #424242;
+            height: 60px;
+            line-height: 60px;
+            text-align: left;
+            >span{
+                color: #fff;
+                &:first-child{
+                    font-weight: 500;
+                    font-size: 24px;
+                    padding: 0 30px 0 120px;
+                }
+            }
+        }
+    }
 }
 div.login-body>h2{
     font-size: 28px;
@@ -185,6 +209,7 @@ div.login-body>h2{
     color: #666;
     height: 50px;
     line-height: 50px;
+    margin-top: 30px;
 }
 div.login-body>h3{
     font-size: 14px;
@@ -229,8 +254,8 @@ div.login-body a:active{
 form div{
     height: 50px;
     line-height: 50px;
-    width: 450px;
-    margin: 20px auto;
+    margin: 20px 0;
+    text-align: left;
 }
 div.user-pwd{
     position: relative;
@@ -239,6 +264,7 @@ form span{
     display: inline-block;
     width: 100px;
     height: 30px;
+    text-align: right;
 }
 form i{
     display: inline-block;
@@ -257,7 +283,7 @@ i.visible{
 }
 input{
     width: 300px;
-    height: 40px;
+    height: 32px;
     text-indent: 10px;
     border: 1px solid #ccc;
     font-size: 16px;
