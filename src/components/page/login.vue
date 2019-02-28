@@ -13,7 +13,7 @@
         </div>
         <div class="login-body">
             <div>
-                <!-- 装饰条 -->
+                <!-- 装饰条  如需添加设备名称在此处添加 -->
             </div>
             <div>
                 <span>{{ lanMap['login_user'] }}</span>
@@ -189,6 +189,7 @@ div.login-body{
             left: -30px;
             top: 20px;
             background: #424242;
+            box-shadow: #424242 3px 3px 5px;
             height: 60px;
             line-height: 60px;
             text-align: left;
