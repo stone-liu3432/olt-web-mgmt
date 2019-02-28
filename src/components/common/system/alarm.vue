@@ -50,7 +50,7 @@ export default {
                 this.$http.get('/alarm?form=download').then(res=>{
                     if(res.data.code === 1){
                         try{
-                            var str = window.location.href;
+                            var a = document.createElement('a');
                             a.href = '/' + res.data.data.filename;
                             a.download = res.data.data.filename;
                             a.style.display = 'none';
@@ -58,7 +58,8 @@ export default {
                             a.click();
                             document.body.removeChild(a);
                         }catch(e){
-                            this.view_result(true);
+                            //this.view_result(true);
+                            console.log(e);
                         }
                     }else if(res.data.code > 1){
                         this.$message({

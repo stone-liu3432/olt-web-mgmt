@@ -119,7 +119,7 @@ export default {
         }
     },
     created(){
-        
+
     },
     methods:{
         //  选择上传文件
@@ -205,7 +205,8 @@ export default {
                         a.click();
                         document.body.removeChild(a);
                     }catch(e){
-                        this.backup_cfg();
+                        //this.backup_cfg();
+                        console.log(e);
                     }
                 }else if(res.data.code > 1){
                     this.$message({
@@ -329,7 +330,8 @@ export default {
                             a.click();
                             document.body.removeChild(a);
                         }catch(e){
-                            this.view_result(true);
+                            //this.view_result(true);
+                            console.log(e);
                         }
                     }else if(res.data.code > 1){
                         this.$message({
