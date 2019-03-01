@@ -355,6 +355,7 @@ import axios from 'axios'
                             type: res.data.type,
                             text: this.lanMap['setting_ok']
                         })
+                        this.getData();
                     }).catch(err=>{
                         axios.get('http://' + this.ipaddr + '/system_start').then(res=>{
                             window.location.href = 'http://' + this.ipaddr;
