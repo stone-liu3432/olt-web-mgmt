@@ -22,8 +22,8 @@
                 <div class="user-pwd">
                     <span>password</span>
                     <input type="password" 
-                    v-model="userPwd" id="userPwd" :class="[ verify_upwd ? 'input-error' : '' ]" 
-                    autocomplete="off" @keyup.enter="userLogin">
+                        v-model="userPwd" id="userPwd" :class="[ verify_upwd ? 'input-error' : '' ]" 
+                        autocomplete="off" @keyup.enter="userLogin">
                     <i :class="[ visible ? 'visible' : 'invisible']" @click="changeVisible"></i>
                 </div>
                 <div class="login-tips">
@@ -169,7 +169,6 @@ div.login{
 }
 div.login-banner{
     height: 150px;
-    background: rgb(87, 84, 84);
 }
 div.login-body{
     width: 700px;
