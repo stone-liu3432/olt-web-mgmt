@@ -6,7 +6,7 @@ var en = {
     default_config: " Default Factory Config",
     backup_config: " Backup Config",
     restore_config: " Restore Config",
-    reboot: " Reboot OLT",
+    reboot: " Reboot",
     diagonose: " Diagnose",
     remote_mgmt: " Remote",
     outbound: " Outbound Interface",

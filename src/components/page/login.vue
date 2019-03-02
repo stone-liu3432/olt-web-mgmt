@@ -67,6 +67,7 @@ import { mapState,mapMutations } from "vuex"
         computed: mapState(['lanMap','language']),
         created(){
             this.lang = this.language;
+            sessionStorage.clear();
         },
         methods: {
             ...mapMutations({

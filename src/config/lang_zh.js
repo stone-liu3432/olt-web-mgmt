@@ -6,7 +6,7 @@ var zh = {
     default_config: "恢复出厂配置",
     backup_config: "备份配置",
     restore_config: "导入配置",
-    reboot: "重启OLT",
+    reboot: "重启",
     diagonose: "诊断工具",
     remote_mgmt: "远程管理",
     outbound: "带外接口",

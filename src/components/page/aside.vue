@@ -123,7 +123,7 @@ export default {
     left: 0;
     top: 70px;
     background: #eee;
-    box-shadow: 5px 0 3px #eee;
+    //box-shadow: 5px 0 3px #eee;
     //z-index: 999;
     user-select: none;
 }
@@ -133,13 +133,13 @@ export default {
 .active{
     border-left: 5px solid #3990e5;
     color:#3990e5;
-    background: #fff;
+    background: #dcd6d6;
     i.icon-arrows{
         background-position: -48px -6px;
     }
 }
 .sub-menu>li>p.actived{
-    //background: #fff;
+    background: #E0EFE7;
     color: #3990e5;
     font-weight: 500;
 }

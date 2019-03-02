@@ -32,8 +32,8 @@
       <confirm :tool-tips="lanMap['logout'] + '?'" @choose="result" v-if="login_out_modal"></confirm>
     </div> -->
     <div class="top-banner" v-if="system && system.data">
-        <div class="top-banner-logo lf">
-            {{ system.data.vendor ? system.data.vendor.length > 12 ? system.data.vendor.substring(0, 12) : system.data.vendor : "Neutral"  }}
+        <div class="top-banner-logo lf" :style="{ 'font-size': system.data.vendor.length > 12 ? '28px' : '32px' }">
+            {{ system.data.vendor ? system.data.vendor.length > 18 ? system.data.vendor.substring(0, 18) : system.data.vendor : "Neutral"  }}
         </div>
         <div class="top-banner-nav lf">
             <ul>
@@ -48,7 +48,7 @@
             <ul>
                 <li @click="login_out">{{ lanMap['logout'] }}</li>
                 <li @click="reboot">{{ lanMap["reboot"] }}</li>
-                <li @click="user_mgmt">{{ uName }} devol </li>
+                <li @click="user_mgmt">{{ uName }}</li>
             </ul>
         </div>
         <confirm :tool-tips="lanMap['logout'] + '?'" @choose="result" v-if="login_out_modal"></confirm>
@@ -82,11 +82,12 @@ export default {
        var first_menu = sessionStorage.getItem('f_menu');
        if(first_menu){
            this.changeMenu(first_menu);
+       }else{
+           this.changeMenu('status');
        }
    },
    methods: {
         ...mapMutations({
-            //change_lang: 'updateLang',
             addmenu: 'updateMenu',
             changeMenu: 'updateNavMenu',
             changeAdvMenu: 'updateAdvMenu',
@@ -215,6 +216,15 @@ export default {
                 float: left;
                 cursor: pointer;
                 user-select: none;
+                &:hover{
+                    color: rgb(204, 131, 102);
+                    transition: all .3s linear;
+                }
+            }
+            li.active:hover{
+                background: #e0efe7;
+                color: #000;
+                transition: none;
             }
             &::after{
                 content: "";

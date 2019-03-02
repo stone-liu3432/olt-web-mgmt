@@ -558,7 +558,7 @@ p>span{
 }
 .modal-content{
     width:550px;
-    height:360px;
+    height:290px;
     position: absolute;
     left: 0;
     right: 0;
@@ -567,24 +567,24 @@ p>span{
     margin: auto;
     background: #fff;
     z-index: 600;
-    padding: 0 30px 20px;
-    border-radius: 10px;
+    //padding: 0 30px 20px;
+    border-radius: 5px;
 }
 .modal-item{
     padding: 0 20px;
-    height: 60px;
-    border-top: 1px solid #ddd;
+    height: 40px;
+    //border-top: 1px solid #ddd;
 }
-.modal-item.modal-header{
-    border-bottom: 1px solid #ddd;
-}
+// .modal-item.modal-header{
+//     //border-bottom: 1px solid #ddd;
+// }
 .modal-item>span{
     display: inline-block;
-    width: 200px;
-    line-height: 60px;
+    width: 180px;
+    line-height: 40px;
     text-align: right;
     padding-right: 50px;
-    border-right: 1px solid #ccc;
+    //border-right: 1px solid #ccc;
     &.outbound-title{
         border: none;
         padding: 0 0 0 10px;

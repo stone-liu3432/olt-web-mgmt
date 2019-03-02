@@ -34,6 +34,9 @@ import bottomFooter from '@/components/page/footer'
             this.$http.get(this.change_url.system).then(res=>{
                 if(res.data.code === 1){
                     this.systemInfo(res.data);
+                    this.$nextTick(()=>{
+                        document.title = res.data.data.product_name;
+                    })
                 }
             }).catch(err=>{
             // to do 
@@ -83,6 +86,7 @@ import bottomFooter from '@/components/page/footer'
         beforeDestroy(){
             sessionStorage.removeItem('pid');
             sessionStorage.removeItem('oid');
+            sessionStorage.removeItem('f_menu');
             sessionStorage.removeItem('first_menu');
             sessionStorage.removeItem('sec_menu');
             clearInterval(this.interval);
