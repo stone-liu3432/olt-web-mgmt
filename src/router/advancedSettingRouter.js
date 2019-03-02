@@ -80,14 +80,6 @@ export default [
             requireAuth: true
         }
     },
-    // {
-    //     path: "/onu_allow",
-    //     component: onuAllow,
-    //     meta: {
-    //         requireAuth: true,
-    //         keepAlive: true
-    //     }
-    // },
     {
         path: "/pon_setting",
         component: ponSetting,
@@ -175,13 +167,6 @@ export default [
             keepAlive: true
         }
     },
-    // {
-    //     path: "/vlan_mgmt",
-    //     component: vlanMgmt,
-    //     meta: {
-    //         requireAuth: true
-    //     }
-    // },
     {
         path: "/mac_mgmt",
         component: macMgmt,

@@ -85,7 +85,7 @@ export default {
         select_first_menu(node){
             this.changeFMenu(node.name);
             sessionStorage.setItem('first_menu',node.name);
-            if(node.name === 'running_status'){
+            if(!node.children){
                 this.$router.replace(node.name);
                 sessionStorage.removeItem('sec_menu');
                 this.changeAdvMenu('');
@@ -124,7 +124,7 @@ export default {
     top: 70px;
     background: #eee;
     box-shadow: 5px 0 3px #eee;
-    z-index: 999;
+    //z-index: 999;
     user-select: none;
 }
 .menu>li>ul{

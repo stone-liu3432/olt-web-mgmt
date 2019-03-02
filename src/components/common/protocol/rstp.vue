@@ -502,7 +502,8 @@ div.rstp{
         }
     }
     .bg-title{
-        background: #67aef6;
+        background: #2361a2;
+        color: #fff
     }
     ul.rstp-port-info{
         li{

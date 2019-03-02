@@ -425,7 +425,8 @@ div.user-mgmt{
             }
         }
         .bg-title>span{
-            background: #67aef6;
+            background: #2361a2;
+            color: #fff
         }
     }
 }

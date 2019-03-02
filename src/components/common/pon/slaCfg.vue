@@ -379,7 +379,8 @@ ul>li{
     border-bottom: 1px solid #ddd;
 }
 .bg-title{
-    background: #67aef6;
+    background: #2361a2;
+    color: #fff
 }
 ul>li:last-child{
     border-bottom: none;

@@ -725,7 +725,8 @@ import loading from '@/components/common/loading'
 ul.mac-table{
     border: 1px solid #ddd;
     >li:first-child{
-        background: #67aef6;
+        background: #2361a2;
+        color: #fff
     }
 }
 div.nomore-data{

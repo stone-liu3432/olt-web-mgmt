@@ -246,7 +246,8 @@ div.pon-setting{
     h3+ul{
         margin: 0 0 0 10px;
         li{
-            background: #67aef6;
+            background: #2361a2;
+            color: #fff
         }
     }
     ul{

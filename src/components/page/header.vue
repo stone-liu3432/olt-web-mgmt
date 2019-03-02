@@ -199,7 +199,7 @@ export default {
         top:0;
         left:0;
         z-index: 999;
-        background: #67aef6;
+        background: #184777;
         color: #fff;
         div.top-banner-logo,div.top-banner-nav,div.top-banner-user{
             height: 70px;
@@ -243,10 +243,14 @@ export default {
             width: 33%;
             overflow: hidden;
             text-overflow: ellipsis;
+            &:hover{
+                color: rgb(204, 131, 102);
+                transition: all .3s linear;
+            }
         }
     }
     li.active{
-        background: #fff;
+        background: #e0efe7;
         color: #000;
     }
 

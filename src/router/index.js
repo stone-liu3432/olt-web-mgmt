@@ -110,6 +110,8 @@ router.beforeEach((to, from, next)=>{
 
 router.afterEach((to, from)=>{
 	store.commit("updateLoad", false);
+	// 分辨率低时，路由跳转时页面滚动到顶部
+	window.scrollTo(0, 0);
 });
 
 export default router;

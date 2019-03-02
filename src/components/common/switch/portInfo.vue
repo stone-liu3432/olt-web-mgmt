@@ -102,7 +102,8 @@ hr+ul{
     margin-top: 20px;
 }
 li.bg-title>span{
-    background: #67aef6;
+    background: #2361a2;
+    color: #fff
 }
 li{
     height: 32px;

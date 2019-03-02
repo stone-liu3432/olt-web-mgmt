@@ -269,7 +269,8 @@ select{
 }
 div.multicast{
     .bg-title{
-        background: #67aef6;
+        background: #2361a2;
+        color: #fff
     }
     >div:first-child{
         span:first-child{

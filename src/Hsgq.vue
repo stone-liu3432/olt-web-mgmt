@@ -101,6 +101,9 @@ export default {
 </script>
 
 <style lang="less">
+//  #184777  
+//  #2C72BB
+//  #E0EFE7
 #hsgq {
   font-family: "Avenir", Helvetica, Arial, sans-serif;
   -webkit-font-smoothing: antialiased;
@@ -111,6 +114,7 @@ export default {
   max-width: 1980px;
   font-size: 16px;
   overflow-y: scroll;
+  background: #e0efe7;
 }
 .global-load {
   display: none;

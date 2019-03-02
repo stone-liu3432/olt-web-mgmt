@@ -721,7 +721,8 @@ div.vlan-mgmt>div:nth-child(2){
 }
 div+ul{
     >li:first-child{
-        background: #67aef6;
+        background: #2361a2;
+        color: #fff
     }
 }
 a+span{
