@@ -20,7 +20,7 @@
                 </port>
                 <port v-for="(item,index) in port_name.xge" :key="index"
                     :port-info="item"
-                    port-type="ge"
+                    port-type="xge"
                     v-if="port_name && port_name.xge">
                 </port>
             </div>
@@ -66,7 +66,6 @@ export default {
                 var xge = this.system.data.xgeports;
                 var pon_count,ge_count,xge_count,portName;
                 pon_count = res.data.data.slice(0,pon);
-                //ge_count = res.data.data.slice(pon);
                 if(!xge){
                     ge_count = res.data.data.slice(pon);
                     portName = {
@@ -108,7 +107,7 @@ export default {
     beforeDestroy(){
         if(this.interval) clearInterval(this.interval);
     },
-    computed: mapState(['port_name','lanMap','change_url'])
+    computed: mapState(['port_name','lanMap','change_url','system'])
 }
 </script>
 

@@ -200,6 +200,9 @@ import { mapState,mapMutations } from 'vuex'
                     }
                     this.onu_allow_list = Object.assign({},this.onu_arrow);
                     this.onu_allow_list.data.sort((a,b)=>{
+                        if(a.status.toLowerCase() === 'online' && b.status.toLowerCase() === 'online'){
+                            return a.onu_id - b.onu_id;
+                        }
                         return a.status.toLowerCase() === 'online' && b.status.toLowerCase() !== 'online';
                     })
                 }).catch(err=>{
@@ -235,7 +238,10 @@ import { mapState,mapMutations } from 'vuex'
                     }
                     this.onu_allow_list = Object.assign({},this.onu_arrow);
                     this.onu_allow_list.data.sort((a,b)=>{
-                        return a.status.toLowerCase() === 'online' && b.status.toLowerCase() !== 'online'
+                        if(a.status.toLowerCase() === 'online' && b.status.toLowerCase() === 'online'){
+                            return a.onu_id - b.onu_id;
+                        }
+                        return a.status.toLowerCase() === 'online' && b.status.toLowerCase() !== 'online';
                     })
                 }).catch(err=>{
                     // to do 
