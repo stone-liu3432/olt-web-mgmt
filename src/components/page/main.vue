@@ -156,9 +156,9 @@ import bottomFooter from '@/components/page/footer'
     }
 </script>
 
-<style>
+<style lang="less">
 #main-content{
-    height:100%;
+    //height:100%;
     padding-bottom: 30px;
 }
 div.tips-body{

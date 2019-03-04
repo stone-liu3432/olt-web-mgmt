@@ -611,7 +611,7 @@ h2{
     margin: 0 0 0 20px;
 }
 .onu-allow{
-    margin-top: 20px;
+    margin: 20px 0;
     padding-top: 70px;
     >div:first-child{
         height: 36px;
