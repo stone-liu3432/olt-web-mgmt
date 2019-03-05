@@ -51,7 +51,13 @@
                     {"name": "igmp"}
                 ]
             },{
-                "name": "ACL"
+                "name": "ACL/QoS",
+                "children": [
+                    {"name": "time_range"},
+                    {"name": "acl_mgmt"},
+                    {"name": "packet_filter"},
+                    {"name": "QoS"}
+                ]
             }
         ]
     }

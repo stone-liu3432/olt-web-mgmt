@@ -30,6 +30,11 @@ const macMgmt = () => import(/* webpackChunkName: "switch-page" */  '@/component
 const rstp = () => import(/* webpackChunkName: "protocol-page" */  '@/components/common/protocol/rstp')
 const igmp = () => import(/* webpackChunkName: "protocol-page" */  '@/components/common/protocol/igmp')
 
+// acl/qos
+const aclMgmt = () => import(/* webpackChunkName: "acl-qos-page" */  '@/components/common/acl-QoS/aclMgmt')
+const timeRange = () => import(/* webpackChunkName: "acl-qos-page" */  '@/components/common/acl-QoS/timeRange')
+const qos = () => import(/* webpackChunkName: "acl-qos-page" */  '@/components/common/acl-QoS/qos')
+const packetFilter = () => import(/* webpackChunkName: "acl-qos-page" */  '@/components/common/acl-QoS/packetFilter')
 export default [
     {
         path: "/advanced_setting",
@@ -212,6 +217,34 @@ export default [
     {
         path: "/igmp",
         component: igmp,
+        meta: {
+            requireAuth: true
+        }
+    },
+    {
+        path: "/acl_mgmt",
+        component: aclMgmt,
+        meta: {
+            requireAuth: true
+        }
+    },
+    {
+        path: "/time_range",
+        component: timeRange,
+        meta: {
+            requireAuth: true
+        }
+    },
+    {
+        path: "/packet_filter",
+        component: packetFilter,
+        meta: {
+            requireAuth: true
+        }
+    },
+    {
+        path: "/qos",
+        component: qos,
         meta: {
             requireAuth: true
         }

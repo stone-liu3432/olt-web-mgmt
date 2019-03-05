@@ -8,9 +8,6 @@
                  portInfo.data.admin_status ? portInfo.data.link_status ? 'rj45-online' : 'rj45-offline' : 'rj45-disabled' ]" 
                 v-if="portType === 'ge' || portType === 'xge'">
             </div>
-            <!-- <div :class="[ 'bg-img', 'xge-online']" 
-                v-if="portType === 'xge'">
-            </div> -->
             <div v-if="portType === 'pon'">
                 {{ portType.toUpperCase() + portInfo.port_id }} : 
                 {{ portInfo.status ? 'online' : 'offline' }}
@@ -71,16 +68,9 @@ export default {
         jump(node){
             if(this.portType === 'pon'){
                 this.$router.push('/onu_allow?port_id=' + this.portInfo.port_id);
-                this.changeMenu('onu_allow');
             }
-            if(this.portType === 'ge'){
+            if(this.portType === 'ge' || this.portType === 'xge'){
                 this.$router.push('/port_cfg?port_id=' + this.portInfo.id);
-                this.changeMenu('advanced_setting');
-                this.changeFMenu('swport_mgmt');
-                this.changeAdvMenu('port_cfg');
-                sessionStorage.setItem('f_menu', 'advanced_setting');
-                sessionStorage.setItem('first_menu', 'swport_mgmt');
-                sessionStorage.setItem('sec_menu', 'port_cfg');
             }
         }
     },

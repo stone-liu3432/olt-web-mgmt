@@ -172,20 +172,7 @@ export default {
         },
         user_mgmt(){
             this.$router.push('user_mgmt');
-            this.changeMenu('advanced_setting');
-            this.changeAdvMenu('user_mgmt');
-            this.changeFMenu('system_mgmt');
-            sessionStorage.setItem('f_menu', 'advanced_setting');
-            sessionStorage.setItem('first_menu', 'system_mgmt');
-            sessionStorage.setItem('sec_menu', 'user_mgmt');
         }
-   },
-   watch: {
-        // system(){
-        //     if(this.system.data){
-        //         this.update_img();
-        //     }
-        // }
    }
 }
 </script>

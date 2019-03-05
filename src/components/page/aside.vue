@@ -4,15 +4,15 @@
             <!-- 主菜单/左侧导航栏 -->
             <li v-for="(item,index) in menu.data.menu" :key="index">
                 <p class="menu-item" @click="select_first_menu(item)" :class="[ adv_f_menu === item.name ? 'active' : '' ]"> 
-                    {{ lanMap[item.name] }}
+                    {{ lanMap[item.name] || item.name }}
                     <i class="icon-arrows" v-if="item.children"></i>
                 </p>
                 <!-- 二级菜单 -->
                 <transition name="bounce">
                     <ul class="sub-menu" v-if="item.children" :class="{ hide: adv_f_menu === item.name }">
-                        <li v-for="(_item,_index) in item.children" :key="_index" @click="select_second_menu(_item.name)">
+                        <li v-for="(_item,_index) in item.children" :key="_index">
                             <p :class="['sub-item' , adv_menu === _item.name ? 'actived' : '']" @click="select_page(_item)">
-                                {{ lanMap[_item.name] }}
+                                {{ lanMap[_item.name] || _item.name }}
                             </p>
                         </li>
                     </ul>
@@ -84,17 +84,9 @@ export default {
         },
         select_first_menu(node){
             this.changeFMenu(node.name);
-            sessionStorage.setItem('first_menu',node.name);
             if(!node.children){
                 this.$router.replace(node.name);
-                sessionStorage.removeItem('sec_menu');
-                this.changeAdvMenu('');
             }
-        },
-        //  子菜单被选中时样式
-        select_second_menu(str){
-            this.changeAdvMenu(str);
-            sessionStorage.setItem('sec_menu',str);
         },
         //  点击切换页面
         select_page(node){

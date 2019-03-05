@@ -108,6 +108,8 @@ router.beforeEach((to, from, next)=>{
 	}
 });
 
+const f_menu = ['main', 'status', 'onu_allow', 'vlan_mgmt', 'advanced_setting']
+
 router.afterEach((to, from)=>{
 	store.commit("updateLoad", false);
 	// 分辨率低时，路由跳转时页面滚动到顶部
@@ -115,6 +117,41 @@ router.afterEach((to, from)=>{
 		var content = document.getElementById('hsgq');
 		if(content){
 			content.scrollTop = 0;
+		}
+	}
+	//  2019-3-4 修改导航跳转方式
+	if(store.state.menu.data){
+		let menu = store.state.menu.data.menu, path = to.path.substr(1);
+		if(f_menu.indexOf(path) !== -1 && path !== 'advanced_setting'){
+			store.commit('updateNavMenu', path);
+			sessionStorage.setItem('f_menu', path);
+			sessionStorage.removeItem('first_menu');
+			sessionStorage.removeItem('sec_menu');
+			if(path === 'main'){
+				store.commit('updateNavMenu', 'status');
+				sessionStorage.setItem('f_menu', 'status');
+			}
+		}else{
+			menu.forEach(item=>{
+				if(item.name === path){
+					store.commit('updateAdvFMenu', path);
+					sessionStorage.setItem('first_menu', path);
+					sessionStorage.removeItem('sec_menu');
+				}else{
+					store.commit('updateNavMenu', 'advanced_setting');
+					sessionStorage.setItem('f_menu', 'advanced_setting');
+					if(item.children){
+						item.children.forEach(_item=>{
+							if(_item.name === path){
+								sessionStorage.setItem('first_menu', item.name);
+								sessionStorage.setItem('sec_menu', path);
+								store.commit('updateAdvFMenu', item.name);
+								store.commit('updateAdvMenu', path);
+							}
+						})
+					}
+				}
+			})
 		}
 	}
 });

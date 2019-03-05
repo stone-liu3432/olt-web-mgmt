@@ -427,12 +427,6 @@ import { mapState,mapMutations } from 'vuex'
             //  跳转带宽管理
             onu_bandwieth(){
                 this.$router.push('/sla_cfg?port_id='+this.portid);
-                this.changeMenu('advanced_setting');
-                this.changeFMenu('pon_mgmt');
-                this.changeAdvMenu('sla_cfg');
-                sessionStorage.setItem('f_menu', 'advanced_setting');
-                sessionStorage.setItem('first_menu', 'pon_mgmt');
-                sessionStorage.setItem('sec_menu', 'sla_cfg');
             },
             //  重启模态框
             result_reboot(bool){
