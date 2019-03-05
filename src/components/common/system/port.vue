@@ -41,7 +41,7 @@
             <div>
                 <span>{{ lanMap['link_status'] }}: </span>
                 <span>
-                    {{ portInfo.data.link_status ? lanMap['enable'] : lanMap['disable'] }}
+                    {{ portInfo.data.link_status ? lanMap['link_up'] : lanMap['link_down'] }}
                 </span>
             </div>
         </div>
