@@ -1,6 +1,12 @@
 <template>
     <div>
-        time range
+        <h3>time ramge</h3>
+        <ul>
+            <li v-for="(item,index) in time_range.data" :key="index">
+                <span>{{ item.name }}</span>
+                <span>{{ item.state }}</span>
+            </li>
+        </ul>
     </div>
 </template>
 
@@ -48,5 +54,10 @@ export default {
 </script>
 
 <style lang="less" scoped>
-
+h3{
+    font-size: 24px;
+    font-weight: 600;
+    color: #67AEF7;
+    margin: 10px 0 20px 0;
+}
 </style>

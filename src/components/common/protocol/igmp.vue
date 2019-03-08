@@ -426,16 +426,8 @@ div+ul{
     }
 }
 div.igmp-group-modal{
-    position: absolute;
-    left: 0;
-    right: 0;
-    top: 0;
-    bottom: 0;
-    margin: auto;
     width: 500px;
     height: 620px;
-    background: #fff;
-    border-radius: 5px;
     >div{
         div{
             height: 30px;

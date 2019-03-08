@@ -38,3 +38,8 @@ function nomenclature(arr,pon_count,ge_count){
     }
     return results.replace(/\,$/,'');
 }
+
+//  替换所有双字节字符为空
+export function replaceDBCS(str){
+    return str.replace(/[^\x00-\x80]/gi, '');
+}

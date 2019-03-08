@@ -9,9 +9,9 @@
                 </p>
                 <!-- 二级菜单 -->
                 <transition name="bounce">
-                    <ul class="sub-menu" v-if="item.children" :class="{ hide: adv_f_menu === item.name }">
+                    <ul v-if="item.children" :class="['sub-menu', { 'hide': adv_f_menu === item.name }]">
                         <li v-for="(_item,_index) in item.children" :key="_index">
-                            <p :class="['sub-item' , adv_menu === _item.name ? 'actived' : '']" @click="select_page(_item)">
+                            <p :class="['sub-item', {'submenu-actived': adv_menu === _item.name }]" @click="select_page(_item)">
                                 {{ lanMap[_item.name] || _item.name }}
                             </p>
                         </li>
@@ -130,7 +130,7 @@ export default {
         background-position: -48px -6px;
     }
 }
-.sub-menu>li>p.actived{
+.sub-menu>li>p.submenu-actived{
     background: #E0EFE7;
     color: #3990e5;
     font-weight: 500;

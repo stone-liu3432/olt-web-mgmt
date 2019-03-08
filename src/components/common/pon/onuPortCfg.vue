@@ -1048,7 +1048,8 @@ ul.vertical-font{
     >li{
         display: table-cell;
         overflow: hidden;
-        background: #67aef6;
+        background: #2361a2;
+        color: #fff;
         width: 8.89%;
         text-align: center;
         height: 40px;
@@ -1061,7 +1062,8 @@ ul.vertical-font{
     }
 }
 .bg-title{
-    background: #67aef6;
+    background: #2361a2;
+    color: #fff;
 }
 div.onu-vlan-info{
     margin: 0 0 0 10px;

@@ -16,11 +16,11 @@
                 <span>{{ lanMap['desc'] }}</span>
             </div>
             <div v-for="(item,index) in user_info.data" class="user-item">
-                <span>{{ item.name }}</span>
+                <span :title="item.name">{{ item.name }}</span>
                 <span>{{ item.status ? lanMap['online'] : lanMap['offline'] }}</span>
                 <span>{{ u_level[item.level] }}</span>
                 <span>{{ item.reenter }}</span>
-                <span>{{ item.info }}</span>
+                <span :title="item.info">{{ item.info }}</span>
             </div>
         </div>
         <div class="modal-dialog" v-if="show_add_modal">
@@ -404,6 +404,9 @@ div.user-mgmt{
         }
         div.user-item{
             font-size: 0;
+            height: 32px;
+            box-sizing: border-box;
+            overflow: hidden;
             span{
                 font-size: 16px;
                 display: inline-block;
@@ -415,6 +418,8 @@ div.user-mgmt{
                 height: 30px;
                 line-height: 30px;
                 width: 15%;
+                overflow: hidden;
+                text-overflow: ellipsis;
                 &:last-child{
                     width: 39%;
                     border-right: 1px solid #ccc;

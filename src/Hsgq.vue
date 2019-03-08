@@ -225,6 +225,8 @@ i{
   width: 100%;
   height: 100%;
   z-index: 99999;
+  overflow-y: auto;
+  margin: 0 !important;
 }
 .cover {
   width: 100%;

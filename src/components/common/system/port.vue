@@ -113,7 +113,7 @@ div.port{
         height: 120px;
         line-height: 120px;
         //margin: 0 0 0 10px;
-        padding: 8px 8px 8px 0;
+        padding: 8px 6px 8px 0;
         >div{
             height: 32px;
             line-height: 32px;

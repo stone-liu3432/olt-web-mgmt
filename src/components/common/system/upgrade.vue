@@ -413,6 +413,9 @@ a{
 input{
     font-size: 16px;
 }
+input[type='file']{
+    width: 300px;
+}
 .modal-dialog div.load-body{
     width: 500px;
     height: 300px;

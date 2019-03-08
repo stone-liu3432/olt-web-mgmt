@@ -430,6 +430,9 @@ a{
 input{
     font-size: 16px;
 }
+input[type='file']{
+    width: 300px;
+}
 p{
     color: #666;
     height: 38px;

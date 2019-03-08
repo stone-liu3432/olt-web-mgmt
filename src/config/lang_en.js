@@ -273,6 +273,8 @@ var en = {
     no_support: " Not support now",
     company_info: " Company information & Copyright information",
     setting_ok: " Setting success",
+    delete_ok: 'Delete success',
+    delete_fail: 'Delete failed',
     setting_fail: " Setting failed",
     tips_create_vlan: " Press to create vlan, and add ports",
     create_vlan_info: " Create vlan success，Please waiting for apply",
@@ -525,7 +527,9 @@ var en = {
     product_name_tips: 'Product name cannot exceed 12 characters',
     sysinfo_set: "Logo, model, company information settings",
     goback_devmgmt: "Back to device management",
-    imagesize_tips: "The maximum image size is 200kb"
+    imagesize_tips: "The maximum image size is 200kb",
+
+    acl_id_range_error: 'The ACL ID ranges from 2000 to 5999.'
 };
 
 export default en;

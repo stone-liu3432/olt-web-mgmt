@@ -82,6 +82,7 @@
 
 <script>
 import { mapState } from 'vuex'
+import { replaceDBCS } from '@/utils/common.js'
 export default {
     name: 'service',
     computed: mapState(['lanMap']),
@@ -197,7 +198,8 @@ export default {
                 })
                 return
             }
-            if(this.trap_community.length > 16){ 
+            this.trap_community = replaceDBCS(this.trap_community.replace(/\s*/g,''));
+            if(!this.trap_community || this.trap_community.length > 16){ 
                 document.getElementById('trap_community').focus();
                 return
             }
@@ -213,7 +215,7 @@ export default {
                 "param":{
                     "serverip": this.serverip,
                     "trap_port": this.trap_port,
-                    "trap_community": this.trap_community.replace(/\s*/g,'')
+                    "trap_community": this.trap_community
                 }
             }
             this.$http.post('/snmp_cfg?form=trap',params).then(res=>{
@@ -247,8 +249,10 @@ export default {
             this.limit = true;
             setTimeout(()=>{
                 this.limit = false;
-            },1000);
-            if(this.read_community.length > 16 || this.write_community.length > 16){
+            }, 1000);
+            this.read_community = replaceDBCS(this.read_community.replace(/\s*/g,''));
+            this.write_community = replaceDBCS(this.write_community.replace(/\s*/g,''));
+            if(!this.read_community || !this.write_community || this.read_community.length > 16 || this.write_community.length > 16){
                 if(this.read_community.length > 16) document.getElementById('read_community_input').focus();
                 if(this.write_community.length > 16) document.getElementById('write_community_input').focus();
                 return
@@ -267,8 +271,8 @@ export default {
                 "method":"set",
                 "param":{
                     "flags": flags,
-                    "read_community": this.read_community.replace(/\s*/g,''),
-                    "write_community": this.write_community.replace(/\s*/g,'')
+                    "read_community": this.read_community,
+                    "write_community": this.write_community
                 }
             }
             this.$http.post('/snmp_cfg?form=community',params).then(res=>{

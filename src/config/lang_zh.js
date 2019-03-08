@@ -265,6 +265,8 @@ var zh = {
     no_support: "暂未支持",
     company_info: "公司信息&版权信息等",
     setting_ok: "设置成功",
+    delete_ok: '删除成功',
+    delete_fail: '删除失败',
     setting_fail: "设置失败",
     tips_create_vlan: "点击以创建新的VLAN并增加端口",
     create_vlan_info: "创建VLAN成功，正在应用VLAN配置",
@@ -511,7 +513,9 @@ var zh = {
     product_name_tips: '产品名称不得多于12个字符',
     sysinfo_set: "Logo，型号，公司信息设置",
     goback_devmgmt: "回到设备管理",
-    imagesize_tips: "图片大小最大为200kb"
+    imagesize_tips: "图片大小最大为200kb",
+
+    acl_id_range_error: 'ACL ID取值范围为2000-5999'
 };
 
 export default zh;
