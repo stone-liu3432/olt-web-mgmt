@@ -515,7 +515,7 @@ var zh = {
     goback_devmgmt: "回到设备管理",
     imagesize_tips: "图片大小最大为200kb",
 
-    acl_id_range_error: 'ACL ID取值范围为2000-5999'
+    acl_id_range_error: 'ACL ID取值范围错误，其中基础ACL为2000-2999，高级ACL为3000-4999，链路ACL为5000-5999'
 };
 
 export default zh;

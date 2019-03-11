@@ -251,11 +251,9 @@ i{
 }
 div.cover+div{
     position: absolute;
-    left: 0;
-    right: 0;
-    top: 0;
-    bottom: 0;
-    margin: auto;
+    top:50%;
+    left:50%;
+    transform:translate(-50%,-50%);	
     width: 500px;
     height: 400px;
     background: #fff;

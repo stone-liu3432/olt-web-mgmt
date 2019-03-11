@@ -648,14 +648,6 @@ div.handle-btn{
 div.onu-desc{
     width: 500px;
     height: 310px;
-    background: #fff;
-    position: absolute;
-    left: 0;
-    right: 0;
-    top: 0;
-    bottom: 0;
-    margin: auto;
-    border-radius: 10px;
     >div{
         line-height: 30px;
         margin: 10px 0;

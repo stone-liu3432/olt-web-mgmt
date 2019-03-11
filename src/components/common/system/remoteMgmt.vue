@@ -559,16 +559,6 @@ p>span{
 .modal-content{
     width:550px;
     height:290px;
-    position: absolute;
-    left: 0;
-    right: 0;
-    top: 0;
-    bottom: 0;
-    margin: auto;
-    background: #fff;
-    z-index: 600;
-    //padding: 0 30px 20px;
-    border-radius: 5px;
 }
 .modal-item{
     padding: 0 20px;

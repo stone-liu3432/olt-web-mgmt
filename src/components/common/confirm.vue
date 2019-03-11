@@ -37,11 +37,9 @@ div.cover+div{
     width:550px;
     height:160px;
     position: absolute;
-    left: 0;
-    right: 0;
-    top: 0;
-    bottom: 0;
-    margin: auto;
+    top:50%;
+    left:50%;
+    transform:translate(-50%,-50%);	
     background: #fff;
     z-index: 600;
     padding: 20px 30px;

@@ -529,7 +529,7 @@ var en = {
     goback_devmgmt: "Back to device management",
     imagesize_tips: "The maximum image size is 200kb",
 
-    acl_id_range_error: 'The ACL ID ranges from 2000 to 5999.'
+    acl_id_range_error: 'The ACL ID is incorrect. The basic ACL is 2000-2999, the advanced ACL is 3000-4999, and the link ACL is 5000-5999.'
 };
 
 export default en;

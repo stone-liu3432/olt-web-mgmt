@@ -447,16 +447,8 @@ div.dialog-item>a{
     margin-top: 20px;
 }
 div.failed{
-    position: absolute;
-    top: 0;
-    right: 0;
-    bottom : 0;
-    left: 0;
-    margin: auto;
     width: 500px;
     height: 370px;
-    background: #fff;
-    border-radius: 5px;
 }
 div.failed>p{
     color: red;

@@ -252,16 +252,6 @@ div.pv-translate-item{
     }
 }
 div.modal-dialog{
-    div.cover+div{
-        background: #fff;
-        position: absolute;
-        left: 0;
-        right: 0;
-        top: 0;
-        bottom: 0;
-        margin: auto;
-        border-radius: 6px;
-    }
     div.pv-translate-modal{
         width: 500px;
         height: 300px;

@@ -528,16 +528,9 @@ div.rstp{
         margin: 0;
     }
     div.modal-body{
-        position: absolute;
-        left: 0;
-        right: 0;
-        top: 0;
-        bottom: 0;
-        margin: auto;
         width: 500px;
         height: 390px;
         background: #fff;
-        border-radius: 5px;
         h2+div{
             margin-top: 10px;
         }
@@ -578,16 +571,9 @@ div.rstp{
         }
     }
     div.modal-content{
-        position: absolute;
-        left: 0;
-        right: 0;
-        top: 0;
-        bottom: 0;
-        margin: auto;
         width: 500px;
         height: 320px;
         background: #fff;
-        border-radius: 5px;
         h2+div{
             margin-top: 10px;
         }

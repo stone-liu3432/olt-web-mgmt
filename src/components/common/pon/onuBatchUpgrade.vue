@@ -566,16 +566,6 @@ div.onu-upgrade{
         padding: 0 50px;
     }
 }
-div.cover+div{
-    position: absolute;
-    left: 0;
-    right: 0;
-    top: 0;
-    bottom: 0;
-    margin: auto;
-    border-radius: 5px;
-    background: #fff;
-}
 div.onu-type-modal{
     width: 500px;
     height: 220px;

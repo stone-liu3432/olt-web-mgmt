@@ -831,15 +831,6 @@ span.def-vlan-tips{
 div.cover+div{
     width:850px;
     height:300px;
-    position: absolute;
-    left: 0;
-    right: 0;
-    top: 0;
-    bottom: 0;
-    margin: auto;
-    background: #fff;
-    z-index: 999;
-    overflow: hidden;
 }
 div.modal-content{
     border-radius: 10px;

@@ -60,7 +60,7 @@ div.mei-message{
     min-width: 300px;
     max-width: 800px;
     border-radius: 4px;
-    z-index: 9999;
+    z-index: 999999;
     left: 50%;
     top: 90px;
     transform: translateX(-50%);

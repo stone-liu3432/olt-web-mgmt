@@ -1165,14 +1165,6 @@ div.onu-vlan-info>div.port-item-vlan{
 div.dialog-body{
     width: 550px;
     height: 505px;
-    background: #fff;
-    border-radius: 10px;
-    position: absolute;
-    left: 0;
-    right: 0;
-    top: 0;
-    bottom: 0;
-    margin: auto;
     >div{
         height: 36px;
         line-height: 36px;
@@ -1252,14 +1244,6 @@ div.tool-tips{
 div.dialog-content{
     width: 550px;
     height: 290px;
-    background: #fff;
-    border-radius: 10px;
-    position: absolute;
-    left: 0;
-    right: 0;
-    top: 0;
-    bottom: 0;
-    margin: auto;
     >div:first-child{
         padding-left: 30px;
         height: 60px;

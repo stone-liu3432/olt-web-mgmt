@@ -9,8 +9,9 @@
                 <li>
                     <span @click="showDetail(item.acl_id)">查看规则详情</span>
                     <span @click="aclMgmt('add')">增加</span>
-                    <span>配置</span>
+                    <span @click="openRuleCfgModal(item)" v-if="item.rule && item.rule.length > 0">配置</span>
                     <span @click="aclMgmt('delete')">删除</span>
+                    <span @click="openRuleAddModal(item)">增加Rule</span>
                 </li>
             </ul>
             <div v-for="(_item,_index) in item.rule" :key="_index" 
@@ -41,10 +42,10 @@
         </div>
         <div class="modal-dialog" v-if="isAclMgmt">
             <div class="cover"></div>
-            <div class="modal-centent acl-mgmt-modal">
-                <h4 class="modal-header" v-if="isAdd">ACL ADD</h4>
+            <div class="modal-centent acl-mgmt-modal" :style="{ 'height': isAddAcl ? '210px' : '' }">
+                <h4 class="modal-header" v-if="isAddAcl">ACL ADD</h4>
                 <h4 class="modal-header" v-else>AVL DELETE</h4>
-                <div v-if="!isAdd">
+                <div v-if="!isAddAcl">
                     <span>ACL ID</span>
                     <input type="text" v-focus v-model.number="acl_id"
                         :style="{ 'border-color': IDRangeError(acl_id) && !!acl_id ? 'red' : '' }">
@@ -53,14 +54,24 @@
                         :style="{ 'border-color': IDRangeError(acl_id_e) && !!acl_id_e ? 'red' : '' }">
                     <span class="acl-tips">Range:2000-5999</span>
                 </div>
-                <div v-else class="add-acl">
+                <div v-if="isAddAcl" class="add-acl">
+                    <span>ACL type</span>
+                    <select v-model.number="acl_type">
+                        <option value="1">Basic ACL</option>
+                        <option value="2">Advanced ACL</option>
+                        <option value="3">Link ACL</option>
+                    </select>
+                </div>
+                <div  v-if="isAddAcl" class="add-acl">
                     <span>ACL ID</span>
                     <input type="text" v-focus v-model.number="acl_id"
                         :style="{ 'border-color': IDRangeError(acl_id) && !!acl_id ? 'red' : '' }">
-                    <span class="acl-tips">Range:2000-5999</span>
+                    <span class="acl-tips" v-if="acl_type === 1">Range:2000-2999</span>
+                    <span class="acl-tips" v-if="acl_type === 2">Range:3000-4999</span>
+                    <span class="acl-tips" v-if="acl_type === 3">Range:5000-5999</span>
                 </div>
                 <div>
-                    <a href="javascript:void(0);" v-if="isAdd" @click="addACL">
+                    <a href="javascript:void(0);" v-if="isAddAcl" @click="addACL">
                         {{ lanMap['apply'] }}
                     </a>
                     <a href="javascript:void(0);" v-else @click="deleteACL">
@@ -73,9 +84,9 @@
                 <div class="close" @click="closeAclMgmt"></div>
             </div>
         </div>
-        <div class="modal-dialog">
+        <div class="modal-dialog" v-if="isCfgRule || isAddRule">
             <div class="cover"></div>
-            <div>
+            <div :style="{ 'height': acl_rule_type === 1 ? '390px' : '' }">
                 <div class="acl-rule-config">
                     <h4 class="modal-header">配置</h4>
                     <div>
@@ -84,11 +95,15 @@
                     </div>
                     <div>
                         <span>Rule ID</span>
-                        <span>{{ this.rule_id }}</span>
+                        <select v-if="isCfgRule" v-model.number="rule_id">
+                            <option :value="item.rule_id" v-for="(item,index) in cache_data.rule" :key="index">{{ item.rule_id }}</option>
+                        </select>
+                        <input type="text" v-if="isAddRule" v-model="rule_id" v-focus>
+                        <span v-if="isAddRule">Range: 1-16</span>
                     </div>
                     <div>
                         <span>规则</span>
-                        <select v-model.number="acl_rule_type">
+                        <select v-model.number="acl_rule_type" disabled>
                             <option value="1">基本ACL规则</option>
                             <option value="2">高级ACL规则</option>
                             <option value="3">链路ACL规则</option>
@@ -144,94 +159,97 @@
                     </div>
                     <div v-if="acl_rule_type === 1 || acl_rule_type === 2">
                         <span>src ipaddress</span>
-                        <span></span>
+                        <input type="text" v-model="src_ipaddr">
                     </div>
                     <div v-if="acl_rule_type === 1 || acl_rule_type === 2">
                         <span>src ipmask</span>
-                        <span></span>
+                        <input type="text" v-model="src_ipmask">
                     </div>
                     <div v-if="acl_rule_type === 2">
                         <span>protocol</span>
-                        <span></span>
+                        <input type="text" v-model="protocol">
                     </div>
                     <div v-if="acl_rule_type === 2">
                         <span>dst ipaddress</span>
-                        <span></span>
+                        <input type="text" v-model="dst_ipaddr">
                     </div>
                     <div v-if="acl_rule_type === 2">
                         <span>dst ipmask</span>
-                        <span></span>
+                        <input type="text" v-model="dst_ipmask">
                     </div>
                     <div v-if="acl_rule_type === 2">
                         <span>src port</span>
-                        <span></span>
+                        <input type="text" v-model="src_port">
                     </div>
                     <div v-if="acl_rule_type === 2">
                         <span>dst port</span>
-                        <span></span>
+                        <input type="text" v-model="dst_port">
                     </div>
                     <div v-if="acl_rule_type === 2">
                         <span>precedence</span>
-                        <span></span>
+                        <input type="text" v-model="precedence">
                     </div>
                     <div v-if="acl_rule_type === 2">
                         <span>dscp</span>
-                        <span></span>
+                        <input type="text" v-model="dscp">
                     </div>
                     <div v-if="acl_rule_type === 3">
                         <span>type</span>
-                        <span></span>
+                        <input type="text" v-model="type">
                     </div>
                     <div v-if="acl_rule_type === 3">
                         <span>cos</span>
-                        <span></span>
+                        <input type="text" v-model="cos">
                     </div>
                     <div v-if="acl_rule_type === 3">
                         <span>inner cos</span>
-                        <span></span>
+                        <input type="text" v-model="inner_cos">
                     </div>
                     <div v-if="acl_rule_type === 3">
                         <span>vlan id</span>
-                        <span></span>
+                        <input type="text" v-model="vlan_id">
                     </div>
                     <div v-if="acl_rule_type === 3">
                         <span>inner vlan id</span>
-                        <span></span>
+                        <input type="text" v-model="inner_vlan_id">
                     </div>
                     <div v-if="acl_rule_type === 3">
                         <span>src mac</span>
-                        <span></span>
+                        <input type="text" v-model="src_mac">
                     </div>
                     <div v-if="acl_rule_type === 3">
                         <span>src mask</span>
-                        <span></span>
+                        <input type="text" v-model="src_mask">
                     </div>
                     <div v-if="acl_rule_type === 3">
                         <span>dst mac</span>
-                        <span></span>
+                        <input type="text" v-model="dst_mac">
                     </div>
                     <div v-if="acl_rule_type === 3">
                         <span>dst mask</span>
-                        <span></span>
+                        <input type="text" v-model="dst_mask">
                     </div>
                     <div>
                         <span>timerange</span>
-                        <span></span>
+                        <select>
+                            <option value=""></option>
+                        </select>
                     </div>
                     <div>
-                        <a href="javascript:void(0);">{{ lanMap['apply'] }}</a>
-                        <a href="javascript:void(0);">{{ lanMap['cancel'] }}</a>
+                        <a href="javascript:void(0);" @click="submitForm">{{ lanMap['apply'] }}</a>
+                        <a href="javascript:void(0);" @click="closeRuleModal">{{ lanMap['cancel'] }}</a>
                     </div>
                 </div>
-                <div class="close"></div>
+                <div class="close" @click="closeRuleModal"></div>
             </div>
         </div>
-        <confirm v-if="isDelete" @choose="deleteModalResult"></confirm>
+        <confirm v-if="isDeleteAcl" @choose="deleteModalResult"></confirm>
     </div>
 </template>
 
 <script>
 import { mapState,mapMutations } from 'vuex'
+import { testIPAddr,testMACAddr } from '../../../utils/common'
 const MAX_ACL_ID = 5999,MIN_ACL_ID = 2000;
 export default {
     name: 'aclMgmt',
@@ -242,12 +260,34 @@ export default {
             acl_id: '',
             acl_id_e: '',
             rule_id: 0,
+            acl_type: 1,
             acl_rule_type: 1,           // 1 -> basic  2 -> advanced  3 -> link
             //  打开模态框时，缓存的数据
             cache_data: {},
             isAclMgmt: false,
-            isDelete: false,
-            isAdd: false,
+            isDeleteAcl: false,
+            isAddAcl: false,
+            isCfgRule: false,
+            isAddRule: false,
+            //  增加或配置rlue规则时的数据
+            src_ipaddr: '',
+            src_ipmask: '',
+            dst_ipaddr: '',
+            dst_ipmask: '',
+            src_port: '',
+            dst_port: '',
+            precedence: '',
+            protocol: '',
+            dscp: '',
+            type: '',
+            cos: '',
+            inner_cos: '',
+            vlan_id: '',
+            inner_vlan_id: '',
+            src_mac: '',
+            dst_mac: '',
+            src_mask: '',
+            dst_mask: '',
             acl_all: {
                 "code":1,
                 "message":"success",
@@ -344,10 +384,10 @@ export default {
         showDetail(id){
             this.show_acl_id = id;
         },
-        openDeleteModal(acl_id,rule_id){
+        openDeleteModal(acl_id, rule_id){
             this.acl_id = acl_id;
             this.rule_id = rule_id;
-            this.isDelete = true;
+            this.isDeleteAcl = true;
         },
         deleteModalResult(bool){
             if(bool){
@@ -383,14 +423,15 @@ export default {
                     
                 })
             }
-            this.isDelete = false;
+            this.isDeleteAcl = false;
         },
         aclMgmt(str){
             this.isAclMgmt = true;
             if(str === 'add'){
-                this.isAdd = true;
+                this.isAddAcl = true;
+                this.acl_id = '';
             }else{
-                this.isAdd = false;
+                this.isAddAcl = false;
             }
         },
         closeAclMgmt(){
@@ -430,7 +471,7 @@ export default {
             this.closeAclMgmt();
         },
         deleteACL(){
-            if(this.IDRangeError(this.acl_id) || this.IDRangeError(THIS.acl_id_e)){
+            if(this.IDRangeError(this.acl_id) || this.IDRangeError(this.acl_id_e)){
                 this.$message({
                     type: 'error',
                     text: this.lanMap['acl_id_range_error']
@@ -462,13 +503,52 @@ export default {
             this.closeAclMgmt();
         },
         IDRangeError(id){
-            return id < MIN_ACL_ID || id > MAX_ACL_ID;
+            if(this.acl_type === 1){
+                return id < 2000 || id > 2999;
+            }
+            if(this.acl_type === 2){
+                return id < 3000 || id > 4999;
+            }
+            if(this.acl_type === 3){
+                return id < 5000 || id > 5999;
+            }
+        },
+        testIP(str){
+            return testIPAddr(str);
+        },
+        testMac(str){
+            return testMACAddr(str);
+        },
+        openRuleCfgModal(node){
+            if(!node) return
+            this.isCfgRule = true;
+            this.cache_data = node;
+            this.acl_id = node.acl_id;
+            if(node.rule && node.rule.length > 0){
+                this.rule_id = node.rule[0].rule_id;
+            }
+        },
+        openRuleAddModal(node){
+            this.isAddRule = true;
+            this.acl_id = node.acl_id;
+            this.rule_id = '';
+        },
+        closeRuleModal(){
+            this.isCfgRule = false;
+            this.isAddRule = false;
+            this.acl_id = '';
+        },
+        submitForm(){
+
         }
     }
 }
 </script>
 
 <style lang="less" scoped>
+select{
+    width: 180px;
+}
 h3{
     font-size: 24px;
     font-weight: 600;
@@ -602,7 +682,7 @@ div.acl-item{
         }
     }
 }
-div.acl-mgmt-modal{
+div.cover+div.acl-mgmt-modal{
     height: 175px;
     h4+div{
         margin: 10px 0;
@@ -627,19 +707,35 @@ div.acl-mgmt-modal{
         }
     }
     div.add-acl{
+        margin: 10px 0;
+        span{
+            display: inline-block;
+            width: 140px;
+            text-align: center;
+            &:first-child{
+                width: 100px;
+            }
+            &:last-child{
+                width: 120px;
+            }
+        }
         span:first-child{
             width: 150px;
         }
         input{
             width: 180px;
         }
+        .acl-tips{
+            font-size: 14px;
+            color: #666;
+        }
     }
     a{
-        margin: 10px 0 0 100px;
+        margin: 10px 0 0 105px;
     }
 }
 div.cover+div{
-    height: 620px;
+    height: 650px;
 }
 div.acl-rule-config{
     >div{
@@ -648,11 +744,19 @@ div.acl-rule-config{
         >span:first-child{
             display: inline-block;
             width: 120px;
-            background: #ddd;
             height: 32px;
             line-height: 32px;
             margin: 0 20px 0 30px;
         }
+        a{
+            margin: 10px 0 0 100px;
+        }
+    }
+    input+span{
+        display: inline-block;
+        font-size: 14px;
+        color: #333;
+        margin-left: 10px;
     }
 }
 </style>

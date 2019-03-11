@@ -43,3 +43,15 @@ function nomenclature(arr,pon_count,ge_count){
 export function replaceDBCS(str){
     return str.replace(/[^\x00-\x80]/gi, '');
 }
+
+//  IP地址判断
+export function testIPAddr(str){
+    var reg = /^((25[0-5]|2[0-4]\d|((1\d{2})|([1-9]?\d)))\.){3}(25[0-5]|2[0-4]\d|((1\d{2})|([1-9]?\d)|\d))$/;
+    return reg.test(str) && str.replace(/(^\s*)|(\s*$)/g) !== '0.0.0.0';
+}
+
+//  MAC地址检查
+export function testMACAddr(){
+    var reg = /^([0-9abcdefABCDEF]{2}\:){5}[0-9abcdefABCDEF]{2}$/;
+    return reg.test(str);
+}
