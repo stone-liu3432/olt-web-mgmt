@@ -54,7 +54,7 @@
         </ul>
         <div class="modal-dialog" v-if="modalDialog">
             <div class="cover"></div>
-            <div class="modal-content" :style="{ 'height': create_vlan ? '300px' : '275px' }">
+            <div class="modal-content" :style="{ 'height': create_vlan ? '320px' : '285px' }">
                 <h3 v-if="create_vlan && !batch_set_vlan">
                     {{ lanMap['create'] }}
                 </h3>
@@ -830,14 +830,10 @@ div.cover+div{
     width:850px;
     height:300px;
     position: absolute;
-    left: 0;
-    right: 0;
-    top: 0;
-    bottom: 0;
-    margin: auto;
-    background: #fff;
-    z-index: 999;
-    overflow: hidden;
+    left:50%;
+    top:50%;
+    transform: translate(-50%,-50%); 
+    margin: 0;
 }
 div.modal-content{
     padding: 20px;
@@ -873,6 +869,10 @@ div.vlan-mode>h3{
 div.vlan-port>div{
     height: 30px;
     line-height: 30px;
+    &:last-child{
+        width: 650px;
+        height: 60px;
+    }
 }
 div.vlan-mode:after{
     content: "";
@@ -881,13 +881,15 @@ div.vlan-mode:after{
 }
 span.tagged,span.untagged{
     user-select: none;
+    display: inline-block;
+    width: 12%;
 }
 label{
-    margin-right: 18px;
+    //margin-right: 18px;
     user-select: none;
 }
 div.vlan-mode{
-    margin: 20px 0;
+    margin: 10px 0;
 }
 div.vlan-mode>a{
     margin-left: 50px;
