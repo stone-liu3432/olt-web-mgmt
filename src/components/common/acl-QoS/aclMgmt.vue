@@ -114,7 +114,7 @@
                         "rule_id":1,
                         "action":1,
                         "flags":1,
-                        "src_ipaddr":"192.168.1.1"|"any",
+                        "src_ipaddr":"192.168.1.1",
                         "src_ipmask":"0.0.0.255",
                         "timerange":"daynight-12-13"
                      -->
@@ -124,9 +124,9 @@
                         "action":1,
                         "flags":1,
                         "protocol":"udp",
-                        "src_ipaddr":"192.168.1.1"|"any",
+                        "src_ipaddr":"192.168.1.1",
                         "src_ipmask":"0.255.255.255",
-                        "dst_ipaddr":"192.168.1.1"|"any",
+                        "dst_ipaddr":"192.168.1.1",
                         "dst_ipmask":"0.255.255.255",
                         "src_port":"PORT-LIST",
                         "dst_port":"PORT-LIST",
@@ -152,7 +152,7 @@
                        -->
                     <div>
                         <span>action</span>
-                        <select>
+                        <select v-model.number="action">
                             <option value="1">deny</option>
                             <option value="2">permit</option>
                         </select>
@@ -167,7 +167,8 @@
                     </div>
                     <div v-if="acl_rule_type === 2">
                         <span>protocol</span>
-                        <input type="text" v-model="protocol">
+                        <input type="text" v-model.trim="protocol">
+                        <span>Rang: 0-255</span>
                     </div>
                     <div v-if="acl_rule_type === 2">
                         <span>dst ipaddress</span>
@@ -188,10 +189,12 @@
                     <div v-if="acl_rule_type === 2">
                         <span>precedence</span>
                         <input type="text" v-model="precedence">
+                        <span>Range: 0-7</span>
                     </div>
                     <div v-if="acl_rule_type === 2">
                         <span>dscp</span>
                         <input type="text" v-model="dscp">
+                        <span>Range: 0-63</span>
                     </div>
                     <div v-if="acl_rule_type === 3">
                         <span>type</span>
@@ -231,12 +234,12 @@
                     </div>
                     <div>
                         <span>timerange</span>
-                        <select>
+                        <select v-model="timerange">
                             <option value=""></option>
                         </select>
                     </div>
                     <div>
-                        <a href="javascript:void(0);" @click="submitForm">{{ lanMap['apply'] }}</a>
+                        <a href="javascript:void(0);" @click="submitModify">{{ lanMap['apply'] }}</a>
                         <a href="javascript:void(0);" @click="closeRuleModal">{{ lanMap['cancel'] }}</a>
                     </div>
                 </div>
@@ -264,12 +267,14 @@ export default {
             acl_rule_type: 1,           // 1 -> basic  2 -> advanced  3 -> link
             //  打开模态框时，缓存的数据
             cache_data: {},
+            //  模态框打开或关闭
             isAclMgmt: false,
             isDeleteAcl: false,
             isAddAcl: false,
             isCfgRule: false,
             isAddRule: false,
             //  增加或配置rlue规则时的数据
+            action: 1,
             src_ipaddr: '',
             src_ipmask: '',
             dst_ipaddr: '',
@@ -288,6 +293,10 @@ export default {
             dst_mac: '',
             src_mask: '',
             dst_mask: '',
+            timerange: '',
+            //  timerange缓存，用于flags变更
+            timerange_cache: '',
+            rule_cache: {},
             acl_all: {
                 "code":1,
                 "message":"success",
@@ -298,13 +307,13 @@ export default {
                         "action":1,
                         "src_ipaddr":"any",
                         "src_ipmask":"any",
-                        "timerange":"name"
+                        "timerange":"basic"
                     },{
                         "rule_id":2,
                         "action":2,
                         "src_ipaddr":"any",
                         "src_ipmask":"any",
-                        "timerange":"name"
+                        "timerange":"advanced"
                     },{
                         "rule_id":3,
                         "action":1,
@@ -318,7 +327,7 @@ export default {
                         "dst_port":1,
                         "precedence":1,
                         "dscp":1,
-                        "timerange":"name"
+                        "timerange":"link"
                     }]
                 },{
                     "acl_id":3000,
@@ -527,19 +536,296 @@ export default {
             if(node.rule && node.rule.length > 0){
                 this.rule_id = node.rule[0].rule_id;
             }
+            this.ruleType();
         },
         openRuleAddModal(node){
             this.isAddRule = true;
             this.acl_id = node.acl_id;
             this.rule_id = '';
+            this.ruleType();
+        },
+        ruleType(){
+            if(this.acl_id < 3000){
+                this.acl_rule_type = 1;
+            }
+            if(this.acl_id >= 3000 && this.acl_id < 5000){
+                this.acl_rule_type = 2;
+            }
+            if(this.acl_id >= 5000){
+                this.acl_rule_type = 3;
+            }
         },
         closeRuleModal(){
             this.isCfgRule = false;
             this.isAddRule = false;
             this.acl_id = '';
+            this.rule_id = '';
+            this.action = 1;
+            this.src_ipaddr = '';
+            this.src_ipmask = '';
+            this.dst_ipaddr = '';
+            this.dst_ipmask = '';
+            this.src_port = '';
+            this.dst_port = '';
+            this.precedence = '';
+            this.protocol = '';
+            this.dscp = '';
+            this.type = '';
+            this.cos = '';
+            this.inner_cos = '';
+            this.vlan_id = '';
+            this.inner_vlan_id = '';
+            this.src_mac = '';
+            this.dst_mac = '';
+            this.src_mask = '';
+            this.dst_mask = '';
+            this.timerange = '';
         },
-        submitForm(){
+        submitModify(){
+            if(this.acl_rule_type === 1){
+                this.cfgBasicRule();
+            }
+            if(this.acl_rule_type === 2){
+                this.cfgAdvancedRule();
+            }
+            if(this.acl_rule_type === 3){
+                this.cfgLinkRule();
+            }
+        },
+        cfgBasicRule(){
+            var flags = 0;
+            // flags:
+            // 0x01 – src ip
+            // 0x02—timerange
+            if(!this.testIP(this.src_ipaddr) && this.src_ipaddr !== '0.0.0.0'){
+                this.$message({
+                    type: 'error',
+                    text: 'ipaddress error'
+                })
+                return
+            }
+            flags += 1;
+            if(!this.testIP(this.src_ipmask) && this.src_ipaddr !== '0.0.0.0'){
+                this.$message({
+                    type: 'error',
+                    text: 'ip mask error'
+                })
+                return;
+            }
+            if(this.timerange_cache !== this.timerange){
+                flags += 2;
+            }
+            var post_data = {
+                "method": "set",
+                "param":{
+                    "acl_id": this.acl_id,
+                    "rule_id": this.rule_id,
+                    "action": this.action,
+                    "flags": flags,
+                    "src_ipaddr": this.src_ipaddr,
+                    "src_ipmask": this.src_ipmask,
+                    "timerange": "daynight-12-13"
+                }
+            }
+            this.$http.post('/switch_acl?form=basic-rule', post_data).then(res=>{
+                if(res.data.code === 1){
+                    this.$message({
+                        type: res.data.type,
+                        text: ''
+                    })
+                }else{
+                    this.$message({
+                        type: res.data.type,
+                        text: '(' + res.data.code + ')' + res.data.message
+                    })
+                }
+            }).catch(err=>{
 
+            })
+        },
+        cfgAdvancedRule(){
+            // Flags:
+            // 0x0—不关注protocol之后的参数
+            // icmp|udp|tcp|ip|ipinip|<0-255>
+            // 当协议为ICMP时： 不关注src-port，dst-port这两个参数
+            // PROTOCOL参数 必选，
+            // precedence和dscp二选一
+            // 0x01—src ip
+            // 0x02—dst ip
+            // 0x04—src port
+            // 0x08—dst port
+            // 0x10—precedence
+            // 0x20—dscp 
+            // 0x40—timerage 
+            var flags = 0;
+            if((this.protocol < 0 || this.protocol > 255 || isNaN(this.protocol)) &&
+                (this.protocol.toLowerCase !== 'icmp' && this.protocol.toLowerCase() !== 'udp' 
+                && this.protocol.toLowerCase() !== 'tcp' && this.protocol.toLowerCase() !== 'ip' 
+                && this.protocol.toLowerCase() !== 'ipinip' )){
+                this.$message({
+                    type: 'error',
+                    text: ''
+                })
+                return
+            }
+            if(this.protocol.toLowerCase() === 'icmp'){
+                this.src_port = '';
+                this.dst_port = '';
+            }
+            if(this.src_ipaddr !== '' && !this.testIP(this.src_ipaddr)){
+                this.$message({
+                    type: 'error',
+                    text: ''
+                })
+                return
+            }
+            if(this.src_ipaddr !== '' && this.src_ipmask !== '' && !this.testIP(this.src_ipmask)){
+                this.$message({
+                    type: 'error',
+                    text: ''
+                })
+                return
+            }
+            if(this.dst_ipaddr !== '' && !this.testIP(this.dst_ipaddr)){
+                this.$message({
+                    type: 'error',
+                    text: ''
+                })
+                return
+            }
+            if(this.dst_ipaddr !== '' && this.dst_ipmask !== '' && this.testIP(this.dst_ipmask)){
+                this.$message({
+                    type: 'error',
+                    text: ''
+                })
+                return
+            }
+            var reg = /^[\d\-,]+$/;
+            if(this.src_port !== '' && !reg.test(this.src_port)){
+                this.$message({
+                    type: 'error',
+                    text: ''
+                })
+                return
+            }
+            if(this.dst_port !== '' && !reg.test(this.dst_port)){
+                this.$message({
+                    type: 'error',
+                    text: ''
+                })
+                return
+            }
+            if(this.precedence) this.dscp = '';
+            if(this.dscp) this.precedence = '';
+            if(this.precedence < 0 || this.precedence > 7 || isNaN(this.precedence)){
+                this.$message({
+                    type: 'error',
+                    text: ''
+                })
+                return
+            }
+            if(this.dscp < 0 || this.dscp > 255 || isNaN(this.dscp)){
+                this.$message({
+                    type: 'error',
+                    text: ''
+                })
+                return
+            }
+            var post_data = {
+                "method": "set",
+                "param": {
+                    "acl_id": this.acl_id,
+                    "rule_id": this.rule_id,
+                    "action": this.action,
+                    "flags": flags,
+                    "protocol": this.protocol,
+                    "src_ipaddr": this.src_ipaddr,
+                    "src_ipmask": this.src_ipmask,
+                    "dst_ipaddr": this.dst_ipaddr,
+                    "dst_ipmask": this.dst_ipmask,
+                    "src_port": this.src_port,
+                    "dst_port": this.dst_port,
+                    "precedence": this.precedence,
+                    "dscp": this.dscp,
+                    "timerange": this.timerange
+                }
+            }
+            this.$http.post('/switch_acl?form=adv-rule', post_data).then(res=>{
+                if(res.data.code === 1){
+                    this.$message({
+                        type: res.data.type,
+                        text: ''
+                    })
+                }else{
+                    this.$message({
+                        type: res.data.type,
+                        text: '(' + res.data.code + ')' + res.data.message
+                    })
+                }
+            }).catch(err=>{
+
+            })
+        },
+        cfgLinkRule(){
+            // Flags:
+            // 0x01—type
+            // 0x02—cos
+            // 0x04—inner-cos
+            // 0x08—vlan
+            // 0x10—inner-vlan
+            // 0x20—src-mac
+            // 0x40—dst-mac
+            // 0x80--timerange
+            var flags = 0;
+            var post_data = {
+                "method": "set",
+                "param":{
+                    "acl_id": 5000,
+                    "rule_id": 1,
+                    "action": 1,
+                    "flags": 1,
+                    "type": '<0-0xffff>',
+                    "cos": '<0-7>',
+                    "inner_cos": '<0-7>',
+                    "vlan_id": '<1-4094>',
+                    "inner_vlan_id": '<1-4094>',
+                    "src_mac": "AA:BB:CC:DD:EE:FF",
+                    "src_mask": "ffff-ffff-ffff",
+                    "dst_mac": "AA:BB:CC:DD:EE:FF",
+                    "dst_mask": "ffff-ffff-ffff",
+                    "timerange": "daynight-12-13"
+                }
+            }
+            this.$http.post('/switch_acl?form=link-rule', post_data).then(res=>{
+                if(res.data.code === 1){
+                    this.$message({
+                        type: res.data.type,
+                        text: ''
+                    })
+                }else{
+                    this.$message({
+                        type: res.data.type,
+                        text: '(' + res.data.code + ')' + res.data.message
+                    })
+                }
+            }).catch(err=>{
+
+            })
+        }
+    },
+    watch: {
+        'rule_id'(){
+            if(this.isCfgRule && this.cache_data.rule){
+                this.cache_data.rule.forEach(item=>{
+                    if(item.rule_id === this.rule_id){
+                        this.timerange_cache = item.timerange;
+                        Object.keys(item).forEach(key=>{
+                            this[key] = item[key];
+                            this.rule_cache[key] = item[key];
+                        })
+                    }
+                })
+            }
         }
     }
 }

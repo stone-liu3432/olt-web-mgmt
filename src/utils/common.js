@@ -51,7 +51,7 @@ export function testIPAddr(str){
 }
 
 //  MAC地址检查
-export function testMACAddr(){
+export function testMACAddr(str){
     var reg = /^([0-9abcdefABCDEF]{2}\:){5}[0-9abcdefABCDEF]{2}$/;
     return reg.test(str);
 }
