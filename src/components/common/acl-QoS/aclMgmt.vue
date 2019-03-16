@@ -1,13 +1,13 @@
 <template>
     <div>
-        <h3>acl mgmt</h3>
+        <h3>{{ lanMap['acl_mgmt'] }}</h3>
         <div v-for="(item,index) in acl_show" :key="index" class="acl-item" v-if="acl_show.length">
             <div></div>
             <ul>
-                <li>acl id : {{ item.acl_id }}</li>
-                <li>rule count : {{ item.rule.length }}</li>
+                <li>ACL ID : {{ item.acl_id }}</li>
+                <li>{{ lanMap['rule_count'] }} : {{ item.rule.length }}</li>
                 <li>
-                    <span @click="showDetail(item.acl_id)">查看规则详情</span>
+                    <span @click="showDetail(item.acl_id)">查看规则</span>
                     <span @click="aclMgmt('add')">增加</span>
                     <span @click="openRuleCfgModal(item)" v-if="item.rule && item.rule.length > 0">配置</span>
                     <span @click="aclMgmt('delete')">删除</span>
@@ -20,7 +20,6 @@
             </ul>
             <div v-for="(_item,_index) in item.rule" :key="_index" 
                 class="acl-detail" v-if="show_acl_id === item.acl_id">
-                <!--  -->
                 <div class="column-header">
                     <div v-if="isARPL">
                         <i class="arrow-up" @click="swapRulePriority(item, _index, -1)"></i>
@@ -28,16 +27,13 @@
                     </div>
                     <div v-else></div>
                     <div>
-                        {{ 'rule id' }}:{{ _item.rule_id }}
-                    </div>
-                    <div>
-                        <i class="icon-config"></i>
+                        {{ 'RULE ID' }}:{{ _item.rule_id }}
                     </div>
                 </div>
                 <div class="acl-rule-detail" ref="acl_rule_detail">
                     <span v-for="(__item,__index) in _item" :key="__index"
                         v-if="__index !== 'rule_id' && __index !== 'flags' && !!__item">
-                        {{ __index }}&nbsp;:&nbsp;{{ __item }}
+                        {{ lanMap[__index] ? lanMap[__index] : __index }}&nbsp;:&nbsp;{{ __item }}
                     </span>
                 </div>
                 <div class="acl-rule-config">
@@ -48,8 +44,8 @@
         <div class="modal-dialog" v-if="isAclMgmt">
             <div class="cover"></div>
             <div class="modal-centent acl-mgmt-modal" :style="{ 'height': isAddAcl ? '210px' : '' }">
-                <h4 class="modal-header" v-if="isAddAcl">ACL ADD</h4>
-                <h4 class="modal-header" v-else>AVL DELETE</h4>
+                <h4 class="modal-header" v-if="isAddAcl">{{ lanMap['add'] + ' ACL' }}</h4>
+                <h4 class="modal-header" v-else>{{ lanMap['delete'] + ' ACL' }}</h4>
                 <div v-if="!isAddAcl">
                     <span>ACL ID</span>
                     <input type="text" v-focus v-model.number="acl_id"
@@ -60,11 +56,11 @@
                     <span class="acl-tips">Range:2000-5999</span>
                 </div>
                 <div v-if="isAddAcl" class="add-acl">
-                    <span>ACL type</span>
+                    <span>{{ 'ACL ' + lanMap['type'] }}</span>
                     <select v-model.number="acl_type">
-                        <option value="1">Basic ACL</option>
-                        <option value="2">Advanced ACL</option>
-                        <option value="3">Link ACL</option>
+                        <option value="1">{{ lanMap['basic'] + 'ACL' }}</option>
+                        <option value="2">{{ lanMap['advanced'] + 'ACL' }}</option>
+                        <option value="3">{{ lanMap['link'] + 'ACL' }}</option>
                     </select>
                 </div>
                 <div  v-if="isAddAcl" class="add-acl">
@@ -93,7 +89,8 @@
             <div class="cover"></div>
             <div :style="{ 'height': acl_rule_type === 1 ? '390px' : '' }">
                 <div class="acl-rule-config">
-                    <h4 class="modal-header">配置</h4>
+                    <h4 class="modal-header" v-if="isCfgRule">{{ lanMap['config'] + lanMap['rule'] }}</h4>
+                    <h4 class="modal-header" v-if="isAddRule">{{ lanMap['add'] + lanMap['rule'] }}</h4>
                     <div>
                         <span>ACL ID</span>
                         <span>{{ this.acl_id }}</span>
@@ -108,11 +105,11 @@
                         <span v-if="isAddRule">Range: 1-16</span>
                     </div>
                     <div>
-                        <span>规则</span>
+                        <span>{{ 'ACL ' + lanMap['type'] }}</span>
                         <select v-model.number="acl_rule_type" disabled>
-                            <option value="1">基本ACL规则</option>
-                            <option value="2">高级ACL规则</option>
-                            <option value="3">链路ACL规则</option>
+                            <option value="1">{{ lanMap['basic'] + 'ACL' + lanMap['rule'] }}</option>
+                            <option value="2">{{ lanMap['advanced'] + 'ACL' + lanMap['rule'] }}</option>
+                            <option value="3">{{ lanMap['link'] + 'ACL' + lanMap['rule'] }}</option>
                         </select>
                     </div>
                     <!--   basic
@@ -157,24 +154,24 @@
                         "timerange":"daynight-12-13"
                        -->
                     <div>
-                        <span>action</span>
+                        <span>{{ lanMap['action'] }}</span>
                         <select v-model.number="action">
                             <option value="1">deny</option>
                             <option value="2">permit</option>
                         </select>
                     </div>
                     <div v-if="acl_rule_type === 1 || acl_rule_type === 2">
-                        <span>src ipaddress</span>
+                        <span>{{ lanMap['src_ipaddr'] }}</span>
                         <input type="text" v-model="src_ipaddr" 
                             :style="{ 'border-color': src_ipaddr && (!testIP(src_ipaddr) && src_ipaddr !== '0.0.0.0') ? 'red' : '' }">
                     </div>
                     <div v-if="acl_rule_type === 1 || acl_rule_type === 2">
-                        <span>src ipmask</span>
-                        <input type="text" v-model="src_ipmask"
+                        <span>{{ lanMap['src_ipmask'] }}</span>
+                        <input type="text" v-model="src_ipmask" :disabled="src_ipmask === ''"
                             :style="{ 'border-color': src_ipmask && (!testIP(src_ipmask) && src_ipaddr !== '0.0.0.0') ? 'red' : '' }">
                     </div>
                     <div v-if="acl_rule_type === 2">
-                        <span>protocol</span>
+                        <span>{{ lanMap['protocol'] }}</span>
                         <input type="text" v-model.trim="protocol"
                             :style="{ 'border-color':  (protocol.toString().toLowerCase() !== 'icmp' && protocol.toString().toLowerCase() !== 'udp' 
                             && protocol.toString().toLowerCase() !== 'tcp' && protocol.toString().toLowerCase() !== 'ip' 
@@ -183,84 +180,84 @@
                         <span>Rang: 0-255</span>
                     </div>
                     <div v-if="acl_rule_type === 2">
-                        <span>dst ipaddress</span>
+                        <span>{{ lanMap['dst_ipaddr'] }}</span>
                         <input type="text" v-model="dst_ipaddr"
-                            :style="{ 'border-color':  src_ipaddr && !testIP(src_ipaddr) ? 'red' : ''}">
+                            :style="{ 'border-color':  dst_ipaddr && !testIP(dst_ipaddr) ? 'red' : ''}">
                     </div>
                     <div v-if="acl_rule_type === 2">
-                        <span>dst ipmask</span>
-                        <input type="text" v-model="dst_ipmask"
-                            :style="{ 'border-color': src_ipaddr !== '' && src_ipmask !== '' && !testIP(src_ipmask) ? 'red' : '' }">
+                        <span>{{ lanMap['dst_ipmask'] }}</span>
+                        <input type="text" v-model="dst_ipmask" :disabled="dst_ipaddr === ''"
+                            :style="{ 'border-color': dst_ipaddr !== '' && dst_ipmask !== '' && !testIP(dst_ipmask) ? 'red' : '' }">
                     </div>
                     <div v-if="acl_rule_type === 2">
-                        <span>src port</span>
+                        <span>{{ lanMap['src_port'] }}</span>
                         <input type="text" v-model="src_port" :disabled="protocol.toString().toLowerCase() === 'icmp'"
                             :style="{ 'border-color': src_port !== '' && !reg.test(src_port) ? 'red' : '' }">
                     </div>
                     <div v-if="acl_rule_type === 2">
-                        <span>dst port</span>
+                        <span>{{ lanMap['dst_port'] }}</span>
                         <input type="text" v-model="dst_port" :disabled="protocol.toString().toLowerCase() === 'icmp'"
                             :style="{ 'border-color': dst_port !== '' && !reg.test(dst_port) ? 'red' : '' }">
                     </div>
                     <div v-if="acl_rule_type === 2">
-                        <span>precedence</span>
+                        <span>{{ lanMap['precedence'] }}</span>
                         <input type="text" v-model="precedence" :disabled="!!dscp"
                             :style="{ 'border-color': precedence < 0 || precedence > 7 || isNaN(precedence) ? 'red' : '' }">
                         <span>Range: 0-7</span>
                     </div>
                     <div v-if="acl_rule_type === 2">
-                        <span>dscp</span>
+                        <span>{{ lanMap['dscp'] }}</span>
                         <input type="text" v-model="dscp" :disabled="!!precedence"
                             :style="{ 'border-color': dscp < 0 || dscp > 255 || isNaN(dscp) ? 'red' : '' }">
                         <span>Range: 0-63</span>
                     </div>
                     <div v-if="acl_rule_type === 3">
-                        <span>type</span>
+                        <span>{{ lanMap['eth_type'] }}</span>
                         <input type="text" v-model="type"
                             :style="{ 'border-color': type < 0 || type > 0xffff || isNaN(type) ? 'red' : '' }">
                     </div>
                     <div v-if="acl_rule_type === 3">
-                        <span>cos</span>
+                        <span>{{ lanMap['cos'] }}</span>
                         <input type="text" v-model="cos"
                             :style="{ 'border-color': cos < 0 || cos > 7 || isNaN(cos) ? 'red' : '' }">
                     </div>
                     <div v-if="acl_rule_type === 3">
-                        <span>inner cos</span>
+                        <span>{{ lanMap['inner_cos'] }}</span>
                         <input type="text" v-model="inner_cos"
                             :style="{ 'border-color': inner_cos < 0 || inner_cos > 7 || isNaN(inner_cos) ? 'red' : '' }">
                     </div>
                     <div v-if="acl_rule_type === 3">
-                        <span>vlan id</span>
+                        <span>{{ lanMap['vlan_id'] }}</span>
                         <input type="text" v-model="vlan_id"
                             :style="{ 'border-color': vlan_id !== '' && (vlan_id < 1 || vlan_id > 4094 || isNaN(vlan_id)) ? 'red' : '' }">
                     </div>
                     <div v-if="acl_rule_type === 3">
-                        <span>inner vlan id</span>
+                        <span>{{ lanMap['inner_vlan_id'] }}</span>
                         <input type="text" v-model="inner_vlan_id"
                             :style="{ 'border-color': inner_vlan_id !== '' && (inner_vlan_id < 1 || inner_vlan_id > 4094 || isNaN(inner_vlan_id)) ? 'red' : '' }">
                     </div>
                     <div v-if="acl_rule_type === 3">
-                        <span>src mac</span>
+                        <span>{{ lanMap['src_mac'] }}</span>
                         <input type="text" v-model="src_mac"
                             :style="{ 'border-color': src_mac !== '' &&  !testMac(src_mac) ? 'red' : ''}">
                     </div>
                     <div v-if="acl_rule_type === 3">
-                        <span>src mask</span>
-                        <input type="text" v-model="src_mask"
+                        <span>{{ lanMap['src_mask'] }}</span>
+                        <input type="text" v-model="src_mask" :disabled="src_mask === ''"
                             :style="{ 'border-color': src_mask !== '' && !testMacMask(src_mask) ? 'red' : '' }">
                     </div>
                     <div v-if="acl_rule_type === 3">
-                        <span>dst mac</span>
+                        <span>{{ lanMap['dst_mac'] }}</span>
                         <input type="text" v-model="dst_mac"
                             :style="{ 'border-color': dst_mac !== '' && !testMac(dst_mac) ? 'red' : '' }">
                     </div>
                     <div v-if="acl_rule_type === 3">
-                        <span>dst mask</span>
+                        <span>{{ lanMap['dst_mask'] }}</span>
                         <input type="text" v-model="dst_mask"
                             :style="{ 'border-color': dst_mask !== '' && !testMacMask(dst_mask) ? 'red' : '' }">
                     </div>
                     <div>
-                        <span>timerange</span>
+                        <span>{{ lanMap['timerange'] }}</span>
                         <select v-model="timerange">
                             <option value=""></option>
                         </select>
@@ -376,7 +373,7 @@ export default {
         },
         showDetail(id){
             //  如果已经打开，则关闭
-            if(this.show_acl_id){
+            if(this.show_acl_id === id){
                 this.show_acl_id = 0;
                 return
             }
@@ -489,6 +486,7 @@ export default {
                         type: 'success',
                         text: lanMap['delete_ok']
                     })
+                    this.getData(MIN_ACL_ID, MAX_ACL_ID, true);
                 }else{
                     this.$message({
                         type: 'error',
@@ -638,7 +636,7 @@ export default {
                         type: res.data.type,
                         text: ''
                     })
-                    this.getData(MIN_ACL_ID, MAX_ACL_ID);
+                    this.getData(MIN_ACL_ID, MAX_ACL_ID, true);
                 }else{
                     this.$message({
                         type: res.data.type,
@@ -788,7 +786,7 @@ export default {
                         type: res.data.type,
                         text: ''
                     })
-                    this.getData(MIN_ACL_ID, MAX_ACL_ID);
+                    this.getData(MIN_ACL_ID, MAX_ACL_ID, true);
                 }else{
                     this.$message({
                         type: res.data.type,
@@ -930,7 +928,7 @@ export default {
                         type: res.data.type,
                         text: ''
                     })
-                    this.getData(MIN_ACL_ID, MAX_ACL_ID);
+                    this.getData(MIN_ACL_ID, MAX_ACL_ID, true);
                 }else{
                     this.$message({
                         type: res.data.type,
@@ -1098,17 +1096,13 @@ div.acl-item{
             &:first-child{
                 width: 36px;
             }
-            &:last-child{
-                float: right;
-                margin-right: 10px;
-            }
         }
         i.arrow-up{
-            background-position: 24px -4px;
+            background-position: 24px -6px;
             background-image: url('../../../assets/arrow-sort-up.png');
         }
         i.arrow-down{
-            background-position: 24px -10px;
+            background-position: 24px -11px;
             background-image: url('../../../assets/arrow-sort-down.png'); 
         }
         i.icon-config{

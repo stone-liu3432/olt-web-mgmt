@@ -4,6 +4,7 @@ import store from "../vuex/store";
 import login from "../components/page/login";
 import sysSetting from '../components/page/sys-setting';
 import advancedSettingRouter from './advancedSettingRouter';
+import hsgq from '../Hsgq'
 
 Vue.use(Router);
 
@@ -124,6 +125,8 @@ router.afterEach((to, from)=>{
 		let menu = store.state.menu.data.menu, path = to.path.substr(1);
 		if(f_menu.indexOf(path) !== -1 && path !== 'advanced_setting'){
 			store.commit('updateNavMenu', path);
+			store.commit('updateAdvFMenu', '');
+			store.commit('updateAdvMenu', '');
 			sessionStorage.setItem('f_menu', path);
 			sessionStorage.removeItem('first_menu');
 			sessionStorage.removeItem('sec_menu');
@@ -132,16 +135,17 @@ router.afterEach((to, from)=>{
 				sessionStorage.setItem('f_menu', 'status');
 			}
 		}else{
-			menu.forEach(item=>{
+			store.commit('updateNavMenu', 'advanced_setting');
+			sessionStorage.setItem('f_menu', 'advanced_setting');
+			menu.forEach(item =>{
 				if(item.name === path){
 					store.commit('updateAdvFMenu', path);
+					store.commit('updateAdvMenu', '');
 					sessionStorage.setItem('first_menu', path);
 					sessionStorage.removeItem('sec_menu');
 				}else{
-					store.commit('updateNavMenu', 'advanced_setting');
-					sessionStorage.setItem('f_menu', 'advanced_setting');
 					if(item.children){
-						item.children.forEach(_item=>{
+						item.children.forEach(_item =>{
 							if(_item.name === path){
 								sessionStorage.setItem('first_menu', item.name);
 								sessionStorage.setItem('sec_menu', path);

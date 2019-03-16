@@ -32,7 +32,8 @@ var change_url = {
         get_mc_unknow: './mc_unknow.json',
         get_program: './program.json',
         get_mc_eth_config: "./mc_eth_config.json",
-        get_acl: './acl.json'
+        get_acl: './acl.json',
+        get_timerange: './timerange.json'
     },
     betaUrl: {
         menu: "/board?info=menu",
@@ -67,7 +68,8 @@ var change_url = {
         get_mc_unknow: '/switch_igmp?form=mc_unknown&mvlan=',
         get_program: '/switch_igmp?form=program&mvlan=',
         get_mc_eth_config: "/onumgmt?form=mc_eth_config",
-        get_acl: '/switch_acl?form=acl'
+        get_acl: '/switch_acl?form=acl',
+        get_timerange: '/switch_acl?form=time_range&name=all'
     }
 }
 

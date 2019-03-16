@@ -47,12 +47,12 @@
         <div class="top-banner-user lf">
             <ul>
                 <li @click="login_out">{{ lanMap['logout'] }}</li>
-                <li @click="reboot">{{ lanMap["reboot"] }}</li>
+                <li @click="savecfg">{{ lanMap["save"] }}</li>
                 <li @click="user_mgmt">{{ uName }}</li>
             </ul>
         </div>
         <confirm :tool-tips="lanMap['logout'] + '?'" @choose="result" v-if="login_out_modal"></confirm>
-        <confirm :tool-tips="lanMap['reboot_olt_hit']" @choose="reboot_result" v-if="rebootConfirm"></confirm>
+        <confirm :tool-tips="lanMap['save_cfg_confirm']" @choose="savecfg_result" v-if="savecfgConfirm"></confirm>
         <loading class="load" v-if="isLoading"></loading>
     </div>
 </template>
@@ -71,7 +71,7 @@ export default {
            login_out_modal: false,
            has_logo: false,
            f_menu: f_menu,
-           rebootConfirm: false,
+           savecfgConfirm: false,
            isLoading: false
        }
    },
@@ -142,33 +142,28 @@ export default {
             this.changeMenu(node);
             sessionStorage.setItem('f_menu', node);
         },
-        reboot(){
-            this.rebootConfirm = true;
+        savecfg(){
+            this.savecfgConfirm = true;
         },
-        reboot_result(bool){
+        savecfg_result(bool){
             if(bool){
-                this.$http.get('/system_reboot').then(res=>{
-                    // to do
+                this.$http.get('/system_save').then(res=>{
+                    if(res.data.code === 1){
+                        this.$message({
+                            type: res.data.type,
+                            text: this.lanMap['save_succ']
+                        })
+                    }else if(res.data.code > 1){
+                        this.$message({
+                            type: res.data.type,
+                            text: '(' + res.data.code + ') ' + res.data.message
+                        })
+                    }
                 }).catch(err=>{
                     // to do
                 })
-                this.isLoading = true;
-                this.reboot_req();
             }
-            this.rebootConfirm = false;
-        },
-        reboot_req(){
-            this.$http.get('/system_start',{ timeout: 3000 }).then(res=>{
-                if(res.data.code === 1){
-                    this.isLoading = false;
-                    sessionStorage.clear();
-                    this.$router.push('/login');
-                }
-            }).catch(err=>{
-                setTimeout(()=>{
-                    this.reboot_req();
-                },1000);
-            })
+            this.savecfgConfirm = false;
         },
         user_mgmt(){
             this.$router.push('user_mgmt');

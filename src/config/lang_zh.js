@@ -1,5 +1,5 @@
 var zh = {
-    advanced: "用户权限",
+    advanced: "高级",
     running_status: "运行状态",
     system_mgmt: "系统管理",
     dev_mgmt: "设备管理",
@@ -67,6 +67,7 @@ var zh = {
     on: "开启",
     off: "关闭",
     advanced_setting: "高级设置",
+    save: '保存',
 
     upgrade_firmware: "升级固件",
     upgrade_system: "升级系统",
@@ -515,7 +516,34 @@ var zh = {
     goback_devmgmt: "回到设备管理",
     imagesize_tips: "图片大小最大为200kb",
 
-    acl_id_range_error: 'ACL ID取值范围错误，其中基础ACL为2000-2999，高级ACL为3000-4999，链路ACL为5000-5999'
+    acl_id_range_error: 'ACL ID取值范围错误，其中基础ACL为2000-2999，高级ACL为3000-4999，链路ACL为5000-5999',
+
+    action: '行为',
+    src_ipaddr: '源IP',
+    src_ipmask: '源IP掩码',
+    dst_ipaddr: '目的IP',
+    dst_ipmask: '目的IP掩码',
+    src_port: '源端口',
+    dst_port: '目的端口',
+    precedence: 'Precedence',
+    protocol: '协议',
+    dscp: 'DSCP',
+    eth_type: '以太网类型',
+    cos: 'COS',
+    inner_cos: '内层COS',
+    vlan_id: 'VLAN ID',
+    inner_vlan_id: '内层VLAN ID',
+    src_mac: '源MAC地址',
+    dst_mac: '目的MAC地址',
+    src_mask: '源MAC掩码',
+    dst_mask: '目的MAC掩码',
+    timerange: '时间模板',
+    basic: '基本',
+    link: '链路',
+    rule: '规则',
+    acl_mgmt: 'ACL管理',
+    show: '查看',
+    rule_count: '规则数'
 };
 
 export default zh;

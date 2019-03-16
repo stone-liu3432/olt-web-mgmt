@@ -1,5 +1,5 @@
 var en = {
-    advanced: " advanced",
+    advanced: " Advanced ",
     running_status: " Running Status",
     system_mgmt: " System",
     dev_mgmt: " Device",
@@ -67,6 +67,7 @@ var en = {
     on: " ON",
     off: " OFF",
     advanced_setting: "Advanced setting",
+    save: ' Save ',
 
     upgrade_firmware: "  upgrade firmware",
     upgrade_system: "  upgrade system",
@@ -529,7 +530,34 @@ var en = {
     goback_devmgmt: "Back to device management",
     imagesize_tips: "The maximum image size is 200kb",
 
-    acl_id_range_error: 'The ACL ID is incorrect. The basic ACL is 2000-2999, the advanced ACL is 3000-4999, and the link ACL is 5000-5999.'
+    acl_id_range_error: 'The ACL ID is incorrect. The basic ACL is 2000-2999, the advanced ACL is 3000-4999, and the link ACL is 5000-5999.',
+
+    action: ' Action',
+    src_ipaddr: ' Source IP',
+    src_ipmask: ' Source IP mask',
+    dst_ipaddr: ' Destination IP',
+    dst_ipmask: ' Destination IP mask',
+    src_port: ' Source port',
+    dst_port: ' Destination port',
+    precedence: ' Precedence',
+    protocol: ' Protocol',
+    dscp: ' DSCP',
+    eth_type: ' Ethernet type',
+    cos: ' COS',
+    inner_cos: ' Inner COS',
+    vlan_id: ' VLAN ID',
+    inner_vlan_id: ' Inner VLAN ID',
+    src_mac: ' Source MAC address',
+    dst_mac: ' Destination MAC address',
+    src_mask: ' Source MAC mask',
+    dst_mask: ' Destination MAC mask',
+    timerange: 'Timerange',
+    basic: ' Basic ',
+    link: ' Link ',
+    rule: ' Rule ',
+    acl_mgmt: 'ACL management',
+    show: ' Show ',
+    rule_count: ' Rule count '
 };
 
 export default en;
