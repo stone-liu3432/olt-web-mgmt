@@ -543,7 +543,20 @@ var zh = {
     rule: '规则',
     acl_mgmt: 'ACL管理',
     show: '查看',
-    rule_count: '规则数'
+    rule_count: '规则数',
+
+    stime: '起始时间',
+    etime: '结束时间',
+    day: '日期',
+    sday: '起始日期',
+    eday: '结束日期',
+    name: '名称',
+    period: '时间',
+    relative: '相对时间',
+    absolute: '绝对时间',
+    state: '状态',
+    port_list: '端口列表'
+
 };
 
 export default zh;

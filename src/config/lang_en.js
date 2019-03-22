@@ -557,7 +557,19 @@ var en = {
     rule: ' Rule ',
     acl_mgmt: 'ACL management',
     show: ' Show ',
-    rule_count: ' Rule count '
+    rule_count: ' Rule count ',
+
+    stime: ' Start time ',
+    etime: ' End time ',
+    day: ' Day ',
+    sday: 'Start day ',
+    eday: 'End day ',
+    name: ' Name ',
+    period: ' Period ',
+    relative: 'Relative',
+    absolute: 'Absolute',
+    state: ' State ',
+    port_list: ' Port list '
 };
 
 export default en;

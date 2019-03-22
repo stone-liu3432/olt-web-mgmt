@@ -15,10 +15,10 @@ import { analysis } from './utils/common.js'
 Vue.use(VueMessage)
 Vue.use(Vuex)
 
-Vue.component('confirm',confirm)
-Vue.component('tabBar',tabBar)
+Vue.component('confirm', confirm)
+Vue.component('tabBar', tabBar)
 
-Vue.filter('analysis',analysis)
+Vue.filter('analysis', analysis)
 //  request拦截器  -->  全局request添加请求头
 axios.interceptors.request.use(config => {
 	var xtoken = sessionStorage.getItem('x-token');

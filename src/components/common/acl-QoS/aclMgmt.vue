@@ -575,7 +575,7 @@ export default {
             if(this.rule_id < 1 || this.rule_id > 16 || isNaN(this.rule_id)){
                 this.$message({
                     type: 'error',
-                    text: 'rule id'
+                    text: this.lanMap['param_error'] + ': ' + 'acl id'
                 })
                 return
             }
@@ -597,7 +597,7 @@ export default {
             if(!this.testIP(this.src_ipaddr) && this.src_ipaddr !== '0.0.0.0'){
                 this.$message({
                     type: 'error',
-                    text: 'ipaddress error'
+                    text: this.lanMap['param_error'] + ': ' + this.lanMap['src_ipaddr']
                 })
                 return
             }
@@ -605,7 +605,7 @@ export default {
             if(!this.testIP(this.src_ipmask) && this.src_ipaddr !== '0.0.0.0'){
                 this.$message({
                     type: 'error',
-                    text: 'ip mask error'
+                    text: this.lanMap['param_error'] + ': ' + this.lanMap['src_ipmask']
                 })
                 return;
             }
@@ -669,7 +669,7 @@ export default {
                 (this.protocol < 0 || this.protocol > 255 || isNaN(this.protocol))){
                 this.$message({
                     type: 'error',
-                    text: ''
+                    text: this.lanMap['param_error'] + ': ' + this.lanMap['protocol']
                 })
                 return
             }
@@ -680,7 +680,7 @@ export default {
             if(this.src_ipaddr !== '' && !this.testIP(this.src_ipaddr)){
                 this.$message({
                     type: 'error',
-                    text: ''
+                    text: this.lanMap['param_error'] + ': ' + this.lanMap['src_ipaddr']
                 })
                 return
             }
@@ -690,14 +690,14 @@ export default {
             if(this.src_ipaddr !== '' && this.src_ipmask !== '' && !this.testIP(this.src_ipmask)){
                 this.$message({
                     type: 'error',
-                    text: ''
+                    text: this.lanMap['param_error'] + ': ' + this.lanMap['src_ipmask']
                 })
                 return
             }
             if(this.dst_ipaddr !== '' && !this.testIP(this.dst_ipaddr)){
                 this.$message({
                     type: 'error',
-                    text: ''
+                    text: this.lanMap['param_error'] + ': ' + this.lanMap['dst_ipaddr']
                 })
                 return
             }
@@ -707,7 +707,7 @@ export default {
             if(this.dst_ipaddr !== '' && this.dst_ipmask !== '' && this.testIP(this.dst_ipmask)){
                 this.$message({
                     type: 'error',
-                    text: ''
+                    text: this.lanMap['param_error'] + ': ' + this.lanMap['dst_ipmask']
                 })
                 return
             }
@@ -715,7 +715,7 @@ export default {
             if(this.src_port !== '' && !reg.test(this.src_port)){
                 this.$message({
                     type: 'error',
-                    text: ''
+                    text: this.lanMap['param_error'] + ': ' + this.lanMap['src_port']
                 })
                 return
             }
@@ -725,7 +725,7 @@ export default {
             if(this.dst_port !== '' && !reg.test(this.dst_port)){
                 this.$message({
                     type: 'error',
-                    text: ''
+                    text: this.lanMap['param_error'] + ': ' + this.lanMap['dst_port']
                 })
                 return
             }
@@ -737,7 +737,7 @@ export default {
             if(this.precedence < 0 || this.precedence > 7 || isNaN(this.precedence)){
                 this.$message({
                     type: 'error',
-                    text: ''
+                    text: this.lanMap['param_error'] + ': ' + this.lanMap['precedence']
                 })
                 return
             }
@@ -747,7 +747,7 @@ export default {
             if(this.dscp < 0 || this.dscp > 255 || isNaN(this.dscp)){
                 this.$message({
                     type: 'error',
-                    text: ''
+                    text: this.lanMap['param_error'] + ': ' + this.lanMap['dscp']
                 })
                 return
             }
@@ -812,7 +812,7 @@ export default {
             if(this.type < 0 || this.type > 0xffff || isNaN(this.type)){
                 this.$message({
                     type: 'error',
-                    text: ''
+                    text: this.lanMap['param_error'] + ': ' + this.lanMap['type']
                 })
                 return
             }
@@ -822,7 +822,7 @@ export default {
             if(this.cos < 0 || this.cos > 7 || isNaN(this.cos)){
                 this.$message({
                     type: 'error',
-                    text: 'cos'
+                    text: this.lanMap['param_error'] + ': cos'
                 })
                 return
             }
@@ -832,7 +832,7 @@ export default {
             if(this.inner_cos !== '' && (this.inner_cos < 0 || this.inner_cos > 7 || isNaN(this.inner_cos))){
                 this.$message({
                     type: 'error',
-                    text: 'inner cos'
+                    text: this.lanMap['param_error'] + ': ' + this.lanMap['inner_cos']
                 })
                 return
             }
@@ -842,7 +842,7 @@ export default {
             if(this.vlan_id !== '' && (this.vlan_id < 1 || this.vlan_id > 4094 || isNaN(this.vlan_id))){
                 this.$message({
                     type: 'error',
-                    text: 'vlan id'
+                    text: this.lanMap['param_error'] + ': ' + this.lanMap['vlan_id']
                 })
                 return
             }
@@ -852,7 +852,7 @@ export default {
             if(this.inner_vlan_id !== '' && (this.inner_vlan_id < 1 || this.inner_vlan_id > 4094 || isNaN(this.inner_vlan_id))){
                 this.$message({
                     type: 'error',
-                    text: 'inner vlan id'
+                    text: this.lanMap['param_error'] + ': ' + this.lanMap['inner_vlan_id']
                 })
                 return
             }
@@ -862,7 +862,7 @@ export default {
             if(!testMACAddr(this.src_mac)){
                 this.$message({
                     type: 'error',
-                    text: 'src mac'
+                    text: this.lanMap['param_error'] + ': ' + this.lanMap['src_mac']
                 })
                 return
             }
@@ -872,14 +872,14 @@ export default {
             if(!testMACMask(this.src_mask)){
                 this.$message({
                     type: 'error',
-                    text: 'src mask'
+                    text: this.lanMap['param_error'] + ': ' + this.lanMap['src_mask']
                 })
                 return
             }
             if(!testMACAddr(this.dst_mac)){
                 this.$message({
                     type: 'error',
-                    text: 'dst mac'
+                    text: this.lanMap['param_error'] + ': ' + this.lanMap['dst_mac']
                 })
                 return
             }
@@ -889,7 +889,7 @@ export default {
             if(!testMACMask(this.dst_mask)){
                 this.$message({
                     type: 'error',
-                    text: 'dst mask'
+                    text: this.lanMap['param_error'] + ': ' + this.lanMap['dst_mask']
                 })
                 return
             }

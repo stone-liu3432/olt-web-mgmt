@@ -105,7 +105,7 @@ export default {
 //  #2C72BB
 //  #E0EFE7
 #hsgq {
-  font-family: "Avenir", Helvetica, Arial, sans-serif;
+  font-family: Arial,"Avenir", Helvetica, sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   height: 100%;
