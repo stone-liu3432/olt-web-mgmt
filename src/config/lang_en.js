@@ -547,10 +547,10 @@ var en = {
     inner_cos: ' Inner COS',
     vlan_id: ' VLAN ID',
     inner_vlan_id: ' Inner VLAN ID',
-    src_mac: ' Source MAC address',
-    dst_mac: ' Destination MAC address',
-    src_mask: ' Source MAC mask',
-    dst_mask: ' Destination MAC mask',
+    src_mac: ' Source MAC',
+    dst_mac: ' Destination MAC',
+    src_mask: ' MAC mask',
+    dst_mask: ' MAC mask',
     timerange: 'Timerange',
     basic: ' Basic ',
     link: ' Link ',
@@ -558,6 +558,8 @@ var en = {
     acl_mgmt: 'ACL management',
     show: ' Show ',
     rule_count: ' Rule count ',
+    rule_priority: ' Adjust RULE priority ',
+    show_rule: ' View rules ',
 
     stime: ' Start time ',
     etime: ' End time ',
@@ -569,7 +571,16 @@ var en = {
     relative: 'Relative',
     absolute: 'Absolute',
     state: ' State ',
-    port_list: ' Port list '
+    port_list: ' Port list ',
+
+    priority: ' Priority ',
+    queue_scheduler: ' Queue scheduler ',
+    queue: ' Queue ',
+    weight: ' Weight ',
+    delete_all: ' Delete All ',
+    show_detail: ' View details ',
+    packet_filter: ' Packet filter ',
+    time_range: ' Timerange '
 };
 
 export default en;

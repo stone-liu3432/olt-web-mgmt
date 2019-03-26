@@ -35,10 +35,12 @@ export default new Vuex.Store({
         change_url: _url,
         //  首页导航菜单
         nav_menu: 'status',
+        //  高级设置一级菜单
+        adv_f_menu: 'running_status',
         //  高级设置二级菜单
         adv_menu: 'running_status',
-        //  高级设置一级菜单
-        adv_f_menu: 'running_status'
+        //  time range
+        time_range: {}
     },
     mutations: {
         updateSysData(state, data) {
@@ -76,6 +78,9 @@ export default new Vuex.Store({
         },
         updateAdvFMenu(state, data){
             state.adv_f_menu = data;
+        },
+        updateTimeRange(state, data){
+            state.time_range = data;
         }
     }
 });

@@ -1,6 +1,6 @@
 <template>
     <div class="packet-filter">
-        <h3>packet filter</h3>
+        <h3>{{ lanMap['packet_filter'] }}</h3>
         <div>
             <a href="javascript:void(0);" @click="openModal('add')">{{ lanMap['add'] }}</a>
             <a href="javascript:void(0);" @click="openModal('delete')">{{ lanMap['delete'] }}</a>
@@ -32,12 +32,14 @@
                     <h4 class="modal-header" v-if="showModal === 'delete'">{{ lanMap['delete'] }}</h4>
                     <div>
                         <span>ACL ID</span>
-                        <input type="text" v-model.number="acl_id" v-focus>
+                        <input type="text" v-model.number="acl_id" v-focus
+                            :style="{ 'border-color': acl_id !== '' && (acl_id < 2000 || acl_id > 5999) ? 'red' : '' }">
                         <span class="packet-filter-tips">Range: 2000 - 5999</span>
                     </div>
                     <div>
                         <span>Rule ID</span>
-                        <input type="text" v-model.number="rule_id">
+                        <input type="text" v-model.number="rule_id"
+                            :style="{ 'border-color': rule_id !== '' && (rule_id < 0 || rule_id > 16) ? 'red' : ''}">
                         <span class="packet-filter-tips">Range: 0 - 16</span>
                     </div>
                     <div>
@@ -117,14 +119,14 @@ export default {
             this.showModal = '';
         },
         submitForm(){
-            if(this.acl_id < 2000 || this.acl_id > 5999){
+            if(isNaN(this.acl_id) || this.acl_id < 2000 || this.acl_id > 5999){
                 this.$message({
                     type: 'error',
                     text: this.lanMap['param_error'] + ': ACL ID' 
                 })
                 return
             }
-            if(this.rule_id < 0 || this.rule_id > 16){
+            if(isNaN(this.rule_id) || this.rule_id < 0 || this.rule_id > 16){
                 this.$message({
                     type: 'error',
                     text: this.lanMap['param_error'] + ': Rule ID' 
@@ -186,7 +188,7 @@ export default {
                 if(res.data.code === 1){
                     this.$message({
                         type: res.data.type,
-                        text: this.lanMap['delete'] + this.lanMap['st_success']
+                        text: this.lanMap['delete_ok']
                     })
                     this.getData();
                 }else{

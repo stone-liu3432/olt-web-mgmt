@@ -537,13 +537,15 @@ var zh = {
     dst_mac: '目的MAC地址',
     src_mask: '源MAC掩码',
     dst_mask: '目的MAC掩码',
-    timerange: '时间模板',
+    timerange: '时间范围',
     basic: '基本',
     link: '链路',
     rule: '规则',
     acl_mgmt: 'ACL管理',
     show: '查看',
     rule_count: '规则数',
+    rule_priority: '调整Rule优先级',
+    show_rule: '查看规则',
 
     stime: '起始时间',
     etime: '结束时间',
@@ -555,7 +557,16 @@ var zh = {
     relative: '相对时间',
     absolute: '绝对时间',
     state: '状态',
-    port_list: '端口列表'
+    port_list: '端口列表',
+
+    priority: '优先级',
+    queue_scheduler: '队列调度程序',
+    queue: '队列',
+    weight: '权重',
+    delete_all: '删除全部',
+    show_detail: '查看详情',
+    packet_filter: '包过滤',
+    time_range: '时间范围'
 
 };
 

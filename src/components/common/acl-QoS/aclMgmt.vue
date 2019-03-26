@@ -7,15 +7,15 @@
                 <li>ACL ID : {{ item.acl_id }}</li>
                 <li>{{ lanMap['rule_count'] }} : {{ item.rule.length }}</li>
                 <li>
-                    <span @click="showDetail(item.acl_id)">查看规则</span>
-                    <span @click="aclMgmt('add')">增加</span>
-                    <span @click="openRuleCfgModal(item)" v-if="item.rule && item.rule.length > 0">配置</span>
-                    <span @click="aclMgmt('delete')">删除</span>
-                    <span @click="openRuleAddModal(item)">增加Rule</span>
-                    <span @click="ARPLRule(item)" v-if="show_acl_id === item.acl_id">
-                        <span v-if="isARPL">保存</span>
-                        <span v-else>调整Rule优先级</span>
-                    </span>
+                    <a href="javascript:void(0);" @click="showDetail(item.acl_id)">{{ lanMap['show_rule'] }}</a>
+                    <a href="javascript:void(0);" @click="aclMgmt('add')">{{ lanMap['add'] }} ACL</a>
+                    <a href="javascript:void(0);" @click="openRuleCfgModal(item)" v-if="item.rule && item.rule.length > 0">{{ lanMap['config'] }}</a>
+                    <a href="javascript:void(0);" @click="aclMgmt('delete')">{{ lanMap['delete'] }}</a>
+                    <a href="javascript:void(0);" @click="openRuleAddModal(item)">{{ lanMap['add'] }} Rule</a>
+                    <a href="javascript:void(0);" @click="ARPLRule(item)" v-if="show_acl_id === item.acl_id">
+                        <span v-if="isARPL">{{ lanMap['save'] }}</span>
+                        <span v-else>{{ lanMap['rule_priority'] }}</span>
+                    </a>
                 </li>
             </ul>
             <div v-for="(_item,_index) in item.rule" :key="_index" 
@@ -112,47 +112,6 @@
                             <option value="3">{{ lanMap['link'] + 'ACL' + lanMap['rule'] }}</option>
                         </select>
                     </div>
-                    <!--   basic
-                        "acl_id":2000,
-                        "rule_id":1,
-                        "action":1,
-                        "flags":1,
-                        "src_ipaddr":"192.168.1.1",
-                        "src_ipmask":"0.0.0.255",
-                        "timerange":"daynight-12-13"
-                     -->
-                     <!--  advanced 
-                        "acl_id":3000,
-                        "rule_id":1,
-                        "action":1,
-                        "flags":1,
-                        "protocol":"udp",
-                        "src_ipaddr":"192.168.1.1",
-                        "src_ipmask":"0.255.255.255",
-                        "dst_ipaddr":"192.168.1.1",
-                        "dst_ipmask":"0.255.255.255",
-                        "src_port":"PORT-LIST",
-                        "dst_port":"PORT-LIST",
-                        "precedence":<0-7>,
-                        "dscp":<0-63>,
-                        "timerange":"daynight-12-13"
-                      -->
-                      <!--  link
-                        "acl_id":5000,
-                        "rule_id":1,
-                        "action":1,
-                        "flags":1,
-                        "type":<0-0xffff>,
-                        "cos":<0-7>,
-                        "inner_cos":<0-7>,
-                        "vlan_id":<1-4094>,
-                        "inner_vlan_id":<1-4094>,
-                        "src_mac":"AA:BB:CC:DD:EE:FF",
-                        "src_mask":"ffff-ffff-ffff",
-                        "dst_mac":"AA:BB:CC:DD:EE:FF",
-                        "dst_mask":"ffff-ffff-ffff",
-                        "timerange":"daynight-12-13"
-                       -->
                     <div>
                         <span>{{ lanMap['action'] }}</span>
                         <select v-model.number="action">
@@ -166,7 +125,7 @@
                             :style="{ 'border-color': src_ipaddr && (!testIP(src_ipaddr) && src_ipaddr !== '0.0.0.0') ? 'red' : '' }">
                     </div>
                     <div v-if="acl_rule_type === 1 || acl_rule_type === 2">
-                        <span>{{ lanMap['src_ipmask'] }}</span>
+                        <span>{{ lanMap['ipmask'] }}</span>
                         <input type="text" v-model="src_ipmask" :disabled="src_ipmask === ''"
                             :style="{ 'border-color': src_ipmask && (!testIP(src_ipmask) && src_ipaddr !== '0.0.0.0') ? 'red' : '' }">
                     </div>
@@ -185,7 +144,7 @@
                             :style="{ 'border-color':  dst_ipaddr && !testIP(dst_ipaddr) ? 'red' : ''}">
                     </div>
                     <div v-if="acl_rule_type === 2">
-                        <span>{{ lanMap['dst_ipmask'] }}</span>
+                        <span>{{ lanMap['ipmask'] }}</span>
                         <input type="text" v-model="dst_ipmask" :disabled="dst_ipaddr === ''"
                             :style="{ 'border-color': dst_ipaddr !== '' && dst_ipmask !== '' && !testIP(dst_ipmask) ? 'red' : '' }">
                     </div>
@@ -259,7 +218,7 @@
                     <div>
                         <span>{{ lanMap['timerange'] }}</span>
                         <select v-model="timerange">
-                            <option value=""></option>
+                            <option :value="item.name" v-for="(item, index) in time_range.data" :key="index">{{ item.name }}</option>
                         </select>
                     </div>
                     <div>
@@ -285,7 +244,7 @@ const MAX_ACL_ID = 5999, MIN_ACL_ID = 2000;
 let limit = 20;
 export default {
     name: 'aclMgmt',
-    computed: mapState(['lanMap', 'change_url']),
+    computed: mapState(['lanMap', 'change_url', 'time_range']),
     components: { customPagination },
     data(){
         return {
@@ -334,15 +293,16 @@ export default {
             //  当前展示的数据
             acl_show: [],
             isShowPagination: false,
-            acl_all: {}
+            acl_all: {},
         }
     },
     created(){
         this.getData(MIN_ACL_ID, MAX_ACL_ID, true);
+        this.getTimeRange();
     },
     methods: {
         ...mapMutations({
-            systemInfo: 'updateSysData'
+            updateTimeRange: 'updateTimeRange'
         }),
         getData(sid, eid, bool){
             if(bool){
@@ -369,6 +329,18 @@ export default {
                 }
             }).catch(err=>{
 
+            })
+        },
+        getTimeRange(){
+            this.$http.get(this.change_url.get_timerange).then(res=>{
+                if(res.data.code === 1){
+                    this.updateTimeRange(res.data);
+                    if(res.data.data && res.data.data.length >= 0){
+                        this.timerange = res.data.data[0].name;
+                    }
+                }
+            }).catch(err=>{
+                // to do
             })
         },
         showDetail(id){
@@ -408,6 +380,7 @@ export default {
                                 })
                             }
                         })
+                        this.getData(0, 0, true);
                     }else if(res.data.code > 1){
                         this.$message({
                             type: res.data.type,
@@ -452,12 +425,13 @@ export default {
                 if(res.data.code === 1){
                     this.$message({
                         type: 'success',
-                        text: ''
+                        text: this.lanMap['add'] + this.lanMap['st_success']
                     })
+                    this.getData(0, 0, true);
                 }else{
                     this.$message({
                         type: 'error',
-                        text: ''
+                        text: '(' + res.data.code + ')' + res.data.message
                     })
                 }
             }).catch(err=>{
@@ -490,7 +464,7 @@ export default {
                 }else{
                     this.$message({
                         type: 'error',
-                        text: lanMap['delete_fail']
+                        text: '(' + res.data.code + ')' + res.data.message
                     })
                 }
             }).catch(err=>{
@@ -544,6 +518,9 @@ export default {
             if(this.acl_id >= 5000){
                 this.acl_rule_type = 3;
             }
+            if(this.time_range.data && this.time_range.data.length >= 0){
+                this.timerange = this.time_range.data[0].name;
+            }
         },
         closeRuleModal(){
             this.isCfgRule = false;
@@ -591,9 +568,6 @@ export default {
         },
         cfgBasicRule(){
             var flags = 0;
-            // flags:
-            // 0x01 – src ip
-            // 0x02—timerange
             if(!this.testIP(this.src_ipaddr) && this.src_ipaddr !== '0.0.0.0'){
                 this.$message({
                     type: 'error',
@@ -627,14 +601,14 @@ export default {
                     "flags": flags,
                     "src_ipaddr": this.src_ipaddr,
                     "src_ipmask": this.src_ipmask,
-                    "timerange": "daynight-12-13"
+                    "timerange": this.timerange
                 }
             }
             this.$http.post('/switch_acl?form=basic-rule', post_data).then(res=>{
                 if(res.data.code === 1){
                     this.$message({
                         type: res.data.type,
-                        text: ''
+                        text: this.lanMap['setting_ok']
                     })
                     this.getData(MIN_ACL_ID, MAX_ACL_ID, true);
                 }else{
@@ -649,19 +623,6 @@ export default {
             this.closeRuleModal();
         },
         cfgAdvancedRule(){
-            // Flags:
-            // 0x0—不关注protocol之后的参数
-            // icmp|udp|tcp|ip|ipinip|<0-255>
-            // 当协议为ICMP时： 不关注src-port，dst-port这两个参数
-            // PROTOCOL参数 必选，
-            // precedence和dscp二选一
-            // 0x01—src ip
-            // 0x02—dst ip
-            // 0x04—src port
-            // 0x08—dst port
-            // 0x10—precedence
-            // 0x20—dscp 
-            // 0x40—timerage 
             var flags = 0;
             if((this.protocol.toString().toLowerCase() !== 'icmp' && this.protocol.toString().toLowerCase() !== 'udp' 
                 && this.protocol.toString().toLowerCase() !== 'tcp' && this.protocol.toString().toLowerCase() !== 'ip' 
@@ -784,7 +745,7 @@ export default {
                 if(res.data.code === 1){
                     this.$message({
                         type: res.data.type,
-                        text: ''
+                        text: this.lanMap['setting_ok']
                     })
                     this.getData(MIN_ACL_ID, MAX_ACL_ID, true);
                 }else{
@@ -799,15 +760,6 @@ export default {
             this.closeRuleModal();
         },
         cfgLinkRule(){
-            // Flags:
-            // 0x01—type
-            // 0x02—cos
-            // 0x04—inner-cos
-            // 0x08—vlan
-            // 0x10—inner-vlan
-            // 0x20—src-mac
-            // 0x40—dst-mac
-            // 0x80--timerange
             var flags = 0;
             if(this.type < 0 || this.type > 0xffff || isNaN(this.type)){
                 this.$message({
@@ -926,7 +878,7 @@ export default {
                 if(res.data.code === 1){
                     this.$message({
                         type: res.data.type,
-                        text: ''
+                        text: this.lanMap['setting_ok']
                     })
                     this.getData(MIN_ACL_ID, MAX_ACL_ID, true);
                 }else{
@@ -1038,14 +990,18 @@ div.acl-item{
         border-top: none;
         li{
             float: left;
-            width: 20%;
-            padding-left: 30px;
+            width: 12%;
+            padding-left: 24px;
             border-right: 1px solid #ddd;
             height: inherit;
             line-height: inherit;
             &:last-child{
                 border-right: none;
                 width: auto;
+            }
+            a{
+                padding: 0 15px;
+                vertical-align: baseline;
             }
         }
         &::after{
@@ -1058,8 +1014,11 @@ div.acl-item{
         border: 1px solid #ddd;
         border-top: none;
         padding: 10px 0;
-        background: #caecda;
+        
         position: relative;
+    }
+    .acl-detail:nth-of-type(even){
+        background: #caecda;
     }
     >ul+div,>div+div{
         >div{
@@ -1209,10 +1168,10 @@ div.acl-rule-config{
         margin: 6px 0;
         >span:first-child{
             display: inline-block;
-            width: 120px;
+            width: 125px;
             height: 32px;
             line-height: 32px;
-            margin: 0 20px 0 30px;
+            margin: 0 15px 0 30px;
         }
         a{
             margin: 10px 0 0 100px;

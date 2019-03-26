@@ -170,7 +170,6 @@ div.login{
 }
 div.login-banner{
     height: 150px;
-    background: rgb(87, 84, 84);
 }
 div.login-body{
     width: 700px;

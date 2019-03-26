@@ -1,19 +1,19 @@
 <template>
     <div>
-        <h3>time ramge</h3>
+        <h3>{{ lanMap['timerange'] }}</h3>
         <div>
             <a href="javascript:void(0);" @click="openModal('add')">{{ lanMap['add'] }}</a>
-            <a href="javascript:void(0);" @click="openModal('delete_all')">删除全部</a>
+            <a href="javascript:void(0);" @click="openModal('delete_all')">{{ lanMap['delete_all'] }}</a>
         </div>
-        <div v-for="(item,index) in time_range.data" :key="index" class="time-range-item"
-            v-if="time_range.data">
+        <div v-for="(item,index) in timeRange.data" :key="index" class="time-range-item"
+            v-if="timeRange.data">
             <!-- <div></div> -->
             <ul>
                 <li>{{ lanMap['name'] }}: {{ item.name }}</li>
                 <li>{{ lanMap['state'] }}: {{ item.state }}</li>
                 <li>
-                    <span @click="showTimeRangeDetail(item)">查看详情</span>
-                    <span @click="openModal('delete')">{{ lanMap['delete'] }}</span>
+                    <a href="javascript:void(0);" @click="showTimeRangeDetail(item)">{{ lanMap['show_detail'] }}</a>
+                    <a href="javascript:void(0);" @click="openModal('delete')">{{ lanMap['delete'] }}</a>
                 </li>
             </ul>
             <div v-if="showTimeRange === item.name">
@@ -129,7 +129,7 @@ export default {
     components: { datePicker, customPagination },
     data(){
         return {
-            time_range: {},
+            timeRange: {},
             showTimeRange: '',
             days: ['Mon.', 'Tue.', 'Wed.', 'Thur.', 'Fri.', 'Sat.', 'Sun.', 'daily', 'weekend', 'working-day'],
             type: 1,
@@ -154,10 +154,14 @@ export default {
         this.getData();
     },
     methods: {
+        ...mapMutations({
+            updateTimeRange: 'updateTimeRange'
+        }),
         getData(){
             this.$http.get(this.change_url.get_timerange).then(res=>{
                 if(res.data.code === 1){
-                    this.time_range = res.data;
+                    this.timeRange = res.data;
+                    this.updateTimeRange(res.data);
                     var count = res.data.data.length;
                     this.pagesData = {
                         count,
@@ -186,7 +190,7 @@ export default {
             this.eday = date;
         },
         submitAdd(){
-            if(!this.name || this.name > 16){
+            if(!this.name || this.name.length > 16){
                 this.$message({
                     type: 'error',
                     text: this.lanMap['param_error'] + ': ' + this.lanMap['name']
@@ -281,7 +285,7 @@ export default {
                 if(res.data.code === 1){
                     this.$message({
                         type: res.data.type,
-                        text: this.lanMap['delete'] + this.lanMap['st_success']
+                        text: this.lanMap['delete_ok']
                     })
                     this.getData();
                 }else{
@@ -321,8 +325,8 @@ export default {
         },
         changePage(index){
             var start = limit * (index - 1),end = limit * index;
-            (end > this.time_range.data.length) && (end = this.time_range.data.length);
-            this.timeRangeShow = this.time_range.data.slice(limit * (index - 1), limit * index);
+            (end > this.timeRange.data.length) && (end = this.timeRange.data.length);
+            this.timeRangeShow = this.timeRange.data.slice(limit * (index - 1), limit * index);
         }
     }
 }
@@ -341,6 +345,12 @@ h3+div{
 div.time-range-item{
     >ul{
         padding: 0 0 0 10px;
+        height: 30px;
+        line-height: 30px;
+        a{
+            height: 26px;
+            line-height: 26px;
+        }
         &::after{
             content: '';
             display: table;
@@ -351,9 +361,13 @@ div.time-range-item{
             width: 20%;
             height: 30px;
             line-height: 30px;
+            &:last-child{
+                width: auto;
+            }
         }
     }
     >div{
+        margin: 6px 0 0 0;
         >div{
             background: #CAECDA;
             height: 30px;
