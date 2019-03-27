@@ -34,8 +34,11 @@
                     </div>
                 </div>
                 <div class="acl-rule-detail" ref="acl_rule_detail">
+                    <span v-if="_item.action">
+                        {{ lanMap['action'] }}&nbsp;:&nbsp;{{ _item.action === 1 ? 'deny' : 'permit' }}
+                    </span>
                     <span v-for="(__item,__index) in _item" :key="__index"
-                        v-if="__index !== 'rule_id' && __index !== 'flags' && !!__item">
+                        v-if="__index !== 'rule_id' && __index !== 'flags' && __index !== 'action' && !!__item">
                         {{ lanMap[__index] ? lanMap[__index] : __index }}&nbsp;:&nbsp;{{ __item }}
                     </span>
                 </div>
@@ -175,8 +178,8 @@
                     </div>
                     <div v-if="acl_rule_type === 3">
                         <span>{{ lanMap['eth_type'] }}</span>
-                        <input type="text" v-model="type"
-                            :style="{ 'border-color': type < 0 || type > 0xffff || isNaN(type) ? 'red' : '' }">
+                        <input type="text" v-model.number="eth_type"
+                            :style="{ 'border-color': eth_type < 0 || eth_type > 0xffff || isNaN(eth_type) ? 'red' : '' }">
                     </div>
                     <div v-if="acl_rule_type === 3">
                         <span>{{ lanMap['cos'] }}</span>
@@ -279,7 +282,7 @@ export default {
             precedence: '',
             protocol: '',
             dscp: '',
-            type: '',
+            eth_type: '',
             cos: '',
             inner_cos: '',
             vlan_id: '',
@@ -545,7 +548,7 @@ export default {
             this.precedence = '';
             this.protocol = '';
             this.dscp = '';
-            this.type = '';
+            this.eth_type = '';
             this.cos = '';
             this.inner_cos = '';
             this.vlan_id = '';
@@ -667,7 +670,7 @@ export default {
             if(this.isAddRule && this.src_ipaddr !== ''){
                 flags += 1;
             }
-            if(!this.isAddRule && this.src_ipaddr !== this.rule_cache.src_ipaddr){
+            if(!this.isAddRule && this.src_ipaddr !== ''){
                 flags += 1; 
             }
             if(this.src_ipaddr !== '' && this.src_ipmask !== '' && !this.testIP(this.src_ipmask)){
@@ -687,7 +690,7 @@ export default {
             if(this.isAddRule && this.dst_ipaddr !== ''){
                 flags += 2;
             }
-            if(!this.isAddRule && this.dst_ipaddr !== this.rule_cache.dst_ipaddr){
+            if(!this.isAddRule && this.dst_ipaddr !== ''){
                 flags += 2;
             }
             if(this.dst_ipaddr !== '' && this.dst_ipmask !== '' && this.testIP(this.dst_ipmask)){
@@ -708,7 +711,7 @@ export default {
             if(this.isAddRule && this.src_port !== ''){
                 flags += 4;
             }
-            if(!this.isAddRule && this.src_port !== this.rule_cache.src_port){
+            if(!this.isAddRule && this.src_port !== ''){
                 flags += 4;
             }
             if(this.dst_port !== '' && !reg.test(this.dst_port)){
@@ -721,7 +724,7 @@ export default {
             if(this.isAddRule && this.dst_port !== ''){
                 flags += 8;
             }
-            if(!this.isAddRule && this.dst_port !== this.rule_cache.dst_port){
+            if(!this.isAddRule && this.dst_port !== ''){
                 flags += 8;
             }
             if(this.precedence) this.dscp = '';
@@ -736,7 +739,7 @@ export default {
             if(this.isAddRule && this.precedence !== ''){
                 flags += 16;
             }
-            if(!this.isAddRule && this.precedence !== this.rule_cache.precedence){
+            if(!this.isAddRule && this.precedence !== ''){
                 flags += 16;
             }
             if(this.dscp < 0 || this.dscp > 255 || isNaN(this.dscp)){
@@ -749,7 +752,7 @@ export default {
             if(this.isAddRule && this.dscp !== ''){
                 flags += 32;
             }
-            if(!this.isAddRule && this.dscp !== this.rule_cache.dscp){
+            if(!this.isAddRule && this.dscp !== ''){
                 flags += 32;
             }
             if(this.isAddRule && this.timerange !== ''){
@@ -804,17 +807,17 @@ export default {
         //  链路ACL配置Rule
         cfgLinkRule(){
             var flags = 0;
-            if(this.type < 0 || this.type > 0xffff || isNaN(this.type)){
+            if(this.eth_type < 0 || this.eth_type > 0xffff || isNaN(this.eth_type)){
                 this.$message({
                     type: 'error',
-                    text: this.lanMap['param_error'] + ': ' + this.lanMap['type']
+                    text: this.lanMap['param_error'] + ': ' + this.lanMap['eth_type']
                 })
                 return
             }
-            if(this.isAddRule && this.type !== ''){
+            if(this.isAddRule && this.eth_type !== ''){
                 flags += 1;
             }
-            if(!this.isAddRule && this.type !== this.rule_cache.type){
+            if(!this.isAddRule && this.eth_type !== ''){
                 flags += 1;
             }
             if(this.cos < 0 || this.cos > 7 || isNaN(this.cos)){
@@ -827,7 +830,7 @@ export default {
             if(this.isAddRule && this.cos !== ''){
                 flags += 2;
             }
-            if(!this.isAddRule && this.cos !== this.rule_cache.cos){
+            if(!this.isAddRule && this.cos !== ''){
                 flags += 2;
             }
             if(this.inner_cos !== '' && (this.inner_cos < 0 || this.inner_cos > 7 || isNaN(this.inner_cos))){
@@ -840,7 +843,7 @@ export default {
             if(this.isAddRule && this.inner_cos !== ''){
                 flags += 4;
             }
-            if(!this.isAddRule && this.inner_cos !== this.rule_cache.inner_cos){
+            if(!this.isAddRule && this.inner_cos !== ''){
                 flags += 4;
             }
             if(this.vlan_id !== '' && (this.vlan_id < 1 || this.vlan_id > 4094 || isNaN(this.vlan_id))){
@@ -853,7 +856,7 @@ export default {
             if(this.isAddRule && this.vlan_id !== ''){
                 flags += 8;
             }
-            if(!this.isAddRule && this.vlan_id !== this.rule_cache.vlan_id){
+            if(!this.isAddRule && this.vlan_id !== ''){
                 flags += 8;
             }
             if(this.inner_vlan_id !== '' && (this.inner_vlan_id < 1 || this.inner_vlan_id > 4094 || isNaN(this.inner_vlan_id))){
@@ -866,7 +869,7 @@ export default {
             if(this.isAddRule && this.inner_vlan_id !== ''){
                 flags += 16;
             }
-            if(!this.isAddRule && this.inner_vlan_id !== this.rule_cache.inner_vlan_id){
+            if(!this.isAddRule && this.inner_vlan_id !== ''){
                 flags += 16;
             }
             if(!testMACAddr(this.src_mac)){
@@ -879,7 +882,7 @@ export default {
             if(this.isAddRule && this.src_mac !== ''){
                 flags += 32;
             }
-            if(!this.isAddRule && this.src_mac !== this.rule_cache.src_mac){
+            if(!this.isAddRule && this.src_mac !== ''){
                 flags += 32;
             }
             if(!testMACMask(this.src_mask)){
@@ -899,7 +902,7 @@ export default {
             if(this.isAddRule && this.dst_mac !== ''){
                 flags += 64;
             }
-            if(!this.isAddRule && this.dst_mac !== this.rule_cache.dst_mac){
+            if(!this.isAddRule && this.dst_mac !== ''){
                 flags += 64;
             }
             if(!testMACMask(this.dst_mask)){
@@ -912,7 +915,7 @@ export default {
             if(this.isAddRule && this.timerange !== ''){
                 flags += 128;
             }
-            if(!this.isAddRule && this.timerange !== this.rule_cache.timerange){
+            if(!this.isAddRule && this.timerange !== this.timerange_cache){
                 flags += 128;
             }
             if(!flags){
@@ -929,7 +932,7 @@ export default {
                     "rule_id": this.rule_id,
                     "action": this.action,
                     "flags": flags,
-                    "type": this.type,
+                    "eth_type": this.eth_type,
                     "cos": this.cos,
                     "inner_cos": this.inner_cos,
                     "vlan_id": this.vlan_id,
