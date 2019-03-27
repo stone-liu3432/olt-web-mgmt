@@ -40,7 +40,7 @@
                         <span>Rule ID</span>
                         <input type="text" v-model.number="rule_id"
                             :style="{ 'border-color': rule_id !== '' && (rule_id < 0 || rule_id > 16) ? 'red' : ''}">
-                        <span class="packet-filter-tips">Range: 0 - 16</span>
+                        <span class="packet-filter-tips">Range: 0 - 16 ({{ lanMap['optional'] }})</span>
                     </div>
                     <div>
                         <span>{{ lanMap['port_list'] }}</span>
@@ -125,6 +125,9 @@ export default {
                     text: this.lanMap['param_error'] + ': ACL ID' 
                 })
                 return
+            }
+            if(this.rule_id === ''){
+                this.rule_id = 0;
             }
             if(isNaN(this.rule_id) || this.rule_id < 0 || this.rule_id > 16){
                 this.$message({
@@ -261,7 +264,7 @@ div.packet-filter-modal{
         >span{
             display: inline-block;
             text-align: center;
-            text-indent: 20px;
+            text-indent: 10px;
             width: 120px;
         }
         .packet-filter-tips{

@@ -580,7 +580,9 @@ var en = {
     delete_all: ' Delete All ',
     show_detail: ' View details ',
     packet_filter: ' Packet filter ',
-    time_range: ' Timerange '
+    time_range: ' Timerange ',
+    optional: ' Optional ',
+    required: ' Required '
 };
 
 export default en;

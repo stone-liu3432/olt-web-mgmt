@@ -13,7 +13,7 @@
                 <li>{{ lanMap['state'] }}: {{ item.state }}</li>
                 <li>
                     <a href="javascript:void(0);" @click="showTimeRangeDetail(item)">{{ lanMap['show_detail'] }}</a>
-                    <a href="javascript:void(0);" @click="openModal('delete')">{{ lanMap['delete'] }}</a>
+                    <a href="javascript:void(0);" @click="openModal('delete', item)">{{ lanMap['delete'] }}</a>
                 </li>
             </ul>
             <div v-if="showTimeRange === item.name">
@@ -170,6 +170,8 @@ export default {
                     if(count > limit){
                         this.isShowPagination = true;
                         this.timeRangeShow = res.data.data.slice(0, limit);
+                    }else{
+                        this.timeRangeShow = res.data.data;
                     }
                 }
             }).catch(err=>{
@@ -213,6 +215,13 @@ export default {
             }
             var post_data,url;
             if(this.type === 1){
+                if(!this.day){
+                    this.$message({
+                        type: 'error',
+                        text: this.lanMap['param_error'] + ': ' + this.lanMap['day']
+                    })
+                    return
+                }
                 post_data = {
                     "method": "create",
                     "param":{
@@ -255,16 +264,23 @@ export default {
             })
             this.closeModal();
         },
-        openModal(str){
+        openModal(str, node){
             this.modalFlag = str;
             if(str === 'delete_all'){
                 this.modalFlag = '';
                 this.isDelAll = true;
             }
+            if(str === 'delete' && !!node){
+                this.name = node.name;
+            }
         },
         closeModal(){
             this.modalFlag = '';
             this.isDelAll = false;
+            this.name = '';
+            this.stime = '';
+            this.etime = '';
+            this.day = '';
         },
         deleteAll(bool){
             if(bool){
@@ -347,9 +363,15 @@ div.time-range-item{
         padding: 0 0 0 10px;
         height: 30px;
         line-height: 30px;
+        border: 1px solid #ddd;
+        border-top: none;
+        &:first-child{
+            border-top: 1px solid #ddd;
+        }
         a{
             height: 26px;
             line-height: 26px;
+            vertical-align: baseline;
         }
         &::after{
             content: '';
@@ -366,8 +388,13 @@ div.time-range-item{
             }
         }
     }
+    ul+div{
+        >div:first-child{
+            border-top: none;
+        }
+    }
     >div{
-        margin: 6px 0 0 0;
+        margin: 0 0 0 0;
         >div{
             background: #CAECDA;
             height: 30px;
@@ -394,6 +421,16 @@ div.time-range-item{
             border-bottom: 1px solid #ddd;
         }
     }
+    // div.relative-item{
+    //     &:nth-of-type(even){
+    //         background: #CAECDA;
+    //     }
+    // }
+    // div.absolute-item{
+    //     &:nth-of-type(even){
+    //         background: #CAECDA;
+    //     }
+    // }
 }
 div.cover+div{
     height: 315px;

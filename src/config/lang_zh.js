@@ -566,7 +566,9 @@ var zh = {
     delete_all: '删除全部',
     show_detail: '查看详情',
     packet_filter: '包过滤',
-    time_range: '时间范围'
+    time_range: '时间范围',
+    optional: '可选项',
+    required: '必填'
 
 };
 

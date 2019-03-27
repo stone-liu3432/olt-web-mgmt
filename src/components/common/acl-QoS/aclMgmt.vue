@@ -1,25 +1,28 @@
 <template>
     <div>
         <h3>{{ lanMap['acl_mgmt'] }}</h3>
+        <div class="acl-first-item">
+            <a href="javascript:void(0);" @click="aclMgmt('add')">{{ lanMap['add'] }} ACL</a>
+            <a href="javascript:void(0);" @click="aclMgmt('delete')">{{ lanMap['delete'] }} ACL</a>
+        </div>
         <div v-for="(item,index) in acl_show" :key="index" class="acl-item" v-if="acl_show.length">
             <div></div>
             <ul>
                 <li>ACL ID : {{ item.acl_id }}</li>
-                <li>{{ lanMap['rule_count'] }} : {{ item.rule.length }}</li>
+                <li v-if="item.rule && item.rule.length">{{ lanMap['rule_count'] }} : {{ item.rule.length }}</li>
+                <li v-else></li>
                 <li>
                     <a href="javascript:void(0);" @click="showDetail(item.acl_id)">{{ lanMap['show_rule'] }}</a>
-                    <a href="javascript:void(0);" @click="aclMgmt('add')">{{ lanMap['add'] }} ACL</a>
                     <a href="javascript:void(0);" @click="openRuleCfgModal(item)" v-if="item.rule && item.rule.length > 0">{{ lanMap['config'] }}</a>
-                    <a href="javascript:void(0);" @click="aclMgmt('delete')">{{ lanMap['delete'] }}</a>
                     <a href="javascript:void(0);" @click="openRuleAddModal(item)">{{ lanMap['add'] }} Rule</a>
-                    <a href="javascript:void(0);" @click="ARPLRule(item)" v-if="show_acl_id === item.acl_id">
+                    <a href="javascript:void(0);" @click="ARPLRule(item)" v-if="show_acl_id === item.acl_id && item.rule && item.rule.length">
                         <span v-if="isARPL">{{ lanMap['save'] }}</span>
                         <span v-else>{{ lanMap['rule_priority'] }}</span>
                     </a>
                 </li>
             </ul>
             <div v-for="(_item,_index) in item.rule" :key="_index" 
-                class="acl-detail" v-if="show_acl_id === item.acl_id">
+                class="acl-detail" v-if="show_acl_id === item.acl_id && item.rule && item.rule.length">
                 <div class="column-header">
                     <div v-if="isARPL">
                         <i class="arrow-up" @click="swapRulePriority(item, _index, -1)"></i>
@@ -119,16 +122,6 @@
                             <option value="2">permit</option>
                         </select>
                     </div>
-                    <div v-if="acl_rule_type === 1 || acl_rule_type === 2">
-                        <span>{{ lanMap['src_ipaddr'] }}</span>
-                        <input type="text" v-model="src_ipaddr" 
-                            :style="{ 'border-color': src_ipaddr && (!testIP(src_ipaddr) && src_ipaddr !== '0.0.0.0') ? 'red' : '' }">
-                    </div>
-                    <div v-if="acl_rule_type === 1 || acl_rule_type === 2">
-                        <span>{{ lanMap['ipmask'] }}</span>
-                        <input type="text" v-model="src_ipmask" :disabled="src_ipmask === ''"
-                            :style="{ 'border-color': src_ipmask && (!testIP(src_ipmask) && src_ipaddr !== '0.0.0.0') ? 'red' : '' }">
-                    </div>
                     <div v-if="acl_rule_type === 2">
                         <span>{{ lanMap['protocol'] }}</span>
                         <input type="text" v-model.trim="protocol"
@@ -136,7 +129,17 @@
                             && protocol.toString().toLowerCase() !== 'tcp' && protocol.toString().toLowerCase() !== 'ip' 
                             && protocol.toString().toLowerCase() !== 'ipinip' ) 
                             && (protocol < 0 || protocol > 255 || isNaN(protocol)) ? 'red' : '' }">
-                        <span>Rang: 0-255</span>
+                        <span>0-255({{ lanMap['required'] }})</span>
+                    </div>
+                    <div v-if="acl_rule_type === 1 || acl_rule_type === 2">
+                        <span>{{ lanMap['src_ipaddr'] }}</span>
+                        <input type="text" v-model="src_ipaddr" 
+                            :style="{ 'border-color': src_ipaddr && (!testIP(src_ipaddr) && src_ipaddr !== '0.0.0.0') ? 'red' : '' }">
+                    </div>
+                    <div v-if="acl_rule_type === 1 || acl_rule_type === 2">
+                        <span>{{ lanMap['ipmask'] }}</span>
+                        <input type="text" v-model="src_ipmask" :disabled="src_ipaddr === ''"
+                            :style="{ 'border-color': src_ipmask && (!testIP(src_ipmask) && src_ipaddr !== '0.0.0.0') ? 'red' : '' }">
                     </div>
                     <div v-if="acl_rule_type === 2">
                         <span>{{ lanMap['dst_ipaddr'] }}</span>
@@ -218,6 +221,7 @@
                     <div>
                         <span>{{ lanMap['timerange'] }}</span>
                         <select v-model="timerange">
+                            <option value=""> - </option>
                             <option :value="item.name" v-for="(item, index) in time_range.data" :key="index">{{ item.name }}</option>
                         </select>
                     </div>
@@ -323,6 +327,8 @@ export default {
                     if(count > limit){
                         this.isShowPagination = true;
                         this.acl_show = res.data.data.slice(0, limit);
+                    }else{
+                        this.acl_show = res.data.data;
                     }
                 }else{
                     this.acl_all = {};
@@ -345,6 +351,7 @@ export default {
         },
         showDetail(id){
             //  如果已经打开，则关闭
+            this.isARPL = false;
             if(this.show_acl_id === id){
                 this.show_acl_id = 0;
                 return
@@ -507,6 +514,7 @@ export default {
             this.acl_id = node.acl_id;
             this.rule_id = '';
             this.ruleType();
+            this.timerange = '';
         },
         ruleType(){
             if(this.acl_id < 3000){
@@ -547,12 +555,13 @@ export default {
             this.src_mask = '';
             this.dst_mask = '';
             this.timerange = '';
+            this.rule_cache = {};
         },
         submitModify(){
             if(this.rule_id < 1 || this.rule_id > 16 || isNaN(this.rule_id)){
                 this.$message({
                     type: 'error',
-                    text: this.lanMap['param_error'] + ': ' + 'acl id'
+                    text: this.lanMap['param_error'] + ': ' + 'Rule ID'
                 })
                 return
             }
@@ -566,16 +575,22 @@ export default {
                 this.cfgLinkRule();
             }
         },
+        //  基础ACL配置Rule
         cfgBasicRule(){
             var flags = 0;
-            if(!this.testIP(this.src_ipaddr) && this.src_ipaddr !== '0.0.0.0'){
+            if(!this.testIP(this.src_ipaddr)){
                 this.$message({
                     type: 'error',
                     text: this.lanMap['param_error'] + ': ' + this.lanMap['src_ipaddr']
                 })
                 return
             }
-            if(this.src_ipaddr !== this.rule_cache.src_ipaddr) flags += 1;
+            if(this.isAddRule && this.src_ipaddr !== ''){
+                flags += 1;
+            }
+            if(!this.isAddRule && this.src_ipaddr !== this.rule_cache.src_ipaddr) {
+                flags += 1;
+            }
             if(!this.testIP(this.src_ipmask) && this.src_ipaddr !== '0.0.0.0'){
                 this.$message({
                     type: 'error',
@@ -583,7 +598,10 @@ export default {
                 })
                 return;
             }
-            if(this.timerange_cache !== this.timerange){
+            if(this.isAddRule && this.timerange !== ''){
+                falgs += 2;
+            }
+            if(!this.isAddRule && this.timerange_cache !== this.timerange){
                 flags += 2;
             }
             if(!flags){
@@ -604,7 +622,7 @@ export default {
                     "timerange": this.timerange
                 }
             }
-            this.$http.post('/switch_acl?form=basic-rule', post_data).then(res=>{
+            this.$http.post('/switch_acl?form=rule', post_data).then(res=>{
                 if(res.data.code === 1){
                     this.$message({
                         type: res.data.type,
@@ -622,12 +640,13 @@ export default {
             })
             this.closeRuleModal();
         },
+        //  高级ACL配置Rule
         cfgAdvancedRule(){
             var flags = 0;
-            if((this.protocol.toString().toLowerCase() !== 'icmp' && this.protocol.toString().toLowerCase() !== 'udp' 
+            if(((this.protocol.toString().toLowerCase() !== 'icmp' && this.protocol.toString().toLowerCase() !== 'udp' 
                 && this.protocol.toString().toLowerCase() !== 'tcp' && this.protocol.toString().toLowerCase() !== 'ip' 
                 && this.protocol.toString().toLowerCase() !== 'ipinip' ) && 
-                (this.protocol < 0 || this.protocol > 255 || isNaN(this.protocol))){
+                (this.protocol < 0 || this.protocol > 255 || isNaN(this.protocol))) || this.protocol === ''){
                 this.$message({
                     type: 'error',
                     text: this.lanMap['param_error'] + ': ' + this.lanMap['protocol']
@@ -645,7 +664,10 @@ export default {
                 })
                 return
             }
-            if(this.src_ipaddr !== this.rule_cache.dst_ipaddr){
+            if(this.isAddRule && this.src_ipaddr !== ''){
+                flags += 1;
+            }
+            if(!this.isAddRule && this.src_ipaddr !== this.rule_cache.src_ipaddr){
                 flags += 1; 
             }
             if(this.src_ipaddr !== '' && this.src_ipmask !== '' && !this.testIP(this.src_ipmask)){
@@ -662,7 +684,10 @@ export default {
                 })
                 return
             }
-            if(this.dst_ipaddr !== this.rule_cache.dst_ipaddr){
+            if(this.isAddRule && this.dst_ipaddr !== ''){
+                flags += 2;
+            }
+            if(!this.isAddRule && this.dst_ipaddr !== this.rule_cache.dst_ipaddr){
                 flags += 2;
             }
             if(this.dst_ipaddr !== '' && this.dst_ipmask !== '' && this.testIP(this.dst_ipmask)){
@@ -680,7 +705,10 @@ export default {
                 })
                 return
             }
-            if(this.src_port !== this.rule_cache.src_port){
+            if(this.isAddRule && this.src_port !== ''){
+                flags += 4;
+            }
+            if(!this.isAddRule && this.src_port !== this.rule_cache.src_port){
                 flags += 4;
             }
             if(this.dst_port !== '' && !reg.test(this.dst_port)){
@@ -690,7 +718,10 @@ export default {
                 })
                 return
             }
-            if(this.dst_port !== this.rule_cache.dst_port){
+            if(this.isAddRule && this.dst_port !== ''){
+                flags += 8;
+            }
+            if(!this.isAddRule && this.dst_port !== this.rule_cache.dst_port){
                 flags += 8;
             }
             if(this.precedence) this.dscp = '';
@@ -702,7 +733,10 @@ export default {
                 })
                 return
             }
-            if(this.precedence !== this.rule_cache.precedence){
+            if(this.isAddRule && this.precedence !== ''){
+                flags += 16;
+            }
+            if(!this.isAddRule && this.precedence !== this.rule_cache.precedence){
                 flags += 16;
             }
             if(this.dscp < 0 || this.dscp > 255 || isNaN(this.dscp)){
@@ -712,10 +746,18 @@ export default {
                 })
                 return
             }
-            if(this.dscp !== this.rule_cache.dscp){
+            if(this.isAddRule && this.dscp !== ''){
                 flags += 32;
             }
-            if(this.timerange_cache !== this.timerange) flags += 64;
+            if(!this.isAddRule && this.dscp !== this.rule_cache.dscp){
+                flags += 32;
+            }
+            if(this.isAddRule && this.timerange !== ''){
+                flags += 64;
+            }
+            if(!this.isAddRule && this.timerange_cache !== this.timerange) {
+                flags += 64;
+            }
             // if(!flags){
             //     this.$message({
             //         type: 'info',
@@ -741,7 +783,7 @@ export default {
                     "timerange": this.timerange
                 }
             }
-            this.$http.post('/switch_acl?form=adv-rule', post_data).then(res=>{
+            this.$http.post('/switch_acl?form=rule', post_data).then(res=>{
                 if(res.data.code === 1){
                     this.$message({
                         type: res.data.type,
@@ -759,6 +801,7 @@ export default {
             })
             this.closeRuleModal();
         },
+        //  链路ACL配置Rule
         cfgLinkRule(){
             var flags = 0;
             if(this.type < 0 || this.type > 0xffff || isNaN(this.type)){
@@ -768,7 +811,10 @@ export default {
                 })
                 return
             }
-            if(this.type !== this.rule_cache.type){
+            if(this.isAddRule && this.type !== ''){
+                flags += 1;
+            }
+            if(!this.isAddRule && this.type !== this.rule_cache.type){
                 flags += 1;
             }
             if(this.cos < 0 || this.cos > 7 || isNaN(this.cos)){
@@ -778,7 +824,10 @@ export default {
                 })
                 return
             }
-            if(this.cos !== this.rule_cache.cos){
+            if(this.isAddRule && this.cos !== ''){
+                flags += 2;
+            }
+            if(!this.isAddRule && this.cos !== this.rule_cache.cos){
                 flags += 2;
             }
             if(this.inner_cos !== '' && (this.inner_cos < 0 || this.inner_cos > 7 || isNaN(this.inner_cos))){
@@ -788,7 +837,10 @@ export default {
                 })
                 return
             }
-            if(this.inner_cos !== this.rule_cache.inner_cos){
+            if(this.isAddRule && this.inner_cos !== ''){
+                flags += 4;
+            }
+            if(!this.isAddRule && this.inner_cos !== this.rule_cache.inner_cos){
                 flags += 4;
             }
             if(this.vlan_id !== '' && (this.vlan_id < 1 || this.vlan_id > 4094 || isNaN(this.vlan_id))){
@@ -798,7 +850,10 @@ export default {
                 })
                 return
             }
-            if(this.vlan_id !== this.rule_cache.vlan_id){
+            if(this.isAddRule && this.vlan_id !== ''){
+                flags += 8;
+            }
+            if(!this.isAddRule && this.vlan_id !== this.rule_cache.vlan_id){
                 flags += 8;
             }
             if(this.inner_vlan_id !== '' && (this.inner_vlan_id < 1 || this.inner_vlan_id > 4094 || isNaN(this.inner_vlan_id))){
@@ -808,7 +863,10 @@ export default {
                 })
                 return
             }
-            if(this.inner_vlan_id !== this.rule_cache.inner_vlan_id){
+            if(this.isAddRule && this.inner_vlan_id !== ''){
+                flags += 16;
+            }
+            if(!this.isAddRule && this.inner_vlan_id !== this.rule_cache.inner_vlan_id){
                 flags += 16;
             }
             if(!testMACAddr(this.src_mac)){
@@ -818,7 +876,10 @@ export default {
                 })
                 return
             }
-            if(this.src_mac !== this.rule_cache.src_mac){
+            if(this.isAddRule && this.src_mac !== ''){
+                flags += 32;
+            }
+            if(!this.isAddRule && this.src_mac !== this.rule_cache.src_mac){
                 flags += 32;
             }
             if(!testMACMask(this.src_mask)){
@@ -835,7 +896,10 @@ export default {
                 })
                 return
             }
-            if(this.dst_mac !== this.rule_cache.dst_mac){
+            if(this.isAddRule && this.dst_mac !== ''){
+                flags += 64;
+            }
+            if(!this.isAddRule && this.dst_mac !== this.rule_cache.dst_mac){
                 flags += 64;
             }
             if(!testMACMask(this.dst_mask)){
@@ -845,7 +909,10 @@ export default {
                 })
                 return
             }
-            if(this.timerange !== this.rule_cache.timerange){
+            if(this.isAddRule && this.timerange !== ''){
+                flags += 128;
+            }
+            if(!this.isAddRule && this.timerange !== this.rule_cache.timerange){
                 flags += 128;
             }
             if(!flags){
@@ -874,7 +941,7 @@ export default {
                     "timerange": this.timerange
                 }
             }
-            this.$http.post('/switch_acl?form=link-rule', post_data).then(res=>{
+            this.$http.post('/switch_acl?form=rule', post_data).then(res=>{
                 if(res.data.code === 1){
                     this.$message({
                         type: res.data.type,
@@ -892,7 +959,7 @@ export default {
             })
             this.closeRuleModal();
         },
-        //  交换rule list顺序   -1 - previous  1 - next
+        //  交换rule list顺序   flag:  -1 - previous  1 - next
         swapRulePriority(node, index, flag){
             if(index === 0 && flag === -1){
                 return
@@ -977,7 +1044,13 @@ h3{
     color: #67AEF7;
     margin: 10px 0 20px 0;
 }
-h3+div.acl-item{
+div.acl-first-item{
+    margin: 8px 0 8px 10px;
+    >a+a{
+        margin: 0 0 0 20px;
+    }
+}
+div.acl-first-item + div{
     >ul{
         border-top: 1px solid #ddd;
     }
@@ -990,8 +1063,8 @@ div.acl-item{
         border-top: none;
         li{
             float: left;
-            width: 12%;
-            padding-left: 24px;
+            width: 15%;
+            padding-left: 30px;
             border-right: 1px solid #ddd;
             height: inherit;
             line-height: inherit;
@@ -1014,11 +1087,13 @@ div.acl-item{
         border: 1px solid #ddd;
         border-top: none;
         padding: 10px 0;
-        
         position: relative;
     }
     .acl-detail:nth-of-type(even){
         background: #caecda;
+        .acl-rule-detail{
+            border-color: #ccc;
+        }
     }
     >ul+div,>div+div{
         >div{
@@ -1079,7 +1154,8 @@ div.acl-item{
         width: 80%;
         margin-left: 160px;
         box-sizing: border-box;
-        border-left: 1px solid #ddd;
+        border-left: 1px solid #d0d0d0;
+        padding: 0 0 0 6px;
         >span{
             display: inline-block;
             width: 30%;
@@ -1181,7 +1257,7 @@ div.acl-rule-config{
         display: inline-block;
         font-size: 14px;
         color: #333;
-        margin-left: 10px;
+        margin-left: 4px;
     }
 }
 </style>
