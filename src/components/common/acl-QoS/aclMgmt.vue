@@ -127,7 +127,7 @@
                     </div>
                     <div v-if="acl_rule_type === 2">
                         <span>{{ lanMap['protocol'] }}</span>
-                        <input type="text" v-model.trim="protocol"
+                        <input type="text" v-model.trim="protocol" placeholder="icmp/udp/tcp/ip/ipinip"
                             :style="{ 'border-color':  (protocol.toString().toLowerCase() !== 'icmp' && protocol.toString().toLowerCase() !== 'udp' 
                             && protocol.toString().toLowerCase() !== 'tcp' && protocol.toString().toLowerCase() !== 'ip' 
                             && protocol.toString().toLowerCase() !== 'ipinip' ) 
@@ -136,89 +136,96 @@
                     </div>
                     <div v-if="acl_rule_type === 1 || acl_rule_type === 2">
                         <span>{{ lanMap['src_ipaddr'] }}</span>
-                        <input type="text" v-model="src_ipaddr" 
+                        <input type="text" v-model="src_ipaddr" placeholder="127.0.0.1"
                             :style="{ 'border-color': src_ipaddr && (!testIP(src_ipaddr) && src_ipaddr !== '0.0.0.0') ? 'red' : '' }">
                     </div>
                     <div v-if="acl_rule_type === 1 || acl_rule_type === 2">
                         <span>{{ lanMap['ipmask'] }}</span>
-                        <input type="text" v-model="src_ipmask" :disabled="src_ipaddr === ''"
+                        <input type="text" v-model="src_ipmask" :disabled="src_ipaddr === ''" placeholder="0.0.0.255"
                             :style="{ 'border-color': src_ipmask && (!testIP(src_ipmask) && src_ipaddr !== '0.0.0.0') ? 'red' : '' }">
                     </div>
                     <div v-if="acl_rule_type === 2">
                         <span>{{ lanMap['dst_ipaddr'] }}</span>
-                        <input type="text" v-model="dst_ipaddr"
+                        <input type="text" v-model="dst_ipaddr" placeholder="127.0.0.1"
                             :style="{ 'border-color':  dst_ipaddr && !testIP(dst_ipaddr) ? 'red' : ''}">
                     </div>
                     <div v-if="acl_rule_type === 2">
                         <span>{{ lanMap['ipmask'] }}</span>
-                        <input type="text" v-model="dst_ipmask" :disabled="dst_ipaddr === ''"
+                        <input type="text" v-model="dst_ipmask" :disabled="dst_ipaddr === ''" placeholder="0.0.0.255"
                             :style="{ 'border-color': dst_ipaddr !== '' && dst_ipmask !== '' && !testIP(dst_ipmask) ? 'red' : '' }">
                     </div>
                     <div v-if="acl_rule_type === 2">
                         <span>{{ lanMap['src_port'] }}</span>
                         <input type="text" v-model="src_port" :disabled="protocol.toString().toLowerCase() === 'icmp'"
                             :style="{ 'border-color': src_port !== '' && !reg.test(src_port) ? 'red' : '' }">
+                        <span>Range: 0-65535</span>
                     </div>
                     <div v-if="acl_rule_type === 2">
                         <span>{{ lanMap['dst_port'] }}</span>
                         <input type="text" v-model="dst_port" :disabled="protocol.toString().toLowerCase() === 'icmp'"
                             :style="{ 'border-color': dst_port !== '' && !reg.test(dst_port) ? 'red' : '' }">
+                        <span>Range: 0-65535</span>
                     </div>
                     <div v-if="acl_rule_type === 2">
                         <span>{{ lanMap['precedence'] }}</span>
-                        <input type="text" v-model="precedence" :disabled="!!dscp"
+                        <input type="text" v-model.number="precedence" :disabled="!!dscp"
                             :style="{ 'border-color': precedence < 0 || precedence > 7 || isNaN(precedence) ? 'red' : '' }">
                         <span>Range: 0-7</span>
                     </div>
                     <div v-if="acl_rule_type === 2">
                         <span>{{ lanMap['dscp'] }}</span>
-                        <input type="text" v-model="dscp" :disabled="!!precedence"
+                        <input type="text" v-model.number="dscp" :disabled="!!precedence"
                             :style="{ 'border-color': dscp < 0 || dscp > 255 || isNaN(dscp) ? 'red' : '' }">
                         <span>Range: 0-63</span>
                     </div>
                     <div v-if="acl_rule_type === 3">
                         <span>{{ lanMap['eth_type'] }}</span>
-                        <input type="text" v-model.number="eth_type"
+                        <input type="text" v-model="eth_type"
                             :style="{ 'border-color': eth_type < 0 || eth_type > 0xffff || isNaN(eth_type) ? 'red' : '' }">
+                        <span>Range: 0x0-0xffff</span>
                     </div>
                     <div v-if="acl_rule_type === 3">
                         <span>{{ lanMap['cos'] }}</span>
-                        <input type="text" v-model="cos"
+                        <input type="text" v-model.number="cos"
                             :style="{ 'border-color': cos < 0 || cos > 7 || isNaN(cos) ? 'red' : '' }">
+                        <span>Range: 0-7</span>
                     </div>
                     <div v-if="acl_rule_type === 3">
                         <span>{{ lanMap['inner_cos'] }}</span>
-                        <input type="text" v-model="inner_cos"
+                        <input type="text" v-model.number="inner_cos"
                             :style="{ 'border-color': inner_cos < 0 || inner_cos > 7 || isNaN(inner_cos) ? 'red' : '' }">
+                        <span>Range: 0-7</span>
                     </div>
                     <div v-if="acl_rule_type === 3">
                         <span>{{ lanMap['vlan_id'] }}</span>
-                        <input type="text" v-model="vlan_id"
+                        <input type="text" v-model.number="vlan_id"
                             :style="{ 'border-color': vlan_id !== '' && (vlan_id < 1 || vlan_id > 4094 || isNaN(vlan_id)) ? 'red' : '' }">
+                        <span>Range: 1-4094</span>
                     </div>
                     <div v-if="acl_rule_type === 3">
                         <span>{{ lanMap['inner_vlan_id'] }}</span>
-                        <input type="text" v-model="inner_vlan_id"
+                        <input type="text" v-model.number="inner_vlan_id"
                             :style="{ 'border-color': inner_vlan_id !== '' && (inner_vlan_id < 1 || inner_vlan_id > 4094 || isNaN(inner_vlan_id)) ? 'red' : '' }">
+                        <span>Range: 1-4094</span>
                     </div>
                     <div v-if="acl_rule_type === 3">
                         <span>{{ lanMap['src_mac'] }}</span>
-                        <input type="text" v-model="src_mac"
+                        <input type="text" v-model="src_mac" placeholder="0000-0000-0000"
                             :style="{ 'border-color': src_mac !== '' &&  !testMac(src_mac) ? 'red' : ''}">
                     </div>
                     <div v-if="acl_rule_type === 3">
                         <span>{{ lanMap['src_mask'] }}</span>
-                        <input type="text" v-model="src_mask" :disabled="src_mask === ''"
+                        <input type="text" v-model="src_mask" :disabled="src_mac === ''" placeholder="0000-0000-ffff"
                             :style="{ 'border-color': src_mask !== '' && !testMacMask(src_mask) ? 'red' : '' }">
                     </div>
                     <div v-if="acl_rule_type === 3">
                         <span>{{ lanMap['dst_mac'] }}</span>
-                        <input type="text" v-model="dst_mac"
+                        <input type="text" v-model="dst_mac" placeholder="0000-0000-0000"
                             :style="{ 'border-color': dst_mac !== '' && !testMac(dst_mac) ? 'red' : '' }">
                     </div>
                     <div v-if="acl_rule_type === 3">
                         <span>{{ lanMap['dst_mask'] }}</span>
-                        <input type="text" v-model="dst_mask"
+                        <input type="text" v-model="dst_mask" :disabled="dst_mac === ''" placeholder="0000-0000-ffff"
                             :style="{ 'border-color': dst_mask !== '' && !testMacMask(dst_mask) ? 'red' : '' }">
                     </div>
                     <div>
@@ -580,7 +587,7 @@ export default {
         },
         //  基础ACL配置Rule
         cfgBasicRule(){
-            var flags = 0;
+            var flags = 0x0, n = 0;
             if(!this.testIP(this.src_ipaddr)){
                 this.$message({
                     type: 'error',
@@ -589,11 +596,12 @@ export default {
                 return
             }
             if(this.isAddRule && this.src_ipaddr !== ''){
-                flags += 1;
+                flags |= 1 << n;
             }
             if(!this.isAddRule && this.src_ipaddr !== this.rule_cache.src_ipaddr) {
-                flags += 1;
+                flags |= 1 << n;
             }
+            n++;
             if(!this.testIP(this.src_ipmask) && this.src_ipaddr !== '0.0.0.0'){
                 this.$message({
                     type: 'error',
@@ -602,10 +610,10 @@ export default {
                 return;
             }
             if(this.isAddRule && this.timerange !== ''){
-                falgs += 2;
+                flags |= 1 << n;
             }
             if(!this.isAddRule && this.timerange_cache !== this.timerange){
-                flags += 2;
+                flags |= 1 << n;
             }
             if(!flags){
                 this.$message({
@@ -645,7 +653,7 @@ export default {
         },
         //  高级ACL配置Rule
         cfgAdvancedRule(){
-            var flags = 0;
+            var flags = 0x1, n = 0;
             if(((this.protocol.toString().toLowerCase() !== 'icmp' && this.protocol.toString().toLowerCase() !== 'udp' 
                 && this.protocol.toString().toLowerCase() !== 'tcp' && this.protocol.toString().toLowerCase() !== 'ip' 
                 && this.protocol.toString().toLowerCase() !== 'ipinip' ) && 
@@ -656,6 +664,8 @@ export default {
                 })
                 return
             }
+            flags |= 1 << n;
+            n++;
             if(this.protocol.toString().toLowerCase() === 'icmp'){
                 this.src_port = '';
                 this.dst_port = '';
@@ -668,11 +678,12 @@ export default {
                 return
             }
             if(this.isAddRule && this.src_ipaddr !== ''){
-                flags += 1;
+                flags |= 1 << n;
             }
             if(!this.isAddRule && this.src_ipaddr !== ''){
-                flags += 1; 
+                flags |= 1 << n; 
             }
+            n++;
             if(this.src_ipaddr !== '' && this.src_ipmask !== '' && !this.testIP(this.src_ipmask)){
                 this.$message({
                     type: 'error',
@@ -688,12 +699,13 @@ export default {
                 return
             }
             if(this.isAddRule && this.dst_ipaddr !== ''){
-                flags += 2;
+                flags |= 1 << n;
             }
             if(!this.isAddRule && this.dst_ipaddr !== ''){
-                flags += 2;
+                flags |= 1 << n;
             }
-            if(this.dst_ipaddr !== '' && this.dst_ipmask !== '' && this.testIP(this.dst_ipmask)){
+            n++;
+            if(this.dst_ipaddr !== '' && this.dst_ipmask !== '' && !this.testIP(this.dst_ipmask)){
                 this.$message({
                     type: 'error',
                     text: this.lanMap['param_error'] + ': ' + this.lanMap['dst_ipmask']
@@ -709,11 +721,12 @@ export default {
                 return
             }
             if(this.isAddRule && this.src_port !== ''){
-                flags += 4;
+                flags |= 1 << n;
             }
             if(!this.isAddRule && this.src_port !== ''){
-                flags += 4;
+                flags |= 1 << n;
             }
+            n++;
             if(this.dst_port !== '' && !reg.test(this.dst_port)){
                 this.$message({
                     type: 'error',
@@ -722,11 +735,12 @@ export default {
                 return
             }
             if(this.isAddRule && this.dst_port !== ''){
-                flags += 8;
+                flags |= 1 << n;
             }
             if(!this.isAddRule && this.dst_port !== ''){
-                flags += 8;
+                flags |= 1 << n;
             }
+            n++;
             if(this.precedence) this.dscp = '';
             if(this.dscp) this.precedence = '';
             if(this.precedence < 0 || this.precedence > 7 || isNaN(this.precedence)){
@@ -737,11 +751,12 @@ export default {
                 return
             }
             if(this.isAddRule && this.precedence !== ''){
-                flags += 16;
+                flags |= 1 << n;
             }
             if(!this.isAddRule && this.precedence !== ''){
-                flags += 16;
+                flags |= 1 << n;
             }
+            n++;
             if(this.dscp < 0 || this.dscp > 255 || isNaN(this.dscp)){
                 this.$message({
                     type: 'error',
@@ -750,16 +765,17 @@ export default {
                 return
             }
             if(this.isAddRule && this.dscp !== ''){
-                flags += 32;
+                flags |= 1 << n;
             }
             if(!this.isAddRule && this.dscp !== ''){
-                flags += 32;
+                flags |= 1 << n;
             }
+            n++;
             if(this.isAddRule && this.timerange !== ''){
-                flags += 64;
+                flags |= 1 << n;
             }
             if(!this.isAddRule && this.timerange_cache !== this.timerange) {
-                flags += 64;
+                flags |= 1 << n;
             }
             // if(!flags){
             //     this.$message({
@@ -806,7 +822,7 @@ export default {
         },
         //  链路ACL配置Rule
         cfgLinkRule(){
-            var flags = 0;
+            var flags = 0x0,n = 0;
             if(this.eth_type < 0 || this.eth_type > 0xffff || isNaN(this.eth_type)){
                 this.$message({
                     type: 'error',
@@ -815,11 +831,12 @@ export default {
                 return
             }
             if(this.isAddRule && this.eth_type !== ''){
-                flags += 1;
+                flags |= 1 << n;
             }
             if(!this.isAddRule && this.eth_type !== ''){
-                flags += 1;
+                flags |= 1 << n;
             }
+            n++;
             if(this.cos < 0 || this.cos > 7 || isNaN(this.cos)){
                 this.$message({
                     type: 'error',
@@ -828,11 +845,12 @@ export default {
                 return
             }
             if(this.isAddRule && this.cos !== ''){
-                flags += 2;
+                flags |= 1 << n;
             }
             if(!this.isAddRule && this.cos !== ''){
-                flags += 2;
+                flags |= 1 << n;
             }
+            n++;
             if(this.inner_cos !== '' && (this.inner_cos < 0 || this.inner_cos > 7 || isNaN(this.inner_cos))){
                 this.$message({
                     type: 'error',
@@ -841,11 +859,12 @@ export default {
                 return
             }
             if(this.isAddRule && this.inner_cos !== ''){
-                flags += 4;
+                flags |= 1 << n;
             }
             if(!this.isAddRule && this.inner_cos !== ''){
-                flags += 4;
+                flags |= 1 << n;
             }
+            n++;
             if(this.vlan_id !== '' && (this.vlan_id < 1 || this.vlan_id > 4094 || isNaN(this.vlan_id))){
                 this.$message({
                     type: 'error',
@@ -854,11 +873,12 @@ export default {
                 return
             }
             if(this.isAddRule && this.vlan_id !== ''){
-                flags += 8;
+                flags |= 1 << n;
             }
             if(!this.isAddRule && this.vlan_id !== ''){
-                flags += 8;
+                flags |= 1 << n;
             }
+            n++;
             if(this.inner_vlan_id !== '' && (this.inner_vlan_id < 1 || this.inner_vlan_id > 4094 || isNaN(this.inner_vlan_id))){
                 this.$message({
                     type: 'error',
@@ -867,11 +887,12 @@ export default {
                 return
             }
             if(this.isAddRule && this.inner_vlan_id !== ''){
-                flags += 16;
+                flags |= 1 << n;
             }
             if(!this.isAddRule && this.inner_vlan_id !== ''){
-                flags += 16;
+                flags |= 1 << n;
             }
+            n++;
             if(!testMACAddr(this.src_mac)){
                 this.$message({
                     type: 'error',
@@ -880,11 +901,12 @@ export default {
                 return
             }
             if(this.isAddRule && this.src_mac !== ''){
-                flags += 32;
+                flags |= 1 << n;
             }
             if(!this.isAddRule && this.src_mac !== ''){
-                flags += 32;
+                flags |= 1 << n;
             }
+            n++;
             if(!testMACMask(this.src_mask)){
                 this.$message({
                     type: 'error',
@@ -900,11 +922,12 @@ export default {
                 return
             }
             if(this.isAddRule && this.dst_mac !== ''){
-                flags += 64;
+                flags |= 1 << n;
             }
             if(!this.isAddRule && this.dst_mac !== ''){
-                flags += 64;
+                flags |= 1 << n;
             }
+            n++;
             if(!testMACMask(this.dst_mask)){
                 this.$message({
                     type: 'error',
@@ -913,10 +936,10 @@ export default {
                 return
             }
             if(this.isAddRule && this.timerange !== ''){
-                flags += 128;
+                flags |= 1 << n;
             }
             if(!this.isAddRule && this.timerange !== this.timerange_cache){
-                flags += 128;
+                flags |= 1 << n;
             }
             if(!flags){
                 this.$message({
@@ -932,7 +955,7 @@ export default {
                     "rule_id": this.rule_id,
                     "action": this.action,
                     "flags": flags,
-                    "eth_type": this.eth_type,
+                    "eth_type": Number(this.eth_type),
                     "cos": this.cos,
                     "inner_cos": this.inner_cos,
                     "vlan_id": this.vlan_id,

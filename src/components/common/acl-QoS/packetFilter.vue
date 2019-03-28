@@ -42,10 +42,25 @@
                             :style="{ 'border-color': rule_id !== '' && (rule_id < 0 || rule_id > 16) ? 'red' : ''}">
                         <span class="packet-filter-tips">Range: 0 - 16 ({{ lanMap['optional'] }})</span>
                     </div>
-                    <div>
-                        <span>{{ lanMap['port_list'] }}</span>
-                        <input type="text" v-model="port_list">
-                        <span class="packet-filter-tips">EX. 1,5-9,12</span>
+                    <div class="port-list">
+                        <div>{{ lanMap['port_list'] }}</div>
+                        <!-- <input type="text" v-model="port_list">
+                        <span class="packet-filter-tips">EX. 1,5-9,12</span> -->
+                        <div v-if="port_name.pon && port_name.ge">
+                            <div v-for="(item, key) in port_name.pon" :key="key">
+                                <input type="checkbox" v-model="port_list" :value="item.id" :id="'pon' + item.id">
+                                <label :for="'pon' + item.id">{{ item.name }}</label>
+                            </div>
+                            <div v-for="(item, key) in port_name.ge" :key="key">
+                                <input type="checkbox" v-model="port_list" :value="item.id" :id="'ge' + item.id">
+                                <label :for="'ge' + item.id">{{ item.name }}</label>
+                            </div>
+                            <div v-for="(item, key) in port_name.xge" :key="key"
+                                v-if="port_name.xge">
+                                <input type="checkbox" v-model="port_list" :value="item.id" :id="'xge' + item.id">
+                                <label :for="'xge' + item.id">{{ item.name }}</label>
+                            </div>
+                        </div>
                     </div>
                     <div>
                         <a href="javascript:void(0);" @click="submitForm">{{ lanMap['apply'] }}</a>
@@ -67,7 +82,7 @@ import customPagination from '../pagination'
 var limit = 20;
 export default {
     name: 'packetFilter',
-    computed: mapState(["change_url", 'lanMap', 'system']),
+    computed: mapState(["change_url", 'lanMap', 'system', 'port_name']),
     components: { customPagination },
     data(){
         return {
@@ -77,7 +92,7 @@ export default {
             packetFilterShow: [],
             acl_id: '',
             rule_id: '',
-            port_list: '',
+            port_list: [],
             showModal: ''
         }
     },
@@ -116,6 +131,7 @@ export default {
             this.showModal = str;
         },
         closeModal(){
+            this.port_list = [];
             this.showModal = '';
         },
         submitForm(){
@@ -136,29 +152,29 @@ export default {
                 })
                 return
             }
-            var reg = /^[\d,-]+$/g;
-            if(!reg.test(this.port_list)){
+            if(!this.port_list.length){
                 this.$message({
                     type: 'error',
                     text: this.lanMap['param_error'] + ': ' + this.lanMap['port_list']
                 })
                 return
             }
+            var list = this.port_list.sort((a, b) => a - b);
             if(this.showModal === 'add'){
-                this.submitAdd();
+                this.submitAdd(list);
             }
             if(this.showModal === 'delete'){
-                this.submitDel();
+                this.submitDel(list);
             }
             this.closeModal();
         },
-        submitAdd(){
+        submitAdd(port_list){
             var post_data = {
                 "method": "set",
                 "param": {
                     "acl_id": this.acl_id,
                     "rule_id": this.rule_id,
-                    "port_list": this.port_list
+                    "port_list": port_list.toString()
                 }
             }
             this.$http.post('/switch_pkfilter?form=inbound', post_data).then(res =>{
@@ -178,13 +194,13 @@ export default {
 
             })
         },
-        submitDel(){
+        submitDel(port_list){
             var post_data = {
                 "method": "delete",
                 "param": {
                     "acl_id": this.acl_id,
                     "rule_id": this.rule_id,
-                    "port_list": this.port_list
+                    "port_list": port_list.toString()
                 }
             }
             this.$http.post('/switch_pkfilter?form=inbound', post_data).then(res =>{
@@ -251,15 +267,14 @@ div.packet-filter-item{
     }
 }
 div.cover+div{
-    height: 245px;
+    height: auto;
 }
 div.packet-filter-modal{
     >div{
-        height: 30px;
-        line-height: 30px;
+        padding: 7px 0;
         margin: 10px 0;
         a{
-            margin: 10px 0 0 110px;
+            margin: 0 0 0 100px;
         }
         >span{
             display: inline-block;
@@ -271,6 +286,33 @@ div.packet-filter-modal{
             font-size: 14px;
             color: #333;
             width: auto;
+        }
+    }
+    div.port-list{
+        position: relative;
+        &::after{
+            content: '';
+            display: table;
+            clear: both;
+        }
+        >div{
+            float: left;
+            width: 380px;
+            margin: 0 0 0 120px;
+            &:first-child{
+                width: 120px;
+                margin: 0;
+                text-align: center;
+                text-indent: 10px;
+                position: absolute;
+                top: 50%;
+                transform: translateY(-50%);
+            }
+            >div{
+                float: left;
+                width: 25%;
+                margin: 3px 0 3px 0;
+            }
         }
     }
 }

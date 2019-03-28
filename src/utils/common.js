@@ -52,12 +52,12 @@ export function testIPAddr(str){
 
 //  MAC地址检查
 export function testMACAddr(str){
-    var reg = /^([0-9abcdefABCDEF]{2}\:){5}[0-9abcdefABCDEF]{2}$/;
+    var reg = /^([0-9abcdefABCDEF]{4}\-){2}[0-9abcdefABCDEF]{4}$/;
     return reg.test(str) || str === '';
 }
 
 //  MAC地址掩码检查
 export function testMACMask(str){
-    var reg = /^([0-9abcdefABCDEF]{4}\.){2}[0-9abcdefABCDEF]{4}$/;
+    var reg = /^([0-9abcdefABCDEF]{4}\-){2}[0-9abcdefABCDEF]{4}$/;
     return reg.test(str) || str === '';
 }
