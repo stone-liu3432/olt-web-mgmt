@@ -7,7 +7,6 @@
                 <input type="checkbox" v-model="status">
                 <span :class="{ 'checked' : status }"></span>
             </div>
-            <span v-if="status">{{ lanMap['static_route_tips'] }}</span>
         </div>
         <h3 v-if="status">
             {{ lanMap['static_route'] }}
@@ -31,7 +30,7 @@
                 <ul v-for="(item,key) in static_router.data" :key="key" class="static-route-item">
                     <li>{{ item.ipaddress }}</li>
                     <li>{{ item.mask }}</li>
-                    <li>{{ item.nexthop }}</li>
+                    <li>{{ item.gateway }}</li>
                     <li>{{ item.interface }}</li>
                     <!-- dynamic 预留 -->
                     <li>{{ item.protocol === 'to do' ?  'to do' : item.protocol === 1 ? 'Direct' : 'Static' }}</li>
@@ -292,17 +291,8 @@ h3{
         font-weight: 400;
     }
 }
-div.route-state{
-    >span{
-        &:first-child{
-            font-size: 18px;
-            //color: #67aef6;
-            font-weight: 500;
-        }
-    }
-}
 .route-state{
-    font-size: 24px;
+    font-size: 18px;
 }
 div.switch{
     display: inline-block;
