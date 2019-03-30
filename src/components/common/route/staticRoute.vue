@@ -180,7 +180,7 @@ export default {
             if(node){
                 this.ipaddr = node.ipaddress;
                 this.ipmask = node.mask;
-                this.nexthop = node.nexthop;
+                this.nexthop = node.gateway;
                 this.cache_router = node;
             }
         },
