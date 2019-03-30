@@ -13,7 +13,7 @@
             <a href="javascript:void(0)" @click="openSetModal('add')">{{ lanMap['add'] }}</a>
         </h3>
         <div v-if="status && static_router.data">
-            <ul class="static-route-item">
+            <ul class="static-route-item bg-title">
                 <li>{{ lanMap['dst_ipaddr'] }}</li>
                 <li>{{ lanMap['ipmask'] }}</li>
                 <li>{{ lanMap['gateway'] }}</li>
@@ -31,11 +31,11 @@
                     <li>{{ item.ipaddress }}</li>
                     <li>{{ item.mask }}</li>
                     <li>{{ item.gateway }}</li>
-                    <li>{{ item.interface }}</li>
+                    <li>{{ item.interface ? 'Vlanif-' + item.interface : ' * ' }}</li>
                     <!-- dynamic 预留 -->
                     <li>{{ item.protocol === 'to do' ?  'to do' : item.protocol === 1 ? 'Direct' : 'Static' }}</li>
                     <li>{{ item.preference }}</li>
-                    <li>{{ item.status ? 'Reachale' : 'Unreachale' }}</li>
+                    <li>{{ item.status === 1 ? 'Reachale' : 'Unreachale' }}</li>
                     <li>
                         <i class="icon-config" @click="openSetModal('set', item)"></i>
                         <i class="icon-delete" @click="openDeleteModal(item)"></i>
@@ -337,6 +337,10 @@ div.switch{
         color: #333;
         margin-left: 30px;
     }
+}
+.bg-title > li{
+    background: #2361A2;
+    color: #fff;
 }
 ul.static-route-item{
     &::after{

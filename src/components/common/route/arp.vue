@@ -144,6 +144,8 @@ h3{
 div.arp-item-title{
     border: 1px solid #ddd;
     border-bottom: none;
+    background: #2361A2;
+    color: #fff;
 }
 div.arp-item{
     >div{
