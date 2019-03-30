@@ -59,7 +59,7 @@
                     {"name": "QoS"}
                 ]
             },{
-                "name": "router",
+                "name": "route",
                 "children": [
                     {"name": "static_route"},
                     {"name": "ARP"}

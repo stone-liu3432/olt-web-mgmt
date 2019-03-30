@@ -585,9 +585,12 @@ var en = {
     required: ' Required ',
 
     preference: ' Preference ',
-    nexthop: ' Next hop IP ',
-    static_route: ' Static route table ',
-    route: ' Route '
+    gateway: ' Next hop ',
+    static_route: ' Static Route ',
+    route: ' Route ',
+    ARP: 'ARP Table ',
+    static_route_tips: ' Turning off routing will clear all toute tables and ARP tables '
+    
 };
 
 export default en;

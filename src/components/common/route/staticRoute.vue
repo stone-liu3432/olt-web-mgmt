@@ -3,20 +3,21 @@
         <h3>{{ lanMap['route'] }}</h3>
         <div class="route-state">
             <span>{{ lanMap['route'] + lanMap['status'] }}</span>
-            <div class="switch" @click="changeRouteState">
+            <div class="switch" @click="offRoute">
                 <input type="checkbox" v-model="status">
                 <span :class="{ 'checked' : status }"></span>
             </div>
+            <span v-if="status">{{ lanMap['static_route_tips'] }}</span>
         </div>
-        <h3 v-if="!!status">
+        <h3 v-if="status">
             {{ lanMap['static_route'] }}
             <a href="javascript:void(0)" @click="openSetModal('add')">{{ lanMap['add'] }}</a>
         </h3>
-        <div v-if="!!status && static_router.data">
+        <div v-if="status && static_router.data">
             <ul class="static-route-item">
-                <li>{{ lanMap['ipaddr'] }}</li>
+                <li>{{ lanMap['dst_ipaddr'] }}</li>
                 <li>{{ lanMap['ipmask'] }}</li>
-                <li>{{ lanMap['nexthop'] }}</li>
+                <li>{{ lanMap['gateway'] }}</li>
                 <li>{{ lanMap['interface'] }}</li>
                 <li>{{ lanMap['protocol'] }}</li>
                 <li>{{ lanMap['preference'] }}</li>
@@ -33,9 +34,9 @@
                     <li>{{ item.nexthop }}</li>
                     <li>{{ item.interface }}</li>
                     <!-- dynamic 预留 -->
-                    <li>{{ item.protocol === 'to do' ?  'to do' : item.protocol === 1 ? 'direct' : 'static' }}</li>
+                    <li>{{ item.protocol === 'to do' ?  'to do' : item.protocol === 1 ? 'Direct' : 'Static' }}</li>
                     <li>{{ item.preference }}</li>
-                    <li>{{ item.status ? 'reachale' : 'unreachale' }}</li>
+                    <li>{{ item.status ? 'Reachale' : 'Unreachale' }}</li>
                     <li>
                         <i class="icon-config" @click="openSetModal('set', item)"></i>
                         <i class="icon-delete" @click="openDeleteModal(item)"></i>
@@ -50,7 +51,7 @@
                     <h4 class="modal-header" v-if="setModal === 'add'">{{ lanMap['add'] }}</h4>
                     <h4 class="modal-header" v-if="setModal === 'set'">{{ lanMap['config'] }}</h4>
                     <div>
-                        <span>{{ lanMap['ipaddr'] }}</span>
+                        <span>{{ lanMap['dst_ipaddr'] }}</span>
                         <input type="text" v-model="ipaddr"
                             :style="{ 'border-color': ipaddr !== '' && !ip_reg.test(ipaddr) ? 'red' : '' }">
                         <span>EX. 127.0.0.1</span>
@@ -62,7 +63,7 @@
                         <span>EX. 255.255.255.0</span>
                     </div>
                     <div>
-                        <span>{{ lanMap['nexthop'] }}</span>
+                        <span>{{ lanMap['gateway'] }}</span>
                         <input type="text" v-model="nexthop"
                             :style="{ 'border-color': nexthop !== '' && !ip_reg.test(nexthop) ? 'red' : '' }">
                         <span>EX. 127.0.0.1</span>
@@ -80,13 +81,16 @@
             </div>
         </div>
         <confirm v-if="delModal" @choose="deleteStaticRouter"></confirm>
+        <confirm v-if="offRouteModal" @choose="changeRouteState"
+            :tool-tips="lanMap['static_route_tips']">
+        </confirm>
     </div>
 </template>
 
 <script>
 import { mapState } from "vuex"
 export default {
-    name: 'staticRouter',
+    name: 'staticRoute',
     computed: mapState(["change_url", 'lanMap']),
     data(){
         return {
@@ -96,6 +100,7 @@ export default {
             cache_router: {},
             setModal: '',
             delModal: false,
+            offRouteModal: false,
             ipaddr: '',
             ipmask: '',
             nexthop: '',
@@ -122,10 +127,19 @@ export default {
 
             })
         },
-        changeRouteState(){
-            if(!this.interval){
+        offRoute(){
+            if(this.status){
+                this.offRouteModal = true;
+            }else{
+                this.changeRouteState(true);
+            }
+        },
+        changeRouteState(bool){
+            if(bool && !this.interval){
                 this.interval = true;
-                //this.status = !this.status;
+                setTimeout(() =>{
+                    this.interval = false;
+                },1000)
                 var post_data = {
                     "method": "set",
                     "param": {
@@ -148,10 +162,8 @@ export default {
                 }).catch(err =>{
 
                 })
-                setTimeout(() =>{
-                    this.interval = false;
-                },1000)
             }
+            this.offRouteModal = false;
         },
         getData(){
             this.$http.get(this.change_url.get_static_router).then(res =>{
@@ -177,11 +189,11 @@ export default {
             if(!this.ip_reg.test(this.ipaddr)){
                 this.$message({
                     type: 'error',
-                    text: this.lanMap['param_error'] + ': ' + this.lanMap['ipaddr']
+                    text: this.lanMap['param_error'] + ': ' + this.lanMap['dst_ipaddr']
                 })
                 return
             }
-            if(!this.ip_reg.test(this.mask)){
+            if(!this.ip_reg.test(this.ipmask)){
                 this.$message({
                     type: 'error',
                     text: this.lanMap['param_error'] + ': ' + this.lanMap['ipmask']
@@ -191,7 +203,7 @@ export default {
             if(!this.ip_reg.test(this.nexthop)){
                 this.$message({
                     type: 'error',
-                    text: this.lanMap['param_error'] + ': ' + this.lanMap['nexthop']
+                    text: this.lanMap['param_error'] + ': ' + this.lanMap['gateway']
                 })
                 return
             }
@@ -200,7 +212,7 @@ export default {
                 "param": {
                     "ipaddress": this.ipaddr,
                     "mask": this.ipmask,
-                    "nexthop": this.nexthop
+                    "gateway": this.nexthop
                 }
             }
             this.$http.post('/switch_route?form=static_route', post_data).then(res =>{
@@ -234,7 +246,7 @@ export default {
                     "param": {
                         "ipaddress": this.ipaddr,
                         "mask": this.ipmask,
-                        "nexthop": this.nexthop
+                        "gateway": this.nexthop
                     }
                 }
                 this.$http.post('/switch_route?form=static_route', post_data).then(res =>{
@@ -329,6 +341,11 @@ div.switch{
         &::after{
             left: 22px;
         }
+    }
+    &+span{
+        font-size: 15px;
+        color: #333;
+        margin-left: 30px;
     }
 }
 ul.static-route-item{

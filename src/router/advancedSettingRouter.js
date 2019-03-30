@@ -37,8 +37,8 @@ const qos = () => import(/* webpackChunkName: "acl-qos-page" */  '@/components/c
 const packetFilter = () => import(/* webpackChunkName: "acl-qos-page" */  '@/components/common/acl-QoS/packetFilter')
 
 // router
-const staticRouter = () => import(/* webpackChunkName: "acl-qos-page" */  '@/components/common/router/staticRouter')
-const arp = () => import(/* webpackChunkName: "acl-qos-page" */  '@/components/common/router/arp')
+const staticRoute = () => import(/* webpackChunkName: "acl-qos-page" */  '@/components/common/route/staticRoute')
+const arp = () => import(/* webpackChunkName: "acl-qos-page" */  '@/components/common/route/arp')
 
 export default [
     {
@@ -256,7 +256,7 @@ export default [
     },
     {
         path: "/static_route",
-        component: staticRouter,
+        component: staticRoute,
         meta: {
             requireAuth: true
         }

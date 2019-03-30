@@ -571,9 +571,11 @@ var zh = {
     required: '必填',
 
     preference: '优先级',
-    nexthop: '下一跳IP',
+    gateway: '下一跳',
     static_route: '静态路由表',
-    route: '路由'
+    route: '路由管理',
+    ARP: 'ARP表',
+    static_route_tips: '关闭路由功能将会清除所有路由表和ARP表'
 
 };
 

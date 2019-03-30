@@ -2,28 +2,25 @@
     <div>
         <h3>
             ARP
+            <a href="javascript:void(0);" @click="refreshTable">
+                {{ lanMap['refresh'] }}
+            </a>
             <a href="javascript:void(0);" @click="openDelModal">
                 {{ lanMap['delete_all'] }}
             </a>
         </h3>
+        <div class="arp-item arp-item-title">
+            <span>{{ lanMap['ipaddr'] }}</span>
+            <span>{{ lanMap['macaddr'] }}</span>
+            <span>{{ lanMap['vlan_id'] }}</span>
+            <span>{{ lanMap['port_id'] }}</span>
+        </div>
         <div class="arp-item" v-if="arp.data && arp.data.length">
             <div v-for="(item, key) in show_arp" :key="key">
-                <span>
-                    <span>{{ lanMap['ipaddr'] }}</span>
-                    <span>{{ item.ipaddress }}</span>
-                </span>
-                <span>
-                    <span>{{ lanMap['macaddr'] }}</span>
-                    <span>{{ item.macaddress }}</span>
-                </span>
-                <span>
-                    <span>{{ lanMap['vlan_id'] }}</span>
-                    <span>{{ item.vlanid }}</span>
-                </span>
-                <span>
-                    <span>{{ lanMap['port_id'] }}</span>
-                    <span>{{ portName(item.portid) }}</span>
-                </span>
+                <span>{{ item.ipaddress }}</span>
+                <span>{{ item.macaddress }}</span>
+                <span>{{ item.vlanid }}</span>
+                <span>{{ portName(item.portid) }}</span>
             </div>
         </div>
         <customPagination v-if="isShowPagination" :pages-data="pagesData"
@@ -49,7 +46,9 @@ export default {
             show_arp: {},
             isShowPagination: false,
             pagesData: {},
-            isDel: false
+            isDel: false,
+            //  限制点击频率
+            limit: true
         }
     },
     created(){
@@ -116,6 +115,15 @@ export default {
                 })
             }
             this.isDel = false;
+        },
+        refreshTable(){
+            if(this.limit){
+                this.limit = false;
+                this.getData();
+                setTimeout(() =>{
+                    this.limit = true;
+                }, 500)
+            }
         }
     }
 }
@@ -133,6 +141,10 @@ h3{
         font-weight: 400;
     }
 }
+div.arp-item-title{
+    border: 1px solid #ddd;
+    border-bottom: none;
+}
 div.arp-item{
     >div{
         border: 1px solid #ddd;
@@ -140,24 +152,18 @@ div.arp-item{
         &:first-child{
             border-top: 1px solid #ddd;
         }
-        &:nth-of-type(even){
+        &:nth-of-type(odd){
             background: #CAECDA;
         }
-        >span{
-            padding: 8px 0;
-            display: inline-block;
-            width: 24%;
-            border-right: 1px solid #ddd;
-            >span{
-                display: inline-block;
-                &:first-child{
-                    width: 100px;
-                    text-align: center;
-                }
-            }
-            &:last-child{
-                border-right: none;
-            }
+    }
+    span{
+        padding: 8px 0;
+        display: inline-block;
+        width: 24%;
+        border-right: 1px solid #ddd;
+        text-align: center;
+        &:last-child{
+            border-right: none;
         }
     }
 }
