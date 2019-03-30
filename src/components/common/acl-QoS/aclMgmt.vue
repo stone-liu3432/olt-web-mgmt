@@ -1007,7 +1007,7 @@ export default {
         changePage(index){
             let start = limit * (index - 1), end = limit * index;
             (end > this.acl_all.data.length) && (end = this.acl_all.data.length);
-            this.acl_show = this.acl_all.data.slice(limit*(index-1), limit*index);
+            this.acl_show = this.acl_all.data.slice(start, end);
         },
         ARPLRule(node){
             if(this.isARPL){

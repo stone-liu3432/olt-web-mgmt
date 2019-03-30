@@ -58,6 +58,12 @@
                     {"name": "packet_filter"},
                     {"name": "QoS"}
                 ]
+            },{
+                "name": "router",
+                "children": [
+                    {"name": "static_route"},
+                    {"name": "ARP"}
+                ]
             }
         ]
     }

@@ -1,0 +1,15 @@
+{
+    "code": 1,
+    "message": "success",
+    "data": [
+        {
+            "ipaddress": "192.168.100.1",
+            "mask": "255.255.255.0",
+            "nexthop": "192.168.200.1",
+            "interface": 100,
+            "protocol": 1,
+            "preference": 1,
+            "status": 1
+        }
+    ]
+}

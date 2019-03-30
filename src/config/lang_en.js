@@ -582,7 +582,12 @@ var en = {
     packet_filter: ' Packet filter ',
     time_range: ' Timerange ',
     optional: ' Optional ',
-    required: ' Required '
+    required: ' Required ',
+
+    preference: ' Preference ',
+    nexthop: ' Next hop IP ',
+    static_route: ' Static route table ',
+    route: ' Route '
 };
 
 export default en;

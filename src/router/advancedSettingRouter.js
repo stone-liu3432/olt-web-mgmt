@@ -10,7 +10,7 @@ const service = () => import(/* webpackChunkName: "system-page" */  '@/component
 const alarm = () => import(/* webpackChunkName: "system-page" */  '@/components/common/system/alarm')
 const userMgmt = () => import(/* webpackChunkName: "system-page" */  '@/components/common/system/userMgmt')
 // pon
-const onuAllow = () => import(/* webpackChunkName: "ponmgmt-page" */  '@/components/common/pon/onuAllow')
+//const onuAllow = () => import(/* webpackChunkName: "ponmgmt-page" */  '@/components/common/pon/onuAllow')
 const onuDeny = () => import(/* webpackChunkName: "ponmgmt-page" */  '@/components/common/pon/onuDeny')
 const slaCfg = () => import(/* webpackChunkName: "ponmgmt-page" */  '@/components/common/pon/slaCfg')
 const ponSetting = () => import(/* webpackChunkName: "ponmgmt-page" */  '@/components/common/pon/ponSetting')
@@ -24,7 +24,7 @@ const portInfo = () => import(/* webpackChunkName: "switch-page" */  '@/componen
 const perfInfo = () => import(/* webpackChunkName: "switch-page" */  '@/components/common/switch/perfInfo')
 const portCfg = () => import(/* webpackChunkName: "switch-page" */  '@/components/common/switch/portCfg')
 const portVlan = () => import(/* webpackChunkName: "switch-page" */  '@/components/common/switch/portVlan')
-const vlanMgmt = () => import(/* webpackChunkName: "switch-page" */  '@/components/common/switch/vlanMgmt')
+//const vlanMgmt = () => import(/* webpackChunkName: "switch-page" */  '@/components/common/switch/vlanMgmt')
 const macMgmt = () => import(/* webpackChunkName: "switch-page" */  '@/components/common/switch/macMgmt')
 // protocol
 const rstp = () => import(/* webpackChunkName: "protocol-page" */  '@/components/common/protocol/rstp')
@@ -35,6 +35,11 @@ const aclMgmt = () => import(/* webpackChunkName: "acl-qos-page" */  '@/componen
 const timeRange = () => import(/* webpackChunkName: "acl-qos-page" */  '@/components/common/acl-QoS/timeRange')
 const qos = () => import(/* webpackChunkName: "acl-qos-page" */  '@/components/common/acl-QoS/qos')
 const packetFilter = () => import(/* webpackChunkName: "acl-qos-page" */  '@/components/common/acl-QoS/packetFilter')
+
+// router
+const staticRouter = () => import(/* webpackChunkName: "acl-qos-page" */  '@/components/common/router/staticRouter')
+const arp = () => import(/* webpackChunkName: "acl-qos-page" */  '@/components/common/router/arp')
+
 export default [
     {
         path: "/advanced_setting",
@@ -245,6 +250,20 @@ export default [
     {
         path: "/qos",
         component: qos,
+        meta: {
+            requireAuth: true
+        }
+    },
+    {
+        path: "/static_route",
+        component: staticRouter,
+        meta: {
+            requireAuth: true
+        }
+    },
+    {
+        path: "/arp",
+        component: arp,
         meta: {
             requireAuth: true
         }

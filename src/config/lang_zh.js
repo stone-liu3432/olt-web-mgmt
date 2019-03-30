@@ -75,7 +75,7 @@ var zh = {
     auth_type: "鉴权类型",
     auth_mode: "鉴权类型",
     macaddr: "MAC地址",
-    macmask: "MAC Mask",
+    macmask: "MAC掩码",
     ponports: "PON口数量",
     geports: "千兆口数量",
     xgeports: "XGE口数量",
@@ -568,7 +568,12 @@ var zh = {
     packet_filter: '包过滤',
     time_range: '时间范围',
     optional: '可选项',
-    required: '必填'
+    required: '必填',
+
+    preference: '优先级',
+    nexthop: '下一跳IP',
+    static_route: '静态路由表',
+    route: '路由'
 
 };
 

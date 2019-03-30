@@ -125,7 +125,7 @@ export default {
         changePage(index){
             var start = limit * (index - 1),end = limit * index;
             (end > this.packetFilter.data.length) && (end = this.packetFilter.data.length);
-            this.packetFilterShow = this.packetFilter.data.slice(limit * (index - 1), limit * index);
+            this.packetFilterShow = this.packetFilter.data.slice(start, end);
         },
         openModal(str){
             this.showModal = str;
