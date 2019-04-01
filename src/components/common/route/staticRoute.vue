@@ -15,8 +15,8 @@
         </h3>
         <div v-if="status && static_router.data">
             <ul class="static-route-item bg-title">
-                <li>{{ lanMap['dst_ipaddr'] }}</li>
-                <li>{{ lanMap['ipmask'] }}</li>
+                <li>{{ lanMap['dst_ipaddr'] }}/{{ lanMap['mask'] }}</li>
+                <!-- <li>{{ lanMap['ipmask'] }}</li> -->
                 <li>{{ lanMap['gateway'] }}</li>
                 <li>{{ lanMap['interface'] }}</li>
                 <li>{{ lanMap['protocol'] }}</li>
@@ -29,10 +29,10 @@
             <!-- interface 100代表VlanIf100 -->
             <div class="static-route">
                 <ul v-for="(item,key) in static_router.data" :key="key" class="static-route-item">
-                    <li>{{ item.ipaddress }}</li>
-                    <li>{{ item.mask }}</li>
+                    <li>{{ item.ipaddress }}/{{ item.mask_num }}</li>
+                    <!-- <li>{{ item.mask }}</li> -->
                     <li>{{ item.gateway }}</li>
-                    <li>{{ item.interface ? 'Vlanif-' + item.interface : ' * ' }}</li>
+                    <li>{{ item.interface ? 'Vlanif' + item.interface : ' * ' }}</li>
                     <!-- dynamic 预留 -->
                     <li>{{ item.protocol === 'to do' ?  'to do' : item.protocol === 1 ? 'Direct' : 'Static' }}</li>
                     <li>{{ item.preference }}</li>
@@ -361,6 +361,9 @@ ul.static-route-item{
         border: 1px solid #ddd;
         border-bottom: none;
         border-right: none;
+        &:first-child{
+            width: 24%;
+        }
         &:last-child{
             border-right: 1px solid #ddd;
         }

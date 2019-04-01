@@ -583,6 +583,7 @@ var en = {
     time_range: ' Timerange ',
     optional: ' Optional ',
     required: ' Required ',
+    mask: ' Mask ',
 
     preference: ' Preference ',
     gateway: ' Next hop ',

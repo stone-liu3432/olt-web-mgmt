@@ -569,6 +569,7 @@ var zh = {
     time_range: '时间范围',
     optional: '可选项',
     required: '必填',
+    mask: '掩码',
 
     preference: '优先级',
     gateway: '下一跳',
