@@ -1,29 +1,34 @@
-# project
+# OLT WEB管理界面
 
-> A Vue.js project
+> 基于vue.js
+> 大量的json文件均为模拟数据
 
-## Build Setup
+## 项目依赖
 
 ``` bash
-# install dependencies
-npm install
 
-# serve with hot reload at localhost:8080
-npm run dev
+npm install -g Vue-cli@2.9.3
 
-# build for production with minification
-npm run build
+npm install –g webpack@3.6.0
 
-# build for production and view the bundle analyzer report
-npm run build --report
+npm install –g vuex
 
-# run unit tests
-npm run unit
+npm install –g axios
 
-# run e2e tests
-npm run e2e
+npm install babel-polyfill
 
-# run all tests
-npm test
+npm install md5
+
+npm install postcss-url	
+
+npm install stylus-loader css-loader style-loader --save-dev
+
+npm install --save-dev  less
+
+npm install less-loader –save
+
+npm install node-less --save
+
 ```
+
 
