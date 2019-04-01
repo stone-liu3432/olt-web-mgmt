@@ -52,14 +52,14 @@ export default {
                         try{
                             var a = document.createElement('a');
                             a.href = '/' + res.data.data.filename;
-                            a.download = res.data.data.filename;
+                            //a.download = res.data.data.filename;
+                            a.setAttribute('download', res.data.data.filename);
                             a.style.display = 'none';
                             document.body.appendChild(a);
                             a.click();
                             document.body.removeChild(a);
                         }catch(e){
                             //this.view_result(true);
-                            console.log(e);
                         }
                     }else if(res.data.code > 1){
                         this.$message({

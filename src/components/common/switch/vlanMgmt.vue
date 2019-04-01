@@ -54,15 +54,15 @@
         </ul>
         <div class="modal-dialog" v-if="modalDialog">
             <div class="cover"></div>
-            <div class="modal-content" :style="{ 'height': create_vlan ? '300px' : '275px' }">
-                <h3 v-if="create_vlan && !batch_set_vlan">
+            <div class="modal-content" :style="{ 'height': create_vlan ? '360px' : '310px' }">
+                <h3 v-if="create_vlan && !batch_set_vlan" class="modal-header">
                     {{ lanMap['create'] }}
                 </h3>
-                <h3 v-if="create_vlan && batch_set_vlan">
+                <h3 v-if="create_vlan && batch_set_vlan" class="modal-header">
                     {{ lanMap['config'] }}
                 </h3>
                 <div class="modal-title">
-                    <div v-if="!create_vlan" class="set-vlan">
+                    <div v-if="!create_vlan" class="modal-header">
                         <span>VLAN ID:</span>
                         <span>{{ vlanid }}</span>
                         <span class="def-vlan-tips">{{ lanMap['def_vlan_tips'] }}</span>
@@ -143,7 +143,7 @@
             <div class="cover"></div>
             <div class="batch-delete">
                 <div>
-                    <h3>{{ lanMap['delete'] }} VLAN</h3>
+                    <h3 class="modal-header">{{ lanMap['delete'] }} VLAN</h3>
                     <div>
                         <span>VLAN ID</span>
                         <input type="text" v-focus v-model.number="vlanid_s" placeholder="1-4094"
@@ -714,13 +714,15 @@ import { mapState } from 'vuex'
 <style scoped lang="less">
 div.vlan-mgmt{
     min-width: 1020px;
+    padding: 70px 0 20px 0;
 }
 div.vlan-mgmt>div:nth-child(2){
     margin: 0 0 0 30px;
 }
 div+ul{
     >li:first-child{
-        background: #67aef6;
+        background: #2361a2;
+        color: #fff
     }
 }
 a+span{
@@ -738,10 +740,10 @@ div>h2{
     font-size: 24px;
     font-weight: 600;
     color: #67AEF7;
-    margin: 10px 0 20px 0;
+    margin: 10px 0 20px 20px;
 }
 div.search{
-    margin: 20px 0;
+    margin: 20px 0 20px 20px;
     line-height: 40px;
 }
 div.search>div{
@@ -782,7 +784,7 @@ p{
     color:#67AEF7;
 }
 div+ul{
-    margin: 0 0 0 10px;
+    margin: 0 0 0 30px;
 }
 li{
     word-wrap: break-word;
@@ -829,28 +831,12 @@ span.def-vlan-tips{
 div.cover+div{
     width:850px;
     height:300px;
-    position: absolute;
-    left: 0;
-    right: 0;
-    top: 0;
-    bottom: 0;
-    margin: auto;
-    background: #fff;
-    z-index: 999;
-    overflow: hidden;
 }
 div.modal-content{
-    padding: 20px;
     border-radius: 10px;
-    >h3{
-        font-size: 20px;
-        color: #67aef6;
-        font-weight: 600;
-        margin-left: 10px;
-    }
 }
 div.modal-title{
-    margin: 10px 20px;
+    // margin: 12px 20px;
     >div.set-vlan{
         font-size: 20px;
         color: #67aef6;
@@ -930,6 +916,7 @@ span.tips{
     margin-left: 20px;
 }
 div.add-vlan{
+    margin: 16px 0 0 20px;
     input{
         width: 100px;
     }
@@ -938,11 +925,8 @@ div.cover+div.batch-delete{
     border-radius: 5px;
     height: 205px;
     width: 500px;
-    h3{
-        height: 60px;
-        line-height: 50px;
-        font-size: 20px;
-        padding-left: 30px;
+    h3+div{
+        margin-top: 10px;
     }
     >div{
         >div{

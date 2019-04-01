@@ -199,7 +199,8 @@ export default {
                     try{
                         var a = document.createElement('a');
                         a.href = '/' + res.data.data.filename;
-                        a.download = res.data.data.filename;
+                        //a.download = res.data.data.filename;
+                        a.setAttribute('download', res.data.data.filename);
                         a.style.display = 'none';
                         document.body.appendChild(a);
                         a.click();
@@ -324,14 +325,14 @@ export default {
                         try{
                             var a = document.createElement('a');
                             a.href = '/' + 'oltconfigtmp.txt';
-                            a.download = 'oltconfigtmp.txt';
+                            //a.download = 'oltconfigtmp.txt';
+                            a.setAttribute('download', 'oltconfigtmp.txt');
                             a.style.display = 'none';
                             document.body.appendChild(a);
                             a.click();
                             document.body.removeChild(a);
                         }catch(e){
                             //this.view_result(true);
-                            console.log(e);
                         }
                     }else if(res.data.code > 1){
                         this.$message({
@@ -432,6 +433,9 @@ a{
 input{
     font-size: 16px;
 }
+input[type='file']{
+    width: 300px;
+}
 p{
     color: #666;
     height: 38px;
@@ -452,13 +456,6 @@ div.load-body{
     width: 500px;
     height: 300px;
     background: #666;
-    position: absolute;
-    left: 0;
-    right: 0;
-    top: 0;
-    bottom: 0;
-    margin: auto;
-    border-radius: 10px;
     >h3{
         font-size: 18px;
         text-align: center;

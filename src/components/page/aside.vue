@@ -3,15 +3,16 @@
         <ul class="menu" v-if="menu.data && lanMap">
             <!-- 主菜单/左侧导航栏 -->
             <li v-for="(item,index) in menu.data.menu" :key="index">
-                <p class="menu-item" @click="select_first_menu(item)" :class="[ item.isHidden ? 'active' : '' ]"> 
-                    {{ lanMap[item.name] }}
+                <p class="menu-item" @click="select_first_menu(item)" :class="[ adv_f_menu === item.name ? 'active' : '' ]"> 
+                    {{ lanMap[item.name] || item.name }}
+                    <i class="icon-arrows" v-if="item.children"></i>
                 </p>
                 <!-- 二级菜单 -->
                 <transition name="bounce">
-                    <ul class="sub-menu" v-if="item.children" :class="{ hide: item.isHidden }">
-                        <li v-for="(_item,_index) in item.children" :key="_index" @click="select_second_menu($event,_item.name)">
-                            <p class="sub-item" @click="select_page(_item)">
-                                {{ lanMap[_item.name] }}
+                    <ul v-if="item.children" :class="['sub-menu', { 'hide': adv_f_menu === item.name }]">
+                        <li v-for="(_item,_index) in item.children" :key="_index">
+                            <p :class="['sub-item', {'submenu-actived': adv_menu === _item.name }]" @click="select_page(_item)">
+                                {{ lanMap[_item.name] || _item.name }}
                             </p>
                         </li>
                     </ul>
@@ -52,9 +53,17 @@ export default {
         }
     },
     created(){
-        this.getData();
+        
+    },
+    beforeDestroy(){
+        this.changeFMenu('running_status');
     },
     methods:{
+        ...mapMutations({
+            addmenu: 'updateMenu',
+            changeAdvMenu: 'updateAdvMenu',
+            changeFMenu: 'updateAdvFMenu'
+        }),
         getData(){
             this.$http.get('/board?info=setting_board').then(res=>{
                 if(res.data.code === 1){
@@ -74,69 +83,24 @@ export default {
             })
         },
         select_first_menu(node){
-            // 检查 菜单项下面是否有子菜单
+            this.changeFMenu(node.name);
             if(!node.children){
-                for(var key in this.menu.data.menu){
-                    this.menu.data.menu[key].isHidden = false;
-                }
-                node.isHidden = true;
                 this.$router.replace(node.name);
-                var sub_item = document.querySelectorAll('p.sub-item');
-                for(var i=0;i<sub_item.length;i++){
-                    sub_item[i].className = 'sub-item';
-                }
-            }else{
-            // 如有，加上打开折叠效果
-                if(node.isHidden){
-                    for(var key in this.menu.data.menu){
-                        this.menu.data.menu[key].isHidden = false;
-                    }
-                }else{
-                    for(var key in this.menu.data.menu){
-                        this.menu.data.menu[key].isHidden = false;
-                    }
-                    node.isHidden = true;
-                }
             }
-            sessionStorage.setItem('first_menu',node.name);
-        },
-        //  子菜单被选中时样式
-        select_second_menu(e,str){
-            var sub_item = document.querySelectorAll('p.sub-item');
-            for(var i=0;i<sub_item.length;i++){
-                sub_item[i].className = 'sub-item';
-            }
-            e.target.className += ' actived';
-            sessionStorage.setItem('sec_menu',str);
         },
         //  点击切换页面
         select_page(node){
             this.$router.replace(node.name);
         }
     },
-    computed: mapState(['lanMap','menu']),
+    computed: mapState(['lanMap', 'menu', 'change_url', 'adv_menu', 'adv_f_menu']),
     watch: {
         //  页面刷新时的menu状态恢复
         'menu'(){
             var first_menu = sessionStorage.getItem('first_menu');
             var sec_menu = sessionStorage.getItem('sec_menu');
-            if(first_menu){
-                this.menu.data.menu.forEach(item=>{
-                    if(item.name === first_menu){
-                        item.isHidden = true;
-                    }
-                })
-                if(sec_menu){
-                    this.$nextTick(()=>{
-                        var sub_item = document.querySelectorAll('p.sub-item');
-                        for(var i=0;i<sub_item.length;i++){
-                            if(sub_item[i].innerHTML.replace(/^\s*|\s*$/g,'') === this.lanMap[sec_menu].replace(/^\s*|\s*$/g,'')){
-                                sub_item[i].className += ' actived';
-                            }
-                        }
-                    })
-                }
-            }
+            this.changeFMenu(first_menu);
+            this.changeAdvMenu(sec_menu);
         }
     }
 }
@@ -150,29 +114,30 @@ export default {
     position: fixed;
     left: 0;
     top: 70px;
-    background: #2F2F39;
-    box-shadow: 5px 0 3px #666;
-    z-index: 999;
+    background: #eee;
+    //box-shadow: 5px 0 3px #eee;
+    //z-index: 999;
     user-select: none;
 }
 .menu>li>ul{
-    transition: all 0.3s ease-out;
+    transition: all 0.2s ease-out;
 }
 .active{
-    color:#3990e5;
-}
-.sub-menu>li>p.actived{
     border-left: 5px solid #3990e5;
-    background: #666;
-    color: #fff;
+    color:#3990e5;
+    background: #dcd6d6;
+    i.icon-arrows{
+        background-position: -48px -6px;
+    }
+}
+.sub-menu>li>p.submenu-actived{
+    background: #E0EFE7;
+    color: #3990e5;
+    font-weight: 500;
 }
 .menu>li>ul.hide{
     max-height: 330px;
     transition: max-height 0.3s ease-in;
-}
-.menu{
-    color:#9AAABA;
-    background: #393946;
 }
 .menu>li{
     overflow: hidden;
@@ -180,11 +145,15 @@ export default {
 .menu-item{
     padding:15px 0 15px 30px;
     cursor: pointer;
-    transition:all 0.3s linear;
+    transition:all 0.2s linear;
+    height: 32px;
+    line-height: 32px;
+    position: relative;
+    font-weight: 500;
 }
 .menu-item:hover{
-    color:#fff;
-    background: #666666;
+    //color:#666;
+    background: #F0E5D8;
 } 
 .expressConfig{
     width: 168px;
@@ -212,13 +181,13 @@ export default {
 .sub-item{
     padding:10px 0 10px 40px;
     cursor: pointer;
-    background: #2F2F39;
-    transition: all 0.3s linear;
+    background: #E8E8E8;
+    transition: all 0.2s linear;
     border-left: 5px solid transparent;
 }
 .sub-item:hover{
-    color:#fff;
-    background: #666666;
+    //color:#666;
+    background: #F0E5D8;
 }
 .menu-footer{
     color: #afafaf;
@@ -236,5 +205,13 @@ export default {
         word-break: break-all;
         text-align: left;
     }
+}
+i.icon-arrows{
+    position: absolute;
+    right: 10px;
+    width: 32px;
+    height: 32px;
+    background: url('../../assets/arrows.png') -7px -48px no-repeat;
+    vertical-align: middle;
 }
 </style>

@@ -77,6 +77,7 @@
         <div class="modal-dialog" v-if="onu_cfg_name">
             <div class="cover"></div>
             <div class="onu-desc">
+                <h3 class="modal-header">{{ lanMap['config'] + lanMap['onu_info'] }}</h3>
                 <div>
                     <span>{{ lanMap['onu_id'] }}</span>
                     <span>{{ 'ONU' + portid + '/' + onuid }}</span>
@@ -175,6 +176,8 @@ import onuAlarm from '@/components/common/pon/onuAlarm'
             }),
             //  打开onu描述信息模态框
             open_onu_desc(){
+                this.onu_name = this.onu_basic_info.data.onu_name || ('ONU' + this.portid + '/' + this.onuid);
+                this.onu_desc = this.onu_basic_info.data.onu_desc || '';
                 this.onu_cfg_name = true;
             },
             select_page(page){
@@ -530,6 +533,7 @@ div.onu-info{
 div.onu-info-item{
     border: 1px solid #ccc;
     border-bottom: none;
+    overflow: hidden;
 }
 div.onu-info-item>span{
 	display: inline-block;
@@ -537,7 +541,12 @@ div.onu-info-item>span{
 	height: 30px;
 	line-height: 30px;
 	width: 30%;
-	padding-left: 20px;
+    padding-left: 20px;
+    &:last-child{
+        width: 55%;
+        overflow: hidden;
+        text-overflow: ellipsis;
+    }
 }
 div.onu-optical-diagnose{
     overflow: hidden;
@@ -638,18 +647,10 @@ div.handle-btn{
 }
 div.onu-desc{
     width: 500px;
-    height: 300px;
-    background: #fff;
-    position: absolute;
-    left: 0;
-    right: 0;
-    top: 0;
-    bottom: 0;
-    margin: auto;
-    border-radius: 10px;
+    height: 310px;
     >div{
         line-height: 30px;
-        margin: 20px 0;
+        margin: 10px 0;
         >span{
             display: inline-block;
             width: 150px;

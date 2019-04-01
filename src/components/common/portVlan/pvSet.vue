@@ -416,16 +416,6 @@ div.port-vlan-set{
     }
 }
 div.modal-dialog{
-    div.cover+div{
-        background: #fff;
-        position: absolute;
-        left: 0;
-        right: 0;
-        top: 0;
-        bottom: 0;
-        margin: auto;
-        border-radius: 6px;
-    }
     div.pv-type{
         width: 500px;
         height: 220px;
@@ -483,10 +473,13 @@ div.modal-dialog{
             margin: 20px 0;
         }
         >div:first-child{
-            margin-top: 24px;
             h3{
-                font-size: 24px;
-                margin-left: 40px;
+                font-size: 18px;
+                height: 60px;
+                line-height: 60px;
+                padding: 0 0 0 20px;
+                text-indent: 10px;
+                border-bottom: 2px solid #ddd;
                 font-weight: 600;
                 color: #67aef7;
             }

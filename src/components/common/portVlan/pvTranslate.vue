@@ -252,16 +252,6 @@ div.pv-translate-item{
     }
 }
 div.modal-dialog{
-    div.cover+div{
-        background: #fff;
-        position: absolute;
-        left: 0;
-        right: 0;
-        top: 0;
-        bottom: 0;
-        margin: auto;
-        border-radius: 6px;
-    }
     div.pv-translate-modal{
         width: 500px;
         height: 300px;
@@ -269,7 +259,17 @@ div.modal-dialog{
         div.translate-modal-item{
             margin: 20px 0 20px 60px;
             &:first-child{
-                margin-top: 24px;
+                margin: 0;
+                h3{
+                    height: 60px;
+                    line-height: 60px;
+                    padding: 0 0 0 60px;
+                    text-indent: 10px;
+                    font-size: 18px;
+                    font-weight: 600;
+                    color: #67aef7;
+                    border-bottom: 2px solid #ddd;
+                }
             }
             span{
                 display: inline-block;
@@ -277,11 +277,6 @@ div.modal-dialog{
                 width: 150px;
                 line-height: 30px;
                 vertical-align: middle;
-            }
-            h3{
-                font-size: 24px;
-                font-weight: 600;
-                color: #67aef7;
             }
             a{
                 margin: 10px 0 0 45px;

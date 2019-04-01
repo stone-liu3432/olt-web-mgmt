@@ -1,22 +1,22 @@
 <template>
   <div id="main-content">
       <topBanner></topBanner>
-      <leftAside></leftAside>
-      <detail v-if="port_info && system"></detail>
+      <router-view v-if="isRouterAlive"></router-view>
+      <bottom-footer></bottom-footer>
   </div>
 </template>
 
 <script>
 import { mapState,mapMutations } from 'vuex'
-import leftAside from '@/components/page/aside'
-import detail from '@/components/page/detail'
 import topBanner from '@/components/page/header'
+import contentArea from '@/components/page/content'
+import bottomFooter from '@/components/page/footer'
     export default {
         name: 'mainContent',
         components: {
-            leftAside,
-            detail,
-            topBanner
+            topBanner,
+            contentArea,
+            bottomFooter
         },
         data(){
             return {
@@ -25,7 +25,8 @@ import topBanner from '@/components/page/header'
                 max_time: 300,
                 time: 0,
                 interval: null,
-                uName: ''
+                uName: '',
+                isRouterAlive: true
             }
         },
         created(){
@@ -33,6 +34,9 @@ import topBanner from '@/components/page/header'
             this.$http.get(this.change_url.system).then(res=>{
                 if(res.data.code === 1){
                     this.systemInfo(res.data);
+                    this.$nextTick(()=>{
+                        document.title = res.data.data.product_name;
+                    })
                 }
             }).catch(err=>{
             // to do 
@@ -44,39 +48,70 @@ import topBanner from '@/components/page/header'
             }).catch(err=>{
                 // to do
             })
-            // this.$router.push('/main');
             this.uName = sessionStorage.getItem('uname');
+            this.getData();
+            var f_menu = sessionStorage.getItem('first_menu');
+            var sec_menu = sessionStorage.getItem('sec_menu');
+            if(f_menu || sec_menu){
+                this.changeNav('advanced_setting');
+            }
         },
         mounted(){
             this.time = this.max_time;
-            this.interval = setInterval(()=>{
-                this.time--;
-                if(this.time <= 0){
-                    var post_params = {
-                        "method": "set",
-                        "param": {
-                            "name": this.uName
-                        }
-                    }
-                    this.$http.post('/userlogin?form=logout',post_params).then(res=>{
-                        this.$message({
-                            type: 'success',
-                            text: this.lanMap['login_out']
-                        })
-                        sessionStorage.removeItem('x-token');
-                        this.$router.replace('/login');
-                    }).catch(err=>{
-                        // to do
-                    })
-                }
-            },1000)
+            // this.interval = setInterval(()=>{
+            //     this.time--;
+            //     if(this.time <= 0){
+            //         var post_params = {
+            //             "method": "set",
+            //             "param": {
+            //                 "name": this.uName
+            //             }
+            //         }
+            //         this.$http.post('/userlogin?form=logout',post_params).then(res=>{
+            //             this.$message({
+            //                 type: 'success',
+            //                 text: this.lanMap['login_out']
+            //             })
+            //             sessionStorage.removeItem('x-token');
+            //             this.$router.replace('/login');
+            //         }).catch(err=>{
+            //             // to do
+            //         })
+            //     }
+            // },1000)
             document.body.addEventListener('mousemove',this.user_timeout);
             document.body.addEventListener('keydown',this.user_timeout);
             document.body.addEventListener('mousedown',this.user_timeout);
+            //  手机登录时，调整高度
+            this.$nextTick(()=>{
+                if(window){
+                    var os = function() {
+                        var ua = navigator.userAgent,
+                        isWindowsPhone = /(?:Windows Phone)/.test(ua),
+                        isSymbian = /(?:SymbianOS)/.test(ua) || isWindowsPhone, 
+                        isAndroid = /(?:Android)/.test(ua), 
+                        isFireFox = /(?:Firefox)/.test(ua), 
+                        isChrome = /(?:Chrome|CriOS)/.test(ua),
+                        isTablet = /(?:iPad|PlayBook)/.test(ua) || (isAndroid && !/(?:Mobile)/.test(ua)) || (isFireFox && /(?:Tablet)/.test(ua)),
+                        isPhone = /(?:iPhone)/.test(ua) && !isTablet,
+                        isPc = !isPhone && !isAndroid && !isSymbian;
+                        return {
+                            isTablet: isTablet,
+                            isPhone: isPhone,
+                            isAndroid : isAndroid,
+                            isPc : isPc
+                        };
+                    }();
+                    if(!os.isPc){
+                        document.body.style.height = window.innerHeight + 'px';
+                    }
+                }
+            })
         },
         beforeDestroy(){
             sessionStorage.removeItem('pid');
             sessionStorage.removeItem('oid');
+            sessionStorage.removeItem('f_menu');
             sessionStorage.removeItem('first_menu');
             sessionStorage.removeItem('sec_menu');
             clearInterval(this.interval);
@@ -87,19 +122,69 @@ import topBanner from '@/components/page/header'
         methods: {
             ...mapMutations({
                 systemInfo: 'updateSysData',
-                addmenu: 'updateMenu'
+                addmenu: 'updateMenu',
+                portInfo: 'updatePortData',
+                portName: 'updatePortName',
+                changeNav: 'updateNavMenu'
             }),
+            reload(){
+                this.isRouterAlive = false;
+                this.$nextTick(()=>{
+                    this.isRouterAlive = true;
+                })
+            },
             user_timeout(e){
                 this.time = this.max_time;
+            },
+            getData(){
+                this.$http.get(this.change_url.port).then(res=>{
+                    this.portInfo(res.data);
+                    var pon = this.system.data.ponports;
+                    var ge = this.system.data.geports;
+                    var xge = this.system.data.xgeports;
+                    var pon_count,ge_count,xge_count,portName;
+                    pon_count = res.data.data.slice(0,pon);
+                    if(!xge){
+                        ge_count = res.data.data.slice(pon);
+                        portName = {
+                            pon: this.get_portName(pon_count,'PON'),
+                            ge: this.get_portName(ge_count,'GE')
+                        };
+                    }else{
+                        ge_count = res.data.data.slice(pon,pon+ge);
+                        xge_count = res.data.data.slice(pon+ge);
+                        portName = {
+                            pon: this.get_portName(pon_count,'PON'),
+                            ge: this.get_portName(ge_count,'GE'),
+                            xge: this.get_portName(xge_count,'XGE')
+                        }
+                    }
+                    this.portName(portName);
+                    //this.reload();
+                }).catch(err=>{
+                    // to do
+                })
+            },
+            // 根据port_id 分配端口名
+            get_portName(arr,prefix){
+                var obj = {};
+                for(var i=0;i<arr.length;i++){
+                    obj[arr[i].port_id] = {};
+                    obj[arr[i].port_id].name = i < 10 ? prefix + '0' + (i + 1) : prefix + (i + 1);
+                    obj[arr[i].port_id].id = arr[i].port_id;
+                    obj[arr[i].port_id].data = arr[i]; 
+                }
+                return obj;
             }
         },
         computed: mapState(['port_info','system','change_url','lanMap'])
     }
 </script>
 
-<style>
+<style lang="less">
 #main-content{
-    height:100%;
+    //height:100%;
+    padding-bottom: 30px;
 }
 div.tips-body{
     width: 500px;

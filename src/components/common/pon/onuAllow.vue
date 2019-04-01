@@ -14,7 +14,7 @@
             <a href="javascript:void(0);" @click="reload">{{ lanMap['refresh'] }}</a>
             <a href="javascript:void(0);" @click="add_onu">{{ lanMap['add'] }}</a>
             <a href="javascript:void(0);" @click="onu_bandwieth">{{ lanMap['sla_cfg'] }}</a>
-            <a href="javascript:void(0);" @click="switch_display_mode">{{ lanMap['switch_display'] }}</a>
+            <!-- <a href="javascript:void(0);" @click="switch_display_mode">{{ lanMap['switch_display'] }}</a> -->
             <a href="javascript:void(0);" @click="show_batchmgmt" v-if="!is_batch_mgmt">{{ lanMap['batch_mgmt_onu'] }}</a>
             <a href="javascript:void(0);" @click="show_batchmgmt" v-else>{{ lanMap['exit_batch_onu'] }}</a>
             <div class="rt tool-tips">
@@ -49,7 +49,7 @@
         <div class="modal-dialog" v-if="add_dialog">
             <div class="cover"></div>
             <div class="modal-content">
-                <h3>{{ lanMap['manual_bind'] }}</h3>
+                <h3 class="modal-header">{{ lanMap['manual_bind'] }}</h3>
                 <div class="modal-item">
                     <span>{{ lanMap['onu_id'] }}</span>
                     <input type="text" v-model="add_onuid" placeholder="1-64" v-focus>
@@ -110,7 +110,7 @@
                 </span>
                 <span>{{ lanMap['config'] }}</span>
             </li>
-            <li v-for="(item,index) in onu_allow_list.data" :key="index" class="onulist-item" :style="{ 'background-color' : item.status.toLowerCase() !== 'online' ? '#F3A9A0' : '' }">
+            <li v-for="(item,index) in onu_allow_list.data" :key="index" class="onulist-item" :style="{ 'color' : item.status.toLowerCase() !== 'online' ? 'red' : '' }">
                 <span>
                     <label :for="'ONU0'+item.port_id +'/'+ item.onu_id" v-if="is_batch_mgmt">
                         <input type="checkbox" :value="item.onu_id" v-model="batch_onulist" :id="'ONU0'+item.port_id +'/'+ item.onu_id" name="onulist">
@@ -134,8 +134,8 @@
                 </span>
             </li>
         </ul>
-        <onuCard v-if="onu_allow_list.data && onu_allow_list.data.length > 0 && onu_display_style === 2" :onu-allow-list="onu_allow_list" 
-            :batch-onulist="batch_onulist" :is-batch-mgmt="is_batch_mgmt" @updateData="getData"></onuCard>
+        <!-- <onuCard v-if="onu_allow_list.data && onu_allow_list.data.length > 0 && onu_display_style === 2" :onu-allow-list="onu_allow_list" 
+            :batch-onulist="batch_onulist" :is-batch-mgmt="is_batch_mgmt" @updateData="getData"></onuCard> -->
         <p v-if="!onu_allow_list.data || onu_allow_list.data.length <= 0">{{ lanMap['no_more_data'] }}</p>
         <confirm :tool-tips="lanMap['tips_del_onu']" @choose="result_delete" v-if="delete_confirm"></confirm>
         <confirm :tool-tips="lanMap['tips_add_deny_onu']" @choose="result_deny" v-if="deny_confirm"></confirm>
@@ -146,10 +146,10 @@
 
 <script>
 import { mapState,mapMutations } from 'vuex'
-import onuCard from '@/components/common/pon/onuCard'
+//import onuCard from '@/components/common/pon/onuCard'
     export default {
         name: 'onuAllow',
-        components: { onuCard },
+        //components: { onuCard },
         data(){
             return {
                 onu_arrow: {},
@@ -200,6 +200,9 @@ import onuCard from '@/components/common/pon/onuCard'
                     }
                     this.onu_allow_list = Object.assign({},this.onu_arrow);
                     this.onu_allow_list.data.sort((a,b)=>{
+                        if(a.status.toLowerCase() === 'online' && b.status.toLowerCase() === 'online'){
+                            return a.onu_id - b.onu_id;
+                        }
                         return a.status.toLowerCase() === 'online' && b.status.toLowerCase() !== 'online';
                     })
                 }).catch(err=>{
@@ -209,20 +212,22 @@ import onuCard from '@/components/common/pon/onuCard'
         },
         methods:{
             ...mapMutations({
-                update_menu: 'updateMenu'
+                changeMenu: 'updateNavMenu',
+                changeAdvMenu: 'updateAdvMenu',
+                changeFMenu: 'updateAdvFMenu'
             }),
             //  手动刷新
             reload(){
                 this.$parent.reload();
             },
             //  切换Oun列表显示模式
-            switch_display_mode(){
-                if(this.onu_display_style === 1){
-                    this.onu_display_style = 2;
-                }else{
-                    this.onu_display_style = 1;
-                }
-            },
+            // switch_display_mode(){
+            //     if(this.onu_display_style === 1){
+            //         this.onu_display_style = 2;
+            //     }else{
+            //         this.onu_display_style = 1;
+            //     }
+            // },
             getData(){
                 this.search_macaddr = '';
                 this.$http.get('/onu_allow_list?port_id='+ this.portid).then(res=>{
@@ -233,7 +238,10 @@ import onuCard from '@/components/common/pon/onuCard'
                     }
                     this.onu_allow_list = Object.assign({},this.onu_arrow);
                     this.onu_allow_list.data.sort((a,b)=>{
-                        return a.status.toLowerCase() === 'online' && b.status.toLowerCase() !== 'online'
+                        if(a.status.toLowerCase() === 'online' && b.status.toLowerCase() === 'online'){
+                            return a.onu_id - b.onu_id;
+                        }
+                        return a.status.toLowerCase() === 'online' && b.status.toLowerCase() !== 'online';
                     })
                 }).catch(err=>{
                     // to do 
@@ -419,13 +427,6 @@ import onuCard from '@/components/common/pon/onuCard'
             //  跳转带宽管理
             onu_bandwieth(){
                 this.$router.push('/sla_cfg?port_id='+this.portid);
-                var sub_item = document.querySelectorAll('p.sub-item');
-                for(var i=0;i<sub_item.length;i++){
-                    sub_item[i].className = 'sub-item';
-                    if(sub_item[i].innerText.replace(/(^\s*)|(\s*$)/g,'') === this.lanMap['sla_cfg'].replace(/(^\s*)|(\s*$)/g, "")){
-                        sub_item[i].className += ' actived';
-                    }
-                }
             },
             //  重启模态框
             result_reboot(bool){
@@ -472,44 +473,13 @@ import onuCard from '@/components/common/pon/onuCard'
             },
             //  跳转到 onu 详情页
             onu_detail(portid,onuid){
-                //请求url:  /onu_basic_info?form=base-info&port_id=1&onu_id=1
                 this.$router.push('/onu_basic_info?form=base-info&port_id='+ portid + '&onu_id=' + onuid);
-                // 清除当前子菜单的选中效果，给被跳转的子菜单加上选中效果
-                var sub_item = document.querySelectorAll('p.sub-item');
-                for(var i=0;i<sub_item.length;i++){
-                    sub_item[i].className = 'sub-item';
-                    if(sub_item[i].innerText.replace(/(^\s*)|(\s*$)/g, "") == this.lanMap['onu_basic_info'].replace(/(^\s*)|(\s*$)/g, "")){
-                        sub_item[i].className += ' actived';
-                    }
-                }
-                // 清除一级菜单的选中效果
-                var menu_item = document.querySelectorAll('p.menu-item');
-                for(var i=0;i<menu_item.length;i++){
-                    menu_item[i].className = 'menu-item';
-                }
-                // 清除跳转的一级菜单的选中效果，并给被跳转的一级菜单添加选中效果
-                var sub_menu = document.querySelectorAll('ul.sub-menu');
-                for(var i=0;i<sub_menu.length;i++){
-                    sub_menu[i].className = 'sub-menu';
-                    var text = sub_menu[i].firstElementChild.innerText;
-                    text = text.replace(/(^\s*)|(\s*$)/g, "");
-                    if(text === this.lanMap['onu_basic_info'].replace(/(^\s*)|(\s*$)/g, "")){
-                        sub_menu[i].className += ' hide';
-                        sub_menu[i].previousElementSibling.className += ' active';
-                    }
-                }
-                //  更新菜单状态
-                var _menu = this.menu;
-                for(var key in _menu.data.menu){
-                    if(_menu.data.menu[key].name === 'pon_mgmt'){
-                        _menu.data.menu[key].isHidden = false;
-                    }
-                    if(_menu.data.menu[key].name === 'onu_mgmt'){
-                        _menu.data.menu[key].isHidden = true;
-                    }
-                }
-                // 调用 vuex Mutations方法，更新 store 状态
-                this.update_menu(_menu);
+                this.changeMenu('advanced_setting');
+                this.changeFMenu('onu_mgmt');
+                this.changeAdvMenu('onu_basic_info');
+                sessionStorage.setItem('f_menu', 'advanced_setting');
+                sessionStorage.setItem('first_menu', 'onu_mgmt');
+                sessionStorage.setItem('sec_menu', 'onu_basic_info');
             },
             //  删除确认框
             result_delete(bool){
@@ -637,10 +607,12 @@ import onuCard from '@/components/common/pon/onuCard'
 h2{
 	font-size: 24px;
 	font-weight: 600;
-	color: 	#67AEF7;
+    color: 	#67AEF7;
+    margin: 0 0 0 20px;
 }
 .onu-allow{
-    margin-top: 20px;
+    margin: 20px 0;
+    padding-top: 70px;
     >div:first-child{
         height: 36px;
         line-height: 36px;
@@ -656,15 +628,16 @@ h2{
     }
 }
 hr+div{
-    margin: 30px 0 0 0;
+    margin: 30px 0 0 10px;
 }
 ul{
     border:1px solid #ddd;
-    margin: 20px 0 0 10px;
+    margin: 20px 0 0 20px;
     min-width: 1020px;
     overflow: hidden;
     >li:first-child{
-        background: #67aef6;
+        background: #2361a2;
+        color: #fff;
     }
 }
 ul>li{
@@ -771,22 +744,11 @@ i.reset-onu:hover{
 div.modal-content{
     width: 600px;
     height: 300px;
-    background: #fff;
-    position: absolute;
-    left: 0;
-    right: 0;
-    top: 0;
-    bottom: 0;
-    margin: auto;
-    border-radius: 10px;
 }
-div.modal-content>h3{
-    margin-top: 20px;
-    margin-bottom: 20px;
-    text-align: center;
-    font-size: 18px;
-    font-weight: 600;
-    color: #67aef7;
+div.modal-content{
+    h3+div{
+        margin-top: 10px;
+    }
 }
 div.modal-item input{
     width: 180px;
@@ -878,7 +840,7 @@ div.tool-tips{
     }
 }
 div.search-onu{
-    margin: 20px 0 0 10px;
+    margin: 20px 0 0 20px;
     height: 36px;
     line-height: 36px;
     &:after{

@@ -29,7 +29,7 @@ export default {
 <style lang="less" scoped>
 div.tab-bar{
     margin: 30px 0 20px 0;
-    border-bottom: 3px solid #67aef7;
+    border-bottom: 3px solid #2361A2;
     padding-left: 10px;
     &::after{
         content: '';
@@ -39,7 +39,7 @@ div.tab-bar{
     >div{
         float: left;
         margin-left: 5px;
-        border: 1px solid #67aef7;
+        border: 1px solid #2361A2;
         margin-bottom: -1px;
         border-radius: 3px 3px 0 0;
         cursor: pointer;
@@ -49,10 +49,10 @@ div.tab-bar{
         line-height: 30px;
     }
     .actived{
-        border: 1px solid #67aef7;
+        border: 1px solid #2361A2;
         border-radius: 3px 3px 0 0;
         color: #fff;
-        background: #67aef7;
+        background: #2361A2;
         font-weight: 500;
     }
 }

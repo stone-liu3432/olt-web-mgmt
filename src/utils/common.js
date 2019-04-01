@@ -38,3 +38,26 @@ function nomenclature(arr,pon_count,ge_count){
     }
     return results.replace(/\,$/,'');
 }
+
+//  替换所有双字节字符为空
+export function replaceDBCS(str){
+    return str.replace(/[^\x00-\x80]/gi, '');
+}
+
+//  IP地址检查
+export function testIPAddr(str){
+    var reg = /^((25[0-5]|2[0-4]\d|((1\d{2})|([1-9]?\d)))\.){3}(25[0-5]|2[0-4]\d|((1\d{2})|([1-9]?\d)|\d))$/;
+    return reg.test(str) || str.replace(/(^\s*)|(\s*$)/g) === '0.0.0.0';
+}
+
+//  MAC地址检查
+export function testMACAddr(str){
+    var reg = /^([0-9abcdefABCDEF]{4}\-){2}[0-9abcdefABCDEF]{4}$/;
+    return reg.test(str) || str === '';
+}
+
+//  MAC地址掩码检查
+export function testMACMask(str){
+    var reg = /^([0-9abcdefABCDEF]{4}\-){2}[0-9abcdefABCDEF]{4}$/;
+    return reg.test(str) || str === '';
+}

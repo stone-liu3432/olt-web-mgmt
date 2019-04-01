@@ -107,7 +107,7 @@
         <div class="modal-dialog" v-if="add_dialog">
             <div class="cover"></div>
             <div class="content">
-                <h3>{{ lanMap['add_mac'] }}</h3>
+                <h3 class="modal-header">{{ lanMap['add_mac'] }}</h3>
                 <div class="add-mac-item">
                     <span>{{ lanMap['mac_type'] }}</span>
                     <select v-model.number="add_param.mac_type">
@@ -143,7 +143,7 @@
         <div class="modal-dialog" v-if="flush_dialog">
             <div class="cover"></div>
             <div class="content self-align">
-                <h3>{{ lanMap['flush_mac'] }}</h3>
+                <h3 class="modal-header">{{ lanMap['flush_mac'] }}</h3>
                 <div class="add-mac-item">
                     <span>{{ lanMap['flush_way'] }}</span>
                     <select v-model.number="flush_param.flags">
@@ -725,7 +725,8 @@ import loading from '@/components/common/loading'
 ul.mac-table{
     border: 1px solid #ddd;
     >li:first-child{
-        background: #67aef6;
+        background: #2361a2;
+        color: #fff
     }
 }
 div.nomore-data{
@@ -886,27 +887,12 @@ input[type="checkbox"]+label{
     user-select: none;
 }
 div.content{
-    position: absolute;
-    left: 0;
-    top: 0;
-    right: 0;
-    bottom: 0;
-    margin: auto;
     width: 580px;
     height: 350px;
-    background: #ddd;
-    border-radius: 10px;
     background: #fff;
-    padding: 10px;
-    >h3{
-        height: 30px;
-        font-size: 20px;
-        color: #67AEF7;
-        margin: 30px 0 30px 20px;
-    }
     div.add-mac-item{
         height: 32px;
-        margin: 10px 0 0 30px;
+        margin: 16px 0 0 30px;
         &:nth-child(4){
             height: 90px;
             margin-top: 20px;
@@ -938,7 +924,7 @@ div.content{
             display: inline-block;
         }
         >a{
-            margin-left: 85px;
+            margin-left: 90px;
         }
     }
     >div.place-holder{

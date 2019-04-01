@@ -31,7 +31,13 @@ var change_url = {
         get_multi_vlan: './multicast_vlan.json',
         get_mc_unknow: './mc_unknow.json',
         get_program: './program.json',
-        get_mc_eth_config: "./mc_eth_config.json"
+        get_mc_eth_config: "./mc_eth_config.json",
+        get_acl: './acl.json',
+        get_timerange: './timerange.json',
+        get_packetfilter: './packfilter.json',
+        get_qos: './qos.json',
+        get_static_router: './staticRouter.json',
+        get_arp: './arp.json'
     },
     betaUrl: {
         menu: "/board?info=menu",
@@ -65,7 +71,13 @@ var change_url = {
         get_multi_vlan: '/switch_igmp?form=multicast_vlan',
         get_mc_unknow: '/switch_igmp?form=mc_unknown&mvlan=',
         get_program: '/switch_igmp?form=program&mvlan=',
-        get_mc_eth_config: "/onumgmt?form=mc_eth_config"
+        get_mc_eth_config: "/onumgmt?form=mc_eth_config",
+        get_acl: '/switch_acl?form=acl',
+        get_timerange: '/switch_acl?form=time_range&name=all',
+        get_packetfilter: '/switch_pkfilter',
+        get_qos: '/switch_qos?form=qos',
+        get_static_router: '/switch_route?form=route_table',
+        get_arp: '/switch_route?form=arp_table'
     }
 }
 

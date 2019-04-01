@@ -175,7 +175,7 @@ export default {
                     result.push(Number(substrs));
                 }
             }
-            return result.filter(item=>!!item)
+            return result.filter(item=> !!item)
         },
         //  获取PON口下的ONU列表
         get_resource(){
@@ -199,7 +199,7 @@ export default {
                         this.onuid = _onu_list[0];
                         return
                     }
-                    if(this.show_page === 'pon_optical'){
+                    if(this.show_index === 'pon_optical'){
                         this.getData();
                     }
                 }else{

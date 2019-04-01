@@ -1048,7 +1048,8 @@ ul.vertical-font{
     >li{
         display: table-cell;
         overflow: hidden;
-        background: #67aef6;
+        background: #2361a2;
+        color: #fff;
         width: 8.89%;
         text-align: center;
         height: 40px;
@@ -1061,7 +1062,8 @@ ul.vertical-font{
     }
 }
 .bg-title{
-    background: #67aef6;
+    background: #2361a2;
+    color: #fff;
 }
 div.onu-vlan-info{
     margin: 0 0 0 10px;
@@ -1162,20 +1164,16 @@ div.onu-vlan-info>div.port-item-vlan{
 }
 div.dialog-body{
     width: 550px;
-    height: 500px;
-    background: #fff;
-    border-radius: 10px;
-    position: absolute;
-    left: 0;
-    right: 0;
-    top: 0;
-    bottom: 0;
-    margin: auto;
+    height: 505px;
     >div{
         height: 36px;
         line-height: 36px;
         &:first-child{
             height: 60px;
+            border-bottom: 2px solid #ddd;
+            &+div{
+                margin-top: 10px;
+            }
             >h3{
                 line-height: 60px;
                 margin-left: 30px;
@@ -1246,18 +1244,14 @@ div.tool-tips{
 div.dialog-content{
     width: 550px;
     height: 290px;
-    background: #fff;
-    border-radius: 10px;
-    position: absolute;
-    left: 0;
-    right: 0;
-    top: 0;
-    bottom: 0;
-    margin: auto;
     >div:first-child{
         padding-left: 30px;
         height: 60px;
         line-height: 60px;
+        border-bottom: 2px solid #ddd;
+        &+div{
+            margin-top: 10px;
+        }
         >h3{
             line-height: 60px;
             font-size: 18px;

@@ -41,7 +41,7 @@
         <div class="modal-dialog" v-if="show_multicast">
             <div class="cover"></div>
             <div class="igmp-group-modal">
-                <h3>IGMP {{ lanMap['config'] }}</h3>
+                <h3 class="modal-header">IGMP {{ lanMap['config'] }}</h3>
                 <div>
                     <div>
                         <span>{{ lanMap['mode'] }}</span>
@@ -426,23 +426,8 @@ div+ul{
     }
 }
 div.igmp-group-modal{
-    position: absolute;
-    left: 0;
-    right: 0;
-    top: 0;
-    bottom: 0;
-    margin: auto;
     width: 500px;
     height: 620px;
-    background: #fff;
-    border-radius: 5px;
-    h3{
-        font-size: 22px;
-        padding-left: 30px;
-        color: #67aef6;
-        height: 50px;
-        line-height: 60px;
-    }
     >div{
         div{
             height: 30px;

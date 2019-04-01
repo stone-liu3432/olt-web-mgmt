@@ -11,6 +11,7 @@
         "ponports":4,
         "geports":4,
         "xgeports":4,
+        "vendor": "Neutral",
         "build_time":"2017/11/22 09:32:48"
     }
 }

@@ -55,9 +55,9 @@
         </div>
         <div class="modal-dialog" v-if="is_cfg_mv">
             <div class="cover"></div>
-            <div class="multi-vlan-set" :style="{ 'height' : mark_type === 0 && mark_mode === 1 ? '400px' : '' }">
+            <div class="multi-vlan-set" :style="{ 'height' : mark_type === 0 && mark_mode === 1 ? '420px' : '' }">
                 <div>
-                    <h3>{{ lanMap['config'] }}</h3>
+                    <h3 class="modal-header">{{ lanMap['config'] }}</h3>
                     <div>
                         <span>{{ lanMap['vlan_id'] }}</span>
                         <span>{{ mvlan }}</span>
@@ -131,10 +131,10 @@
         </div>
         <div class="modal-dialog" v-if="is_create_mvlan">
             <div class="cover"></div>
-            <div class="create-mvlan-modal" :style="{ 'height': is_set_mvdesc ? '260px' : '150px' }">
+            <div class="create-mvlan-modal" :style="{ 'height': is_set_mvdesc ? '275px' : '165px' }">
                 <div>
-                    <h3 v-if="!is_set_mvdesc">{{ lanMap['create'] + lanMap['mvlan']}}</h3>
-                    <h3 v-else>{{ lanMap['config'] + lanMap['mvlan'] + lanMap['desc'] }}</h3>
+                    <h3 v-if="!is_set_mvdesc" class="modal-header">{{ lanMap['create'] + lanMap['mvlan']}}</h3>
+                    <h3 v-else class="modal-header">{{ lanMap['config'] + lanMap['mvlan'] + lanMap['desc'] }}</h3>
                     <div>
                         <span>{{ lanMap['vlan_id'] }}</span>
                         <input type="text" v-model.number="create_mvlan" v-focus v-if="!is_set_mvdesc"
@@ -161,7 +161,7 @@
         <div class="modal-dialog" v-if="is_set_program_desc">
             <div class="cover"></div>
             <div class="set-program-desc">
-                <h3>{{ lanMap['config'] + lanMap['program_desc'] }}</h3>
+                <h3 class="modal-header">{{ lanMap['config'] + lanMap['program_desc'] }}</h3>
                 <div>
                     <span>{{ lanMap['mvlan'] }}</span>
                     <span>{{ mvlan }}</span>
@@ -886,13 +886,8 @@ div.multi-vlan-content{
 div.multi-vlan-set{
     width: 500px;
     height: 300px;
-    h3{
-        height: 50px;
-        line-height: 50px;
-        color: #67aef7;
-        font-size: 22px;
-        font-weight: 500;
-        padding-left: 20px;
+    h3+div{
+        margin-top: 10px;
     }
     div:first-child{
         height: 36px;
@@ -942,14 +937,9 @@ div.multi-vlan-set{
 div.create-mvlan-modal{
     width: 500px;
     height: 260px;
-    h3{
-        height: 50px;
-        line-height: 50px;
-        color: #67aef7;
-        font-size: 22px;
-        font-weight: 500;
-        padding-left: 20px;
-    } 
+    h3+div{
+        margin-top: 10px;
+    }
     textarea{
         width: 240px;
         height: 100px;
@@ -986,23 +976,16 @@ div.create-mvlan-modal{
     }
 }
 div.set-program-desc{
-    width: 450px;
-    height: 375px;
-    >h3{
-        height: 50px;
-        line-height: 50px;
-        padding-left: 20px;
-        font-size: 20px;
-        font-weight: 500;
-        color: #67aef6;
-    }
+    width: 455px;
+    height: 370px;
     div.close{
         height: 60px;
         line-height: 60px;
         margin: 0;
     }
     .text-box{
-        height: 130px;
+        height: 120px;
+        margin: 0;
     }
     >div{
         height: 30px;
@@ -1030,7 +1013,7 @@ div.set-program-desc{
             margin-left: 30px;
         }
         a{
-            margin: 0 0 0 83px;
+            margin: 0 0 0 85px;
             width: 100px;
             padding: 0;
         }

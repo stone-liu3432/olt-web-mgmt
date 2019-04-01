@@ -66,14 +66,6 @@ import { mapState } from 'vuex'
             },
             jump(id){
                 this.$router.push('/port_cfg?port_id='+id);
-                var sub_item = document.querySelectorAll('p.sub-item');
-                for(var i=0;i<sub_item.length;i++){
-                    sub_item[i].className = 'sub-item';
-                    if(sub_item[i].innerText.replace(/(^\s*)|(\s*$)/g, "") == this.lanMap['port_cfg']){
-                        sub_item[i].className += ' actived';
-                    }
-                }
-                sessionStorage.setItem('sec_menu','port_cfg');
             }
         },
         computed: mapState(['lanMap','port_name','change_url'])
@@ -102,7 +94,8 @@ hr+ul{
     margin-top: 20px;
 }
 li.bg-title>span{
-    background: #67aef6;
+    background: #2361a2;
+    color: #fff
 }
 li{
     height: 32px;

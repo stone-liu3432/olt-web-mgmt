@@ -205,10 +205,10 @@ div.diagonose-item{
         text-align: center;
         line-height: 30px;
         border-radius: 5px;
-        background: #666;
+        // background: #3990E5;
         color: #fff;
         &:active{
-            background: #555;
+            background: #aaa;
         }
     }
 }

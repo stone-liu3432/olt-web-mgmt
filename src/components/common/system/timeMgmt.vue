@@ -414,8 +414,8 @@ a{
     display: inline-block;
     width: 150px;
     height: 30px;
-    //border: 1px solid #49A3FF;
-    background: #666;
+    // border: 1px solid #49A3FF;
+    // background: #49A3FF;
     border-radius: 5px;
     text-align: center;
     line-height: 30px;

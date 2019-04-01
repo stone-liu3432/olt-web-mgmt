@@ -50,8 +50,8 @@
         <div class="modal-dialog" v-if="show_otp_modal">
             <div class="cover"></div>
             <div class="onu-type-modal">
-                <h3 v-if="show_add_modal">{{ lanMap['add_onu_type'] }}</h3>
-                <h3 v-else>{{ lanMap['del_onu_type'] }}</h3>
+                <h3 v-if="show_add_modal" class="modal-header">{{ lanMap['add_onu_type'] }}</h3>
+                <h3 v-else class="modal-header">{{ lanMap['del_onu_type'] }}</h3>
                 <div>
                     <span>{{ lanMap['upgrade_type'] }}</span>
                     <input v-if="show_add_modal" v-focus v-model.trim="add_otp" type="text" :style="{ 'border-color' : add_otp !== '' && !reg_otp.test(add_otp) ? 'red' : ''}"
@@ -566,28 +566,18 @@ div.onu-upgrade{
         padding: 0 50px;
     }
 }
-div.cover+div{
-    position: absolute;
-    left: 0;
-    right: 0;
-    top: 0;
-    bottom: 0;
-    margin: auto;
-    border-radius: 5px;
-    background: #fff;
-}
 div.onu-type-modal{
     width: 500px;
     height: 220px;
-    h3{
-        height: 60px;
-        line-height: 60px;
-        font-size: 20px;
-        color: #67aef6;
-        text-indent: 20px;
-    }
+    // h3{
+    //     height: 60px;
+    //     line-height: 60px;
+    //     font-size: 20px;
+    //     color: #67aef6;
+    //     text-indent: 20px;
+    // }
     h3+div{
-        margin: 10px 0 20px 30px;
+        margin: 20px 0 10px 30px;
         span:first-child{
             display: inline-block;
             width: 150px;

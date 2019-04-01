@@ -1,0 +1,37 @@
+{
+    "code": 1,
+    "message": "success",
+    "data": [
+        {
+            "ipaddress": "192.168.100.1",
+            "macaddress": "38:3a:21:f0:01:65",
+            "portid": 5,
+            "vlanid": 1001
+        },{
+            "ipaddress": "192.168.100.11",
+            "macaddress": "38:3a:21:f0:01:65",
+            "portid": 6,
+            "vlanid": 1002
+        },{
+            "ipaddress": "192.168.100.12",
+            "macaddress": "38:3a:21:f0:01:65",
+            "portid": 7,
+            "vlanid": 1003
+        },{
+            "ipaddress": "192.168.100.13",
+            "macaddress": "38:3a:21:f0:01:65",
+            "portid": 8,
+            "vlanid": 1004
+        },{
+            "ipaddress": "192.168.100.14",
+            "macaddress": "38:3a:21:f0:01:65",
+            "portid": 9,
+            "vlanid": 1005
+        },{
+            "ipaddress": "192.168.100.15",
+            "macaddress": "38:3a:21:f0:01:65",
+            "portid": 10,
+            "vlanid": 1006
+        }
+    ]
+}

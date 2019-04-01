@@ -37,8 +37,8 @@
             <div class="cover"></div>
             <div class="add-content">
                 <div>
-                    <h3 v-if="is_add">{{ lanMap['add'] + lanMap['static_table'] }}</h3>
-                    <h3 v-else>{{ lanMap['delete'] + lanMap['static_table'] }}</h3>
+                    <h3 v-if="is_add" class="modal-header">{{ lanMap['add'] + lanMap['static_table'] }}</h3>
+                    <h3 v-else class="modal-header">{{ lanMap['delete'] + lanMap['static_table'] }}</h3>
                     <div v-if="is_add">
                         <span>{{ lanMap['multi_ip'] }}</span>
                         <input type="text" v-focus v-model.trim="multi_ip" placeholder="ex : 127.1.1.1"
@@ -269,7 +269,8 @@ select{
 }
 div.multicast{
     .bg-title{
-        background: #67aef6;
+        background: #2361a2;
+        color: #fff
     }
     >div:first-child{
         span:first-child{
@@ -364,14 +365,7 @@ div.multicast{
     }
     div.add-content{
         width: 500px;
-        height: 260px;
-        h3{
-            font-size: 22px;
-            padding-left: 30px;
-            color: #67aef6;
-            height: 50px;
-            line-height: 60px;
-        }
+        height: 250px;
         >div{
             div{
                 height: 30px;
@@ -384,8 +378,8 @@ div.multicast{
                 }
             }
             a{
-                margin-left: 100px;
-                margin-top: 20px;
+                margin-left: 105px;
+                margin-top: 10px;
             }
         }
     }

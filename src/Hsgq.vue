@@ -100,9 +100,12 @@ export default {
 };
 </script>
 
-<style>
+<style lang="less">
+//  #184777  
+//  #2C72BB
+//  #E0EFE7
 #hsgq {
-  font-family: "Avenir", Helvetica, Arial, sans-serif;
+  font-family: Arial,"Avenir", Helvetica, sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   height: 100%;
@@ -111,6 +114,7 @@ export default {
   max-width: 1980px;
   font-size: 16px;
   overflow-y: scroll;
+  background: #e0efe7;
 }
 .global-load {
   display: none;
@@ -210,6 +214,9 @@ a:active {
     border: 1px solid #1e90ff;
     background: #444;
 }
+i{
+    user-select: none;
+}
 /* 复用模态框类 */
 .modal-dialog {
   position: fixed;
@@ -217,7 +224,9 @@ a:active {
   top: 0;
   width: 100%;
   height: 100%;
-  z-index: 1000;
+  z-index: 99999;
+  overflow-y: auto;
+  margin: 0 !important;
 }
 .cover {
   width: 100%;
@@ -242,14 +251,24 @@ a:active {
 }
 div.cover+div{
     position: absolute;
-    left: 0;
-    right: 0;
-    top: 0;
-    bottom: 0;
-    margin: auto;
+    top:50%;
+    left:50%;
+    transform:translate(-50%,-50%);	
     width: 500px;
     height: 400px;
     background: #fff;
     border-radius: 5px;
+    .modal-header{
+        box-sizing: border-box;
+        width: 100%;
+        height: 60px;
+        line-height: 60px;
+        font-size: 18px;
+        font-weight: 600;
+        color: #67aef6;
+        text-indent: 10px;
+        padding: 0 20px;
+        border-bottom: 2px solid #ddd;
+    }
 }
 </style>
