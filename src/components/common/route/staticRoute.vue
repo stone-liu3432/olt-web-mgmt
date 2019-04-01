@@ -63,8 +63,8 @@
                     </div>
                     <div>
                         <span>{{ lanMap['gateway'] }}</span>
-                        <input type="text" v-model="nexthop"
-                            :style="{ 'border-color': nexthop !== '' && !ip_reg.test(nexthop) ? 'red' : '' }">
+                        <input type="text" v-model="gateway"
+                            :style="{ 'border-color': gateway !== '' && !ip_reg.test(gateway) ? 'red' : '' }">
                         <span>EX. 127.0.0.1</span>
                     </div>
                     <div>
@@ -102,7 +102,7 @@ export default {
             offRouteModal: false,
             ipaddr: '',
             ipmask: '',
-            nexthop: '',
+            gateway: '',
             ip_reg: /^(((25[0-5])|(2[0-4]\d)|(1\d\d)|(\d?\d))\.){3}(((25[0-5])|2[0-4]\d)|(1\d\d)|(\d?\d))$/
         }
     },
@@ -180,7 +180,7 @@ export default {
             if(node){
                 this.ipaddr = node.ipaddress;
                 this.ipmask = node.mask;
-                this.nexthop = node.gateway;
+                this.gateway = node.gateway;
                 this.cache_router = node;
             }
         },
@@ -199,7 +199,7 @@ export default {
                 })
                 return
             }
-            if(!this.ip_reg.test(this.nexthop)){
+            if(!this.ip_reg.test(this.gateway)){
                 this.$message({
                     type: 'error',
                     text: this.lanMap['param_error'] + ': ' + this.lanMap['gateway']
@@ -211,7 +211,7 @@ export default {
                 "param": {
                     "ipaddress": this.ipaddr,
                     "mask": this.ipmask,
-                    "gateway": this.nexthop
+                    "gateway": this.gateway
                 }
             }
             this.$http.post('/switch_route?form=static_route', post_data).then(res =>{
@@ -235,7 +235,7 @@ export default {
         openDeleteModal(node){
             this.ipaddr = node.ipaddress;
             this.ipmask = node.mask;
-            this.nexthop = node.nexthop;
+            this.gateway = node.gateway;
             this.delModal = true;
         },
         deleteStaticRouter(bool){
@@ -245,7 +245,7 @@ export default {
                     "param": {
                         "ipaddress": this.ipaddr,
                         "mask": this.ipmask,
-                        "gateway": this.nexthop
+                        "gateway": this.gateway
                     }
                 }
                 this.$http.post('/switch_route?form=static_route', post_data).then(res =>{
@@ -273,7 +273,7 @@ export default {
             this.cache_router = {};
             this.ipaddr = '';
             this.ipmask = '';
-            this.nexthop = '';
+            this.gateway = '';
         }
     }
 }
