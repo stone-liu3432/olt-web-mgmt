@@ -8,9 +8,10 @@
                 <span :class="{ 'checked' : status }"></span>
             </div>
         </div>
-        <h3 v-if="status">
+        <h3  v-if="status">
             {{ lanMap['static_route'] }}
-            <a href="javascript:void(0)" @click="openSetModal('add')">{{ lanMap['add'] }}</a>
+            <a href="javascript:void(0);" @click="openSetModal('add')">{{ lanMap['add'] }}</a>
+            <a href="javascript:void(0);" @click="getData">{{ lanMap['refresh'] }}</a>
         </h3>
         <div v-if="status && static_router.data">
             <ul class="static-route-item bg-title">
@@ -37,8 +38,8 @@
                     <li>{{ item.preference }}</li>
                     <li>{{ item.status === 1 ? 'Reachale' : 'Unreachale' }}</li>
                     <li>
-                        <i class="icon-config" @click="openSetModal('set', item)"></i>
-                        <i class="icon-delete" @click="openDeleteModal(item)"></i>
+                        <!-- <i class="icon-config" @click="openSetModal('set', item)"></i> -->
+                        <i class="icon-delete" v-if="item.protocol !== 1" @click="openDeleteModal(item)"></i>
                     </li>
                 </ul>
             </div>
@@ -108,7 +109,7 @@ export default {
     },
     created(){
         this.getState();
-        this.getData();
+        //this.getData();
     },
     methods: {
         getState(){
@@ -118,6 +119,9 @@ export default {
                         this.status = !!res.data.data.status;
                     }else{
                         this.status = false;
+                    }
+                    if(this.status){
+                        this.getData();
                     }
                 }else{
                     this.status = false;
@@ -388,7 +392,6 @@ ul.static-route-item{
         }
     }
     i.icon-delete{
-        margin-left: 6px;
         background-image: url('../../../assets/delete.png');
         background-position: -4px -4px;
         background-repeat: no-repeat;
