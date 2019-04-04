@@ -59,6 +59,8 @@ var zh = {
     onu_info: "ONU信息",
     user_mgmt: "用户管理",
     user: "用户",
+    user_name: '用户名',
+    password: '密码',
     modify_user_pwd: "修改当前用户密码",
     title: "名称",
     key: "密钥",

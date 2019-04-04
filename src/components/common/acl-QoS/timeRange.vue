@@ -92,9 +92,8 @@
                     </div>
                     <div v-if="modalFlag === 'delete'">
                         <span>{{ lanMap['day'] }}</span>
-                        <input type="text" v-model="day" :disabled="type === 1"
-                            :style="{ 'border-color': type === 2 && !regDate.test(day) && day !== '' ? 'red' : '' }">
-                        <span class="timerange-tips">Ex. yyyy/mm/dd</span>
+                        <input type="text" disabled v-if="type === 1">
+                        <datePicker @changedate="updateDay" v-if="type !== 1"></datePicker>
                     </div>
                     <div>
                         <a href="javascript:void(0);" @click="submitAdd"
@@ -142,7 +141,7 @@ export default {
             day: '',
             modalFlag: '',
             regTime: /^(([01]?\d)|2[0-4]):[0-5]?\d$/,
-            regDate: /^\d{4}\/(0?\d|(1[0-2]))\/(([1-2]?\d)|3[01])$/,
+            regDate: /^\d{4}\/(0?[1-9]|(1[0-2]))\/((0?[1-9])|([12]\d)|3[01])$/,
             isDelAll: false,
             pagesData: {},
             isShowPagination: false,
@@ -190,6 +189,9 @@ export default {
         },
         updateEdate(date){
             this.eday = date;
+        },
+        updateDay(data){
+            this.day = data;
         },
         submitAdd(){
             if(!this.name || this.name.length > 16){

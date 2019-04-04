@@ -5,12 +5,12 @@
         "cmode": "SPWRR",
         "queue": [
             { "cos": 0, "mode": "SP", "weight": 0 },
-            { "cos": 1, "mode": "SP", "weight": 0 },
-            { "cos": 2, "mode": "SP", "weight": 0 },
+            { "cos": 1, "mode": "SP", "weight": 22 },
+            { "cos": 2, "mode": "SP", "weight": 33 },
             { "cos": 3, "mode": "SP", "weight": 0 },
-            { "cos": 4, "mode": "SP", "weight": 0 },
+            { "cos": 4, "mode": "SP", "weight": 8 },
             { "cos": 5, "mode": "SP", "weight": 0 },
-            { "cos": 6, "mode": "SP", "weight": 0 },
+            { "cos": 6, "mode": "SP", "weight": 5 },
             { "cos": 7, "mode": "SP", "weight": 0 }
         ],
         "cosq": [0, 1, 2, 3, 4, 5, 6, 7]

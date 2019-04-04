@@ -171,6 +171,12 @@ export default {
         },
         openModal(str){
             this.showModal = str;
+            if(str === 'priority'){
+                var pri = this.qos.data.cosq || [];
+                pri.forEach((item, index, arr) => {
+                    this['queue' + index] = item;
+                });
+            }
         },
         closeModal(){
             this.queue0 = '';
@@ -308,6 +314,16 @@ export default {
             this.closeModal();
         }
     },
+    watch: {
+        'flag'(){
+            if(this.showModal === 'queue' && this.flag === 2){
+                var queue = this.qos.data.queue || [];
+                queue.forEach((item, index, arr) =>{
+                    this['wrr' + index] = item.weight;
+                })
+            }
+        }
+    }
 }
 </script>
 
@@ -370,6 +386,8 @@ div.priority-modal{
             }
             >input{
                 width: 30px;
+                text-indent: 0;
+                text-align: center;
             }
             select{
                 width: 160px;

@@ -16,11 +16,11 @@
             <h3>{{ lanMap['login_page_login_hit'] }}</h3>
             <form>
                 <div>
-                    <span>USER</span>
+                    <span>{{ lanMap['user_name'] }}</span>
                     <input type="text" v-model="userName" :class="[ verify_uname ? 'input-error' : '' ]" v-focus>
                 </div>
                 <div class="user-pwd">
-                    <span>password</span>
+                    <span>{{ lanMap['password'] }}</span>
                     <input type="password" 
                         v-model="userPwd" id="userPwd" :class="[ verify_upwd ? 'input-error' : '' ]" 
                         autocomplete="off" @keyup.enter="userLogin">
@@ -165,16 +165,20 @@ div.login{
     width: 100%;
     min-width: 1280px;
     height: 100%;
-    min-height: 974px;
+    min-height: 768px;
     background: #6C6D69;
 }
 div.login-banner{
-    height: 150px;
+    height: 90px;
 }
 div.login-body{
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
     width: 700px;
-    padding: 35px 15px;
-    margin: 100px auto;
+    height: 360px;
+    padding: 35px 15px 15px 15px;
     background: #fff;
     border-radius: 8px;
     text-align: center;
@@ -212,7 +216,6 @@ div.login-tips>h4:last-child{
 div.login-body a{
     display: inline-block;
     position: relative;
-    left: 25px;
     width: 300px;
     height: 42px;
     line-height: 42px;
@@ -227,10 +230,9 @@ div.login-body a:active{
     background: rgb(13, 113, 146);
 }
 form div{
-    height: 50px;
     line-height: 50px;
     width: 450px;
-    margin: 20px auto;
+    margin: 15px auto;
 }
 div.user-pwd{
     position: relative;
