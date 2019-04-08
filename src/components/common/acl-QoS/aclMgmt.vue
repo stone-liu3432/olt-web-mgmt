@@ -301,7 +301,6 @@ export default {
             timerange: '',
             //  timerange缓存，用于flags变更
             timerange_cache: '',
-            rule_cache: {},
             //  分页组件数据
             pagesData: {},
             //  当前展示的数据
@@ -565,7 +564,6 @@ export default {
             this.src_mask = '';
             this.dst_mask = '';
             this.timerange = '';
-            this.rule_cache = {};
         },
         submitModify(){
             if(this.rule_id < 1 || this.rule_id > 16 || isNaN(this.rule_id)){
@@ -595,10 +593,7 @@ export default {
                 })
                 return
             }
-            if(this.isAddRule && this.src_ipaddr !== ''){
-                flags |= 1 << n;
-            }
-            if(!this.isAddRule && this.src_ipaddr !== this.rule_cache.src_ipaddr) {
+            if(this.src_ipaddr !== ''){
                 flags |= 1 << n;
             }
             n++;
@@ -609,10 +604,7 @@ export default {
                 })
                 return;
             }
-            if(this.isAddRule && this.timerange !== ''){
-                flags |= 1 << n;
-            }
-            if(!this.isAddRule && this.timerange_cache !== this.timerange){
+            if(this.timerange !== ''){
                 flags |= 1 << n;
             }
             if(!flags){
@@ -677,11 +669,8 @@ export default {
                 })
                 return
             }
-            if(this.isAddRule && this.src_ipaddr !== ''){
+            if(this.src_ipaddr !== ''){
                 flags |= 1 << n;
-            }
-            if(!this.isAddRule && this.src_ipaddr !== ''){
-                flags |= 1 << n; 
             }
             n++;
             if(this.src_ipaddr !== '' && this.src_ipmask !== '' && !this.testIP(this.src_ipmask)){
@@ -698,10 +687,7 @@ export default {
                 })
                 return
             }
-            if(this.isAddRule && this.dst_ipaddr !== ''){
-                flags |= 1 << n;
-            }
-            if(!this.isAddRule && this.dst_ipaddr !== ''){
+            if(this.dst_ipaddr !== ''){
                 flags |= 1 << n;
             }
             n++;
@@ -720,10 +706,7 @@ export default {
                 })
                 return
             }
-            if(this.isAddRule && this.src_port !== ''){
-                flags |= 1 << n;
-            }
-            if(!this.isAddRule && this.src_port !== ''){
+            if(this.src_port !== ''){
                 flags |= 1 << n;
             }
             n++;
@@ -734,10 +717,7 @@ export default {
                 })
                 return
             }
-            if(this.isAddRule && this.dst_port !== ''){
-                flags |= 1 << n;
-            }
-            if(!this.isAddRule && this.dst_port !== ''){
+            if(this.dst_port !== ''){
                 flags |= 1 << n;
             }
             n++;
@@ -750,10 +730,7 @@ export default {
                 })
                 return
             }
-            if(this.isAddRule && this.precedence !== ''){
-                flags |= 1 << n;
-            }
-            if(!this.isAddRule && this.precedence !== ''){
+            if(this.precedence !== ''){
                 flags |= 1 << n;
             }
             n++;
@@ -764,25 +741,19 @@ export default {
                 })
                 return
             }
-            if(this.isAddRule && this.dscp !== ''){
-                flags |= 1 << n;
-            }
-            if(!this.isAddRule && this.dscp !== ''){
+            if(this.dscp !== ''){
                 flags |= 1 << n;
             }
             n++;
-            if(this.isAddRule && this.timerange !== ''){
+            if(this.timerange !== ''){
                 flags |= 1 << n;
             }
-            if(!this.isAddRule && this.timerange_cache !== this.timerange) {
-                flags |= 1 << n;
+            if(!flags){
+                this.$message({
+                    type: 'info',
+                    text: this.lanMap['modify_tips']
+                })
             }
-            // if(!flags){
-            //     this.$message({
-            //         type: 'info',
-            //         text: this.lanMap['modify_tips']
-            //     })
-            // }
             var post_data = {
                 "method": "set",
                 "param": {
@@ -830,10 +801,7 @@ export default {
                 })
                 return
             }
-            if(this.isAddRule && this.eth_type !== ''){
-                flags |= 1 << n;
-            }
-            if(!this.isAddRule && this.eth_type !== ''){
+            if(this.eth_type !== ''){
                 flags |= 1 << n;
             }
             n++;
@@ -844,10 +812,7 @@ export default {
                 })
                 return
             }
-            if(this.isAddRule && this.cos !== ''){
-                flags |= 1 << n;
-            }
-            if(!this.isAddRule && this.cos !== ''){
+            if(this.cos !== ''){
                 flags |= 1 << n;
             }
             n++;
@@ -858,10 +823,7 @@ export default {
                 })
                 return
             }
-            if(this.isAddRule && this.inner_cos !== ''){
-                flags |= 1 << n;
-            }
-            if(!this.isAddRule && this.inner_cos !== ''){
+            if(this.inner_cos !== ''){
                 flags |= 1 << n;
             }
             n++;
@@ -872,10 +834,7 @@ export default {
                 })
                 return
             }
-            if(this.isAddRule && this.vlan_id !== ''){
-                flags |= 1 << n;
-            }
-            if(!this.isAddRule && this.vlan_id !== ''){
+            if(this.vlan_id !== ''){
                 flags |= 1 << n;
             }
             n++;
@@ -886,10 +845,7 @@ export default {
                 })
                 return
             }
-            if(this.isAddRule && this.inner_vlan_id !== ''){
-                flags |= 1 << n;
-            }
-            if(!this.isAddRule && this.inner_vlan_id !== ''){
+            if(this.inner_vlan_id !== ''){
                 flags |= 1 << n;
             }
             n++;
@@ -900,10 +856,7 @@ export default {
                 })
                 return
             }
-            if(this.isAddRule && this.src_mac !== ''){
-                flags |= 1 << n;
-            }
-            if(!this.isAddRule && this.src_mac !== ''){
+            if(this.src_mac !== ''){
                 flags |= 1 << n;
             }
             n++;
@@ -921,10 +874,7 @@ export default {
                 })
                 return
             }
-            if(this.isAddRule && this.dst_mac !== ''){
-                flags |= 1 << n;
-            }
-            if(!this.isAddRule && this.dst_mac !== ''){
+            if(this.dst_mac !== ''){
                 flags |= 1 << n;
             }
             n++;
@@ -935,10 +885,7 @@ export default {
                 })
                 return
             }
-            if(this.isAddRule && this.timerange !== ''){
-                flags |= 1 << n;
-            }
-            if(!this.isAddRule && this.timerange !== this.timerange_cache){
+            if(this.timerange !== ''){
                 flags |= 1 << n;
             }
             if(!flags){
@@ -1050,7 +997,6 @@ export default {
                         this.timerange_cache = item.timerange;
                         Object.keys(item).forEach(key =>{
                             this[key] = item[key];
-                            this.rule_cache[key] = item[key];
                         })
                     }
                 })
