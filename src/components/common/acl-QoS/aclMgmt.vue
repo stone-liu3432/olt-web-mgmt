@@ -535,9 +535,9 @@ export default {
             if(this.acl_id >= 5000){
                 this.acl_rule_type = 3;
             }
-            if(this.time_range.data && this.time_range.data.length >= 0){
-                this.timerange = this.time_range.data[0].name;
-            }
+            // if(this.time_range.data && this.time_range.data.length >= 0){
+            //     this.timerange = this.time_range.data[0].name;
+            // }
         },
         closeRuleModal(){
             this.isCfgRule = false;
