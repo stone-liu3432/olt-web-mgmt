@@ -965,11 +965,11 @@ export default {
                 var post_data = {
                     "method": "modify",
                     "param":{
-                        "acl_id": this.acl_id,
+                        "acl_id": node.acl_id,
                         "new_rule_id": rules
                     }
                 }
-                this.$http.post('/switch_acl?form=rule', post_data).then(res=>{
+                this.$http.post('/switch_acl?form=rulepri', post_data).then(res=>{
                     if(res.data.code === 1){
                         this.$message({
                             type: 'success',
