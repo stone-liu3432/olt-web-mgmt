@@ -478,7 +478,7 @@ export default {
                 if(res.data.code === 1){
                     this.$message({
                         type: 'success',
-                        text: lanMap['delete_ok']
+                        text: this.lanMap['delete_ok']
                     })
                     this.getData(MIN_ACL_ID, MAX_ACL_ID, true);
                 }else{
