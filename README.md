@@ -1,7 +1,10 @@
 # OLT WEB管理界面
 
 > 基于vue.js
+
 > 大量的json文件均为模拟数据
+
+> 项目原托管在[码云](https://www.gitee.com)上，后迁移至github
 
 ## 项目依赖
 
