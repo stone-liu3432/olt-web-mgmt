@@ -161,6 +161,10 @@ export default {
                 if(res.data.code === 1){
                     this.timeRange = res.data;
                     this.updateTimeRange(res.data);
+                    if(!res.data.data || !res.data.data.length){
+                        this.showTimeRange = [];
+                        return;
+                    }
                     var count = res.data.data.length;
                     this.pagesData = {
                         count,

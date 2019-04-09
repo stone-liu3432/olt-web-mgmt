@@ -104,6 +104,10 @@ export default {
             this.$http.get(this.change_url.get_packetfilter).then(res =>{
                 if(res.data.code === 1){
                     this.packetFilter = res.data;
+                    if(!res.data.data || !res.data.data.length){
+                        this.packetFilterShow = [];
+                        return;
+                    }
                     var count = res.data.data.length;
                     this.pagesData = {
                         count,

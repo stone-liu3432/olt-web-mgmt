@@ -328,6 +328,10 @@ export default {
             }}).then(res=>{
                 if(res.data.code === 1){
                     this.acl_all = res.data;
+                    if(!res.data.data || !res.data.data.length){
+                        this.acl_show = [];
+                        return;
+                    }
                     let count = res.data.data.length;
                     this.pagesData = {
                         count: count,
