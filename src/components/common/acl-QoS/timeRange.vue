@@ -81,7 +81,7 @@
                     <div v-if="type === 1 && modalFlag ==='add'">
                         <span>{{ lanMap['day'] }}</span>
                         <select v-model="day">
-                            <option :value="item" v-for="(item,index) in days" :key="index">{{ item }}</option>
+                            <option :value="item.toLowerCase()" v-for="(item,index) in days" :key="index">{{ item }}</option>
                         </select>
                     </div>
                     <div v-if="modalFlag === 'delete'">
@@ -130,7 +130,7 @@ export default {
         return {
             timeRange: {},
             showTimeRange: '',
-            days: ['Mon.', 'Tue.', 'Wed.', 'Thur.', 'Fri.', 'Sat.', 'Sun.', 'daily', 'weekend', 'working-day'],
+            days: ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday', 'Daily', 'Weekend', 'Working-day'],
             type: 1,
             name: '',
             stime: '',
@@ -386,7 +386,7 @@ div.time-range-item{
         }
         >li{
             float: left;
-            width: 20%;
+            width: 25%;
             height: 30px;
             line-height: 30px;
             &:last-child{
