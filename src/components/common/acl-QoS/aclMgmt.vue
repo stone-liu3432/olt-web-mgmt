@@ -38,7 +38,7 @@
                         {{ lanMap['action'] }}&nbsp;:&nbsp;{{ _item.action === 1 ? 'deny' : 'permit' }}
                     </span>
                     <span v-for="(__item,__index) in _item" :key="__index"
-                        v-if="__index !== 'rule_id' && __index !== 'flags' && __index !== 'action' && !!__item">
+                        v-if="__index !== 'rule_id' && __index !== 'flags' && __index !== 'action' && (!!__item || __item === 0)">
                         {{ lanMap[__index] ? lanMap[__index] : __index }}&nbsp;:&nbsp;{{ __item }}
                     </span>
                 </div>
@@ -478,7 +478,7 @@ export default {
                 if(res.data.code === 1){
                     this.$message({
                         type: 'success',
-                        text: this.lanMap['delete_ok']
+                        text: res.data.message
                     })
                     this.getData(MIN_ACL_ID, MAX_ACL_ID, true);
                 }else{
@@ -493,6 +493,9 @@ export default {
             this.closeAclMgmt();
         },
         IDRangeError(id){
+            if(this.isAclMgmt && !this.isAddAcl && id >= 2000 && id < 6000){
+                return false;
+            }
             if(this.acl_type === 1){
                 return id < 2000 || id > 2999;
             }
@@ -517,6 +520,7 @@ export default {
             this.isCfgRule = true;
             this.cache_data = node;
             this.acl_id = node.acl_id;
+            this.timerange = '';
             if(node.rule && node.rule.length > 0){
                 this.rule_id = node.rule[0].rule_id;
             }
