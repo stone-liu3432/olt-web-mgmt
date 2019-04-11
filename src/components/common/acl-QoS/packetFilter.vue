@@ -109,6 +109,7 @@ export default {
                         return;
                     }
                     var count = res.data.data.length;
+                    res.data.data.sort((a, b) => a.acl_id - b.acl_id);
                     this.pagesData = {
                         count,
                         limit
@@ -241,8 +242,11 @@ h3+div{
 div.packet-filter-item{
     padding: 8px 0 8px 16px;
     vertical-align: top;
-    margin: 0 0 8px 10px;
+    //margin: 0 0 8px 10px;
     border: 1px solid #ddd;
+    &:nth-of-type(even){
+        background: #caecda;
+    }
     >div{
         float: left;
         width: 16%;
@@ -260,7 +264,7 @@ div.packet-filter-item{
             word-break: break-all;
             float: left;
             &:first-child{
-                width: 100px;
+                width: 90px;
             }
         }
     }

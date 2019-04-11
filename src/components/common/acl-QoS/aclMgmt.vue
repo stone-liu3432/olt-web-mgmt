@@ -39,7 +39,8 @@
                     </span>
                     <span v-for="(__item,__index) in _item" :key="__index"
                         v-if="__index !== 'rule_id' && __index !== 'flags' && __index !== 'action' && (!!__item || __item === 0)">
-                        {{ lanMap[__index] ? lanMap[__index] : __index }}&nbsp;:&nbsp;{{ __item }}
+                        {{ lanMap[__index] ? lanMap[__index] : __index }}&nbsp;:&nbsp;
+                        {{ __index === 'eth_type' ? '0x' + __item.toString(16) : __item }}
                     </span>
                 </div>
                 <div class="acl-rule-config">
@@ -987,7 +988,7 @@ export default {
                     }else{
                         this.$message({
                             type: res.data.type,
-                            text: '(' + res.data.code + ')' + res.data.msg
+                            text: '(' + res.data.code + ')' + res.data.message
                         })
                     }
                 }).catch(err=>{
