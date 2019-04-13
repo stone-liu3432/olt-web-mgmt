@@ -169,13 +169,13 @@
                     </div>
                     <div v-if="acl_rule_type === 2">
                         <span>{{ lanMap['precedence'] }}</span>
-                        <input type="text" v-model.number="precedence" :disabled="!!dscp"
+                        <input type="text" v-model.number="precedence" :disabled="dscp !== ''"
                             :style="{ 'border-color': precedence < 0 || precedence > 7 || isNaN(precedence) ? 'red' : '' }">
                         <span>Range: 0-7</span>
                     </div>
                     <div v-if="acl_rule_type === 2">
                         <span>{{ lanMap['dscp'] }}</span>
-                        <input type="text" v-model.number="dscp" :disabled="!!precedence"
+                        <input type="text" v-model.number="dscp" :disabled="precedence !== ''"
                             :style="{ 'border-color': dscp < 0 || dscp > 255 || isNaN(dscp) ? 'red' : '' }">
                         <span>Range: 0-63</span>
                     </div>
@@ -278,7 +278,7 @@ export default {
             isCfgRule: false,
             isAddRule: false,
             isARPL: false,
-            reg: /^[\d\-,]+$/,
+            reg: /^(\d+)|(\d[\d\-]+)$/,
             //  增加或配置rlue规则时的数据
             action: 1,
             src_ipaddr: '',
@@ -730,8 +730,8 @@ export default {
                 flags |= 1 << n;
             }
             n++;
-            if(this.precedence) this.dscp = '';
-            if(this.dscp) this.precedence = '';
+            if(this.precedence !== '') this.dscp = '';
+            if(this.dscp !== '') this.precedence = '';
             if(this.precedence < 0 || this.precedence > 7 || isNaN(this.precedence)){
                 this.$message({
                     type: 'error',
