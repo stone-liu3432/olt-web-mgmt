@@ -48,7 +48,7 @@
                     <div>
                         <span>{{ lanMap['name'] }}</span>
                         <input type="text" v-model="name" v-focus
-                            :style="{ 'border-color': !/^\w{3, 16}$/ig.test(name) ? 'red' : '' }">
+                            :style="{ 'border-color': name !== '' && !regName.test(name) ? 'red' : '' }">
                         <span class="timerange-tips">4 - 16 characters</span>
                     </div>
                     <div>
@@ -142,6 +142,7 @@ export default {
             modalFlag: '',
             regTime: /^(([01]?\d)|2[0-4]):[0-5]?\d$/,
             regDate: /^\d{4}\/(0?[1-9]|(1[0-2]))\/((0?[1-9])|([12]\d)|3[01])$/,
+            regName: /^\w{3,16}$/,
             isDelAll: false,
             pagesData: {},
             isShowPagination: false,
@@ -198,7 +199,7 @@ export default {
             this.day = data;
         },
         submitAdd(){
-            if(!/^\w{3,16}$/ig.test(this.name)){
+            if(!this.regName.test(this.name)){
                 this.$message({
                     type: 'error',
                     text: this.lanMap['param_error'] + ': ' + this.lanMap['name']
