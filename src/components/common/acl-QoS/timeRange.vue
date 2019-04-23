@@ -48,7 +48,7 @@
                     <div>
                         <span>{{ lanMap['name'] }}</span>
                         <input type="text" v-model="name" v-focus
-                            :style="{ 'border-color': name !== '' && name.length > 16 ? 'red' : '' }">
+                            :style="{ 'border-color': !/^\w{3, 16}$/ig.test(name) ? 'red' : '' }">
                         <span class="timerange-tips">4 - 16 characters</span>
                     </div>
                     <div>
@@ -198,7 +198,7 @@ export default {
             this.day = data;
         },
         submitAdd(){
-            if(!this.name || this.name.length > 16){
+            if(!/^\w{3,16}$/ig.test(this.name)){
                 this.$message({
                     type: 'error',
                     text: this.lanMap['param_error'] + ': ' + this.lanMap['name']
