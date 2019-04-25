@@ -49,7 +49,7 @@
                         <span>{{ lanMap['name'] }}</span>
                         <input type="text" v-model="name" v-focus
                             :style="{ 'border-color': name !== '' && !regName.test(name) ? 'red' : '' }">
-                        <span class="timerange-tips">4 - 16 characters</span>
+                        <span class="timerange-tips">3 - 16 characters</span>
                     </div>
                     <div>
                         <span>{{ lanMap['type'] }}</span>
