@@ -61,7 +61,7 @@
             },{
                 "name": "route",
                 "children": [
-                    {"name": "static_route"},
+                    {"name": "route_mgmt"},
                     {"name": "ARP"}
                 ]
             }
