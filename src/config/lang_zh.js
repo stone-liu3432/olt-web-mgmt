@@ -575,10 +575,13 @@ var zh = {
 
     preference: '优先级',
     gateway: '下一跳',
+    route_cfg: '路由配置',
     static_route: '静态路由',
-    route: '路由管理',
+    route: '路由',
+    route_mgmt: '路由管理',
     ARP: 'ARP表',
-    static_route_tips: '关闭路由功能将会清除所有路由表和ARP表'
+    static_route_tips: '关闭路由功能将会清除所有路由表和ARP表',
+    def_route: '缺省路由'
 
 };
 

@@ -255,7 +255,7 @@ export default [
         }
     },
     {
-        path: "/static_route",
+        path: "/route_mgmt",
         component: staticRoute,
         meta: {
             requireAuth: true

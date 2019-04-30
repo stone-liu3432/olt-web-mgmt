@@ -589,10 +589,13 @@ var en = {
 
     preference: ' Preference ',
     gateway: ' Next hop ',
+    route_cfg: ' Route Configuration ',
     static_route: ' Static Route ',
     route: ' Route ',
+    route_mgmt: ' Route Management ',
     ARP: 'ARP Table ',
-    static_route_tips: ' Turning off routing will clear all toute tables and ARP tables '
+    static_route_tips: ' Turning off routing will clear all toute tables and ARP tables ',
+    def_route: ' Default Route '
     
 };
 

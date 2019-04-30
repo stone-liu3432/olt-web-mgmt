@@ -1,6 +1,13 @@
 <template>
     <div>
-        <h3>{{ lanMap['route'] }}</h3>
+        <h3>{{ lanMap['route_cfg'] }}</h3>
+        <div v-if="default_route.data">
+            <span>{{ lanMap['def_route'] }}</span>
+            <span>{{ defRoute }}</span>
+            <a href="javascript:void(0);" @click="openSetDef">{{ lanMap['config'] }}</a>
+            <a href="javascript:void(0);" @click="openDelCfm" v-if="default_route.data.gateway !== '0.0.0.0'">{{ lanMap['delete'] }}</a>
+        </div>
+        <hr>
         <div class="route-state">
             <span>{{ lanMap['route'] + lanMap['status'] }}</span>
             <div class="switch" @click="offRoute">
@@ -80,10 +87,34 @@
                 <div class="close" @click="closeModal"></div>
             </div>
         </div>
+        <div class="modal-dialog" v-if="setDefRoute">
+            <div class="cover"></div>
+            <div style="height: 160px;">
+                <div class="set-route-item">
+                    <h4 class="modal-header">{{ lanMap['config'] + lanMap['def_route'] }}</h4>
+                    <div>
+                        <span>{{ lanMap['def_route'] }}</span>
+                        <input type="text" v-model="gateway"
+                            :style="{ 'border-color': gateway !== '' && !ip_reg.test(gateway) ? 'red' : '' }">
+                        <span>EX. 127.0.0.1</span>
+                    </div>
+                    <div>
+                        <a href="javascript:void(0);" @click="setDef">
+                            {{ lanMap['apply'] }}
+                        </a>
+                        <a href="javascript:void(0);" @click="closeModal">
+                            {{ lanMap['cancel'] }}
+                        </a>
+                    </div>
+                </div>
+                <div class="close" @click="closeModal"></div>
+            </div>
+        </div>
         <confirm v-if="delModal" @choose="deleteStaticRouter"></confirm>
         <confirm v-if="offRouteModal" @choose="changeRouteState"
             :tool-tips="lanMap['static_route_tips']">
         </confirm>
+        <confirm v-if="delDefRoute" @choose="delDef"></confirm>
     </div>
 </template>
 
@@ -91,7 +122,15 @@
 import { mapState } from "vuex"
 export default {
     name: 'staticRoute',
-    computed: mapState(["change_url", 'lanMap']),
+    computed: {
+        ...mapState(["change_url", 'lanMap']),
+        defRoute(){
+            if(this.default_route.data){
+                return this.default_route.data.gateway === '0.0.0.0' ? ' -- ' : this.default_route.data.gateway;
+            }
+            return '';
+        }
+    },
     data(){
         return {
             status: false,
@@ -101,15 +140,24 @@ export default {
             setModal: '',
             delModal: false,
             offRouteModal: false,
+            delDefRoute: false,
             ipaddr: '',
             ipmask: '',
             gateway: '',
-            ip_reg: /^(((25[0-5])|(2[0-4]\d)|(1\d\d)|(\d?\d))\.){3}(((25[0-5])|2[0-4]\d)|(1\d\d)|(\d?\d))$/
+            ip_reg: /^(((25[0-5])|(2[0-4]\d)|(1\d\d)|(\d?\d))\.){3}(((25[0-5])|2[0-4]\d)|(1\d\d)|(\d?\d))$/,
+            default_route: {
+                "code": 1,
+                "message": "success",
+                "data":{
+                    "gateway":"192.168.100.1"
+                }
+            },
+            setDefRoute: false
         }
     },
     created(){
+        this.getDefRoute();
         this.getState();
-        //this.getData();
     },
     methods: {
         getState(){
@@ -125,6 +173,17 @@ export default {
                     }
                 }else{
                     this.status = false;
+                }
+            }).catch(err =>{
+
+            })
+        },
+        getDefRoute(){
+            this.$http.get('/switch_route?form=route_default').then(res =>{
+                if(res.data.code === 1){
+                    this.default_route = res.data;
+                }else{
+                    this.default_route = {};
                 }
             }).catch(err =>{
 
@@ -278,6 +337,73 @@ export default {
             this.ipaddr = '';
             this.ipmask = '';
             this.gateway = '';
+            this.setDefRoute = false;
+        },
+        openDelCfm(){
+            this.delDefRoute = true;
+        },
+        delDef(bool){
+            if(bool){
+                var post_data = {
+                    "method": "delete",
+                    "param": {
+                        "gateway": '0.0.0.0'
+                    }
+                }
+                this.$http.post('/switch_route?form=route_default', post_data).then(res =>{
+                    if(res.data.code === 1){
+                        this.$message({
+                            type: res.data.type,
+                            text: this.lanMap['setting_ok']
+                        })
+                        this.getDefRoute();
+                    }else{
+                        this.$message({
+                            type: res.data.type,
+                            text: '(' + res.data.code + ') ' + res.data.message
+                        })
+                    }
+                }).catch(err =>{
+
+                })
+            }
+            this.delDefRoute = false;
+        },
+        setDef(){
+            if(!this.ip_reg.test(this.gateway)){
+                this.$message({
+                    type: 'error',
+                    text: this.lanMap['param_error'] + ': ' + this.lanMap['def_route']
+                })
+                return
+            }
+            var post_data = {
+                "method": "set",
+                "param": {
+                    "gateway": this.gateway
+                }
+            }
+            this.$http.post('/switch_route?form=route_default', post_data).then(res =>{
+                if(res.data.code === 1){
+                    this.$message({
+                        type: res.data.type,
+                        text: this.lanMap['setting_ok']
+                    })
+                    this.getDefRoute();
+                }else{
+                    this.$message({
+                        type: res.data.type,
+                        text: '(' + res.data.code + ') ' + res.data.message
+                    })
+                }
+            }).catch(err =>{
+
+            })
+            this.closeModal();
+        },
+        openSetDef(){
+            this.setDefRoute = true;
+            this.gateway = this.default_route.data.gateway;
         }
     }
 }
@@ -293,6 +419,19 @@ h3{
         font-size: 16px;
         margin-left: 30px;
         font-weight: 400;
+    }
+    &+div{
+        margin: 20px 0;
+        span{
+            display: inline-block;
+        }
+        span+span{
+            width: 150px;
+            margin: 0 0 0 20px;
+        }
+        span+a{
+            margin: 0 20px 0 20px;
+        }
     }
 }
 .route-state{
