@@ -581,7 +581,10 @@ var zh = {
     route_mgmt: '路由管理',
     ARP: 'ARP表',
     static_route_tips: '关闭路由功能将会清除所有路由表和ARP表',
-    def_route: '缺省路由'
+    def_route: '缺省路由',
+
+    loid_mgmt: 'LOID允许列表',
+    used: '绑定'
 
 };
 

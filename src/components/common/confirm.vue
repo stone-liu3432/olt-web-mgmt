@@ -41,7 +41,7 @@ div.cover+div{
     left:50%;
     transform:translate(-50%,-50%);	
     background: #fff;
-    z-index: 600;
+    z-index: 1000;
     padding: 20px 30px;
     overflow: hidden;
     border-radius: 5px;

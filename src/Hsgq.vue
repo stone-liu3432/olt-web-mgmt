@@ -236,6 +236,7 @@ i{
   left: 0;
   background: #666;
   opacity: 0.5;
+  z-index: 999;
 }
 .close {
   position: absolute;
@@ -250,6 +251,7 @@ i{
   background: url("./assets/close_msg_hover.png") no-repeat;
 }
 div.cover+div{
+    z-index: 1000;
     position: absolute;
     top:50%;
     left:50%;

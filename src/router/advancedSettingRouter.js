@@ -19,6 +19,7 @@ const onuPortCfg = () => import(/* webpackChunkName: "ponmgmt-page" */  '@/compo
 const onuBatchUpgrade = () => import(/* webpackChunkName: "ponmgmt-page" */  '@/components/common/pon/onuBatchUpgrade')
 const onuMulticast = () => import(/* webpackChunkName: "ponmgmt-page" */  '@/components/common/pon/onuMulticast')
 const ponOptical = () => import(/* webpackChunkName: "ponmgmt-page" */  '@/components/common/pon/ponOptical')
+const loid = () => import(/* webpackChunkName: "ponmgmt-page" */  '@/components/common/pon/loid')
 // switch
 const portInfo = () => import(/* webpackChunkName: "switch-page" */  '@/components/common/switch/portInfo')
 const perfInfo = () => import(/* webpackChunkName: "switch-page" */  '@/components/common/switch/perfInfo')
@@ -109,6 +110,14 @@ export default [
     {
         path: "/sla_cfg",
         component: slaCfg,
+        meta: {
+            requireAuth: true,
+            keepAlive: true
+        }
+    },
+    {
+        path: '/loid_mgmt',
+        component: loid,
         meta: {
             requireAuth: true,
             keepAlive: true
