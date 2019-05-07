@@ -21,7 +21,7 @@
             </div>
             <div v-for="(item, index) in loid.data" :key="index" v-if="loid.data">
                 <span>{{ index + 1 }}</span>
-                <span>{{ item.used ? 'True' : 'False' }}</span>
+                <span>{{ item.used ? item.mac : 'False' }}</span>
                 <span>{{ item.loid }}</span>
                 <span>{{ item.password }}</span>
                 <span class="small-btn" @click="deleteLoid(item)">{{ lanMap['delete'] }}</span>

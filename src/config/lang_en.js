@@ -598,7 +598,8 @@ var en = {
     def_route: ' Default Route ',
 
     loid_mgmt: ' LOID List ',
-    used: ' Used '
+    used: ' Used ',
+    loid: 'LOID'
     
 };
 

@@ -584,7 +584,8 @@ var zh = {
     def_route: '缺省路由',
 
     loid_mgmt: 'LOID允许列表',
-    used: '绑定'
+    used: '绑定',
+    loid: 'LOID'
 
 };
 
