@@ -20,6 +20,7 @@ const onuBatchUpgrade = () => import(/* webpackChunkName: "ponmgmt-page" */  '@/
 const onuMulticast = () => import(/* webpackChunkName: "ponmgmt-page" */  '@/components/common/pon/onuMulticast')
 const ponOptical = () => import(/* webpackChunkName: "ponmgmt-page" */  '@/components/common/pon/ponOptical')
 const loid = () => import(/* webpackChunkName: "ponmgmt-page" */  '@/components/common/pon/loid')
+const onuPerf = () => import(/* webpackChunkName: "ponmgmt-page" */  '@/components/common/pon/onuPerf')
 // switch
 const portInfo = () => import(/* webpackChunkName: "switch-page" */  '@/components/common/switch/portInfo')
 const perfInfo = () => import(/* webpackChunkName: "switch-page" */  '@/components/common/switch/perfInfo')
@@ -142,6 +143,14 @@ export default [
     {
         path: "/onu_port_cfg",
         component: onuPortCfg,
+        meta: {
+            requireAuth: true,
+            keepAlive: true
+        }
+    },
+    {
+        path: "/onu_perf_info",
+        component: onuPerf,
         meta: {
             requireAuth: true,
             keepAlive: true
