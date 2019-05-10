@@ -9,6 +9,7 @@
                     <option v-for="(item,index) in port_name.ge" :key="index" :value="item.id">{{ item.name }}</option>
                     <option v-if="port_name.xge" v-for="(item,index) in port_name.xge" :key="index" :value="item.id">{{ item.name }}</option>
                 </select>
+                <a href="javascript:void(0);" @click="openCfm">{{ lanMap['clear_perf'] }}</a>
             </div>
         </div>
         <hr>
@@ -26,6 +27,7 @@
                 </li>
             </ul>
         </div>
+        <confirm v-if="isShow" @choose="clearData"></confirm>
     </div>
 </template>
 
@@ -37,7 +39,8 @@ import { mapState } from 'vuex'
         data(){
             return {
                 data: {},
-                portid: 0
+                portid: 0,
+                isShow: false
             }
         },
         activated(){
@@ -72,6 +75,28 @@ import { mapState } from 'vuex'
                 }).catch(err=>{
                     // to do 
                 })
+            },
+            clearData(bool){
+                if(bool){
+                    this.$http.get('/switch_port?form=nostatistic', { params: { port_id: this.portid } }).then(res =>{
+                        if(res.data.code === 1){
+                            this.$message({
+                                type: res.data.type,
+                                text: this.lanMap['clear_perf'] + this.lanMap['setting_ok']
+                            })
+                            this.getData();
+                        }else{
+                            this.$message({
+                                type: res.data.type,
+                                text: '(' + res.data.code + ')' + res.data.message
+                            })
+                        }
+                    }).catch(err =>{})
+                }
+                this.isShow = false;
+            },
+            openCfm(){
+                this.isShow = true;
             }
         },
         watch:{
@@ -151,5 +176,8 @@ span:first-child{
     text-align: right;
     width: 50%;
     border-right: 1px solid #ccc;
+}
+a{
+    margin-left: 30px;
 }
 </style>
