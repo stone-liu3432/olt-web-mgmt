@@ -10,6 +10,7 @@
         <hr>
         <div>
             <a href="javascript:void(0);" @click="openModal">{{ lanMap['add'] }}</a>
+            <a href="javascript:void(0);" @click="refreshData">{{ lanMap['refresh'] }}</a>
         </div>
         <div class="loid-list">
             <div :class="[ loid.data ? '' : 'no-more-data' ]">
@@ -175,6 +176,9 @@ export default {
                 }
             }).catch(err =>{})
             this.closeModal();
+        },
+        refreshData(){
+            this.$parent.reload();
         }
     },
     watch: {
