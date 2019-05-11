@@ -17,17 +17,18 @@
             <div v-else class="error-msg">{{ lanMap['no_onu_info'] }}</div>
 		</div>
 		<hr>
-        <div v-if="onuPort.length">
+        <div v-if="onuPort.length && onu_list.data">
             <div>
                 <span>ONU{{ lanMap['port_id'] }}</span>
                 <select v-model.number="opid">
-                    <option :value="item" v-for="(item, index) in onuPort" :key="index">{{ item }}</option>
+                    <option :value="item" v-for="(item, index) in onuPort" :key="index">{{ item === 0 ? 'PON' : item }}</option>
                 </select>
                 <a href="javascript: void(0);" class="op-perf-refresh" @click="refreshData">{{ lanMap['refresh'] }}</a>
+                <a href="javascript: void(0);" class="op-perf-refresh" @click="openCfm">{{ lanMap['clear_perf'] }}</a>
             </div>
             <div class="op-perf-info" v-if="opInfo.hasOwnProperty('status')">
                 <span class="op-perf-status">{{ lanMap['onu_perf_status'] }}</span>:
-                <span>{{ opInfo.status ? lanMap['enable'] : lanMap['disable'] }}</span>
+                <span>{{ opInfo.status === 2 ? lanMap['enable'] : lanMap['disable'] }}</span>
                 <span class="op-perf-period">{{ lanMap['onu_perf_period'] }}</span>:
                 <span>{{ opInfo.period }}</span>
                 <a href="javascript: void(0);" @click="openModal">{{ lanMap['config'] }}</a>
@@ -46,7 +47,7 @@
                 <div class="modal-item">
                     <span>ONU{{ lanMap['port_id'] }}</span>
                     <select v-model.number="opid_set">
-                        <option :value="item" v-for="(item, index) in onuPort" :key="index">{{ item }}</option>
+                        <option :value="item" v-for="(item, index) in onuPort" :key="index">{{ item === 0 ? 'PON' : item }}</option>
                     </select>
                 </div>
                 <div class="modal-item">
@@ -62,12 +63,13 @@
                     s
                 </div>
                 <div class="modal-item">
-                    <a href="javascript: void(0);">{{ lanMap['apply'] }}</a>
+                    <a href="javascript: void(0);" @click="submitCfg">{{ lanMap['apply'] }}</a>
                     <a href="javascript: void(0);" @click="closeModal">{{ lanMap['cancel'] }}</a>
                 </div>
                 <div class="close" @click="closeModal"></div>
             </div>
         </div>
+        <confirm v-if="isCfm" @choose="clearData"></confirm>
     </div>
 </template>
 
@@ -81,7 +83,7 @@ export default {
         return {
             portid: '',
             onuid: '',
-            opid: '',
+            opid: 0,
             //  onu 端口列表
             onuPort: [],
             //  onu 端口统计状态
@@ -91,7 +93,8 @@ export default {
             opid_set: 1,
             status: 1,
             period: '',
-            isShowDialog: false
+            isShowDialog: false,
+            isCfm: false
         }
     },
     created(){
@@ -106,12 +109,12 @@ export default {
                 this.onuPort = [];
                 if(res.data.code === 1){
                     if(res.data.data && res.data.data.length){
-                        this.onuPort.push('PON');   //  onu  pon口
+                        this.onuPort.push(0);   //  onu  pon口
                         res.data.data.forEach(item =>{
                             this.onuPort.push(item.op_id);
                         })
                         var op = Number(sessionStorage.getItem('opid'));
-                        if(op === this.onuPort[0]){
+                        if(this.opid === op){
                             this.getPerfStatus();
                             this.getPerfInfo();
                             return
@@ -182,11 +185,16 @@ export default {
         openModal(){
             this.isShowDialog = true;
             this.opid_set = this.opid;
+            this.status = this.opInfo.status;
         },
         submitCfg(){
             if(this.period === '') this.period = 0;
             if(this.status === this.opInfo.status 
                 && this.period === this.opInfo.period && this.opid === this.opid_set){
+                    this.$message({
+                        type: 'info',
+                        text: this.lanMap['modify_tips']
+                    })
                 this.closeModal();
                 return
             }
@@ -246,8 +254,38 @@ export default {
                     result.push(Number(substrs));
                 }
             }
-            return result.filter(item=>!!item)
+            return result.filter(item => !!item)
         },
+        openCfm(){
+            this.isCfm = true;
+        },
+        clearData(bool){
+            if(bool){
+                var post_data = {
+                    "method": "clear",
+                    "param": {
+                        "port_id": this.portid,
+                        "onu_id": this.onuid,
+                        "op_id": this.opid
+                    }
+                }
+                this.$http.post('/onumgmt?form=performance', post_data).then(res =>{
+                    if(res.data.code === 1){
+                        this.$message({
+                            type: res.data.type,
+                            text: this.lanMap['clear_perf'] + this.lanMap['setting_ok']
+                        })
+                        this.getPerfInfo();
+                    }else{
+                        this.$message({
+                            type: res.data.type,
+                            text: '(' + res.data.code + ')' + res.data.message
+                        })
+                    }
+                }).catch(err =>{})
+            }
+            this.isCfm = false;
+        }
     },
     watch: {
         portid(){
