@@ -1,7 +1,7 @@
 <template>
     <div>
         <div class="onu-perf-info" v-if="port_name.pon">
-			<h2>{{ lanMap['onu_basic_info'] }}</h2>
+			<h2>{{ lanMap['onu_perf_info'] }}</h2>
 			<div>
 				<span>{{ lanMap['port_id'] }}</span>
 				<select v-model.number="portid">
@@ -25,6 +25,8 @@
                 </select>
                 <a href="javascript: void(0);" class="op-perf-refresh" @click="refreshData">{{ lanMap['refresh'] }}</a>
                 <a href="javascript: void(0);" class="op-perf-refresh" @click="openCfm">{{ lanMap['clear_perf'] }}</a>
+                <a href="javascript: void(0);" class="op-perf-refresh" @click="change_data('history')" v-if="showFlag === 'history'">{{ lanMap['curr_perf'] }}</a>
+                <a href="javascript: void(0);" class="op-perf-refresh" @click="change_data('current')" v-if="showFlag === 'current'">{{ lanMap['history_perf'] }}</a>
             </div>
             <div class="op-perf-info" v-if="opInfo.hasOwnProperty('status')">
                 <span class="op-perf-status">{{ lanMap['onu_perf_status'] }}</span>:
@@ -90,11 +92,14 @@ export default {
             opInfo: {},
             //  onu 端口统计信息/数据
             onuPerf: {},
+            onuPerf_h: {},
             opid_set: 1,
             status: 1,
             period: '',
             isShowDialog: false,
-            isCfm: false
+            isCfm: false,
+            showFlag: 'current',
+            debounce: false
         }
     },
     created(){
@@ -154,6 +159,19 @@ export default {
                 }
             }).catch(err =>{})
         },
+        getHistory(){
+            this.$http.get('onumgmt?form=perf_history', { params: { port_id: this.portid, onu_id: this.onuid, op_id: this.opid } }).then(res =>{
+                if(res.data.code === 1){
+                    if(res.data.data){
+                        this.onuPerf = res.data.data;
+                    }else{
+                        this.onuPerf = {};
+                    }
+                }else{
+                    this.onuPerf = {};
+                }
+            }).catch(err =>{})
+        },
         getResource(){
             this.$http.get('/onu_allow_list?form=resource', { params: { port_id: this.portid } }).then(res=>{
                 if(res.data.code === 1){
@@ -168,12 +186,37 @@ export default {
                         data: _onu_list
                     }
                     this.addonu_list(obj);
-                    this.onuid = Number(sessionStorage.getItem('oid'));
-                    if(!this.onuid || _onu_list.indexOf(this.onuid) === -1){
-                        this.onuid = _onu_list[0];
-                        return
+                    var oid = Number(sessionStorage.getItem('oid'));
+                    if(!oid){
+                        if(!this.onuid){
+                            this.onuid = _onu_list[0];
+                        }else{
+                            if(_onu_list.indexOf(this.onuid) === -1){
+                                this.onuid = _onu_list[0];
+                            }else{
+                                this.getOnuPort();
+                            }
+                        }
+                    }else{
+                        if(!this.onuid){
+                            this.onuid = oid;
+                        }else{
+                            if(_onu_list.indexOf(oid) === -1){
+                                if(_onu_list.indexOf(this.onuid) === -1){
+                                    this.onuid = _onu_list[0];
+                                }else{
+                                    this.getOnuPort();
+                                }
+                            }else{
+                                if(this.onuid === oid){
+                                    this.getOnuPort();
+                                }else{
+                                    this.onuid = oid;
+                                }
+                            }
+                        }
                     }
-                    this.getOnuPort();
+                    sessionStorage.setItem('oid', this.onuid);
                 }else{
                     this.addonu_list({});
                     this.onuid = 0;
@@ -285,6 +328,26 @@ export default {
                 }).catch(err =>{})
             }
             this.isCfm = false;
+        },
+        change_data(flag){
+            if(this.debounce){
+                return this.$message({
+                    type: 'warning',
+                    text: this.lanMap['click_often']
+                })
+            }
+            this.debounce = true;
+            if(flag === 'current'){
+                this.showFlag = 'history';
+                this.getHistory();
+            }
+            if(flag === 'history'){
+                this.showFlag = 'current';
+                this.getPerfInfo();
+            }
+            setTimeout(_ =>{
+                this.debounce = false;
+            },1000)
         }
     },
     watch: {
@@ -293,8 +356,10 @@ export default {
             sessionStorage.setItem('pid', this.portid);
         },
         onuid(){
-            this.getOnuPort();
-            sessionStorage.setItem('oid', this.onuid);
+            if(this.onuid){
+                this.getOnuPort();
+                sessionStorage.setItem('oid', this.onuid);
+            }
         },
         opid(){
             this.getPerfStatus();

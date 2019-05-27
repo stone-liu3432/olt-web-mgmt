@@ -650,7 +650,9 @@ var en = {
     statusChangeTimes: " Status Change times ",
     onu_perf_status: ' ONU Performance Status ',
     onu_perf_period: 'ONU Performance Period ',
-    clear_perf: ' Clear Performance '
+    clear_perf: ' Clear Performance ',
+    curr_perf: ' View current statistics ',
+    history_perf: ' View historical statistics '
 };
 
 export default en;

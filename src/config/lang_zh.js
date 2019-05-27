@@ -629,7 +629,9 @@ var zh = {
     statusChangeTimes: "端口状态变化次数",
     onu_perf_status: 'ONU端口统计状态',
     onu_perf_period: 'ONU端口统计周期',
-    clear_perf: '清除统计信息'
+    clear_perf: '清除统计信息',
+    curr_perf: '查看当前统计信息',
+    history_perf: '查看历史统计信息'
 };
 
 export default zh;
