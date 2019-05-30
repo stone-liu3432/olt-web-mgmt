@@ -652,7 +652,10 @@ var en = {
     onu_perf_period: 'ONU Performance Period ',
     clear_perf: ' Clear Performance ',
     curr_perf: ' View current statistics ',
-    history_perf: ' View historical statistics '
+    history_perf: ' View historical statistics ',
+
+    file_limit_img: 'File format is *.img',
+    file_limit_zip: 'File format is *.zip'
 };
 
 export default en;

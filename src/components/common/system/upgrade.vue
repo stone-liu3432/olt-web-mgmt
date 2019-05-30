@@ -1,10 +1,15 @@
 <template>
     <div>
         <div class="upgrade">
-            <h2>{{ lanMap['upgrade'] }}</h2>
+            <h2>
+                {{ lanMap['upgrade'] }}
+            </h2>
         </div>
         <div class="upgrade">
-            <h3>{{ lanMap['firmware'] }}</h3>
+            <h3>
+                {{ lanMap['firmware'] }}
+                <span>{{ lanMap['file_limit_img'] }}</span>
+            </h3>
         </div>
         <form class="upload-form"> 
             <input type="file" class="hide" id="file1" @change="changeFile('file1','fileName1')" accept=".img"/>
@@ -12,7 +17,10 @@
             <a href="javascript:;" @click="firmware">{{ lanMap["apply"] }}</a>
         </form>
         <div class="upgrade">
-            <h3>{{ lanMap['system'] }}</h3>
+            <h3>
+                {{ lanMap['system'] }}
+                <span>{{ lanMap['file_limit_img'] }}</span>
+            </h3>
         </div>
         <form class="upload-form">
             <input type="file" class="hide" id="file2" @change="changeFile('file2','fileName2')" accept=".img"/>
@@ -20,7 +28,10 @@
             <a href="javascript:;" @click="system">{{ lanMap["apply"] }}</a>
         </form>
         <div class="upgrade">
-            <h3>{{ lanMap['fullversion'] }}</h3>
+            <h3>
+                {{ lanMap['fullversion'] }}
+                <span>{{ lanMap['file_limit_zip'] }}</span>
+            </h3>
         </div>
         <form class="upload-form">
             <input type="file" class="hide" id="file3" @change="changeFile('file3','fileName3')" accept=".zip"/>
@@ -368,6 +379,12 @@ div.upgrade>h3{
     font-weight: 600;
     color: rgb(52, 135, 218);
     margin-left: 20px;
+}
+h3>span{
+    font-size: 14px;
+    color: #666;
+    font-weight: 400;
+    margin-left: 30px;
 }
 form.upload-form{
     position: relative;

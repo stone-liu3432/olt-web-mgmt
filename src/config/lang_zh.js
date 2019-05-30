@@ -631,7 +631,10 @@ var zh = {
     onu_perf_period: 'ONU端口统计周期',
     clear_perf: '清除统计信息',
     curr_perf: '查看当前统计信息',
-    history_perf: '查看历史统计信息'
+    history_perf: '查看历史统计信息',
+
+    file_limit_img: '文件格式为 *.img',
+    file_limit_zip: '文件格式为 *.zip'
 };
 
 export default zh;
