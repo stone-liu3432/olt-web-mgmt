@@ -42,7 +42,8 @@
                     {"name": "port_info"},
                     {"name": "perf_info"},
                     {"name": "port_cfg"},
-                    {"name": "port_vlan"}
+                    {"name": "port_vlan"},
+                    {"name": "loop_detect"}
                 ]
             },{
                 "name": "mac_mgmt"
