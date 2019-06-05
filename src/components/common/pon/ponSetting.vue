@@ -43,6 +43,13 @@
                 </li>
             </ul>
         </div>
+        <h3>
+            {{ lanMap['port_isolation'] }}
+            <div class="switch" @click="setPortIsolate">
+                <input type="checkbox" v-model="port_isolate">
+                <span :class="{ 'checked' : port_isolate }"></span>
+            </div>
+        </h3>
         <div class="modal-dialog" v-if="isSetAuth">
             <div class="cover"></div>
             <div class="ponmgmt-cfg">
@@ -98,20 +105,22 @@ export default {
             p2pCache: {},
             p2pMsg: '',
             p2p: [
-                {
-                    "port_id": 1,
-                    "flag": 1
-                },{
-                    "port_id": 2,
-                    "flag": 1
-                },{
-                    "port_id": 3,
-                    "flag": 1
-                },{
-                    "port_id": 4,
-                    "flag": 0
-                }
-            ]
+                // {
+                //     "port_id": 1,
+                //     "flag": 1
+                // },{
+                //     "port_id": 2,
+                //     "flag": 1
+                // },{
+                //     "port_id": 3,
+                //     "flag": 1
+                // },{
+                //     "port_id": 4,
+                //     "flag": 0
+                // }
+            ],
+            port_isolate: 0,
+            _timer: false,
         }
     },
     created(){
@@ -120,6 +129,7 @@ export default {
     activated(){
         this.getData();
         this.getP2PData();
+        this.getPortIsolation();
     },
     methods: {
         getData(){
@@ -223,6 +233,47 @@ export default {
             this.p2pMsg = this.lanMap['if_sure'] + (node.flag ? this.lanMap['off'] : this.lanMap['on']) + ' ' + this.port_name.pon[node.port_id].name + ' P2P ?';
             this.isSetP2P = true;
             this.p2pCache = node;
+        },
+        getPortIsolation(){
+            this.$http.get('/switch_isolate?form=isolate').then(res =>{
+                if(res.data.code === 1){
+                    if(res.data.data){
+                        this.port_isolate = !!res.data.data.isolate_status;
+                    }
+                }
+            }).catch(err =>{})
+        },
+        setPortIsolate(){
+            if(this._timer){
+                this.$message({
+                    type: 'warning',
+                    text: this.lanMap['click_often']
+                })
+                return
+            }
+            this._timer = true;
+            this.$http.post('/switch_isolate?form=isolate', {
+                "method":"set",
+                "param":{
+                    "isolate_status": Number(!this.port_isolate)
+                }
+            }).then(res =>{
+                if(res.data.code === 1){
+                    this.$message({
+                        type: 'success',
+                        text: this.lanMap['st_success']
+                    })
+                    this.getPortIsolation();
+                }else{
+                    this.$message({
+                        type: res.data.type,
+                        text: `(${res.data.code}) ${res.data.message}`
+                    })
+                }
+            }).catch(err =>{})
+            setTimeout(_ =>{
+                this._timer = false;
+            }, 1000)
         }
     }
 }
@@ -335,5 +386,49 @@ ul{
 div.no-more-data{
     color: red;
     margin: 20px; 
+}
+div.switch{
+    display: inline-block;
+    margin: 20px 20px 20px 20px;
+    vertical-align: sub;
+    cursor: pointer;
+    input{
+        position: absolute;
+        width: 0;
+        height: 0;
+        margin: 0;
+        opacity: 0;
+    }
+    span{
+        display: inline-block;
+        position: relative;
+        width: 40px;
+        height: 20px;
+        background: #666;
+        border-radius: 10px;
+        transition: all .3s linear;
+        &::after{
+            content: '';
+            position: absolute;
+            top: 2px;
+            left: 2px;
+            background: #FFF;
+            border-radius: 100%;
+            width: 16px;
+            height: 16px;
+            transition: all .2s linear;
+        }
+    }
+    span.checked{
+        background: #13CE66;
+        &::after{
+            left: 22px;
+        }
+    }
+    &+span{
+        font-size: 15px;
+        color: #333;
+        margin-left: 30px;
+    }
 }
 </style>
