@@ -648,14 +648,30 @@ var en = {
     dsErrorFrames: "Downstream errors",
     usErrorFrames: "Upstream errors",
     statusChangeTimes: " Status Change times ",
-    onu_perf_status: ' ONU Performance Status ',
-    onu_perf_period: 'ONU Performance Period ',
-    clear_perf: ' Clear Performance ',
-    curr_perf: ' View current statistics ',
-    history_perf: ' View historical statistics ',
+    onu_perf_status: " ONU Performance Status ",
+    onu_perf_period: "ONU Performance Period ",
+    clear_perf: " Clear Performance ",
+    curr_perf: " View current statistics ",
+    history_perf: " View historical statistics ",
 
-    file_limit_img: 'File format is *.img',
-    file_limit_zip: 'File format is *.zip'
+    file_limit_img: "File format is *.img",
+    file_limit_zip: "File format is *.zip",
+
+    ld_status: "Loop detect status",
+    recover_mode: "Recover mode",
+    recover_manual: "Manual recover",
+    recover_time: "Auto recover time",
+    detect_interval: "Loop detect interval",
+    onu_status: "ONU status",
+    ld_port_id: "Loopback port",
+    ld_onu_id: "Loopback ONU",
+    loop_detect: ' Loop Detection ',
+    pon_loop_detect: 'PON Loop Detection ',
+    ge_loop_detect: ' Uplink Loop Detection ',
+    ld_info: ' Loop detection information ',
+    loopback : 'Loopback',
+    port_status: ' Port Status ',
+    port_isolation: ' Port isolation '
 };
 
 export default en;
