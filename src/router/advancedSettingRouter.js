@@ -26,7 +26,7 @@ const portInfo = () => import(/* webpackChunkName: "switch-page" */  '@/componen
 const perfInfo = () => import(/* webpackChunkName: "switch-page" */  '@/components/common/switch/perfInfo')
 const portCfg = () => import(/* webpackChunkName: "switch-page" */  '@/components/common/switch/portCfg')
 const portVlan = () => import(/* webpackChunkName: "switch-page" */  '@/components/common/switch/portVlan')
-//const vlanMgmt = () => import(/* webpackChunkName: "switch-page" */  '@/components/common/switch/vlanMgmt')
+const loopDetect = () => import(/* webpackChunkName: "switch-page" */  '@/components/common/switch/loopDetect')
 const macMgmt = () => import(/* webpackChunkName: "switch-page" */  '@/components/common/switch/macMgmt')
 // protocol
 const rstp = () => import(/* webpackChunkName: "protocol-page" */  '@/components/common/protocol/rstp')
@@ -282,6 +282,12 @@ export default [
     {
         path: "/arp",
         component: arp,
+        meta: {
+            requireAuth: true
+        }
+    },{
+        path: '/loop_detect',
+        component: loopDetect,
         meta: {
             requireAuth: true
         }

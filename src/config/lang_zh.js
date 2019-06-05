@@ -136,7 +136,7 @@ var zh = {
     secs: "秒",
 
     search_by_macaddr: "输入mac地址查找ONU,支持部分匹配查找",
-    onu_id: "ONU ID",
+    onu_id: " ONU ID",
     onu_name: "名称",
     onu_desc: "描述信息",
     auth_state: "认证状态",
@@ -627,14 +627,30 @@ var zh = {
     dsErrorFrames: "下行错误报文数",
     usErrorFrames: "上行错误报文数",
     statusChangeTimes: "端口状态变化次数",
-    onu_perf_status: 'ONU端口统计状态',
-    onu_perf_period: 'ONU端口统计周期',
-    clear_perf: '清除统计信息',
-    curr_perf: '查看当前统计信息',
-    history_perf: '查看历史统计信息',
+    onu_perf_status: "ONU端口统计状态",
+    onu_perf_period: "ONU端口统计周期",
+    clear_perf: "清除统计信息",
+    curr_perf: "查看当前统计信息",
+    history_perf: "查看历史统计信息",
 
-    file_limit_img: '文件格式为 *.img',
-    file_limit_zip: '文件格式为 *.zip'
+    file_limit_img: "文件格式为 *.img",
+    file_limit_zip: "文件格式为 *.zip",
+
+    ld_status: "环路检测状态",
+    recover_mode: "环路检测恢复模式",
+    recover_manual: "手动恢复",
+    recover_time: "自动恢复时间",
+    detect_interval: "环路检测间隔",
+    onu_status: "ONU状态",
+    ld_port_id: "回环端口",
+    ld_onu_id: "回环ONU",
+    loop_detect: '环路检测',
+    pon_loop_detect: 'PON环路检测',
+    ge_loop_detect: '上联口环路检测',
+    ld_info: '环路检测信息',
+    loopback : '回环',
+    port_status: '端口状态',
+    port_isolation: '端口隔离'
 };
 
 export default zh;
