@@ -671,7 +671,8 @@ var en = {
     ld_info: ' Loop detection information ',
     loopback : 'Loopback',
     port_status: ' Port Status ',
-    port_isolation: ' Port isolation '
+    port_isolation: ' Port isolation ',
+    pon_isolation_tips: 'Set PON port isolation only'
 };
 
 export default en;

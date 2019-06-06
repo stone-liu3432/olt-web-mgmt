@@ -650,7 +650,8 @@ var zh = {
     ld_info: '环路检测信息',
     loopback : '回环',
     port_status: '端口状态',
-    port_isolation: '端口隔离'
+    port_isolation: '端口隔离',
+    pon_isolation_tips: '仅设置PON端口隔离'
 };
 
 export default zh;

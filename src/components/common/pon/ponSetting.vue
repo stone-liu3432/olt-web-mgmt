@@ -49,6 +49,7 @@
                 <input type="checkbox" v-model="port_isolate">
                 <span :class="{ 'checked' : port_isolate }"></span>
             </div>
+            <span class="tips">( {{ lanMap['pon_isolation_tips'] }} )</span>
         </h3>
         <div class="modal-dialog" v-if="isSetAuth">
             <div class="cover"></div>
@@ -429,6 +430,10 @@ div.switch{
         font-size: 15px;
         color: #333;
         margin-left: 30px;
+    }
+    &+span.tips{
+        font-size: 14px;
+        color: #666;
     }
 }
 </style>
