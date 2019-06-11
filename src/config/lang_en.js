@@ -603,7 +603,7 @@ var en = {
     route_mgmt: " Route Management ",
     ARP: "ARP Table ",
     static_route_tips:
-        " Turning off routing will clear all toute tables and ARP tables ",
+        " Turning off routing will clear all route tables and ARP tables ",
     def_route: " Default Route ",
 
     loid_mgmt: " LOID List ",
