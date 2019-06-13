@@ -161,6 +161,7 @@
                             <select v-model.number="mirror.dst_port">
                                 <option value="0">{{ lanMap['choose'] }}</option>
                                 <option v-for="(item,key) in port_name.ge" :key="key" :value="item.id">{{ item.name }}</option>
+                                <option v-for="(item,key) in port_name.xge" v-if="port_name.xge" :key="key" :value="item.id">{{ item.name }}</option>
                             </select>
                         </li>
                         <li class="swich-item">
