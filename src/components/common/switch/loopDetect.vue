@@ -22,7 +22,7 @@
                     <span>
                         <span v-if="!editInterval">{{ ld_status_cache.detect_interval }} s</span>
                         <input type="text" v-else v-model.number="ld_state.detect_interval"
-                        :style="{ 'border-color': ld_state.detect_interval !== '' && (ld_state.detect_interval < 1 || ld_state.detect_interval > 3600 || isNaN(ld_state.detect_interval)) ? 'red' : '' }">
+                        :style="{ 'border-color': ld_state.detect_interval !== '' && (ld_state.detect_interval < 3 || ld_state.detect_interval > 3600 || isNaN(ld_state.detect_interval)) ? 'red' : '' }">
                     </span>
                     <a href="javascript: void(0);" v-if="editInterval" @click="submitInterval">{{ lanMap['apply'] }}</a>
                 <a href="javascript: void(0);" v-if="editInterval" @click="editInterval = false;">{{ lanMap['cancel'] }}</a>
@@ -51,7 +51,7 @@
                     <span>
                         <span v-if="!editTime">{{ ld_status_cache.recover_time }} s</span>
                         <input type="text" v-else v-model="ld_state.recover_time"
-                            :style="{ 'border-color': ld_state.recover_time !== '' && (ld_state.recover_time < 1 || ld_state.recover_time > 3600 || isNaN(ld_state.recover_time)) ? 'red' : '' }">
+                            :style="{ 'border-color': ld_state.recover_time !== '' && (ld_state.recover_time < 3 || ld_state.recover_time > 3600 || isNaN(ld_state.recover_time)) ? 'red' : '' }">
                     </span>
                     <a href="javascript: void(0);" v-if="editTime" @click="submitTime">{{ lanMap['apply'] }}</a>
                 <a href="javascript: void(0);" v-if="editTime" @click="editTime = false;">{{ lanMap['cancel'] }}</a>
@@ -238,7 +238,7 @@ export default {
             }).catch(err =>{})
         },
         submitInterval(){
-            if(this.ld_state.detect_interval < 1 || this.ld_state.detect_interval > 3600 || isNaN(this.ld_state.detect_interval)){
+            if(this.ld_state.detect_interval < 3 || this.ld_state.detect_interval > 3600 || isNaN(this.ld_state.detect_interval)){
                 this.$message({
                     type: 'error',
                     text: this.lanMap['param_error'] + ': ' + this.lanMap['detect_interval']
@@ -305,7 +305,7 @@ export default {
             }).catch(err =>{})
         },
         submitTime(){
-            if(this.ld_state.recover_time < 1 || this.ld_state.recover_time > 3600 || isNaN(this.ld_state.recover_time)){
+            if(this.ld_state.recover_time < 3 || this.ld_state.recover_time > 3600 || isNaN(this.ld_state.recover_time)){
                 this.$message({
                     type: 'error',
                     text: this.lanMap['param_error'] + ': ' + this.lanMap['recover_time']
