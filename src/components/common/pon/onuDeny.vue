@@ -42,13 +42,18 @@
         </div>
         <ul v-if="onu_deny_list.data">
             <li class="bg-title">
-                <span v-for="(item,key) in onu_deny_list.data[0]" :key="key" v-if="key != 'port_id'">
+                <!-- <span v-for="(item,key) in onu_deny_list.data[0]" :key="key" v-if="key != 'port_id'">
                     {{ lanMap[key] }}
-                </span>
-                <span> {{ lanMap['delete'] }} </span>
+                </span> -->
+                <span>{{ lanMap['onu_id'] }}</span>
+                <span>{{ lanMap['onu_name'] }}</span>
+                <span>{{ lanMap['macaddr'] }}</span>
+                <span>{{ lanMap['retry'] }}</span>
+                <span>{{ lanMap['delete'] }}</span>
             </li>
             <li v-for="(item,key) in onu_deny_list.data" :key="key">
-                <span> {{ 'ONU0'+item.port_id +'/'+ item.onu_id }} </span>    
+                <span> {{ 'ONU0'+item.port_id +'/'+ item.onu_id }} </span>
+                <span>{{ item.onu_name }}</span>    
                 <span> {{ item.macaddr }} </span>
                 <span> {{ item.retry }} </span>
                 <span>
@@ -285,8 +290,7 @@ ul{
 }
 ul>li{
     font-size: 0;
-    height: 32px;
-    line-height: 32px;
+    padding: 8px 0;
     border-bottom: 1px solid #ddd;
     vertical-align: middle;
 }
@@ -297,10 +301,11 @@ ul+div{
     margin-left: 30px;
 }
 ul span{
+    word-break: break-all;
+    white-space: normal;
     display: inline-block;
     vertical-align: middle;
-    height: 32px;
-    width: 23%;
+    width: 20%;
     text-align: center;
     font-size: 16px;
 }

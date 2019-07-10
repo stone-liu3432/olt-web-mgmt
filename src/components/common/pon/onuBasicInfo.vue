@@ -30,18 +30,28 @@
             </div>
             <div>
                 <div class="lf onu-info">
-                    <div v-for="(item,key) in onu_basic_info.data" :key="key" v-if=" key != 'port_id' && onu_basic_info.data" class="onu-info-item">
-                        <span>
-                            {{ lanMap[key] }}
+                    <table border="1">
+                        <tr v-for="(item,key) in onu_basic_info.data" :key="key" v-if=" key != 'port_id' && onu_basic_info.data">
+                            <td>{{ lanMap[key] || key }}</td>
+                            <td>{{ item }}</td>
+                        </tr>
+                        <tr>
+                            <td>fec mode</td>
+                            <td>{{ onu_fec_mode.data.fec_mode ? lanMap['enable'] : lanMap['disable'] }}</td>
+                        </tr>
+                    </table>
+                    <!-- <div v-for="(item,key) in onu_basic_info.data" :key="key" v-if=" key != 'port_id' && onu_basic_info.data" class="onu-info-item">
+                        <span :style="{ 'border-right': item === undefined ? '1px solid #ccc' : '' }">
+                            {{ lanMap[key] || key }}
                         </span>
-                        <span>
+                        <span :style="{ 'border-left': item ? '1px solid #ccc' : '' }">
                             {{ item }}
                         </span>
                     </div>
                     <div class="onu-info-item" v-for="(item,key) in onu_fec_mode.data" :key="key" v-if="onu_fec_mode.data && onu_basic_info.data">
                         <span>{{ key.replace(/_/,'-') }}</span>
                         <span>{{ item ? 'Enable' : 'Disable' }}</span>
-                    </div>
+                    </div> -->
                 </div>
                 <div class="lf onu-optical-diagnose" v-if="onuid">
                     <div>
@@ -538,14 +548,16 @@ div.onu-info-item{
 div.onu-info-item>span{
 	display: inline-block;
 	vertical-align: middle;
-	height: 30px;
-	line-height: 30px;
+	// height: 30px;
+	// line-height: 30px;
 	width: 30%;
-    padding-left: 20px;
+    padding: 6px 0 6px 20px;
     &:last-child{
         width: 55%;
-        overflow: hidden;
-        text-overflow: ellipsis;
+        // overflow: hidden;
+        // text-overflow: ellipsis;
+        word-break: break-all;
+        white-space: normal;
     }
 }
 div.onu-optical-diagnose{
@@ -599,6 +611,7 @@ div.no-more-data{
     color: red;
 }
 div>span:first-child{
+    height: 100%;
 	text-align: right;
 	padding-right: 50px;
 	padding-left: 0;
@@ -732,6 +745,22 @@ div.onu-upgrade{
         text-align: center;
         a{
             padding: 0 50px;
+        }
+    }
+}
+table{
+    border: 1px solid #ccc;
+    tr{
+        td{
+            height: 30px;
+            padding: 3px 12px 3px 12px;
+            word-break: break-all;
+            white-space: normal;
+            &:first-child{
+                width: 140px;
+                text-align: right;
+                padding-right: 20px;
+            }
         }
     }
 }
