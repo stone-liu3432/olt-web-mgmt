@@ -35,7 +35,7 @@
                             <td>{{ lanMap[key] || key }}</td>
                             <td>{{ item }}</td>
                         </tr>
-                        <tr>
+                        <tr v-if="onu_fec_mode.data && onu_basic_info.data">
                             <td>fec mode</td>
                             <td>{{ onu_fec_mode.data.fec_mode ? lanMap['enable'] : lanMap['disable'] }}</td>
                         </tr>
@@ -750,6 +750,7 @@ div.onu-upgrade{
 }
 table{
     border: 1px solid #ccc;
+    width: 100%;
     tr{
         td{
             height: 30px;
