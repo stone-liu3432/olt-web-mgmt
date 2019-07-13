@@ -4,7 +4,39 @@
             <h2>{{ lanMap['port_info'] }}</h2>
         </div>
         <hr>
-        <ul class="port-info-title"  onselectstart="return false;" v-if="port_info.data">
+        <table border="1" style="width: 100%;" v-if="port_info.data && port_info.data.length">
+            <tr>
+                <th>{{ lanMap['port_id'] }}</th>
+                <th>{{ lanMap['admin_status'] }}</th>
+                <th>{{ lanMap['link_status'] }}</th>
+                <th>{{ lanMap['auto_neg'] }}</th>
+                <th>{{ lanMap['speed'] }}</th>
+                <th>{{ lanMap['duplex'] }}</th>
+                <th>{{ lanMap['flow_ctrl'] }}</th>
+                <th>{{ lanMap['mtu'] }}</th>
+                <th>{{ lanMap['media'] }}</th>
+                <th>{{ lanMap['pvid'] }}</th>
+                <th>{{ lanMap['config'] }}</th>
+            </tr>
+            <tr v-for="(item,index) in port_info.data" :key="index">
+                <td>{{ port_name.pon[item.port_id] ? port_name.pon[item.port_id].name : port_name.ge[item.port_id] ? port_name.ge[item.port_id].name : port_name.xge[item.port_id].name }}</td>
+                <td>{{ item.admin_status >= 1 ? "Enable" : "Disable" }}</td>
+                <td :style="{ 'color': item.link_status ? '#3990E5' : 'red'}">
+                    {{ item.link_status >=1 ? lanMap['link_up'] : lanMap['link_down'] }}
+                </td>
+                <td>{{ item.auto_neg >=1 ? "Enable" : "Disable" }}</td>
+                <td>{{ item.speed === "10/100/1000M" ? "Auto" : item.speed }}</td>
+                <td>{{ item.duplex >= 1 ? "full" : "half" }}</td>
+                <td>{{ item.flow_ctrl >= 1 ? "Enable" : "Disable" }}</td>
+                <td>{{ item.mtu }}</td>
+                <td>{{ lanMap[item.media] }}</td>
+                <td>{{ item.pvid }}</td>
+                <td>
+                    <span class="cfg-btn" @click="jump(item.port_id)">{{ lanMap['config'] }}</span>
+                </td>
+            </tr>
+        </table>
+        <!-- <ul class="port-info-title"  onselectstart="return false;" v-if="port_info.data">
             <li class="bg-title">
                 <span>{{ lanMap['port_id']}}</span>
                 <span v-for="(item,key) of port_info.data[0]" :key="key" 
@@ -33,7 +65,7 @@
                 <span>{{ item.pvid }}</span>
                 <span class="cfg-btn"  onselectstart="return false;" @click="jump(item.port_id)">{{ lanMap['config'] }}</span>
             </li>
-        </ul>
+        </ul> -->
     </div>
 </template>
 
@@ -122,5 +154,13 @@ ul+ul>li:last-child{
 .cfg-btn{
     color: #24689B;
     cursor: pointer;
+}
+table{
+    border: 1px solid #ccc;
+    text-align: center;
+}
+th, td{
+    text-align: center;
+    padding: 8px 0;
 }
 </style>

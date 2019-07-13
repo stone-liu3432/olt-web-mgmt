@@ -885,7 +885,7 @@ div.multi-vlan-content{
 }
 div.multi-vlan-set{
     width: 500px;
-    height: 300px;
+    height: 310px;
     h3+div{
         margin-top: 10px;
     }

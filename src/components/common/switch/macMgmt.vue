@@ -878,16 +878,16 @@ i.arrow-sort-up{
 div.cover+div.self-align{
     height: 340px;
 }
-input[type="checkbox"]{
-    vertical-align: middle;
-}
+// input[type="checkbox"]{
+//     vertical-align: middle;
+// }
 input[type="checkbox"]+label{
     vertical-align: middle;
     cursor: pointer;
     user-select: none;
 }
 div.content{
-    width: 580px;
+    width: 600px;
     height: 350px;
     background: #fff;
     div.add-mac-item{
@@ -937,10 +937,10 @@ div.add-mac-item+div.item-align{
         height: 72px;
         vertical-align: middle;
         >div{
-            width: 360px;
+            width: 380px;
             vertical-align: middle;
             >div{
-                width: 25%;
+                width: 33%;
                 height: 24px;
             }
         }

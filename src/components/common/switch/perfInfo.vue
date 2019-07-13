@@ -135,7 +135,7 @@ div.perf-info+div{
     margin: 0 0 0 10px;
 }
 select{
-    width: 120px;
+    width: 150px;
     height: 30px;
     font-size: 16px;
     text-indent: 10px;

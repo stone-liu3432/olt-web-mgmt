@@ -369,5 +369,14 @@
 	"diag_ping_pktsize": "PING 数据包大小",
 	"diag_type": "Ping诊断",
 	"start":"开始",
-	"select_timezone": "选择时区"
+	"select_timezone": "选择时区",
+	
+	"ld_status": "环路检测状态",
+	"recover_mode": "环路检测恢复模式",
+	"recover_manual": "手动恢复",
+	"recover_time": "自动恢复时间",
+	"detect_interval": "环路检测间隔",
+	"onu_status": "ONU状态",
+	"ld_port_id": "回环端口",
+	"ld_onu_id": "回环ONU"
 }

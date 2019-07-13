@@ -58,7 +58,8 @@
       "flow_ctrl": 1,
       "mtu": 1500,
       "media": "copper",
-      "pvid": 1
+      "pvid": 1,
+      "link_aggregation": 2
     },
     {
       "port_id": 6,
@@ -70,7 +71,8 @@
       "flow_ctrl": 1,
       "mtu": 1500,
       "media": "copper",
-      "pvid": 1
+      "pvid": 1,
+      "link_aggregation": 2
     },
     {
       "port_id": 7,
@@ -82,7 +84,8 @@
       "flow_ctrl": 1,
       "mtu": 1500,
       "media": "copper",
-      "pvid": 1
+      "pvid": 1,
+      "link_aggregation": 0
     },
     {
       "port_id": 8,
@@ -94,7 +97,8 @@
       "flow_ctrl": 1,
       "mtu": 1500,
       "media": "copper",
-      "pvid": 1
+      "pvid": 1,
+      "link_aggregation": 3
     },
     {
       "port_id": 9,
@@ -106,7 +110,8 @@
       "flow_ctrl": 1,
       "mtu": 1500,
       "media": "fiber",
-      "pvid": 1
+      "pvid": 1,
+      "link_aggregation":0
     },
     {
       "port_id": 10,
@@ -118,7 +123,8 @@
       "flow_ctrl": 1,
       "mtu": 1500,
       "media": "fiber",
-      "pvid": 1
+      "pvid": 1,
+      "link_aggregation": 2
     },
     {
       "port_id": 11,
@@ -130,7 +136,8 @@
       "flow_ctrl": 1,
       "mtu": 1500,
       "media": "fiber",
-      "pvid": 1
+      "pvid": 1, 
+      "link_aggregation": 3
     },
     {
       "port_id": 12,
@@ -142,7 +149,8 @@
       "flow_ctrl": 1,
       "mtu": 1500,
       "media": "fiber",
-      "pvid": 1
+      "pvid": 1,
+      "link_aggregation": 1
     }
   ]
 }

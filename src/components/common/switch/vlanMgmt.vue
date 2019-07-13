@@ -29,9 +29,12 @@
             <li v-for="(item,index) in vlan_tab" :key="index">
                 <!-- <input type="radio" v-model="vlanid" :value="item.vlan_id"> -->
                 <span>{{ item.vlan_id }}</span>
-                <span>{{ item.tagged_portlist | analysis(system.data.ponports,system.data.geports) || '—' }}</span>
-                <span>{{ item.untagged_portlist | analysis(system.data.ponports,system.data.geports) || '—' }}</span>
-                <span>{{ item.default_vlan_portlist | analysis(system.data.ponports,system.data.geports) || '—' }}</span>
+                <!-- <span>{{ item.tagged_portlist | analysis(system.data.ponports,system.data.geports) || '—' }}</span> -->
+                <span>{{ parsePortList(item.tagged_portlist) || ' - ' }}</span>
+                <!-- <span>{{ item.untagged_portlist | analysis(system.data.ponports,system.data.geports) || '—' }}</span> -->
+                <span>{{ parsePortList(item.untagged_portlist) || ' - ' }}</span>
+                <!-- <span>{{ item.default_vlan_portlist | analysis(system.data.ponports,system.data.geports) || '—' }}</span> -->
+                <span>{{ parsePortList(item.default_vlan_portlist) || ' - ' }}</span>
                 <a href="javascript:;"  @click="config_port(item.vlan_id)">{{ lanMap['config'] }}</a>
                 <a href="javascript:;"  @click="deleteVlan(item.vlan_id)" v-if="item.vlan_id !== 1">{{ lanMap['delete'] }}</a>
             </li>
@@ -54,7 +57,7 @@
         </ul>
         <div class="modal-dialog" v-if="modalDialog">
             <div class="cover"></div>
-            <div class="modal-content" :style="{ 'height': create_vlan ? '360px' : '310px' }">
+            <div class="modal-content" :style="{ 'height': create_vlan ? '430px' : '370px' }">
                 <h3 v-if="create_vlan && !batch_set_vlan" class="modal-header">
                     {{ lanMap['create'] }}
                 </h3>
@@ -84,9 +87,9 @@
                 <div class="modal-body">
                     <div class="vlan-mode">
                         <h3 class="lf">tagged:</h3>
-                        <div class="vlan-port lf">
+                        <div class="vlan-port">
                             <div>
-                                <span v-for="(item,key) in port_name.pon" :key="key" class="tagged">
+                                <span v-for="(item,key) in port_name.pon" :key="key" class="tagged" style="width: 12%;">
                                     <!-- name属性用来绑定 tagged 和 untagged ,二者只能二选一 或者 不选 -->
                                     <input type="radio" :name="item.id" :id="'tagged'+item.id" @click="changeState($event)" value="0">
                                     <label :for="'tagged'+item.id">{{ item.name }}</label>
@@ -97,6 +100,8 @@
                                     <input type="radio" :name="item.id" :id="'tagged'+item.id" @click="changeState($event)" value="0">
                                     <label :for="'tagged'+item.id">{{ item.name }}</label>
                                 </span>
+                            </div>
+                            <div>
                                 <span v-for="(item,key) in port_name.xge" :key="key" class="tagged" v-if="port_name.xge">
                                     <input type="radio" :name="item.id" :id="'tagged'+item.id" @click="changeState($event)" value="0">
                                     <label :for="'tagged'+item.id">{{ item.name }}</label>
@@ -107,9 +112,9 @@
                     <hr/>
                     <div class="vlan-mode">
                         <h3 class="lf">untagged:</h3>
-                        <div class="vlan-port lf">
+                        <div class="vlan-port">
                             <div>
-                                <span v-for="(item,key) in port_name.pon" :key="key" class="untagged">
+                                <span v-for="(item,key) in port_name.pon" :key="key" class="untagged" style="width: 12%;">
                                     <input type="radio" :name="item.id" :id="'untagged'+item.id" @click="changeState($event)" value="0">
                                     <label :for="'untagged'+item.id">{{ item.name }}</label>
                                 </span>
@@ -119,6 +124,8 @@
                                     <input type="radio" :name="item.id" :id="'untagged'+item.id" @click="changeState($event)" value="0">
                                     <label :for="'untagged'+item.id">{{ item.name }}</label>
                                 </span>
+                            </div>
+                            <div>
                                 <span v-for="(item,key) in port_name.xge" :key="key" class="untagged" v-if="port_name.xge">
                                     <input type="radio" :name="item.id" :id="'untagged'+item.id" @click="changeState($event)" value="0">
                                     <label :for="'untagged'+item.id">{{ item.name }}</label>
@@ -167,8 +174,12 @@
 
 <script>
 import { mapState } from 'vuex'
+import { parsePortList } from '@/utils/common';
     export default {
         name: 'vlanMgmt',
+        computed: {
+            ...mapState(['lanMap','port_name','system','change_url'])
+        },
         data(){
             return {
                 // 已有的 VLAN列表
@@ -667,6 +678,9 @@ import { mapState } from 'vuex'
                     // to do
                 })
                 this.close_batch_del();
+            },
+            parsePortList(str){
+                return parsePortList(str);
             }
         },
         watch: {
@@ -707,7 +721,6 @@ import { mapState } from 'vuex'
                 }
             }
         },
-        computed: mapState(['lanMap','port_name','system','change_url'])
     }
 </script>
 
@@ -825,15 +838,16 @@ span.vlan-cfg-title{
 }
 span.def-vlan-tips{
     margin-left: 20px;
-    font-size: 15px;
+    font-size: 14px;
     color: #67aef6;
+    font-weight: normal;
 }
 div.cover+div{
     width:850px;
     height:300px;
 }
 div.modal-content{
-    border-radius: 10px;
+    border-radius: 3px;
 }
 div.modal-title{
     // margin: 12px 20px;
@@ -851,14 +865,21 @@ div.modal-body>div>span:first-child{
     width: 100px;
 }
 div.vlan-mode>h3{
-    width: 100px;
+    width: 135px;
     height: 30px;
     line-height: 30px;
     padding-left: 5px;
 }
-div.vlan-port>div{
-    height: 30px;
-    line-height: 30px;
+div.vlan-port{
+    margin-left: 140px;
+    >div{
+        height: 30px;
+        line-height: 30px;
+        >span{
+            display: inline-block;
+            width: 24%;
+        }
+    }
 }
 div.vlan-mode:after{
     content: "";
@@ -923,7 +944,7 @@ div.add-vlan{
 }
 div.cover+div.batch-delete{
     border-radius: 5px;
-    height: 205px;
+    height: 225px;
     width: 500px;
     h3+div{
         margin-top: 10px;

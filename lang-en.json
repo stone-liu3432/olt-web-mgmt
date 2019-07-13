@@ -369,5 +369,14 @@
     "diag_ping_pktsize":  "PING packet size",
 	"diag_type":  "Ping test",
 	"start":  "Start",
-	"select_timezone":  "Select Timezone"
+	"select_timezone":  "Select Timezone",
+	
+	"ld_status": "Loop detect status",
+	"recover_mode": "Recover mode",
+	"recover_manual": "Manual recover",
+	"recover_time": "Auto recover time",
+	"detect_interval": "Loop detect interval",
+	"onu_status": "ONU status",
+	"ld_port_id": "Loopback port",
+	"ld_onu_id": "Loopback ONU"
 }

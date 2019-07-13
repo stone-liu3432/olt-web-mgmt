@@ -5,17 +5,17 @@
                 v-if="portType === 'pon'">
             </div>
             <div :class="[ 'bg-img', portInfo.data.media === 'fiber' ? portInfo.data.admin_status ? portInfo.data.link_status ? 'ge-online' : 'ge-offline' : 'ge-disabled' :
-                 portInfo.data.admin_status ? portInfo.data.link_status ? 'rj45-online' : 'rj45-offline' : 'rj45-disabled' ]" 
+                 portInfo.data.admin_status ? portInfo.data.link_status ? 'rj45-online' : 'rj45-offline' : 'rj45-disabled', portType !== 'pon' ? 'uplink' : '' ]" 
                 v-if="portType === 'ge' || portType === 'xge'">
             </div>
             <div v-if="portType === 'pon'">
                 {{ portType.toUpperCase() + portInfo.port_id }} : 
                 {{ portInfo.status ? 'online' : 'offline' }}
             </div>
-            <div v-if="portInfo && portInfo.data && portType !== 'pon'">
+            <!-- <div v-if="portInfo && portInfo.data && portType !== 'pon'">
                 {{ portInfo.name }} : 
                 {{ portInfo.data.link_status ? 'online' : 'offline' }}
-            </div>
+            </div> -->
         </div>
         <div class="lf pon-dev-info" v-if="portType === 'pon'">
             <div>
@@ -32,6 +32,10 @@
             </div>
         </div>
         <div class="lf ge-dev-info" v-if="portType === 'ge' || portType === 'xge'">
+            <div>
+                <span>{{ portInfo.name }}:</span>
+                <span>{{ portInfo.data.link_status ? 'online' : 'offline' }}</span>
+            </div>
             <div>
                 <span>{{ lanMap['admin_status'] }}: </span>
                 <span>
@@ -118,7 +122,7 @@ div.port{
             height: 32px;
             line-height: 32px;
             &:first-child{
-                margin: 20px 0 0 0;
+                margin: 10px 0 0 0;
             }
         }
     }
@@ -132,6 +136,9 @@ div.bg-img{
         text-align: center;
         margin: 8px 0;
     }
+}
+div.uplink{
+    margin-top: 18px;
 }
 div.pon-online{
     border: 2px solid #67aef6;

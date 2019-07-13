@@ -91,7 +91,7 @@ export default {
             var obj = {};
             for(var i=0;i<arr.length;i++){
                 obj[arr[i].port_id] = {};
-                obj[arr[i].port_id].name = i < 10 ? prefix + '0' + (i + 1) : prefix + (i + 1);
+                obj[arr[i].port_id].name = (i < 10 ? prefix + '0' + (i + 1) : prefix + (i + 1)) + (arr[i].link_aggregation ? '(LAG' + arr[i].link_aggregation + ')'  : '');
                 obj[arr[i].port_id].id = arr[i].port_id;
                 obj[arr[i].port_id].data = arr[i]; 
             }

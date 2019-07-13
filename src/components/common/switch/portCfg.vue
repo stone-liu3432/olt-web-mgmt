@@ -695,11 +695,10 @@ a.delete-mirror{
     margin: 4px 15px 0 0;
 }
 .item-align>select{
-    width: 100px;
+    width: 150px;
     height: 30px;
     font-size: 16px;
     text-indent: 10px;
-    margin-left: 10px;
 }
 .item-align>span{
     margin-left: 10px;

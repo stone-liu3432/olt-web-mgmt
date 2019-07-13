@@ -41,6 +41,7 @@ const packetFilter = () => import(/* webpackChunkName: "acl-qos-page" */  '@/com
 // router
 const staticRoute = () => import(/* webpackChunkName: "acl-qos-page" */  '@/components/common/route/staticRoute')
 const arp = () => import(/* webpackChunkName: "acl-qos-page" */  '@/components/common/route/arp')
+const linkAggregation = () => import(/* webpackChunkName: "switch-page" */ '@/components/common/switch/linkAggregation')
 
 export default [
     {
@@ -288,6 +289,12 @@ export default [
     },{
         path: '/loop_detect',
         component: loopDetect,
+        meta: {
+            requireAuth: true
+        }
+    },{
+        path: '/link_aggregation',
+        component: linkAggregation,
         meta: {
             requireAuth: true
         }

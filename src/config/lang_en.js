@@ -672,7 +672,11 @@ var en = {
     loopback : 'Loopback',
     port_status: ' Port Status ',
     port_isolation: ' Port isolation ',
-    pon_isolation_tips: 'Set PON port isolation only'
+    pon_isolation_tips: 'Set PON port isolation only',
+
+    link_aggregation:'Link aggregation',
+    psc: 'PSC',
+    member_portlist: 'Aggregation group member'
 };
 
 export default en;

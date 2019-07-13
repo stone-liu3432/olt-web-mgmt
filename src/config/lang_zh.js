@@ -651,7 +651,11 @@ var zh = {
     loopback : '回环',
     port_status: '端口状态',
     port_isolation: '端口隔离',
-    pon_isolation_tips: '仅设置PON端口隔离'
+    pon_isolation_tips: '仅设置PON端口隔离',
+
+    link_aggregation:'链路聚合',
+    psc: '负载均衡选路算法',
+    member_portlist: '汇聚组成员'
 };
 
 export default zh;

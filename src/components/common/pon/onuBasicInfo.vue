@@ -750,7 +750,7 @@ div.onu-upgrade{
 }
 table{
     border: 1px solid #ccc;
-    width: 100%;
+    width:100%;
     tr{
         td{
             height: 30px;

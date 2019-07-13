@@ -276,6 +276,7 @@ div.packet-filter-item{
 }
 div.cover+div{
     height: auto;
+    width: 520px;
 }
 div.packet-filter-modal{
     >div{
@@ -305,7 +306,7 @@ div.packet-filter-modal{
         }
         >div{
             float: left;
-            width: 380px;
+            width: 400px;
             margin: 0 0 0 120px;
             &:first-child{
                 width: 120px;
@@ -318,7 +319,7 @@ div.packet-filter-modal{
             }
             >div{
                 float: left;
-                width: 25%;
+                width: 33%;
                 margin: 3px 0 3px 0;
             }
         }
