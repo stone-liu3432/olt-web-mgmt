@@ -67,6 +67,9 @@
                     {"name": "route_mgmt"},
                     {"name": "ARP"}
                 ]
+            },
+            {
+                "name": "link_aggregation"
             }
         ]
     }
