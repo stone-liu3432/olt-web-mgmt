@@ -82,6 +82,7 @@ export default {
         }
     },
     created(){
+        this.port_id = sessionStorage.getItem('pid') || 1;
         this.getData();
     },
     methods: {
@@ -183,6 +184,7 @@ export default {
     },
     watch: {
         port_id(){
+            sessionStorage.setItem('pid', this.port_id);
             this.getData();
         }
     }

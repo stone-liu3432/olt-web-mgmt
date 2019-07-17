@@ -185,6 +185,9 @@ import { mapState,mapMutations } from 'vuex'
         created(){
             var pid = sessionStorage.getItem('pid');
             this.portid = this.$route.query.port_id || pid || 1;
+            if(this.$route.query.port_id){
+                this.$router.push('/onu_allow');
+            }
             if(this.change_url.beta === 'test'){
                 var url;
                 if(this.change_url.onu_allow[this.change_url.onu_allow.length - 1] != '='){

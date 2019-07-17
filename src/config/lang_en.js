@@ -43,6 +43,7 @@ var en = {
     modify: " Modify ",
     find: " Find",
     apply: " Apply",
+    set: ' Set ',
     commit: "Commit",
     cancel: " Cancel",
     config: " Setting ",
@@ -68,7 +69,7 @@ var en = {
     download: " download",
     on: " ON",
     off: " OFF",
-    advanced_setting: "Advanced setting",
+    advanced_setting: "Advanced Setting",
     save: " Save ",
 
     upgrade_firmware: "  upgrade firmware",
@@ -482,7 +483,7 @@ var en = {
     mc_unknown_policy: " multicast unknown policy",
     transparent: " transparent",
     discard: " discard",
-    mvlan: " multicast VLAN",
+    mvlan: " Multicast VLAN",
     router_portlist: " router port",
     program: " program",
     program_s: " program start",
@@ -510,11 +511,11 @@ var en = {
 
     batch_cfg_vlan: " Configure VLAN ports in batches",
 
-    pon_optical: "Optical diagnose",
+    pon_optical: "Optical Diagnose",
     pon_optical_tips:
         "Here it is the PON Module's RSSI, you need select the location of which ONU you want to trigger",
     loading: "Loading data, please wait ...",
-    multicast_table: "Multicast table",
+    multicast_table: "Multicast Table",
     static_table: " static table",
     tagged_portlist: "Tagged",
     untagged_portlist: "Untagged",
@@ -565,7 +566,7 @@ var en = {
     basic: " Basic ",
     link: " Link ",
     rule: " Rule ",
-    acl_mgmt: "ACL management",
+    acl_mgmt: "ACL Management",
     show: " Show ",
     rule_count: " Rule count ",
     rule_priority: " Adjust RULE priority ",
@@ -589,7 +590,7 @@ var en = {
     weight: " Weight ",
     delete_all: " Delete All ",
     show_detail: " View details ",
-    packet_filter: " Packet filter ",
+    packet_filter: " Packet Filter ",
     time_range: " Timerange ",
     optional: " Optional ",
     required: " Required ",
@@ -674,9 +675,11 @@ var en = {
     port_isolation: ' Port isolation ',
     pon_isolation_tips: 'Set PON port isolation only',
 
-    link_aggregation:'Link aggregation',
-    psc: 'PSC',
-    member_portlist: 'Aggregation group member'
+    link_aggregation:'Link Aggregation',
+    psc: 'Port Selection Criteria',
+    member_portlist: ' Port Members',
+    link_aggregation_tips: 'Link aggregation group member ports will take effect after configuration',
+    trunk_id: ' Trunk ID '
 };
 
 export default en;

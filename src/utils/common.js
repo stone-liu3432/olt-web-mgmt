@@ -2,7 +2,7 @@ import store from "../vuex/store";
 
 //  解析后台返回的字符串
 export function analysis(str, pon, ge) {
-    if (!str) return "";
+    if (!str) return [];
     var result = [];
     var arr = str.split(",");
     for (var i = 0, len = arr.length; i < len; i++) {
@@ -72,7 +72,7 @@ export function testMACMask(str) {
 }
 
 export function parsePortList(str) {
-    if (!str) return "";
+    if (!str) return '';
     var result = [];
     var arr = str.split(",");
     for (var i = 0, len = arr.length; i < len; i++) {

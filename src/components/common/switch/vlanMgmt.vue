@@ -29,13 +29,10 @@
             <li v-for="(item,index) in vlan_tab" :key="index">
                 <!-- <input type="radio" v-model="vlanid" :value="item.vlan_id"> -->
                 <span>{{ item.vlan_id }}</span>
-                <!-- <span>{{ item.tagged_portlist | analysis(system.data.ponports,system.data.geports) || '—' }}</span> -->
                 <span>{{ parsePortList(item.tagged_portlist) || ' - ' }}</span>
-                <!-- <span>{{ item.untagged_portlist | analysis(system.data.ponports,system.data.geports) || '—' }}</span> -->
                 <span>{{ parsePortList(item.untagged_portlist) || ' - ' }}</span>
-                <!-- <span>{{ item.default_vlan_portlist | analysis(system.data.ponports,system.data.geports) || '—' }}</span> -->
                 <span>{{ parsePortList(item.default_vlan_portlist) || ' - ' }}</span>
-                <a href="javascript:;"  @click="config_port(item.vlan_id)">{{ lanMap['config'] }}</a>
+                <a href="javascript:;"  @click="config_port(item)">{{ lanMap['config'] }}</a>
                 <a href="javascript:;"  @click="deleteVlan(item.vlan_id)" v-if="item.vlan_id !== 1">{{ lanMap['delete'] }}</a>
             </li>
             <li v-if="vlan_list.data  && is_loadmore">
@@ -88,9 +85,8 @@
                     <div class="vlan-mode">
                         <h3 class="lf">tagged:</h3>
                         <div class="vlan-port">
-                            <div>
+                            <!-- <div>
                                 <span v-for="(item,key) in port_name.pon" :key="key" class="tagged" style="width: 12%;">
-                                    <!-- name属性用来绑定 tagged 和 untagged ,二者只能二选一 或者 不选 -->
                                     <input type="radio" :name="item.id" :id="'tagged'+item.id" @click="changeState($event)" value="0">
                                     <label :for="'tagged'+item.id">{{ item.name }}</label>
                                 </span>
@@ -106,6 +102,24 @@
                                     <input type="radio" :name="item.id" :id="'tagged'+item.id" @click="changeState($event)" value="0">
                                     <label :for="'tagged'+item.id">{{ item.name }}</label>
                                 </span>
+                            </div> -->
+                            <div>
+                                <span v-for="(item,key) in port_name.pon" :key="key" style="width: 12%;">
+                                    <input type="checkbox" :value="item.id" v-model="tagged_list" :id="'tagged'+item.id" :disabled="def_list.includes(item.id)">
+                                    <label :for="'tagged'+item.id">{{ item.name }}</label>
+                                </span>
+                            </div>
+                            <div>
+                                <span v-for="(item,key) in port_name.ge" :key="key">
+                                    <input type="checkbox" :value="item.id" v-model="tagged_list" :id="'tagged'+item.id" :disabled="def_list.includes(item.id)">
+                                    <label :for="'tagged'+item.id">{{ item.name }}</label>
+                                </span>
+                            </div>
+                            <div>
+                                <span v-for="(item,key) in port_name.xge" :key="key" v-if="port_name.xge">
+                                    <input type="checkbox" :value="item.id" v-model="tagged_list" :id="'tagged'+item.id" :disabled="def_list.includes(item.id)">
+                                    <label :for="'tagged'+item.id">{{ item.name }}</label>
+                                </span>
                             </div>
                         </div>
                     </div>
@@ -113,7 +127,7 @@
                     <div class="vlan-mode">
                         <h3 class="lf">untagged:</h3>
                         <div class="vlan-port">
-                            <div>
+                            <!-- <div>
                                 <span v-for="(item,key) in port_name.pon" :key="key" class="untagged" style="width: 12%;">
                                     <input type="radio" :name="item.id" :id="'untagged'+item.id" @click="changeState($event)" value="0">
                                     <label :for="'untagged'+item.id">{{ item.name }}</label>
@@ -128,6 +142,24 @@
                             <div>
                                 <span v-for="(item,key) in port_name.xge" :key="key" class="untagged" v-if="port_name.xge">
                                     <input type="radio" :name="item.id" :id="'untagged'+item.id" @click="changeState($event)" value="0">
+                                    <label :for="'untagged'+item.id">{{ item.name }}</label>
+                                </span>
+                            </div> -->
+                            <div>
+                                <span v-for="(item,key) in port_name.pon" :key="key" style="width: 12%;">
+                                    <input type="checkbox" :id="'untagged'+item.id" :value="item.id" v-model="untagged_list" :disabled="def_list.includes(item.id)">
+                                    <label :for="'untagged'+item.id">{{ item.name }}</label>
+                                </span>
+                            </div>
+                            <div>
+                                <span v-for="(item,key) in port_name.ge" :key="key">
+                                    <input type="checkbox" :id="'untagged'+item.id" :value="item.id" v-model="untagged_list" :disabled="def_list.includes(item.id)">
+                                    <label :for="'untagged'+item.id">{{ item.name }}</label>
+                                </span>
+                            </div>
+                            <div>
+                                <span v-for="(item,key) in port_name.xge" :key="key" v-if="port_name.xge">
+                                    <input type="checkbox" :id="'untagged'+item.id" :value="item.id" v-model="untagged_list" :disabled="def_list.includes(item.id)">
                                     <label :for="'untagged'+item.id">{{ item.name }}</label>
                                 </span>
                             </div>
@@ -216,7 +248,11 @@ import { parsePortList } from '@/utils/common';
                 // 添加/修改VLAN模态框隐藏显示
                 modalDialog: false,
                 batch_del_vlan: false,
-                is_loadmore: false
+                is_loadmore: false,
+                tagged_list: [],
+                untagged_list: [],
+                def_list: [],
+                lags: {}
             }
         },
         created(){
@@ -334,50 +370,21 @@ import { parsePortList } from '@/utils/common';
                 this.vlanid = vlanid;
             },
             //  配置 VLAN 端口模态框
-            config_port(id){
+            config_port(data){
                 this.modalDialog = true;
-                this.vlanid = id;
-                //  setTimeout延迟执行，会等到页面(DOM)加载完成后再执行此操作，否则取不到值
-                setTimeout(()=>{
-                    var tagged = document.querySelectorAll('span.tagged>input');
-                    var untagged = document.querySelectorAll('span.untagged>input');
-                    var tag_checked = this.analysis(this.vlan_map[this.vlanid].tagged_portlist).split(',');
-                    var untag_checked = this.analysis(this.vlan_map[this.vlanid].untagged_portlist).split(',');
-                    var def_vlan = this.analysis(this.vlan_map[this.vlanid].default_vlan_portlist).split(',');
-                    var port_all = document.querySelectorAll('div.vlan-port span input');
-                    for(var n = 0,len = port_all.length; n < len; n++){
-                        for(var m = 0, len1 = def_vlan.length;m < len1; m++){
-                            if(port_all[n].nextElementSibling.innerText.replace(/\s/g,'') === def_vlan[m].replace(/\s/g,'')){
-                                port_all[n].disabled = 'disabled';
-                                port_all[n].style = 'cursor: not-allowed;';
-                                port_all[n].nextElementSibling.style = 'cursor: not-allowed;';
-                                port_all[n].style = 'cursor: not-allowed;';
-                            }
-                        }
-                    }
-                    for(var i=0,len1=tagged.length;i<len1;i++){
-                        for(var j=0,len2=tag_checked.length;j<len2;j++){
-                            if(tagged[i].nextElementSibling.innerText.replace(/\s/g,'') === tag_checked[j].replace(/\s/g,'')){
-                                tagged[i].checked = 'true';
-                                tagged[i].value = 1;
-                            }
-                        }
-                    }
-                    for(var i=0,len1=untagged.length;i<len1;i++){
-                        for(var j=0,len2=untag_checked.length;j<len2;j++){
-                            if(untagged[i].nextElementSibling.innerText.replace(/\s/g,'') === untag_checked[j].replace(/\s/g,'')){
-                                untagged[i].checked = 'true';
-                                untagged[i].value = 1;
-                            }
-                        }
-                    }
-                },0)
+                this.vlanid = data.vlan_id;
+                this.tagged_list = this.analysis(data.tagged_portlist);
+                this.untagged_list = this.analysis(data.untagged_portlist);
+                this.def_list = this.analysis(data.default_vlan_portlist);
+                this.composeLags(data);
             },
             //  关闭创建/配置 VLAN 模态框
             closeModal(){
                 this.create_vlan = false;
                 this.modalDialog = false;
                 this.batch_set_vlan = false;
+                this.tagged_list = [];
+                this.untagged_list = [];
             },
             //  模态框控件 => 删除VLAN
             result(bool){
@@ -444,7 +451,7 @@ import { parsePortList } from '@/utils/common';
                 if(bool){
                     this.set_vlan(this.vlanid);
                 }
-                this.modalDialog = false;
+                this.closeModal();
             },
             //  配置VLAN ID 的端口
             set_vlan(vid,vid_s,vid_e,create_flag){
@@ -468,8 +475,8 @@ import { parsePortList } from '@/utils/common';
                         "method":"set",
                         "param":{
                             "vlan_id": vid || vid_s,
-                            "tagged_portlist": tag_str.replace(/\,$/,''),
-                            "untagged_portlist": untag_str.replace(/\,$/,'')
+                            "tagged_portlist": this.tagged_list.sort((a, b) => a-b).toString(),//tag_str.replace(/\,$/,''),
+                            "untagged_portlist": this.untagged_list.sort((a, b) => a-b).toString()//untag_str.replace(/\,$/,'')
                         }
                     }
                     url = '/switch_vlan';
@@ -479,8 +486,8 @@ import { parsePortList } from '@/utils/common';
                         "param":{
                          	"vlanid_s": vid_s > vid_e ? vid_e : vid_s,
                             "vlanid_e": vid_s > vid_e ? vid_s : vid_e,
-                            "tagged_portlist": tag_str.replace(/\,$/,''),
-                            "untagged_portlist": untag_str.replace(/\,$/,'')
+                            "tagged_portlist": this.tagged_list.sort((a, b) => a-b).toString(),//tag_str.replace(/\,$/,''),
+                            "untagged_portlist": this.untagged_list.sort((a, b) => a-b).toString()//untag_str.replace(/\,$/,'')
                         }
                     }
                     url = '/switch_vlanlist';
@@ -592,7 +599,7 @@ import { parsePortList } from '@/utils/common';
             },
             //  解析后台返回的字符串
             analysis(str){
-                if(!str) return ''
+                if(!str) return []
                 var result = [];
                 var arr = str.split(',');
                 for(var i=0,len=arr.length;i<len;i++){
@@ -611,24 +618,7 @@ import { parsePortList } from '@/utils/common';
                         result.push(Number(substrs));
                     }
                 }
-                return this.nomenclature(result)
-            },
-            //  根据返回数据，命名端口号
-            nomenclature(arr){
-                if(!arr) return ''
-                var results = '';
-                var pon_count = this.system.data.ponports,ge_count = this.system.data.geports;
-                for(var i=0,len=arr.length;i<len;i++){
-                    var m = arr[i];
-                    if(m <= pon_count){
-                        results += pon_count < 10 ? 'PON0'+ m + ',' : 'PON' + m +',';
-                    }else if(m > pon_count && m <= (pon_count + ge_count)){
-                        results += (m - pon_count) < 10 ? 'GE0' + (m - pon_count) + ',' : 'GE' + (m - pon_count) + ',';
-                    }else{
-                        results += (m - (pon_count + ge_count)) < 10 ? 'XGE0' + (m - (pon_count + ge_count)) + ',' : 'XGE' + (m - (pon_count + ge_count)) + ',';
-                    }
-                }
-                return results.replace(/\,$/,'');
+                return result;
             },
             //  打开范围删除vlan模态框
             open_batch_del(){
@@ -681,6 +671,21 @@ import { parsePortList } from '@/utils/common';
             },
             parsePortList(str){
                 return parsePortList(str);
+            },
+            composeLags(data){
+                var reg = /^\s*lag(\d)_portlist\s*$/;
+                Object.keys(data).forEach(item => {
+                    if(reg.test(item)){
+                        var key = item.replace(reg, '$1');
+                        this.lags[key] = this.analysis(data[item]);
+                    }
+                })
+            },
+            difference(arr1, arr2){
+                var n = 0;
+                arr1.forEach(item => { n = n ^ item });
+                arr2.forEach(item => { n = n ^ item });
+                return n;
             }
         },
         watch: {
@@ -718,6 +723,107 @@ import { parsePortList } from '@/utils/common';
                     this.pagination.index--;
                     this.pagination.page = Math.ceil(this.vlan_list.data.length/this.pagination.display);
                     this.getPage();
+                }
+            },
+            tagged_list(newVal, oldVal){
+                var val;
+                if(newVal.length > oldVal.length){
+                    val = newVal[newVal.length - 1];
+                    if(this.port_name.ge && this.port_name.ge[val] && this.port_name.ge[val].lag){
+                        if(this.lags[this.port_name.ge[val].lag]){
+                            this.lags[this.port_name.ge[val].lag].forEach(_item => {
+                                if(_item !== val && !this.tagged_list.includes(_item)){
+                                    this.tagged_list.push(_item);
+                                }
+                            })
+                        }
+                    }
+                    if(this.port_name.xge && this.port_name.xge[val] && this.port_name.xge[val].lag){
+                        if(this.lags[this.port_name.xge[val].lag]){
+                            this.lags[this.port_name.xge[val].lag].forEach(_item => {
+                                if(_item !== val && !this.tagged_list.includes(_item)){
+                                    this.tagged_list.push(_item);
+                                }
+                            })
+                        }
+                    }
+                    var idx = this.untagged_list.indexOf(val);
+                    if(idx > -1){
+                        var arr = Object.assign([], this.untagged_list);
+                        arr.splice(idx, 1);
+                        this.untagged_list = arr;
+                    }
+                }
+                if(newVal.length < oldVal.length){
+                    val = this.difference(newVal, oldVal);
+                    if(this.port_name.ge && this.port_name.ge[val] && this.port_name.ge[val].lag){
+                        if(this.lags[this.port_name.ge[val].lag]){
+                            this.lags[this.port_name.ge[val].lag].forEach(_item => {
+                                if(this.tagged_list.indexOf(_item) > -1){
+                                    this.tagged_list.splice(this.tagged_list.indexOf(_item), 1);
+                                }
+                            })
+                        }
+                    }
+                    if(this.port_name.xge && this.port_name.xge[val] && this.port_name.xge[val].lag){
+                        if(this.lags[this.port_name.xge[val].lag]){
+                            this.lags[this.port_name.xge[val].lag].forEach(_item => {
+                                if(this.tagged_list.indexOf(_item) > -1){
+                                    this.tagged_list.splice(this.tagged_list.indexOf(_item), 1);
+                                }
+                            })
+                        }
+                    }
+                }
+            },
+            untagged_list(newVal, oldVal){
+                var val;
+                if(newVal.length > oldVal.length){
+                    val = newVal[newVal.length - 1];
+                    if(this.port_name.ge && this.port_name.ge[val] && this.port_name.ge[val].lag){
+                        if(this.lags[this.port_name.ge[val].lag]){
+                            this.lags[this.port_name.ge[val].lag].forEach(_item => {
+                                if(_item !== val && !this.untagged_list.includes(_item)){
+                                    this.untagged_list.push(_item);
+                                }
+                            })
+                        }
+                    }
+                    if(this.port_name.xge && this.port_name.xge[val] && this.port_name.xge[val].lag){
+                        if(this.lags[this.port_name.xge[val].lag]){
+                            this.lags[this.port_name.xge[val].lag].forEach(_item => {
+                                if(_item !== val && !this.untagged_list.includes(_item)){
+                                    this.untagged_list.push(_item);
+                                }
+                            })
+                        }
+                    }
+                    var idx = this.tagged_list.indexOf(val);
+                    if(idx > -1){
+                        var arr = Object.assign([], this.tagged_list);
+                        arr.splice(idx, 1);
+                        this.tagged_list = arr;
+                    }
+                }else{
+                    val = this.difference(newVal, oldVal);
+                    if(this.port_name.ge && this.port_name.ge[val] && this.port_name.ge[val].lag){
+                        if(this.lags[this.port_name.ge[val].lag]){
+                            this.lags[this.port_name.ge[val].lag].forEach(_item => {
+                                if(this.untagged_list.indexOf(_item) > -1){
+                                    this.untagged_list.splice(this.untagged_list.indexOf(_item), 1);
+                                }
+                            })
+                        }
+                    }
+                    if(this.port_name.xge && this.port_name.xge[val] && this.port_name.xge[val].lag){
+                        if(this.lags[this.port_name.xge[val].lag]){
+                            this.lags[this.port_name.xge[val].lag].forEach(_item => {
+                                if(this.untagged_list.indexOf(_item) > -1){
+                                    this.untagged_list.splice(this.untagged_list.indexOf(_item), 1);
+                                }
+                            })
+                        }
+                    }
                 }
             }
         },

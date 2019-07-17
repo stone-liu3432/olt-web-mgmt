@@ -1,28 +1,37 @@
 <template>
     <div>
-        <h2>{{ lanMap['link_aggregation'] }}</h2>
+        <h2>
+            {{ lanMap['link_aggregation'] }}
+            <a
+                href="javascript:void(0);"
+                @click="openDialog(null, 'create')"
+            >{{ lanMap['create'] }}</a>
+        </h2>
         <hr />
         <table border="1" v-if="member.length">
             <template v-for="item in member">
                 <tr>
                     <td>
-                        <span>trunk id:</span>
+                        <span>{{ lanMap['trunk_id'] }}:</span>
                         <span>{{ item.trunk_id }}</span>
                     </td>
                     <td>
                         <span>{{ lanMap['psc'] }}:</span>
                         <span>{{ pscEnum[item.psc] }}</span>
-                    </td>
-                    <td>
-                        <span class="text-btn" @click="openDialog(item, 'add')">{{ lanMap['add'] }}</span>
-                        <span
-                            class="text-btn"
-                            @click="openDialog(item, 'delete')"
-                        >{{ lanMap['delete'] }}</span>
                         <span
                             class="text-btn"
                             @click="openDialog(item, 'config')"
                         >{{ lanMap['config'] }}</span>
+                    </td>
+                    <td>
+                        <span
+                            class="text-btn"
+                            @click="openDialog(item, 'set')"
+                        >{{ lanMap['add'] + lanMap['member_portlist'] }}</span>
+                        <span
+                            class="text-btn"
+                            @click="openDialog(item, 'delete')"
+                        >{{ lanMap['delete'] + lanMap['member_portlist'] }}</span>
                     </td>
                 </tr>
                 <tr>
@@ -34,16 +43,23 @@
                 </tr>
             </template>
         </table>
-        <div class="modal-dialog" v-if="dialogVisible">
+        <div class="modal-dialog" v-if="dialogVisible" key="modal-link-aggregation">
             <div class="cover"></div>
             <div
-                :style="{ 'height': dialogFlag === 'add' || dialogFlag === 'delete' ? '240px' : '210px' }"
+                :style="{ 'height': dialogFlag === 'create' ? '250px' : dialogFlag === 'set' || dialogFlag === 'delete' ? '240px' : '220px' }"
             >
                 <div class="modal-content">
                     <h3 class="modal-header">{{ lanMap[dialogFlag] }}</h3>
                     <div>
-                        <span style="width: 160px;">trunk id:</span>
-                        <span>{{ trunk_id }}</span>
+                        <span style="width: 160px;">{{ lanMap['trunk_id'] }}:</span>
+                        <input
+                            type="text"
+                            v-model.number="formData.trunk_id"
+                            v-if="dialogFlag === 'create'"
+                            :style="{ 'border-color': formData.trunk_id < 1 || formData.trunk_id > 8 || isNaN(formData.trunk_id) ? 'red' : '' }"
+                        />
+                        <span v-else>{{ formData.trunk_id }}</span>
+                        <span class="tips" v-if="dialogFlag === 'create'">Range: 1-8</span>
                     </div>
                     <div v-if="dialogFlag === 'config'">
                         <span style="width: 160px;">{{ lanMap['psc'] }}:</span>
@@ -53,7 +69,9 @@
                             </template>
                         </select>
                     </div>
-                    <div v-if="dialogFlag === 'add' || dialogFlag === 'delete'">
+                    <div
+                        v-if="dialogFlag === 'set' || dialogFlag === 'delete' || dialogFlag === 'create'"
+                    >
                         <div class="align-item lf">{{ lanMap['member_portlist'] }}</div>
                         <div>
                             <div v-for="(item,key) in port_name.ge" :key="key" class="lf">
@@ -103,12 +121,12 @@
 </template>
 
 <script>
-import { mapState } from "vuex";
+import { mapState, mapMutations } from "vuex";
 import { parsePortList } from "@/utils/common";
 export default {
     name: "linkAggregation",
     computed: {
-        ...mapState(["lanMap", "system", "port_name"])
+        ...mapState(["lanMap", "system", "port_name", "change_url"])
     },
     data() {
         return {
@@ -121,17 +139,17 @@ export default {
                 "6": "src-dest-ip"
             },
             member: [
-                // {
-                //     trunk_id: 1, // 1-8
-                //     psc: 1, // 1-6
-                //     member_portlist: "5-12" // up-link
-                // }
+                {
+                    trunk_id: 1, // 1-8
+                    psc: 1, // 1-6
+                    member_portlist: "5-12" // up-link
+                }
             ],
             dialogVisible: false,
             dialogFlag: "",
             cacheMember: {},
             formData: {
-                trunk_id: 1,
+                trunk_id: "",
                 psc: 1,
                 member_portlist: []
             }
@@ -141,6 +159,10 @@ export default {
         this.getMember();
     },
     methods: {
+        ...mapMutations({
+            portInfo: "updatePortData",
+            portName: "updatePortName"
+        }),
         getMember() {
             this.$http
                 .get("/switch_trunk?form=link_aggregation")
@@ -160,19 +182,22 @@ export default {
         openDialog(data, flag) {
             this.dialogFlag = flag;
             this.dialogVisible = true;
-            this.cacheMember = data;
-            this.trunk_id = data.trunk_id;
-            if (flag === "config") {
-                this.formData.psc = data.psc;
-            }
-            if (flag === "delete") {
-                this.formData.member_portlist = this.analysis(
-                    data.member_portlist
-                );
+            if (data) {
+                this.cacheMember = data;
+                this.formData.trunk_id = data.trunk_id;
+                if (flag === "config") {
+                    this.formData.psc = data.psc;
+                }
+                if (flag === "delete" || flag === "set") {
+                    this.formData.member_portlist = this.analysis(
+                        data.member_portlist
+                    );
+                }
             }
         },
         closeDialog() {
             this.dialogVisible = false;
+            this.formData.trunk_id = "";
             this.formData.psc = 1;
             this.formData.member_portlist = [];
         },
@@ -202,14 +227,25 @@ export default {
         submitForm() {
             let url,
                 data = {};
-            if (this.dialogFlag === "add") {
+            if (this.dialogFlag === "create" || this.dialogFlag === "set") {
+                if (
+                    this.formData.trunk_id < 1 ||
+                    this.formData.trunk_id > 8 ||
+                    isNaN(this.formData.trunk_id)
+                ) {
+                    this.$message({
+                        type: "error",
+                        text: `${this.lanMap["param_error"]}: trunk id `
+                    });
+                    return;
+                }
                 url = "/switch_trunk?form=link_aggregation_member";
                 data = {
                     method: "set",
                     param: {
-                        trunk_id: this.trunk_id,
+                        trunk_id: this.formData.trunk_id,
                         member_portlist: this.formData.member_portlist
-                            .sort((a,b) => a-b)
+                            .sort((a, b) => a - b)
                             .toString()
                     }
                 };
@@ -219,38 +255,90 @@ export default {
                 data = {
                     method: "delete",
                     param: {
-                        trunk_id: this.trunk_id,
+                        trunk_id: this.formData.trunk_id,
                         member_portlist: this.formData.member_portlist
-                            .sort((a,b) => a-b)
+                            .sort((a, b) => a - b)
                             .toString()
                     }
                 };
             }
             if (this.dialogFlag === "config") {
-                (url = "/switch_trunk?form=link_aggregation_psc"),
-                    (data = {
-                        method: "set",
-                        param: {
-                            trunk_id: this.trunk_id,
-                            psc: this.formData.psc
-                        }
-                    });
+                url = "/switch_trunk?form=link_aggregation_psc";
+                data = {
+                    method: "set",
+                    param: {
+                        trunk_id: this.formData.trunk_id,
+                        psc: this.formData.psc
+                    }
+                };
             }
-            this.$http.post(url, data).then(res =>{
-                if(res.data.code === 1){
-                    this.$message({
-                        type: res.data.type,
-                        text: this.lanMap['setting_ok']
-                    })
-                    this.getMember();
-                }else{
-                    this.$message({
-                        type: res.data.type,
-                        text: `(${res.data.code}) ${res.data.message}`
-                    })
-                }
-                this.closeDialog();
-            }).catch(err =>{})
+            this.$http
+                .post(url, data)
+                .then(res => {
+                    if (res.data.code === 1) {
+                        this.$message({
+                            type: res.data.type,
+                            text: this.lanMap["setting_ok"]
+                        });
+                        this.getMember();
+                        //  设置完成后，更新端口信息
+                        this.updatePortInfo();
+                    } else {
+                        this.$message({
+                            type: res.data.type,
+                            text: `(${res.data.code}) ${res.data.message}`
+                        });
+                    }
+                    this.closeDialog();
+                })
+                .catch(err => {});
+        },
+        updatePortInfo() {
+            this.$http
+                .get(this.change_url.port)
+                .then(res => {
+                    this.portInfo(res.data);
+                    var pon = this.system.data.ponports;
+                    var ge = this.system.data.geports;
+                    var xge = this.system.data.xgeports;
+                    var pon_count, ge_count, xge_count, portName;
+                    pon_count = res.data.data.slice(0, pon);
+                    if (!xge) {
+                        ge_count = res.data.data.slice(pon);
+                        portName = {
+                            pon: this.get_portName(pon_count, "PON"),
+                            ge: this.get_portName(ge_count, "GE")
+                        };
+                    } else {
+                        ge_count = res.data.data.slice(pon, pon + ge);
+                        xge_count = res.data.data.slice(pon + ge);
+                        portName = {
+                            pon: this.get_portName(pon_count, "PON"),
+                            ge: this.get_portName(ge_count, "GE"),
+                            xge: this.get_portName(xge_count, "XGE")
+                        };
+                    }
+                    this.portName(portName);
+                })
+                .catch(err => {
+                    // to do
+                });
+        },
+        //根据port_id 分配端口名
+        get_portName(arr, prefix) {
+            var obj = {};
+            for (var i = 0; i < arr.length; i++) {
+                obj[arr[i].port_id] = {};
+                obj[arr[i].port_id].name =
+                    (i < 10 ? prefix + "0" + (i + 1) : prefix + (i + 1)) +
+                    (arr[i].link_aggregation
+                        ? "(LAG" + arr[i].link_aggregation + ")"
+                        : "");
+                obj[arr[i].port_id].id = arr[i].port_id;
+                obj[arr[i].port_id].lag = arr[i].link_aggregation || 0;
+                obj[arr[i].port_id].data = arr[i];
+            }
+            return obj;
         }
     }
 };
@@ -262,6 +350,9 @@ h2 {
     font-weight: 600;
     color: #67aef7;
     margin: 10px 0 20px 0;
+    a {
+        margin-left: 30px;
+    }
 }
 table {
     width: 100%;
@@ -271,7 +362,7 @@ table {
         padding: 8px 0 8px 10px;
     }
     span + span {
-        margin-left: 10px;
+        margin-left: 16px;
     }
 }
 .text-btn {
@@ -291,6 +382,12 @@ table {
     span + span {
         margin-left: 10px;
         text-align: left;
+    }
+    input + span.tips {
+        width: auto;
+        margin-left: 10px;
+        font-size: 14px;
+        color: #666;
     }
     select {
         margin-left: 10px;
@@ -314,7 +411,7 @@ table {
         }
     }
     a {
-        margin: 6px 0 0 110px;
+        margin: 6px 0 0 100px;
     }
 }
 </style>

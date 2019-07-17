@@ -20,7 +20,7 @@
         </div>
         <ul class="rstp-port-info" v-if="rstp_port.data">
             <li class="bg-title">
-                <span v-for="(item,key) in rstp_port.data[0]" :key="key">{{ lanMap[key] }}</span>
+                <span v-for="(item,key) in rstp_port.data[0]" :key="key" v-if="key !== 'link_aggregation'">{{ lanMap[key] }}</span>
             </li>
             <li v-for="(item,key) in rstp_port.data" :key="key">
                 <span>
@@ -36,7 +36,7 @@
             </li>
         </ul>
         <!-- 设置rstp全局信息模态框 -->
-        <div class="modal-dialog" v-if="modal">
+        <div class="modal-dialog" v-if="modal" key="modal-rstp-basic-info">
             <div class="cover"></div>
             <div class="modal-body">
                 <h2 class="modal-header">{{ lanMap['rstp_global_info'] }}</h2>
@@ -105,7 +105,7 @@
             </div>
         </div>
         <!-- 设置rstp端口优先级模态框 -->
-        <div class="modal-dialog" v-if="modal_priority">
+        <div class="modal-dialog" v-if="modal_priority" key="modal-rstp-priority">
             <div class="cover"></div>
             <div class="modal-content">
                 <h2 class="modal-header">{{ lanMap['rstp_port_pri'] }}</h2>
@@ -156,6 +156,11 @@
                         <option value="P2P">P2P</option>
                         <option value="Shared">Shared</option>
                     </select>
+                </div>
+                <div style="font-size: 14px; color: #67aef6;">
+                    <template v-if="priority_info.link_aggregation">
+                        {{ lanMap['link_aggregation_tips'] }}
+                    </template>
                 </div>
                 <div>
                     <a href="javascript:;" @click="set_priority">{{ lanMap['apply'] }}</a>
@@ -571,8 +576,8 @@ div.rstp{
         }
     }
     div.modal-content{
-        width: 500px;
-        height: 320px;
+        width: 520px;
+        height: 350px;
         background: #fff;
         h2+div{
             margin-top: 10px;

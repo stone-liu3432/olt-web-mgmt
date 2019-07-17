@@ -43,6 +43,7 @@ var zh = {
     modify: "修改",
     find: "查找",
     apply: "确认",
+    set: '设置',
     commit: "提交",
     cancel: "取消",
     config: "配置",
@@ -655,7 +656,9 @@ var zh = {
 
     link_aggregation:'链路聚合',
     psc: '负载均衡选路算法',
-    member_portlist: '汇聚组成员'
+    member_portlist: '汇聚组成员',
+    link_aggregation_tips: '配置后该汇聚组端口成员将同时生效',
+    trunk_id: '汇聚组号'
 };
 
 export default zh;

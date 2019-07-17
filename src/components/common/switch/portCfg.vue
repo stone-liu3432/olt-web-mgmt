@@ -75,7 +75,7 @@
                 <div class="swich-basic-config">
                     <ul>
                         <li v-for="(item,key) in swich_port_info.data" :key="key" class="swich-item" v-if="key !== 'port_id'">
-                            <span v-if="key !== 'port_id'">{{ lanMap[key] }}</span>
+                            <span v-if="key !== 'port_id' && key !== 'link_aggregation'">{{ lanMap[key] }}</span>
                             <!-- <span v-if="key === 'port_id'">{{ item }}</span> -->
                             <select v-if="key === 'admin_status' || key === 'auto_neg' || key === 'flow_ctrl'" v-model.number="port_data[key]" 
                              :disabled="(key === 'admin_status' && swich_port_info.data.port_id <= system.data.ponports)">
@@ -136,10 +136,10 @@
                 </h3>
                 <div class="storm-config">
                     <ul>
-                        <li v-for="(item,key) in stormctrl_data.data" :key="key" v-if="key !== 'port_id'" class="swich-item">
+                        <li v-for="(item,key) in stormctrl_data.data" :key="key" v-if="key !== 'port_id' && key !== 'link_aggregation'" class="swich-item">
                             <span>{{ lanMap[key] }}</span>
                             <input type="text" v-model.number="storm_data[key]" 
-                            :style="{ 'border-color' : storm_data[key] && (storm_data[key] < 1 || storm_data[key] > 1488100 || isNaN(storm_data[key])) ? 'red' : '' }">
+                            :style="{ 'border-color': storm_data[key] && (storm_data[key] < 1 || storm_data[key] > 1488100 || isNaN(storm_data[key])) ? 'red' : '' }">
                             pps
                         </li>
                     </ul>
@@ -182,10 +182,10 @@
             </div>
             <div v-else class="warning">{{ lanMap['flush_page_retry'] }}</div>
         </div>    
-        <confirm :tool-tips="lanMap['if_sure']" @choose="result" v-if="userChoose"></confirm>
-        <confirm :tool-tips="lanMap['if_sure']" @choose="storm_result" v-if="stormCfg"></confirm>
-        <confirm :tool-tips="lanMap['if_sure']" @choose="mirror_result" v-if="mirrorCfg"></confirm>
-        <confirm :tool-tips="lanMap['if_sure']" @choose="flush_mirror_result" v-if="flush_mirror"></confirm>
+        <confirm :tool-tips="modal_tips" @choose="result" v-if="userChoose"></confirm>
+        <confirm :tool-tips="modal_tips" @choose="storm_result" v-if="stormCfg"></confirm>
+        <confirm :tool-tips="modal_tips" @choose="mirror_result" v-if="mirrorCfg"></confirm>
+        <confirm :tool-tips="modal_tips" @choose="flush_mirror_result" v-if="flush_mirror"></confirm>
     </div>
 </template>
 
@@ -238,12 +238,16 @@ import { mapState } from 'vuex'
                     "src_port": 0,
                     "dst_port": 0,
                     "type": 1
-                }
+                },
+                modal_tips: ''
             }
         },
         created(){
             var pid = sessionStorage.getItem('portid');
             this.portid = Number(this.$route.query.port_id) || pid || 1;
+            if(this.$route.query.port_id){
+                this.$router.push('/port_cfg');
+            }
             if(this.change_url.beta == 'test'){
                 this.$http.get('./swich_port_info.json').then(res=>{
                     if(res.data.code ===1){
@@ -330,6 +334,11 @@ import { mapState } from 'vuex'
                     this.flags += 1024;
                 }
                 this.userChoose = true;
+                if(original.link_aggregation){
+                    this.modal_tips = this.lanMap['link_aggregation_tips'];
+                }else{
+                    this.modal_tips = this.lanMap['if_sure']
+                }
             },
             //  根据用户点击按钮，执行不同动作  -->  风暴控制
             storm_result(bool){
@@ -413,6 +422,11 @@ import { mapState } from 'vuex'
                     this.storm_flags += 1;
                 }
                 this.stormCfg = true;
+                if(storm_cfg_data.link_aggregation){
+                    this.modal_tips = this.lanMap['link_aggregation_tips'];
+                }else{
+                    this.modal_tips = this.lanMap['if_sure'];
+                }
             },
             //  根据用户点击按钮，执行不同动作  -->  交换基本配置
             result(bool){
@@ -500,6 +514,7 @@ import { mapState } from 'vuex'
             //  端口镜像  确认框
             mirror_cfg(){
                 this.mirrorCfg = true;
+                this.modal_tips = this.lanMap['if_sure'];
             },
             //  端口镜像  清除按钮
             flush_mirror_cfg(){

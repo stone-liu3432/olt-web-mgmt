@@ -41,7 +41,7 @@
         <div class="modal-dialog" v-if="modal_show">
             <div class="cover"></div>
             <!-- port vlan basic config -->
-            <div class="pv-type" v-if="port_type_show">
+            <div class="pv-type" v-if="port_type_show" key="pv-type">
                 <div class="pv-type-item">
                     <span>{{ lanMap['port_id'] }}</span>
                     <span>
@@ -66,7 +66,7 @@
                 <div class="close" @click="close_modal_porttype"></div>
             </div>
             <!-- port vlan default vlan -->
-            <div class="pv-def-vid" v-if="port_defvid_show">
+            <div class="pv-def-vid" v-if="port_defvid_show" key="pv-def-vid">
                 <div class="pv-defvlan-item">
                     <span>{{ lanMap['port_id'] }}</span>
                     <span>
@@ -87,7 +87,7 @@
                 <div class="close" @click="close_pv_def_vlan"></div>
             </div>
             <!-- port vlan tag/untag vlan list -->
-            <div class="pv-vlan-list" v-if="port_vlist_show">
+            <div class="pv-vlan-list" v-if="port_vlist_show" key="pv-clan-list">
                 <div>
                     <h3 v-if="set_vlist_type === 1">{{ lanMap['add'] }}</h3>
                     <h3 v-if="set_vlist_type === 0">{{ lanMap['delete'] }}</h3>
@@ -118,7 +118,12 @@
                         </select>
                     </span>
                 </div>
-                 <div>
+                <div style="margin: 15px 0;font-size: 14px; color: #67aef7;text-align: center; height: 16px;">
+                    <template v-if="pvData.data.link_aggregation">
+                        {{ lanMap['link_aggregation_tips'] }}
+                    </template>
+                </div>
+                <div>
                     <a href="javascript:void(0);" v-if="this.set_vlist_type === 1" @click="submit_add_pv_vlist">{{ lanMap['apply'] }}</a>
                     <a href="javascript:void(0);" v-if="this.set_vlist_type === 0" @click="submit_del_pv_vlist">{{ lanMap['apply'] }}</a>
                     <a href="javascript:void(0);" @click="close_pv_vlist">{{ lanMap['cancel'] }}</a>
@@ -154,7 +159,7 @@ export default {
             set_vlist_type: 0,        //  0 -> delete   1 -> add
             port_type_show: false,
             port_defvid_show: false,
-            port_vlist_show: false
+            port_vlist_show: false,
             // pvData: {
             //     "code":1,
             //     "msg":"success",
@@ -163,7 +168,8 @@ export default {
             //         "port_type":2,
             //         "pvid":1,
             //         "tagged_vlan":" ",
-            //         "untagged_vlan":"1"
+            //         "untagged_vlan":"1",
+            //         "link_aggregation": 1
             //     }
             // }
         }
@@ -467,7 +473,7 @@ div.modal-dialog{
     }
     div.pv-vlan-list{
         width: 500px;
-        height: 315px;
+        height: 342px;
         background: #fff;
         >div.pv-vlist-item{
             margin: 20px 0;

@@ -75,7 +75,7 @@
                 <span>{{ (pagination.index-1)*pagination.display + key + 1 }}</span>
                 <span>{{ item.macaddr }}</span>
                 <span>{{ item.vlan_id }}</span>
-                <span>{{ item.port_id ? getName(item.port_id) : 'CPU' }}</span>
+                <span>{{ item.link_aggregation ? `LAG${ item.link_aggregation }` : item.port_id ? getName(item.port_id) : 'CPU' }}</span>
                 <span>
                     {{ item.mac_type === 0 ? lanMap['dynamic'] : item.mac_type === 1 ? lanMap['static'] : lanMap['blackhole'] }}
                 </span>
