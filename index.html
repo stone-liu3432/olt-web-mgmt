@@ -1,60 +1,91 @@
 <!DOCTYPE html>
 <html>
-  <head>
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width,initial-scale=1.0">
-    <meta http-equiv="Pragma" content="no-cache"> 
-    <meta http-equiv="Cache-Control" content="no-store"> 
-    <meta http-equiv="Expires" content="0">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge, chrome=1">
-    <title></title>
-    <noscript>Your browser does not support JavaScript!</noscript>
-    <script type="text/javascript"> 
-        if((navigator.appName == "Microsoft Internet Explorer" && navigator.appVersion.match(/7./i)=="7.") || 
-            (navigator.appName == "Microsoft Internet Explorer" && navigator.appVersion.match(/8./i)=="8.") ||
-            (navigator.appName == "Microsoft Internet Explorer" && navigator.appVersion.match(/9./i)=="9.")){
-                var lang = window.navigator.language || window.navigator.browserLanguage;
-                if(lang.indexOf('zh') !== -1){
-                    alert('系统检测到您使用的是IE浏览器，如果浏览器内核版本低于IE9，可能会影响某些功能的使用。 如果有空白页面，请更改为更高版本的浏览器。')
-                }else{
-                    alert('The system detected that you are using IE browser, if the browser kernel version is lower than IE9, may affect the use of some features. If there is a blank page, please change to a later version of the browser.')
+    <head>
+        <meta charset="utf-8" />
+        <meta name="viewport" content="width=device-width,initial-scale=1.0" />
+        <meta http-equiv="Pragma" content="no-cache" />
+        <meta http-equiv="Cache-Control" content="no-store" />
+        <meta http-equiv="Expires" content="0" />
+        <meta http-equiv="X-UA-Compatible" content="IE=edge, chrome=1" />
+        <title></title>
+        <noscript>Your browser does not support JavaScript!</noscript>
+        <script type="text/javascript">
+            if (
+                (navigator.appName == "Microsoft Internet Explorer" &&
+                    navigator.appVersion.match(/7./i) == "7.") ||
+                (navigator.appName == "Microsoft Internet Explorer" &&
+                    navigator.appVersion.match(/8./i) == "8.") ||
+                (navigator.appName == "Microsoft Internet Explorer" &&
+                    navigator.appVersion.match(/9./i) == "9.")
+            ) {
+                var lang =
+                    window.navigator.language ||
+                    window.navigator.browserLanguage;
+                if (lang.indexOf("zh") !== -1) {
+                    alert(
+                        "系统检测到您使用的是IE浏览器，如果浏览器内核版本低于IE9，可能会影响某些功能的使用。 如果有空白页面，请更改为更高版本的浏览器。"
+                    );
+                } else {
+                    alert(
+                        "The system detected that you are using IE browser, if the browser kernel version is lower than IE9, may affect the use of some features. If there is a blank page, please change to a later version of the browser."
+                    );
                 }
             }
-    </script>
-    <script>
-        // 修复 IE9 -- Array.prototype.sort 不能根据 对象属性 做排序
-        // 修复 safari 不支持sort()函数参数
-        ;!function(window){
-            var ua = window.navigator.userAgent.toLowerCase(),
-                reg = /msie|applewebkit.+safari|trident.*rv:/;
-            if(reg.test(ua)){
-                var _sort = Array.prototype.sort;
-                Array.prototype.sort = function(fn){
-                    if(!!fn && typeof fn === 'function'){
-                        if(this.length < 2)  return this;
-                        var i = 0, j = i + 1, l = this.length, tmp, r = false, t = 0;
-                        for(; i < l; i++){
-                            for(j = i + 1; j < l; j++){
-                                t = fn.call(this, this[i], this[j]);
-                                r = (typeof t === 'number' ? t :
-                                        !!t ? 1 : 0) > 0  ? true : false;
-                                if(r){
-                                    tmp = this[i];
-                                    this[i] = this[j];
-                                    this[j] = tmp;
+        </script>
+        <script>
+            // 修复 IE9 -- Array.prototype.sort 不能根据 对象属性 做排序
+            // 修复 safari 不支持sort()函数参数
+            !(function(window) {
+                var ua = window.navigator.userAgent.toLowerCase(),
+                    reg = /msie|applewebkit.+safari|trident.*rv:/;
+                if (reg.test(ua)) {
+                    var _sort = Array.prototype.sort;
+                    Array.prototype.sort = function(fn) {
+                        if (!!fn && typeof fn === "function") {
+                            if (this.length < 2) return this;
+                            var i = 0,
+                                j = i + 1,
+                                l = this.length,
+                                tmp,
+                                r = false,
+                                t = 0;
+                            for (; i < l; i++) {
+                                for (j = i + 1; j < l; j++) {
+                                    t = fn.call(this, this[i], this[j]);
+                                    r =
+                                        (typeof t === "number"
+                                            ? t
+                                            : !!t
+                                            ? 1
+                                            : 0) > 0
+                                            ? true
+                                            : false;
+                                    if (r) {
+                                        tmp = this[i];
+                                        this[i] = this[j];
+                                        this[j] = tmp;
+                                    }
                                 }
                             }
+                            return this;
+                        } else {
+                            return _sort.call(this);
                         }
-                        return this;
-                    }else{
-                        return _sort.call(this);
+                    };
+                }
+            })(window);
+            //  IE NodeList 不支持 forEach 方法
+            if (window.NodeList && !NodeList.prototype.forEach) {
+                NodeList.prototype.forEach = function(callback, thisArg) {
+                    thisArg = thisArg || window;
+                    for (var i = 0; i < this.length; i++) {
+                        callback.call(thisArg, this[i], i, this);
                     }
                 };
             }
-        }(window);
-    </script>
-  </head>
-  <body>
-    <div id="app"></div>
-  </body>
+        </script>
+    </head>
+    <body>
+        <div id="app"></div>
+    </body>
 </html>
