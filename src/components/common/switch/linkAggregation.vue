@@ -62,7 +62,7 @@
                         <span class="tips" v-if="dialogFlag === 'create'">Range: 1-8</span>
                     </div>
                     <div v-if="dialogFlag === 'config'">
-                        <span style="width: 160px;">{{ lanMap['psc'] }}:</span>
+                        <span style="width: 160px; vertical-align: middle;">{{ lanMap['psc'] }}:</span>
                         <select v-model.number="formData.psc">
                             <template v-for="(item, key) in pscEnum">
                                 <option :value="Number(key)">{{ item }}</option>

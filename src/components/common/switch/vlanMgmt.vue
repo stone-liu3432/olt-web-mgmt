@@ -996,7 +996,7 @@ span.tagged,span.untagged{
     user-select: none;
 }
 label{
-    margin-right: 18px;
+    // margin-right: 18px;
     user-select: none;
 }
 div.vlan-mode{
