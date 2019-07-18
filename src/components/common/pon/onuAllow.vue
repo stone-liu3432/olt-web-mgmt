@@ -538,7 +538,7 @@ import { mapState,mapMutations } from 'vuex'
             change_select_status(){
                 this.select_all = !this.select_all;
                 this.batch_onulist = [];
-                var onulist = document.getElementsByName('onulist');
+                var onulist = [...document.getElementsByName('onulist')];
                 if(this.select_all){
                     onulist.forEach(item=>{
                         this.batch_onulist.push(item.value);
