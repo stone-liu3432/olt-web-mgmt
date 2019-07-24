@@ -86,6 +86,8 @@ export default {
        }else{
            this.changeMenu('status');
        }
+   },
+   mounted(){
        this.update_img();
    },
    methods: {
