@@ -33,7 +33,8 @@
     </div> -->
     <div class="top-banner" v-if="system && system.data">
         <div class="top-banner-logo lf" :style="{ 'font-size': system.data.vendor.length > 12 ? '28px' : '32px' }">
-            {{ system.data.vendor ? system.data.vendor.length > 18 ? system.data.vendor.substring(0, 18) : system.data.vendor : "Neutral"  }}
+            <img v-if="has_logo" id="logo">
+            <a href="javascript: void(0);">{{ system.data.vendor ? system.data.vendor.length > 18 ? system.data.vendor.substring(0, 18) : system.data.vendor : "Neutral"  }}</a>
         </div>
         <div class="top-banner-nav lf">
             <ul>
@@ -85,6 +86,7 @@ export default {
        }else{
            this.changeMenu('status');
        }
+       this.update_img();
    },
    methods: {
         ...mapMutations({
@@ -259,15 +261,18 @@ export default {
 //     text-align: center;
 //     padding: 0 20px;
 //   }
-//   .top-banner-logo a{
-//     font-size:42px;
-//     font-weight:bold;
-//     color:#fff;
-//     background: transparent;
-//     &:active{
-//         border: none;
-//     }
-//   }
+  .top-banner-logo a{
+    font-size:42px;
+    font-weight:bold;
+    color:#fff;
+    background: transparent;
+    &:active{
+        border: none;
+    }
+    &:focus{
+        border: none;
+    }
+  }
 //   .product-type{
 //     width:200px;
 //     height:70px;
