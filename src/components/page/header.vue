@@ -33,12 +33,12 @@
     </div> -->
     <div class="top-banner" v-if="system && system.data">
         <div class="top-banner-logo lf" :style="{ 'font-size': system.data.vendor.length > 12 ? '28px' : '32px' }">
-            <img v-if="has_logo" id="logo">
-            <a href="javascript: void(0);">{{ system.data.vendor ? system.data.vendor.length > 18 ? system.data.vendor.substring(0, 18) : system.data.vendor : "Neutral"  }}</a>
+            <img v-if="has_logo" ref="logo-image" @error="isNoLogo">
+            <a href="javascript: void(0);" v-else>{{ system.data.vendor ? system.data.vendor.length > 18 ? system.data.vendor.substring(0, 18) : system.data.vendor : "Neutral"  }}</a>
         </div>
         <div class="top-banner-nav lf">
             <ul>
-                <li v-for="(item,index) in f_menu" :key="index" 
+                <li v-for="(item,index) in f_menu" :key="index"
                     @click="nav_click(item)"
                     :class="{ 'active' : item === nav_menu }">
                     {{ lanMap[item] }}
@@ -70,7 +70,7 @@ export default {
            //lang: '',
            uName: '',
            login_out_modal: false,
-           has_logo: false,
+           has_logo: true,
            f_menu: f_menu,
            savecfgConfirm: false,
            isLoading: false
@@ -87,9 +87,6 @@ export default {
            this.changeMenu('status');
        }
    },
-   mounted(){
-       this.update_img();
-   },
    methods: {
         ...mapMutations({
             addmenu: 'updateMenu',
@@ -99,16 +96,6 @@ export default {
         }),
         login_out(){
             this.login_out_modal = true;
-        },
-        update_img(){
-            this.$http.get('../../logo.png').then(res=>{
-                this.has_logo = true;
-                this.$nextTick(()=>{
-                    document.getElementById('logo').src = '../../logo.png';
-                })
-            }).catch(err=>{
-                this.has_logo = false;
-            })
         },
         //  退出登录
         result(bool){
@@ -171,8 +158,18 @@ export default {
         },
         user_mgmt(){
             this.$router.push('user_mgmt');
+        },
+        isNoLogo(){
+            this.has_logo = false;
         }
-   }
+    },
+    watch: {
+        'system'(){
+            this.$nextTick(_ => {
+                this.$refs['logo-image'].src = '../../logo.png';
+            })
+        }
+    }
 }
 </script>
 
