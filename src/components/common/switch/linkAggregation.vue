@@ -47,6 +47,7 @@
             <div class="cover"></div>
             <div
                 :style="{ 'height': dialogFlag === 'create' ? '250px' : dialogFlag === 'set' || dialogFlag === 'delete' ? '240px' : '220px' }"
+                key="modal-link-aggregation-content"
             >
                 <div class="modal-content">
                     <h3 class="modal-header">{{ lanMap[dialogFlag] }}</h3>
@@ -371,6 +372,9 @@ table {
 }
 .modal-content {
     user-select: none;
+    h3{
+        margin: 0;
+    }
     > div:not(.close) {
         margin: 16px 0;
     }
