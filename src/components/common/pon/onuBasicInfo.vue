@@ -389,6 +389,13 @@ import onuAlarm from '@/components/common/pon/onuAlarm'
                     })
                     return
                 }
+                if(!this.onu_basic_info.data.upgrade_type){
+                    this.$message({
+                        type: 'error',
+                        text: this.lanMap['no_upgrade_type']
+                    })
+                    return
+                }
                 this.upgrade_confirm = true;
             },
             upgrade_result(bool){
