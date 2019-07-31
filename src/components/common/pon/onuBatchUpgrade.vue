@@ -601,7 +601,7 @@ div.onu-type-modal{
     }
 }
 div.bind-upgrade-type{
-    width: 80%;
+    // width: 80%;
     min-width: 1024px;
     height: auto;
     overflow-y: scroll;
