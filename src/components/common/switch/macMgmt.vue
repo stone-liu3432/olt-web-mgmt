@@ -64,7 +64,7 @@
         <ul class="mac-table" v-if="this.mac_table[0]">
             <li>
                 <span>{{ lanMap['mac_index'] }}</span>
-                <span v-for="(item,key) in mac_table[0]" :key="key">
+                <span v-for="(item,key) in mac_table[0]" :key="key" v-if="key !== 'link_aggregation'">
                     {{ lanMap[key] }}
                     <i class="arrow-sort-up" v-if="key === 'vlan_id'" @click="sort_by_vlan"></i>
                     <i class="arrow-sort-up" v-if="key === 'port_id'" @click="sort_by_port"></i>
