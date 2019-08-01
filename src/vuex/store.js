@@ -82,5 +82,25 @@ export default new Vuex.Store({
         updateTimeRange(state, data){
             state.time_range = data;
         }
+    },
+    actions: {
+        updateSystem({ commit, state }){
+            Vue.prototype.$http.get(state.change_url.system).then(res=>{
+                if(res.data.code === 1){
+                    commit('updateSysData', res.data);
+                }
+            }).catch(err=>{
+                commit('updateSysData', {});
+            })
+        },
+        updateMenu({ commit, state }){
+            Vue.prototype.$http.get(state.change_url.menu).then(res=>{
+                if(res.data.code === 1){
+                    commit('updateMenu', res.data);
+                }
+            }).catch(err=>{
+                commit('updateMenu', {});
+            })
+        }
     }
 });

@@ -4,7 +4,6 @@ import 'babel-polyfill'
 import Vue from 'vue'
 import Hsgq from './Hsgq'
 import router from './router'
-import Vuex from 'Vuex'
 import axios from 'axios'
 import store from './vuex/store'
 import VueMessage from '@/components/common/message'
@@ -13,7 +12,6 @@ import tabBar from '@/components/common/tabBar'
 import { analysis } from './utils/common.js'
 
 Vue.use(VueMessage)
-Vue.use(Vuex)
 
 Vue.component('confirm', confirm)
 Vue.component('tabBar', tabBar)
