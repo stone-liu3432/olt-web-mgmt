@@ -7,7 +7,7 @@
 </template>
 
 <script>
-import { mapState,mapMutations } from 'vuex'
+import { mapState,mapMutations, mapActions } from 'vuex'
 import topBanner from '@/components/page/header'
 import contentArea from '@/components/page/content'
 import bottomFooter from '@/components/page/footer'
@@ -31,23 +31,8 @@ import bottomFooter from '@/components/page/footer'
         },
         created(){
             //根组件创建之前，初始化vuex部分数据
-            this.$http.get(this.change_url.system).then(res=>{
-                if(res.data.code === 1){
-                    this.systemInfo(res.data);
-                    this.$nextTick(()=>{
-                        document.title = res.data.data.product_name;
-                    })
-                }
-            }).catch(err=>{
-            // to do 
-            })
-            this.$http.get(this.change_url.menu).then(res=>{
-                if(res.data.code === 1){
-                    this.addmenu(res.data);
-                }
-            }).catch(err=>{
-                // to do
-            })
+            this.getSystem();
+            this.getMenu();
             this.uName = sessionStorage.getItem('uname');
             this.getData();
             var f_menu = sessionStorage.getItem('first_menu');
@@ -121,11 +106,13 @@ import bottomFooter from '@/components/page/footer'
         },
         methods: {
             ...mapMutations({
-                systemInfo: 'updateSysData',
-                addmenu: 'updateMenu',
                 portInfo: 'updatePortData',
                 portName: 'updatePortName',
                 changeNav: 'updateNavMenu'
+            }),
+            ...mapActions({
+                getSystem: 'updateSystem',
+                getMenu: 'updateMenu'
             }),
             reload(){
                 this.isRouterAlive = false;
