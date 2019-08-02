@@ -176,6 +176,7 @@ var zh = {
 
     auth_mode: "认证模式",
     onu_type: "ONU类型",
+    dev_type: "设备类型",
     vendor: "厂商",
     sn_model: "SN型号",
     chip_model: "芯片型号",

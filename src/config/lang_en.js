@@ -180,6 +180,7 @@ var en = {
 
     auth_mode: " Auth Mode",
     onu_type: " ONU Type",
+    dev_type: " Device Type ",
     vendor: " Vendor",
     sn_model: " SN model",
     chip_model: " Chip model",
