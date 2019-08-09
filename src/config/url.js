@@ -56,7 +56,7 @@ var change_url = {
         swich_port: "/switch_port?form=info",
         perf: "/switch_port?form=statistic&port_id=",
         vlan: "/switch_port?form=vlan",
-        vlancfg: "/switch_vlan?count=",
+        vlancfg: "/switch_vlan",
         macage: "/switch_mac?form=age",
         mactab: "/switch_mac?form=table",
         swich_port_info: '/switch_port?form=port_info&port_id=',

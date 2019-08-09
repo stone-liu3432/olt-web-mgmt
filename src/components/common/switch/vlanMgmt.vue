@@ -265,43 +265,44 @@ import { parsePortList } from '@/utils/common';
                 if(this.change_url.beta === 'test'){
                     url = this.change_url.vlancfg;
                 }else{
-                    url = this.change_url.vlancfg + this.count;
+                    url = this.change_url.vlancfg;
                 }
                 this.$http.get(url).then(res=>{
                     if(res.data.code === 1){
-                        if(!res.data.data) {
-                            this.is_loadmore = false;
-                            if(this.count === 0){
-                                this.vlan_list = {};
-                                this.vlan_tab = [];
-                            }
-                            return
-                        }
-                        if(res.data.data && res.data.data.length === 200){
-                            this.is_loadmore = true;
-                        }
-                        if(res.data.data && res.data.data.length !== 200){
-                            this.is_loadmore = false;
-                        }
-                        if(this.count === 0 && res.data.data){
-                            this.vlan_list = res.data;
-                        }else if(res.data.data){
-                            var data = Object.assign([],this.vlan_list.data);
-                            data = data.concat(res.data.data);
-                            this.vlan_list = {
-                                code: 1,
-                                data: data
-                            }
-                        }
-                        if(this.vlan_list.data){
-                            var vlan_map = {};
-                            for(var key in this.vlan_list.data){
-                                vlan_map[this.vlan_list.data[key].vlan_id] = this.vlan_list.data[key];
-                            }
-                            this.vlan_map = vlan_map;
-                        }
-                        this.pagination.page = Math.ceil(this.vlan_list.data.length/this.pagination.display);
-                        this.getPage();
+                        // if(!res.data.data) {
+                        //     this.is_loadmore = false;
+                        //     if(this.count === 0){
+                        //         this.vlan_list = {};
+                        //         this.vlan_tab = [];
+                        //     }
+                        //     return
+                        // }
+                        // if(res.data.data && res.data.data.length === 200){
+                        //     this.is_loadmore = true;
+                        // }
+                        // if(res.data.data && res.data.data.length !== 200){
+                        //     this.is_loadmore = false;
+                        // }
+                        // if(this.count === 0 && res.data.data){
+                        //     this.vlan_list = res.data;
+                        // }else if(res.data.data){
+                        //     var data = Object.assign([],this.vlan_list.data);
+                        //     data = data.concat(res.data.data);
+                        //     this.vlan_list = {
+                        //         code: 1,
+                        //         data: data
+                        //     }
+                        // }
+                        // if(this.vlan_list.data){
+                        //     var vlan_map = {};
+                        //     for(var key in this.vlan_list.data){
+                        //         vlan_map[this.vlan_list.data[key].vlan_id] = this.vlan_list.data[key];
+                        //     }
+                        //     this.vlan_map = vlan_map;
+                        // }
+                        // this.pagination.page = Math.ceil(this.vlan_list.data.length/this.pagination.display);
+                        // this.getPage();
+                        this.getVlan();
                     }else{
                         this.vlan_list = {};
                         this.vlan_tab = [];
@@ -309,6 +310,17 @@ import { parsePortList } from '@/utils/common';
                 }).catch(err=>{
                     // to do
                 })
+            },
+            getVlan(){
+                this.$http.get('/vlantable').then(res => {
+                    this.vlan_list = {};
+                    this.vlan_tab = [];
+                    if(res.data.code === 1){
+                        this.vlan_list = res.data;
+                        this.pagination.page = Math.ceil(this.vlan_list.data.length/this.pagination.display);
+                        this.getPage();
+                    }
+                }).catch(err =>{})
             },
             //  查找某一个vlan
             searchVlan(){
