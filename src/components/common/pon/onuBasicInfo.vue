@@ -389,13 +389,13 @@ import onuAlarm from '@/components/common/pon/onuAlarm'
                     })
                     return
                 }
-                if(!this.onu_basic_info.data.upgrade_type){
-                    this.$message({
-                        type: 'error',
-                        text: this.lanMap['no_upgrade_type']
-                    })
-                    return
-                }
+                // if(!this.onu_basic_info.data.upgrade_type){
+                //     this.$message({
+                //         type: 'error',
+                //         text: this.lanMap['no_upgrade_type']
+                //     })
+                //     return
+                // }
                 this.upgrade_confirm = true;
             },
             upgrade_result(bool){
@@ -488,6 +488,18 @@ import onuAlarm from '@/components/common/pon/onuAlarm'
 				}).catch(err=>{
 					// to do
                 })
+            },
+            clearFile(){
+                if(document){
+                    var file = document.getElementById('onu-upgrade-file1'),
+                        filename = document.getElementById('onu-upgrade-filename1');
+                    if(file){
+                        file.value = '';
+                    }
+                    if(filename){
+                        filename.innerText = this.lanMap['file_click'];
+                    }
+                }
             }
 		},
 		watch: {
@@ -495,6 +507,7 @@ import onuAlarm from '@/components/common/pon/onuAlarm'
                 if(!this.portid) return
                 sessionStorage.setItem('pid',Number(this.portid));
                 this.get_resource();
+                this.clearFile();
 			},
 			onuid(){
                 if(this.onuid == 0) return
@@ -507,6 +520,7 @@ import onuAlarm from '@/components/common/pon/onuAlarm'
                         this.$refs.onuAlarm.getData();
                     })
                 }
+                this.clearFile();
             }
 		}
     }
