@@ -82,6 +82,7 @@
                                     :value="item.id"
                                     name="port_list"
                                     v-model="formData.member_portlist"
+                                    :disabled="(dialogFlag === 'delete' && !cachePortlist.includes(item.id)) || (dialogFlag === 'set' && cachePortlist.includes(item.id))"
                                 />
                                 <label
                                     :for="item.name"
@@ -99,6 +100,7 @@
                                     :value="item.id"
                                     name="port_list"
                                     v-model="formData.member_portlist"
+                                    :disabled="(dialogFlag === 'delete' && !cachePortlist.includes(item.id)) || (dialogFlag === 'set' && cachePortlist.includes(item.id))"
                                 />
                                 <label :for="item.name">
                                     {{
@@ -140,15 +142,17 @@ export default {
                 "6": "src-dest-ip"
             },
             member: [
-                {
-                    trunk_id: 1, // 1-8
-                    psc: 1, // 1-6
-                    member_portlist: "5-12" // up-link
-                }
+                // {
+                //     trunk_id: 1, // 1-8
+                //     psc: 1, // 1-6
+                //     member_portlist: "5-10" // up-link
+                // }
             ],
             dialogVisible: false,
             dialogFlag: "",
             cacheMember: {},
+            //  缓存已存在的端口
+            cachePortlist: [],
             formData: {
                 trunk_id: "",
                 psc: 1,
@@ -193,6 +197,10 @@ export default {
                     this.formData.member_portlist = this.analysis(
                         data.member_portlist
                     );
+                    this.cachePortlist = Object.assign(
+                        [],
+                        this.formData.member_portlist
+                    );
                 }
             }
         },
@@ -201,6 +209,7 @@ export default {
             this.formData.trunk_id = "";
             this.formData.psc = 1;
             this.formData.member_portlist = [];
+            this.cachePortlist = [];
         },
         analysis(str) {
             if (!str) return "";
@@ -250,6 +259,28 @@ export default {
                             .toString()
                     }
                 };
+                if (this.dialogFlag === "set") {
+                    let portlist = this.formData.member_portlist.filter(
+                        item => !this.cachePortlist.includes(item)
+                    );
+                    if (!portlist.length) {
+                        return this.$message({
+                            type: "warning",
+                            text: this.lanMap["modify_tips"]
+                        });
+                    }
+                    data.param.member_portlist = portlist
+                        .sort((a, b) => a - b)
+                        .toString();
+                }
+                if(this.dialogFlag === 'create'){
+                    if(!this.formData.member_portlist.length){
+                        return this.$message({
+                            type: 'error',
+                            text: `${this.lanMap['param_error']}: ${this.lanMap['member_portlist']}`
+                        })
+                    }
+                }
             }
             if (this.dialogFlag === "delete") {
                 url = "/switch_trunk?form=link_aggregation_member";
@@ -262,6 +293,12 @@ export default {
                             .toString()
                     }
                 };
+                if (!this.formData.member_portlist.length) {
+                    return this.$message({
+                        type: "warning",
+                        text: this.lanMap["param_error"] + ': ' + this.lanMap['member_portlist']
+                    });
+                }
             }
             if (this.dialogFlag === "config") {
                 url = "/switch_trunk?form=link_aggregation_psc";
@@ -372,7 +409,7 @@ table {
 }
 .modal-content {
     user-select: none;
-    h3{
+    h3 {
         margin: 0;
     }
     > div:not(.close) {
@@ -416,6 +453,12 @@ table {
     }
     a {
         margin: 6px 0 0 100px;
+    }
+}
+input[type="checkbox"]:disabled {
+    cursor: not-allowed;
+    & + label {
+        cursor: not-allowed;
     }
 }
 </style>
