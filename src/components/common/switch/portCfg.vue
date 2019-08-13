@@ -131,6 +131,8 @@
                             <hr>
                             <p>{{ lanMap['unicast'] }}</p>
                             <p>{{ lanMap['range'] }} 1-1488100</p>
+                            <hr>
+                            <p>{{ lanMap['stormctrl_tips'] }}</p>
                         </div>
                     </div>
                 </h3>
@@ -834,7 +836,6 @@ div.tips{
         >P{
             font-size: 16px;
             color: #333;
-            height: 20px;
             line-height: 20px;
         }
         >hr{
