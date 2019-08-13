@@ -95,31 +95,33 @@
                             <option :value="item.id" v-for="(item,key) in port_name.pon" :key="key">{{ item.name }}</option>
                         </select>
                     </div>
-                    <ul>
-                        <li>
-                            <input type="checkbox" id="checked-otp" v-model="checked_otp" @click="change_ck_all_state">
-                        </li>
-                        <li>{{ lanMap['onu_name'] }}</li>
-                        <li>{{ lanMap['vendor'] }}</li>
-                        <li>{{ lanMap['sn_model'] }}</li>
-                        <li>{{ lanMap['chip_model'] }}</li>
-                        <li>{{ lanMap['onu_chip'] }}</li>
-                        <li>{{ lanMap['fw_ver'] }}</li>
-                        <li>{{ lanMap['upgrade_type'] }}</li>
-                    </ul>
-                    <ul v-if="port_bind_type.length" v-for="(item,index) in port_bind_type" :key="index">
-                        <li>
-                            <input type="checkbox" :value="item.onu_id" name="checked-onu-bind" v-model="bind_onu">
-                        </li>
-                        <li :title="item.onu_name || 'ONU0' + item.port_id + '/' + item.onu_id">{{ item.onu_name || 'ONU0' + item.port_id + '/' + item.onu_id }}</li>
-                        <li :title="item.vendor || ' - '">{{ item.vendor || ' - ' }}</li>
-                        <li :title="item.sn_mode || ' - '">{{ item.sn_mode || ' - ' }}</li>
-                        <li :title="item.chip_model || ' - '">{{ item.chip_model || ' - ' }}</li>
-                        <li :title="item.onu_chip || ' - '">{{ item.onu_chip || ' - ' }}</li>
-                        <li :title="item.fw_ver || ' - '">{{ item.fw_ver || ' - ' }}</li>
-                        <li :title="item.upgrade_type || ' - '">{{ item.upgrade_type || ' - ' }}</li>
-                    </ul>
-                    <div>
+                    <div class="onu-list">
+                        <ul>
+                            <li>
+                                <input type="checkbox" id="checked-otp" v-model="checked_otp" @click="change_ck_all_state">
+                            </li>
+                            <li>{{ lanMap['onu_name'] }}</li>
+                            <li>{{ lanMap['vendor'] }}</li>
+                            <li>{{ lanMap['sn_model'] }}</li>
+                            <li>{{ lanMap['chip_model'] }}</li>
+                            <li>{{ lanMap['onu_chip'] }}</li>
+                            <li>{{ lanMap['software_ver'] }}</li>
+                            <li>{{ lanMap['upgrade_type'] }}</li>
+                        </ul>
+                        <ul v-if="port_bind_type.length" v-for="(item,index) in port_bind_type" :key="index">
+                            <li>
+                                <input type="checkbox" :value="item.onu_id" name="checked-onu-bind" v-model="bind_onu">
+                            </li>
+                            <li :title="item.onu_name || 'ONU0' + item.port_id + '/' + item.onu_id">{{ item.onu_name || 'ONU0' + item.port_id + '/' + item.onu_id }}</li>
+                            <li :title="item.vendor || ' - '">{{ item.vendor || ' - ' }}</li>
+                            <li :title="item.sn_mode || ' - '">{{ item.sn_mode || ' - ' }}</li>
+                            <li :title="item.chip_model || ' - '">{{ item.chip_model || ' - ' }}</li>
+                            <li :title="item.onu_chip || ' - '">{{ item.onu_chip || ' - ' }}</li>
+                            <li :title="item.software_ver || ' - '">{{ item.software_ver || ' - ' }}</li>
+                            <li :title="item.upgrade_type || ' - '">{{ item.upgrade_type || ' - ' }}</li>
+                        </ul>
+                    </div>
+                    <div class="onu-upgrade-dialog-btn-group">
                         <a href="javascript:void(0);" @click="submit_upgrade">{{ lanMap['apply'] }}</a>
                         <a href="javascript:void(0);" @click="close_bind_modal">{{ lanMap['cancel'] }}</a>
                     </div>
@@ -604,7 +606,7 @@ div.bind-upgrade-type{
     // width: 80%;
     min-width: 1024px;
     height: auto;
-    overflow-y: scroll;
+    //overflow-y: scroll;
     h3{
         font-size: 20px;
         font-weight: 600;
@@ -622,11 +624,11 @@ div.bind-upgrade-type{
                     vertical-align: middle;
                 }
             }
-            &+ul{
-                border-top: 1px solid #ddd;
-            }
         }
         ul{
+            &:first-child{
+                border-top: 1px solid #ddd;
+            }
             border-bottom: 1px solid #ddd;
             &:after{
                 content: "";
@@ -646,14 +648,18 @@ div.bind-upgrade-type{
                     text-align: center;
                 }
             }
-            &+div{
-                text-align: center;
-                margin-top: 30px;
-                a{
-                    margin: 0 50px;
-                    padding: 0 50px;
-                }
+        }
+        div.onu-upgrade-dialog-btn-group{
+            text-align: center;
+            margin-top: 30px;
+            a{
+                margin: 0 50px;
+                padding: 0 50px;
             }
+        }
+        div.onu-list{
+            max-height: 330px;
+            overflow-y: auto;
         }
     }
 }

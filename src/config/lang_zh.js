@@ -86,7 +86,7 @@ var zh = {
     build_time: "编译时间",
     product_name: "设备型号",
     sys_ver: "系统版本",
-    fw_ver: "固件版本号",
+    software_ver: "软件版本号",
     hw_ver: "硬件版本号",
     voip: "VoIP",
     wlan: "WLAN",
@@ -196,6 +196,7 @@ var zh = {
     broadcast: "广播",
     multicast: "组播",
     unicast: "单播",
+    stormctrl_tips: '全为0时表示关闭风暴控制',
 
     mirror: "端口镜像",
     src_port: "源端口",

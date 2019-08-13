@@ -86,7 +86,7 @@ var en = {
     build_time: " Build Time",
     product_name: " Product Model",
     sys_ver: " System Version",
-    fw_ver: " Firmware Version",
+    software_ver: " Software Version",
     hw_ver: " Hardware Version",
     voip: " VoIP",
     wlan: " WLAN",
@@ -200,6 +200,7 @@ var en = {
     broadcast: " Broadcast",
     multicast: " Multicast",
     unicast: " Unicast",
+    stormctrl_tips: 'All 0 means to turn off storm control',
 
     mirror: " Mirror",
     src_port: " Source Port",

@@ -12,10 +12,10 @@
                 English
             </span>
             <span>&nbsp;&nbsp;|&nbsp;&nbsp;</span>
-            <span>{{ lanMap['fw_ver'] }}</span>
+            <span>{{ lanMap['software_ver'] }}</span>
             <span> : </span>
             <span v-if="system && system.data">
-                {{ system.data.fw_ver }}
+                {{ system.data.software_ver }}
             </span>
             <span>&nbsp;&nbsp;|&nbsp;&nbsp;</span>
             <span>{{ lanMap['macaddr'] }}</span>
