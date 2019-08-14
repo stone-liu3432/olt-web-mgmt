@@ -86,7 +86,7 @@ var zh = {
     build_time: "编译时间",
     product_name: "设备型号",
     sys_ver: "系统版本",
-    software_ver: "软件版本号",
+    fw_ver: "固件版本号",
     hw_ver: "硬件版本号",
     voip: "VoIP",
     wlan: "WLAN",

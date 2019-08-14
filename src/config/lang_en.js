@@ -86,7 +86,7 @@ var en = {
     build_time: " Build Time",
     product_name: " Product Model",
     sys_ver: " System Version",
-    software_ver: " Software Version",
+    fw_ver: " Firmware Version ",
     hw_ver: " Hardware Version",
     voip: " VoIP",
     wlan: " WLAN",
@@ -137,7 +137,7 @@ var en = {
     secs: " Sec",
 
     search_by_macaddr:
-        " Enter mac address to find ONU, support partial match search",
+        " Type mac address, support partial match",
     onu_id: " ONU ID",
     onu_name: " Name",
     onu_desc: " Description",
@@ -511,7 +511,7 @@ var en = {
     mvlan_desc: " description",
     program_desc: " program description",
 
-    batch_cfg_vlan: " Configure VLAN ports in batches",
+    batch_cfg_vlan: " Configure Multi-VLANs",
 
     pon_optical: "Optical Diagnose",
     pon_optical_tips:

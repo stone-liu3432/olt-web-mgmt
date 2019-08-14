@@ -4,7 +4,7 @@
             <h2>{{ lanMap['vlan_cfg'] }}</h2>
         </div>
         <div class="btn-group-vlan">
-            <a href="javascript:void(0);" @click="createVlan()">{{ lanMap['create'] }}VLAN</a>
+            <a href="javascript:void(0);" @click="createVlan()">{{ lanMap['create'] }} VLAN</a>
             <!-- <span>{{ lanMap['tips_create_vlan'] }}</span> -->
             <a href="javascript:void(0);" @click="open_batch_del">{{ lanMap['delete'] }} VLAN</a>
             <a href="javascript:void(0);" @click="createVlan(1)">{{ lanMap['batch_cfg_vlan'] }}</a>
