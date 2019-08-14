@@ -11,9 +11,9 @@
             </span>
         </div>
         <div class="pv-qinq-item" v-for="(item,key) in pvData.data" :key="key" v-if="pvData.data && pvData.data.length > 0">
-            <span>{{ item.cvlan }}</span>
-            <span>{{ item.cvlan_s }}</span>
-            <span>{{ item.cvlan_e }}</span>
+            <span>{{ item.cvlan || ' - ' }}</span>
+            <span>{{ item.cvlan_s || ' - ' }}</span>
+            <span>{{ item.cvlan_e || ' - ' }}</span>
             <span>{{ item.svlan }}</span>
             <span>{{ item.svlan_pri === 255 ? ' - ' : item.svlan_pri }}</span>
             <span>
