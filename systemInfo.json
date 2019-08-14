@@ -4,7 +4,7 @@
     "data":{
         "product_name":"HSGQ-E08",
         "sys_ver":"I_V1.0.0_Rel",
-        "software_ver":"I_V1.0.0_Rel",
+        "fw_ver":"I_V1.0.0_Rel",
         "hw_ver":"I_V1.0.0_Rel",
         "bl_ver":"V1.0_Rel",
         "macaddr":"38:3a:21:f0:01:b0",

@@ -468,9 +468,10 @@ select{
 hr{
     margin: 20px 0;
     &+h2{
-        font-size: 20px;
-        color: #67aef7;
-        font-weight: 600;
+        font-size: 24px;
+        margin: 20px 10px;
+        font-weight: bold;
+        color: #67AEF7;
         a{
             font-weight: normal;
             margin-left: 100px;
@@ -516,7 +517,10 @@ p>span{
     border-right:1px solid #ccc;
 }
 .remote-mgmt{
-    margin:20px 0;
+    font-size: 24px;
+    margin: 20px 10px;
+    font-weight: bold;
+    color: #67AEF7;
 }
 .remote-mgmt>span{
     font-size: 24px;

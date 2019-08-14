@@ -1,10 +1,8 @@
 <template>
     <div>
-        <div class="upgrade">
-            <h2>
-                {{ lanMap['upgrade'] }}
-            </h2>
-        </div>
+        <h2>
+            {{ lanMap['upgrade'] }}
+        </h2>
         <div class="upgrade">
             <h3>
                 {{ lanMap['firmware'] }}
@@ -367,12 +365,11 @@ import loading from '@/components/common/loading'
 div.upgrade{
     margin: 30px 50px 30px 10px;
 }
-div.upgrade>h2{
+h2{
     font-size: 24px;
-    font-weight: 600;
+    margin: 20px 10px;
+    font-weight: bold;
     color: #67AEF7;
-    margin-right: 50px;
-    margin-bottom: 30px;
 }
 div.upgrade>h3{
     font-size: 20PX;

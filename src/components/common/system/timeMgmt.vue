@@ -377,7 +377,7 @@ div.time-cfg{
     >h2{
         font-size: 24px;
         color: #67AEF7;
-        margin: 20px 0 0 20px;
+        margin: 20px 10PX;
         font-weight: bold;
     }
     >div{
