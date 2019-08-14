@@ -35,6 +35,7 @@
                 <span>{{ opInfo.period }}</span>
                 <a href="javascript: void(0);" @click="openModal">{{ lanMap['config'] }}</a>
             </div>
+            <div class="error-msg" v-else>{{ lanMap['get_data_fail'] }}</div>
             <div class="onu-perf-detail" v-if="Object.keys(onuPerf).length > 0">
                 <div v-for="(item, key) in onuPerf" :key="key">
                     <span>{{ lanMap[key] }}</span>
@@ -143,6 +144,10 @@ export default {
                     }
                 }else{
                     this.opInfo = {};
+                    this.$message({
+                        type: 'error',
+                        text: `(${res.data.code}) ${res.data.message}`
+                    })
                 }
             }).catch(err =>{})
         },
