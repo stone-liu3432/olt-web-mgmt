@@ -184,7 +184,7 @@ var zh = {
     software_ver: "软件版本",
     hardware_ver: "硬件版本",
 
-    tips_del_onu: "是否确认删除该onu",
+    tips_del_onu: "是否确认删除该ONU",
     tips_add_deny_onu: "是否确认添加到阻止列表",
 
     port_type: "端口类型",
@@ -434,11 +434,11 @@ var zh = {
     alarm_info: "告警信息",
     port_vlan: "端口VLAN",
     pv_vlist_tips:
-        'vlan列表可以是单个数字，也可以是一段连续的范围，范围起点和终点间用"-"分隔，每一项之间用","隔开。',
-    pv_vmode_tips: "vlan 模式只有在端口类型为'hybrid'时才允许修改。",
+        'VLAN列表可以是单个数字，也可以是一段连续的范围，范围起点和终点间用"-"分隔，每一项之间用","隔开。',
+    pv_vmode_tips: "VLAN模式只有在端口类型为'hybrid'时才允许修改。",
     add_vlan_list: "将端口加入指定VLAN",
     del_vlan_list: "将端口从指定VLAN删除",
-    svlan_pri: "svlan优先级",
+    svlan_pri: "SVLAN优先级",
     batch_mgmt_onu: "批量管理ONU",
     exit_batch_onu: "退出批量管理",
     no_select_onu: "当前未选择任何ONU",

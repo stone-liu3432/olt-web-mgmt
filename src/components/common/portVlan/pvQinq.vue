@@ -1,10 +1,10 @@
 <template>
     <div class="pv-qinq">
         <div class="pv-qinq-item">
-            <span>cvlan</span>
-            <span>cvlan start</span>
-            <span>cvlan end</span>
-            <span>svlan</span>
+            <span>CVLAN</span>
+            <span>CVLAN Start</span>
+            <span>CVLAN End</span>
+            <span>SVLAN</span>
             <span>{{ lanMap['svlan_pri'] }}</span>
             <span>
                 <a href="javascript:void(0);" @click="open_add_qinq">{{ lanMap['add'] }}</a>
@@ -17,7 +17,7 @@
             <span>{{ item.svlan }}</span>
             <span>{{ item.svlan_pri === 255 ? ' - ' : item.svlan_pri }}</span>
             <span>
-                <a href="javascript:void(0);" @click="open_qinq_modal(item)">{{ lanMap['modify'] }}</a>
+                <!-- <a href="javascript:void(0);" @click="open_qinq_modal(item)">{{ lanMap['modify'] }}</a> -->
                 <a href="javascript:void(0);" @click="open_del_qinq_modal(item)">{{ lanMap['delete'] }}</a>
             </span>
         </div>
@@ -29,28 +29,28 @@
                     <h3 v-if="flags === 1">{{ lanMap['add'] }}</h3>
                 </div>
                 <div class="pv-qinq-modal-item">
-                    <span>cvlan</span>
+                    <span>CVLAN</span>
                     <span>
                         <input type="text" v-model.number="cvlan" v-focus :disabled="cvlan_s != 0 || cvlan_e != 0 || flags === 2"
                           :style="{ 'border-color' : cvlan < 0 || cvlan > 4094 || isNaN(cvlan) ? 'red' : '' }">
                     </span>
                 </div>
                 <div class="pv-qinq-modal-item">
-                    <span>cvlan start</span>
+                    <span>CVLAN Start</span>
                     <span>
                         <input type="text" v-model.number="cvlan_s" :disabled="cvlan != 0"
                           :style="{ 'border-color' : cvlan_s < 0 ||  cvlan_s > 4094 || isNaN(cvlan_s)  ? 'red' : '' }">
                     </span>
                 </div>
                 <div class="pv-qinq-modal-item">
-                    <span>cvlan end</span>
+                    <span>CVLAN End</span>
                     <span>
                         <input type="text" v-model.number="cvlan_e" :disabled="cvlan != 0"
                           :style="{ 'border-color' : cvlan_e < 0 || cvlan_e > 4094 || isNaN(cvlan_e) ? 'red' : '' }">
                     </span>
                 </div>
                 <div class="pv-qinq-modal-item">
-                    <span>svlan</span>
+                    <span>SVLAN</span>
                     <span>
                         <input type="text" v-model.number="svlan"
                           :style="{ 'border-color' : svlan !== '' && (svlan < 1 || svlan > 4094 || isNaN(svlan)) ? 'red' : '' }">

@@ -1,8 +1,8 @@
 <template>
     <div class="port-vlan-translate">
         <div class="pv-translate-item">
-            <span>old vlan</span>
-            <span>new vlan</span>
+            <span>Old VLAN</span>
+            <span>New VLAN</span>
             <span>{{ lanMap['new_vlan_pri'] }}</span>
             <span>
                 <a href="javascript:void(0);" @click="open_add_translate">{{ lanMap['add'] }}</a>
@@ -13,7 +13,7 @@
             <span>{{ item.new_vlan }}</span>
             <span>{{ item.new_vlan_pri === 255 ? ' - ' : item.new_vlan_pri }}</span>
             <span>
-                <a href="javascript:void(0);" @click="open_cfg_translate(item)">{{ lanMap['modify'] }}</a>
+                <!-- <a href="javascript:void(0);" @click="open_cfg_translate(item)">{{ lanMap['modify'] }}</a> -->
                 <a href="javascript:void(0);" @click="open_del_translate(item)">{{ lanMap['delete'] }}</a>
             </span>
         </div>
@@ -25,14 +25,14 @@
                     <h3 v-if="flags === 1">{{ lanMap['add'] }}</h3>
                 </div>
                 <div class="translate-modal-item">
-                    <span>old vlan</span>
+                    <span>Old VLAN</span>
                     <span>
                         <input type="text" v-model.number="pv_old_vlan" :disabled="flags === 2" 
                         :style="{ 'border-color' : this.pv_old_vlan !== '' && (this.pv_old_vlan < 1 || this.pv_old_vlan > 4094 || isNaN(this.pv_old_vlan)) ? 'red' : '' }">
                     </span>
                 </div>
                 <div class="translate-modal-item">
-                    <span>new vlan</span>
+                    <span>New VLAN</span>
                     <span>
                         <input type="text" v-model.number="pv_new_vlan" 
                             :style="{ 'border-color' : this.pv_new_vlan !== '' && (this.pv_new_vlan < 1 || this.pv_new_vlan > 4094 || isNaN(this.pv_new_vlan)) ? 'red' : '' }">
