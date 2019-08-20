@@ -104,19 +104,19 @@
                                 </span>
                             </div> -->
                             <div>
-                                <span v-for="(item,key) in port_name.pon" :key="key" style="width: 12%;">
+                                <span v-for="(item,key) in port_name.pon" :key="key" style="width: 12%;" class="tagged">
                                     <input type="checkbox" :value="item.id" v-model="tagged_list" :id="'tagged'+item.id" :disabled="def_list.includes(item.id)">
                                     <label :for="'tagged'+item.id">{{ item.name }}</label>
                                 </span>
                             </div>
                             <div>
-                                <span v-for="(item,key) in port_name.ge" :key="key">
+                                <span v-for="(item,key) in port_name.ge" :key="key" class="tagged">
                                     <input type="checkbox" :value="item.id" v-model="tagged_list" :id="'tagged'+item.id" :disabled="def_list.includes(item.id)">
                                     <label :for="'tagged'+item.id">{{ item.name }}</label>
                                 </span>
                             </div>
                             <div>
-                                <span v-for="(item,key) in port_name.xge" :key="key" v-if="port_name.xge">
+                                <span v-for="(item,key) in port_name.xge" :key="key" v-if="port_name.xge" class="tagged">
                                     <input type="checkbox" :value="item.id" v-model="tagged_list" :id="'tagged'+item.id" :disabled="def_list.includes(item.id)">
                                     <label :for="'tagged'+item.id">{{ item.name }}</label>
                                 </span>
@@ -146,19 +146,19 @@
                                 </span>
                             </div> -->
                             <div>
-                                <span v-for="(item,key) in port_name.pon" :key="key" style="width: 12%;">
+                                <span v-for="(item,key) in port_name.pon" :key="key" style="width: 12%;" class="untagged">
                                     <input type="checkbox" :id="'untagged'+item.id" :value="item.id" v-model="untagged_list" :disabled="def_list.includes(item.id)">
                                     <label :for="'untagged'+item.id">{{ item.name }}</label>
                                 </span>
                             </div>
                             <div>
-                                <span v-for="(item,key) in port_name.ge" :key="key">
+                                <span v-for="(item,key) in port_name.ge" :key="key" class="untagged">
                                     <input type="checkbox" :id="'untagged'+item.id" :value="item.id" v-model="untagged_list" :disabled="def_list.includes(item.id)">
                                     <label :for="'untagged'+item.id">{{ item.name }}</label>
                                 </span>
                             </div>
                             <div>
-                                <span v-for="(item,key) in port_name.xge" :key="key" v-if="port_name.xge">
+                                <span v-for="(item,key) in port_name.xge" :key="key" v-if="port_name.xge" class="untagged">
                                     <input type="checkbox" :id="'untagged'+item.id" :value="item.id" v-model="untagged_list" :disabled="def_list.includes(item.id)">
                                     <label :for="'untagged'+item.id">{{ item.name }}</label>
                                 </span>
@@ -467,21 +467,21 @@ import { parsePortList } from '@/utils/common';
             },
             //  配置VLAN ID 的端口
             set_vlan(vid,vid_s,vid_e,create_flag){
-                var tagged = document.querySelectorAll('span.tagged>input');
-                var untagged = document.querySelectorAll('span.untagged>input');
-                var tag_str = '',untag_str = '',post_param,url;
-                for(var i=0,len=tagged.length;i<len;i++){
-                    if(tagged[i].checked){
-                        tag_str += tagged[i].name;
-                        tag_str += ',';
-                    }
-                }
-                for(var i=0,len=untagged.length;i<len;i++){
-                    if(untagged[i].checked){
-                        untag_str += untagged[i].name;
-                        untag_str += ',';
-                    }
-                }
+                // var tagged = document.querySelectorAll('span.tagged>input');
+                // var untagged = document.querySelectorAll('span.untagged>input');
+                var tag_str = '', untag_str = '', post_param, url;
+                // for(var i=0,len=tagged.length;i<len;i++){
+                //     if(tagged[i].checked){
+                //         tag_str += tagged[i].name;
+                //         tag_str += ',';
+                //     }
+                // }
+                // for(var i=0,len=untagged.length;i<len;i++){
+                //     if(untagged[i].checked){
+                //         untag_str += untagged[i].name;
+                //         untag_str += ',';
+                //     }
+                // }
                 if(vid || (!!vid_s && vid_s === vid_e)){
                     post_param = {
                         "method":"set",
@@ -545,21 +545,23 @@ import { parsePortList } from '@/utils/common';
                 if(bool){
                     var vid_s = Number(this.vlanid_s);
                     var vid_e = Number(this.vlanid_e);
-                    var tagged = document.querySelectorAll('span.tagged>input');
-                    var untagged = document.querySelectorAll('span.untagged>input');
+                    // var tagged = document.querySelectorAll('span.tagged>input');
+                    // var untagged = document.querySelectorAll('span.untagged>input');
                     var tag_str = '',untag_str = '';
-                    for(var i=0,len=tagged.length;i<len;i++){
-                        if(tagged[i].checked){
-                            tag_str += tagged[i].name;
-                            tag_str += ',';
-                        }
-                    }
-                    for(var i=0,len=untagged.length;i<len;i++){
-                        if(untagged[i].checked){
-                            untag_str += untagged[i].name;
-                            untag_str += ',';
-                        }
-                    }
+                    // for(var i=0,len=tagged.length;i<len;i++){
+                    //     if(tagged[i].checked){
+                    //         tag_str += tagged[i].name;
+                    //         tag_str += ',';
+                    //     }
+                    // }
+                    // for(var i=0,len=untagged.length;i<len;i++){
+                    //     if(untagged[i].checked){
+                    //         untag_str += untagged[i].name;
+                    //         untag_str += ',';
+                    //     }
+                    // }
+                    tag_str = this.tagged_list.sort((a, b) => a-b).toString();
+                    untag_str = this.untagged_list.sort((a, b) => a-b).toString();
                     if(isNaN(vid_s) || vid_s > 4094 || vid_s < 1 || isNaN(vid_e) || vid_e > 4094 || vid_e < 1) {
                         this.$message({
                             type: 'error',
