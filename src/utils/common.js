@@ -32,7 +32,7 @@ function nomenclature(arr, pon_count, ge_count) {
     for (var i = 0, len = arr.length; i < len; i++) {
         var m = arr[i];
         if (m <= pon_count) {
-            results += pon_count < 10 ? "PON0" + m + "," : "PON" + m + ",";
+            results += m < 10 ? "PON0" + m + "," : "PON" + m + ",";
         } else if (m > pon_count && m <= pon_count + ge_count) {
             results +=
                 m - pon_count < 10
