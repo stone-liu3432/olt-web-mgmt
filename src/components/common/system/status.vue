@@ -119,7 +119,6 @@ export default {
     margin: 0 auto;
 }
 div.port-info{
-    cursor: pointer;
     h3{
         font-size: 20px;
         margin: 16px 0 16px 20px;
@@ -133,6 +132,9 @@ div.port-info{
         content: '';
         display: table;
         clear: both;
+    }
+    .port{
+        cursor: pointer;
     }
 }
 </style>
