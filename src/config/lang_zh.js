@@ -579,7 +579,7 @@ var zh = {
     mask: "掩码",
 
     preference: "优先级",
-    gateway: "下一跳",
+    next_hop: "下一跳",
     route_cfg: "路由配置",
     static_route: "静态路由",
     route: "路由",
@@ -660,7 +660,22 @@ var zh = {
     psc: '负载均衡选路算法',
     member_portlist: '汇聚组成员',
     link_aggregation_tips: '配置后该汇聚组端口成员将同时生效',
-    trunk_id: '汇聚组号'
+    trunk_id: '汇聚组号',
+
+    wan_connect: 'WAN连接',
+    index: "索引",
+    ipmode: "连接模式",
+    ctype: "连接类型",
+    igmpproxy: "IGMP代理",
+    ipproto: "IP协议",
+    pppoemode: "身份验证方法",
+    tagmode: "绑定VLAN",
+    reqdns: "手动配置DNS",
+    pridns: "首选DNS服务器",
+    secdns: "备用DNS服务器",
+    portmap: "绑定端口",
+    not_concerned: '不关注',
+    gateway: "网关"
 };
 
 export default zh;
