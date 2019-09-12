@@ -56,7 +56,7 @@ export function replaceDBCS(str) {
 //  IP地址检查
 export function testIPAddr(str) {
     var reg = /^((25[0-5]|2[0-4]\d|((1\d{2})|([1-9]?\d)))\.){3}(25[0-5]|2[0-4]\d|((1\d{2})|([1-9]?\d)))$/;
-    return reg.test(str) || str.replace(/(^\s*)|(\s*$)/g) === "0.0.0.0";
+    return reg.test(str) && str !== "0.0.0.0" && str !== "255.255.255.255";
 }
 
 //  MAC地址检查   0000-0000-0000
@@ -72,7 +72,7 @@ export function testMACMask(str) {
 }
 
 export function parsePortList(str) {
-    if (!str) return '';
+    if (!str) return "";
     var result = [];
     var arr = str.split(",");
     for (var i = 0, len = arr.length; i < len; i++) {
