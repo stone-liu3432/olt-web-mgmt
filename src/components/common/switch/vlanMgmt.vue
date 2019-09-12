@@ -921,7 +921,7 @@ div+ul{
 }
 li{
     word-wrap: break-word;
-    word-break: keep-all;
+    word-break: break-all;
     border: 1px solid #ddd;
     border-top: none;
     font-size: 0;
