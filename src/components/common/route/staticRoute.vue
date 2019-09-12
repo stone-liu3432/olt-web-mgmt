@@ -24,7 +24,7 @@
             <ul class="static-route-item bg-title">
                 <li>{{ lanMap['dst_ipaddr'] }}/{{ lanMap['mask'] }}</li>
                 <!-- <li>{{ lanMap['ipmask'] }}</li> -->
-                <li>{{ lanMap['gateway'] }}</li>
+                <li>{{ lanMap['next_hop'] }}</li>
                 <li>{{ lanMap['interface'] }}</li>
                 <li>{{ lanMap['protocol'] }}</li>
                 <li>{{ lanMap['preference'] }}</li>
@@ -70,7 +70,7 @@
                         <span>EX. 255.255.255.0</span>
                     </div>
                     <div>
-                        <span>{{ lanMap['gateway'] }}</span>
+                        <span>{{ lanMap['next_hop'] }}</span>
                         <input type="text" v-model="gateway"
                             :style="{ 'border-color': gateway !== '' && !ip_reg.test(gateway) ? 'red' : '' }">
                         <span>EX. 127.0.0.1</span>
