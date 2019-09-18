@@ -17,7 +17,7 @@
             <div v-else class="error-msg">{{ lanMap['no_onu_info'] }}</div>
 		</div>
 		<hr>
-        <tabBar :tab="['onu_info','onu_alarm']" @togglePage="select_page" v-if="onu_list.data"></tabBar>
+        <tabBar :tab="tabs" @togglePage="select_page" v-if="onu_list.data"></tabBar>
         <div v-if="show_page === 'onu_info'">
             <div class="handle-btn" v-if="onu_basic_info.data">
                 <h3 class="lf">{{ lanMap['onu_mgmt'] }}</h3>
@@ -40,18 +40,6 @@
                             <td>{{ onu_fec_mode.data.fec_mode ? lanMap['enable'] : lanMap['disable'] }}</td>
                         </tr>
                     </table>
-                    <!-- <div v-for="(item,key) in onu_basic_info.data" :key="key" v-if=" key != 'port_id' && onu_basic_info.data" class="onu-info-item">
-                        <span :style="{ 'border-right': item === undefined ? '1px solid #ccc' : '' }">
-                            {{ lanMap[key] || key }}
-                        </span>
-                        <span :style="{ 'border-left': item ? '1px solid #ccc' : '' }">
-                            {{ item }}
-                        </span>
-                    </div>
-                    <div class="onu-info-item" v-for="(item,key) in onu_fec_mode.data" :key="key" v-if="onu_fec_mode.data && onu_basic_info.data">
-                        <span>{{ key.replace(/_/,'-') }}</span>
-                        <span>{{ item ? 'Enable' : 'Disable' }}</span>
-                    </div> -->
                 </div>
                 <div class="lf onu-optical-diagnose" v-if="onuid">
                     <div>
@@ -83,7 +71,8 @@
                 </div>
             </div>
         </div>
-        <onuAlarm v-if="show_page === 'onu_alarm'" :port-data="{ portid,onuid }" ref="onuAlarm"></onuAlarm>
+        <onuAlarm v-if="show_page === 'onu_alarm'" :port-data="{ portid, onuid }" ref="onuAlarm"></onuAlarm>
+        <onu-wan-config v-if="show_page === 'wan_connect'" :port-data="{ portid, onuid }" ref="onuWan"></onu-wan-config>
         <div class="modal-dialog" v-if="onu_cfg_name">
             <div class="cover"></div>
             <div class="onu-desc">
@@ -116,11 +105,24 @@
 
 <script>
 import { mapState,mapMutations } from 'vuex'
-import onuAlarm from '@/components/common/pon/onuAlarm'
+import onuAlarm from './onuAlarm';
+import onuWanConfig from './onuWanConfig';
     export default {
         name: 'onuBasicInfo',
-        computed: mapState(['lanMap','port_name','port_info','change_url','onu_list']),
-        components: { onuAlarm },
+        computed: {
+            ...mapState(['lanMap','port_name','port_info','change_url','onu_list']),
+            tabs(){
+                let list = ['onu_info', 'onu_alarm', 'wan_connect'];
+                if(this.onu_basic_info.data && this.onu_basic_info.data.fw_ver){
+                    let fw_ver = this.onu_basic_info.data.fw_ver, reg = /^4853/;
+                    if(reg.test(fw_ver)){
+                        list.push('wan_connect');
+                    }
+                }
+                return list
+            }
+        },
+        components: { onuAlarm, onuWanConfig },
         data(){
             return {
                 onu_basic_info: {},
@@ -138,12 +140,15 @@ import onuAlarm from '@/components/common/pon/onuAlarm'
                 onu_desc: '',
                 //  升级确认框
                 upgrade_confirm: false,
-                show_page: 'onu_info'
+                show_page: 'onu_info',
+                isCreated: false
             }
         },
         created(){
             var pid = Number(sessionStorage.getItem('pid'));
             this.portid = Number(this.$route.query.port_id) || pid || 1;
+            //  防止同时触发 created 和 activated
+            this.isCreated = true;
             if(this.change_url.beta === 'test'){
                 this.$http.get('./onu_resource.json').then(res=>{
                     if(res.data.code === 1){
@@ -174,6 +179,11 @@ import onuAlarm from '@/components/common/pon/onuAlarm'
             }
         },
         activated(){
+            //  created 时不触发 
+            if(this.isCreated){
+                this.isCreated = false;
+                return;
+            }
             var pid = Number(sessionStorage.getItem('pid'));
             this.portid = Number(this.$route.query.port_id) || pid || 1;
             if(pid === this.portid){
@@ -192,6 +202,10 @@ import onuAlarm from '@/components/common/pon/onuAlarm'
             },
             select_page(page){
                 this.show_page = page;
+                if(page === 'onu_info'){
+                    this.getData();
+                    this.getOpticalData();
+                }
             },
             //  onu描述信息模态框内按钮绑定的事件
             onu_cfg_info(bool){
@@ -475,9 +489,13 @@ import onuAlarm from '@/components/common/pon/onuAlarm'
                         if(this.show_page === 'onu_info'){
                             this.getData();
                             this.getOpticalData();
-                        }else{
+                        }else if(this.show_page === 'onu_alarm'){
                             this.$nextTick(()=>{
                                 this.$refs.onuAlarm.getData();
+                            })
+                        }else if(this.show_page === 'wan_connect'){
+                            this.$nextTick(_ =>{
+                                this.$refs.onuWan.getData();
                             })
                         }
                     }else{
@@ -515,9 +533,13 @@ import onuAlarm from '@/components/common/pon/onuAlarm'
                 if(this.show_page === 'onu_info'){
                     this.getData();
                     this.getOpticalData();
-                }else{
+                }else if(this.show_page === 'onu_alarm'){
                     this.$nextTick(()=>{
                         this.$refs.onuAlarm.getData();
+                    })
+                }else if(this.show_page === 'wan_connect'){
+                    this.$nextTick(_ => {
+                        this.$refs.onuWan.getData();
                     })
                 }
                 this.clearFile();
