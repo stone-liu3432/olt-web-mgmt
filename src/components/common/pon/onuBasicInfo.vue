@@ -112,7 +112,7 @@ import onuWanConfig from './onuWanConfig';
         computed: {
             ...mapState(['lanMap','port_name','port_info','change_url','onu_list']),
             tabs(){
-                let list = ['onu_info', 'onu_alarm', 'wan_connect'];
+                let list = ['onu_info', 'onu_alarm'];
                 if(this.onu_basic_info.data && this.onu_basic_info.data.fw_ver){
                     let fw_ver = this.onu_basic_info.data.fw_ver, reg = /^4853/;
                     if(reg.test(fw_ver)){
