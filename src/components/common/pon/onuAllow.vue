@@ -27,9 +27,9 @@
                     </div>
                     <div>
                         <p>{{ lanMap['config'] }}</p>
-                        <p>
+                        <!-- <p>
                             {{ lanMap['click'] }}<i class="reload"></i>{{ lanMap['tips_page_refresh'] }}
-                        </p>
+                        </p> -->
                         <p>
                             {{ lanMap['click'] }}<i class="onu-detail"></i>{{ lanMap['tips_onu_btn_detail'] }}
                         </p>
@@ -102,7 +102,53 @@
                 <!-- <a href="javascript:boid(0);" @click="authstate()">{{ lanMap['modify'] + lanMap['auth_state'] }}</a> -->
             </div>
         </div>
-        <ul v-if="onu_allow_list.data && onu_allow_list.data.length>0 && onu_display_style === 1">
+        <!-- table -->
+        <table v-if="onu_allow_list.data && onu_allow_list.data.length>0 && onu_display_style === 1" border="1">
+            <thead>
+                <tr>
+                    <td v-if="is_batch_mgmt"></td>
+                    <!-- <td v-for="(item,key) in onu_allow_list.data[0]" :key="key" v-if=" key != 'port_id' && key !== 'onu_name'">{{ lanMap[key] }}</td> -->
+                    <td>{{ lanMap['onu_id'] }}</td>
+                    <td>{{ lanMap['macaddr'] }}</td>
+                    <td>{{ lanMap['status'] }}</td>
+                    <td style="width: 100px;">{{ lanMap['auth_state'] }}</td>
+                    <td>{{ lanMap['register_time'] }}</td>
+                    <td style="width: 160px;">{{ lanMap['config'] }}</td>
+                </tr>
+            </thead>
+            <tbody>
+                <tr v-for="(item,index) in onu_allow_list.data" :key="index" :style="{ 'color' : item.status.toLowerCase() !== 'online' ? 'red' : '' }">
+                    <td v-if="is_batch_mgmt">
+                        <label :for="'ONU0'+item.port_id +'/'+ item.onu_id">
+                            <input type="checkbox" :value="item.onu_id" v-model="batch_onulist" :id="'ONU0'+item.port_id +'/'+ item.onu_id" name="onulist">
+                        </label>
+                    </td>
+                    <td>
+                        {{ item.onu_name || 'ONU0'+item.port_id +'/'+ item.onu_id }}
+                    </td>
+                    <td>
+                        {{ item.macaddr }}
+                    </td>
+                    <td>
+                        {{ item.status }}
+                    </td>
+                    <td>
+                        <span>{{ item.auth_state ? 'true' : 'false' }}</span>
+                        <i :class="[item.auth_state ? 'verified-actived' : 'unverified']" @click="authstate(item)"></i>
+                    </td>
+                    <td>
+                        {{ item.register_time }}
+                    </td>
+                    <td>
+                        <i :title="lanMap['detail']" class="onu-detail" @click="onu_detail(item.port_id,item.onu_id)"></i>
+                        <i :title="lanMap['del_onu']" class="onu-delete" @click="delete_onu(item)"></i>
+                        <i :title="lanMap['add_to_deny']" class="onu-remove" @click="remove_onu(item)"></i>
+                        <i :title="lanMap['reboot_onu']" class="reset-onu" @click="reboot(item)"></i>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+        <!-- <ul v-if="onu_allow_list.data && onu_allow_list.data.length>0 && onu_display_style === 1">
             <li class="onulist-item">
                 <span></span>
                 <span v-for="(item,key) in onu_allow_list.data[0]" :key="key" v-if=" key != 'port_id' && key !== 'onu_name'">
@@ -133,7 +179,7 @@
                     <i :title="lanMap['reboot_onu']" class="reset-onu" @click="reboot(item)"></i>
                 </span>
             </li>
-        </ul>
+        </ul> -->
         <!-- <onuCard v-if="onu_allow_list.data && onu_allow_list.data.length > 0 && onu_display_style === 2" :onu-allow-list="onu_allow_list" 
             :batch-onulist="batch_onulist" :is-batch-mgmt="is_batch_mgmt" @updateData="getData"></onuCard> -->
         <p v-if="!onu_allow_list.data || onu_allow_list.data.length <= 0">{{ lanMap['no_more_data'] }}</p>
@@ -811,7 +857,7 @@ div.tool-tips{
     >div{
         display: none;
         width: 300px;
-        height: 330px;
+        height: 300px;
         background: #ddd;
         border-radius: 10px;
         padding: 10px;
@@ -881,6 +927,32 @@ div.batch-onu{
             span{
                 display: inline;
             }
+        }
+    }
+}
+table{
+    width: calc(~"100% - 20px");
+    border: 1px solid #ddd;
+    margin: 16px 10px 0 10px;
+    td{
+        padding: 6px 0;
+        text-align: center;
+    }
+    thead{
+        background: #2361a2;
+        color: #fff;
+    }
+    tbody{
+        tr{
+            // &:nth-child(odd){
+            //     background: #eee;
+            // }
+            &:hover{
+                background: #dfdfdf;
+            }
+        }
+        span{
+            width: auto;
         }
     }
 }
