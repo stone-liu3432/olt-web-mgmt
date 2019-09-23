@@ -110,7 +110,7 @@
                     <!-- <td v-for="(item,key) in onu_allow_list.data[0]" :key="key" v-if=" key != 'port_id' && key !== 'onu_name'">{{ lanMap[key] }}</td> -->
                     <td>{{ lanMap['onu_id'] }}</td>
                     <td>{{ lanMap['macaddr'] }}</td>
-                    <td>{{ lanMap['status'] }}</td>
+                    <td style="width: 80px;">{{ lanMap['status'] }}</td>
                     <td style="width: 100px;">{{ lanMap['auth_state'] }}</td>
                     <td>{{ lanMap['register_time'] }}</td>
                     <td style="width: 160px;">{{ lanMap['config'] }}</td>
@@ -937,6 +937,7 @@ table{
     td{
         padding: 6px 0;
         text-align: center;
+        word-break: break-all;
     }
     thead{
         background: #2361a2;
@@ -944,9 +945,6 @@ table{
     }
     tbody{
         tr{
-            // &:nth-child(odd){
-            //     background: #eee;
-            // }
             &:hover{
                 background: #dfdfdf;
             }
