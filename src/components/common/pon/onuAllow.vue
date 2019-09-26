@@ -935,7 +935,8 @@ table{
     border: 1px solid #ddd;
     margin: 16px 10px 0 10px;
     td{
-        padding: 6px 0;
+        padding: 6px;
+        box-sizing: border-box;
         text-align: center;
         word-break: break-all;
     }

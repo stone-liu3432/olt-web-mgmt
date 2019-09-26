@@ -2,7 +2,7 @@
     <div>
         <h3>
             {{ lanMap['wan_connect'] }}
-            <select v-model="formData.index" style="margin-left: 30px;">
+            <select v-model.number="formData.index" style="margin-left: 30px;">
                 <option :value="-1">{{ lanMap['create'] }}</option>
                 <template v-for="item in wanInfo">
                     <option :value="item.index">{{ item.name }}</option>
@@ -28,7 +28,7 @@
         <div class="onu-wan-form">
             <div>
                 <span>{{ lanMap['ipmode'] }}</span>
-                <select v-model="formData.ipmode">
+                <select v-model.number="formData.ipmode">
                     <template v-for="(item, index) in ipmodes">
                         <option :value="index">{{ item }}</option>
                     </template>
@@ -38,7 +38,7 @@
         <div class="onu-wan-form">
             <div>
                 <span>{{ lanMap['ctype'] }}</span>
-                <select v-model="formData.ctype" disabled>
+                <select v-model.number="formData.ctype" disabled>
                     <template v-for="(item, index) in ctypes">
                         <option :value="index">{{ item }}</option>
                     </template>
@@ -48,14 +48,14 @@
         <div class="onu-wan-form" v-if="formData.ipmode !== 3">
             <div>
                 <span>{{ lanMap['mtu'] }}</span>
-                <input type="text" v-model="formData.mtu" :class="{ 'invalid-input': !valid_mtu }" />
+                <input type="text" v-model.number="formData.mtu" :class="{ 'invalid-input': !valid_mtu }" />
                 <span class="tips">Range: 70 - 1500</span>
             </div>
         </div>
         <div class="onu-wan-form">
             <div>
                 <span>{{ lanMap['igmpproxy'] }}</span>
-                <select v-model="formData.igmpproxy">
+                <select v-model.number="formData.igmpproxy">
                     <template v-for="(item, index) in igmpproxys">
                         <option :value="index">{{ lanMap[item] }}</option>
                     </template>
@@ -76,7 +76,7 @@
                 <span>{{ lanMap['vlan_id'] }}</span>
                 <input
                     type="text"
-                    v-model="formData.vlan_id"
+                    v-model.number="formData.vlan_id"
                     :disabled="!formData.tagmode"
                     :class="{ 'invalid-input': !valid_vlanid }"
                 />
@@ -87,7 +87,7 @@
         <div class="onu-wan-form" v-if="formData.ipmode === 0 || formData.ipmode === 1">
             <div>
                 <span>{{ lanMap['ipproto'] }}</span>
-                <select v-model="formData.ipproto" disabled>
+                <select v-model.number="formData.ipproto" disabled>
                     <template v-for="(item, index) in ipprotos">
                         <option :value="index">{{ item }}</option>
                     </template>
@@ -193,7 +193,7 @@
             <div class="onu-wan-form">
                 <div>
                     <span>{{ lanMap['pppoemode'] }}</span>
-                    <select v-model="formData.pppoemode">
+                    <select v-model.number="formData.pppoemode">
                         <template v-for="(item, index) in pppoemodes">
                             <option :value="index">{{ item }}</option>
                         </template>
