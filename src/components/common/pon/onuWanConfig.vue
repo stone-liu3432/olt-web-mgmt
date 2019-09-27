@@ -54,16 +54,6 @@
         </div>
         <div class="onu-wan-form">
             <div>
-                <span>{{ lanMap['igmpproxy'] }}</span>
-                <select v-model.number="formData.igmpproxy">
-                    <template v-for="(item, index) in igmpproxys">
-                        <option :value="index">{{ lanMap[item] }}</option>
-                    </template>
-                </select>
-            </div>
-        </div>
-        <div class="onu-wan-form">
-            <div>
                 <span>{{ lanMap['tagmode'] }}</span>
                 <div class="switch">
                     <input type="checkbox" v-model="formData.tagmode" />
@@ -208,6 +198,16 @@
                     <input type="checkbox" :value="1" v-model="formData.portmap" />
                     lan 1
                 </label>
+            </div>
+        </div>
+        <div class="onu-wan-form">
+            <div>
+                <span>{{ lanMap['igmpproxy'] }}</span>
+                <select v-model.number="formData.igmpproxy">
+                    <template v-for="(item, index) in igmpproxys">
+                        <option :value="index">{{ lanMap[item] }}</option>
+                    </template>
+                </select>
             </div>
         </div>
         <div class="onu-wan-btn-group">
@@ -378,9 +378,7 @@ export default {
                         if (res.data.data && res.data.data.length) {
                             this.wanInfo = res.data.data;
                             const wan = this.wanInfo[0];
-                            Object.keys(wan).forEach(item => {
-                                this.formData[item] = wan[item];
-                            });
+                            this.formData.index = wan.index;
                         }
                     }
                 })
@@ -401,6 +399,7 @@ export default {
                             type: "success",
                             text: this.lanMap["setting_ok"]
                         });
+                        this.getData();
                     } else {
                         this.$message({
                             type: res.data.type,
@@ -657,6 +656,7 @@ export default {
                             type: "success",
                             text: `${this.lanMap["delete_ok"]}`
                         });
+                        this.getData();
                     } else {
                         this.$message({
                             type: "success",
@@ -717,6 +717,9 @@ export default {
                         Object.keys(item).forEach(key => {
                             this.formData[key] = item[key];
                         });
+                        if(!this.formData.name){
+                            this.formData.name = `wan${item['index']}`;
+                        }
                     }
                 });
             }
