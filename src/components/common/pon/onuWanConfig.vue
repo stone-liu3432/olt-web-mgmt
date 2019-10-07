@@ -107,7 +107,7 @@
                             v-model="formData.ipmask"
                             :class="{ 'invalid-input': !valid_ipmask }"
                         />
-                        <span class="tips">ex: 127.0.0.1</span>
+                        <span class="tips">ex: 255.255.255.0</span>
                     </div>
                 </div>
                 <div class="onu-wan-form">
@@ -312,13 +312,13 @@ export default {
             if (this.formData.ipmode !== 2) {
                 return true;
             }
-            return /^.{4,32}$/.test(this.formData.user);
+            return /^.{1,32}$/.test(this.formData.user);
         },
         valid_password() {
             if (this.formData.ipmode !== 2) {
                 return true;
             }
-            return /^.{4,32}$/.test(this.formData.password);
+            return /^.{1,32}$/.test(this.formData.password);
         },
         valid_pridns() {
             if (!this.formData.reqdns) {
@@ -374,6 +374,7 @@ export default {
                 })
                 .then(res => {
                     this.wanInfo = [];
+                    this.formData.index = -1;
                     if (res.data.code === 1) {
                         if (res.data.data && res.data.data.length) {
                             this.wanInfo = res.data.data;
@@ -697,6 +698,7 @@ export default {
                             text: this.lanMap["delete_ok"]
                         });
                         this.wanInfo = [];
+                        this.formData.index = -1;
                     } else {
                         this.$message({
                             type: res.data.type,
