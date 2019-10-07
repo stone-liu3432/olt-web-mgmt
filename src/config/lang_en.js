@@ -696,7 +696,8 @@ var en = {
     secdns: "Secondary DNS Server",
     portmap: "Port Mapping",
     not_concerned: 'Not concerned',
-    gateway: "Gateway"
+    gateway: "Gateway",
+    distance: "Distance(m)"
 };
 
 export default en;

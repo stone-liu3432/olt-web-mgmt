@@ -675,7 +675,8 @@ var zh = {
     secdns: "备用DNS服务器",
     portmap: "绑定端口",
     not_concerned: '不关注',
-    gateway: "网关"
+    gateway: "网关",
+    distance: "距离(米)"
 };
 
 export default zh;
