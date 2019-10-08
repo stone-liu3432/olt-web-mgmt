@@ -11,6 +11,7 @@ import confirm from '@/components/common/confirm'
 import tabBar from '@/components/common/tabBar'
 import { analysis } from './utils/common.js'
 import serviceCconfirm from '@/components/common/commonComponent/confirm';
+import Notification from '@/components/common/commonComponent/notify';
 
 Vue.use(VueMessage)
 
@@ -38,6 +39,7 @@ axios.interceptors.response.use(response=>{
 );
 
 Vue.prototype.$confirm = serviceCconfirm;
+Vue.prototype.$notify = Notification;
 Vue.prototype.$http = axios
 
 //  页面加载时，该元素将获取焦点  调用： v-focus
