@@ -1,6 +1,6 @@
 <template>
     <transition name="mei-message-fade">
-        <div v-if="show" :class="['mei-message',type ? `mei-message-${ type }` : '']">
+        <div v-if="show" :class="['mei-message',type ? `mei-message-${ type }` : '']" ref="custom-message-box">
             <div>
                 <i v-if="type=='warning'" class="mei-message-icon">
                     <svg t="1516780450055" class="icon" style="" viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg" p-id="8101" xmlns:xlink="http://www.w3.org/1999/xlink" width="26" height="26"><defs></defs><path d="M560 528C560 554.496 538.624 576 512 576l0 0C485.568 576 464 554.496 464 528l0-224C464 277.44 485.568 256 512 256l0 0c26.624 0 48 21.44 48 48L560 528zM560 720c0-26.496-21.376-48-48-48-26.432 0-48 21.504-48 48S485.568 768 512 768C538.624 768 560 746.496 560 720zM512 64C264.64 64 64 264.64 64 512c0 247.424 200.64 448 448 448 247.488 0 448-200.576 448-448C960 264.64 759.488 64 512 64zM512 896.768c-212.48 0-384.768-172.224-384.768-384.768S299.52 127.232 512 127.232 896.64 299.52 896.64 512 724.48 896.768 512 896.768z" p-id="8102" fill="#E6A23C"></path></svg>
@@ -16,37 +16,57 @@
             <div>
                 <span class="mei-message-con">{{ text }}</span>
             </div>
-            <div :class="['msg-close', type ? `msg-close-${type}` : '']" @click="close_msg" v-if="type !== 'success' && type !== 'info'"></div>
+            <div :class="['msg-close', type ? `msg-close-${type}` : '']" @click="close" v-if="type !== 'success' && type !== 'info'"></div>
         </div>
     </transition>
 </template>
 
-<script type="text/babel">
-const typeMap = {
-    success: "success",
-    info: "info",
-    warning: "warning",
-    error: "error"
-};
+<script>
 export default {
     data() {
         return {
-            show: false,
+            show: true,
             text: "",
-            type: ""
+            type: "",
+            duration: 4000,
+            _timeout: 0
         };
     },
     computed: {
         iconClass() {
-            return this.type ? `mei-message-icon mei-icon-${typeMap[this.type]}` : "";
+            return this.type ? `mei-message-icon mei-icon-${this.type}` : "";
         },
         closeClass(){
-            return this.type ? `close-${typeMap[this.type]}` : "";
+            return this.type ? `close-${this.type}` : "";
         }
     },
+    mounted(){
+        const el = this.$el;
+        el.addEventListener('mouseover', this.mouseoverCb);
+        el.addEventListener('mouseout', this.mouseoutCb);
+        this.$once('hook:beforeDestroy', _ => {
+            el.removeEventListener('mouseover', this.mouseoverCb);
+            el.removeEventListener('mouseout', this.mouseoutCb);
+        })
+        this._timeout = setTimeout(_ => {
+            this.close();
+        }, this.duration)
+    },
     methods: {
-        close_msg(){
+        close(){
             this.show = false;
+            this.$nextTick(_ => {
+                this.$destroy();
+                document.body.removeChild(this.$el);
+            })
+        },
+        mouseoverCb(e){
+            if(this._timeout) clearTimeout(this._timeout);
+        },
+        mouseoutCb(e){
+            this._timeout = setTimeout(_ => {
+                this.close();
+            }, this.duration);
         }
     }
 };
