@@ -300,9 +300,12 @@ li.active {
     background: transparent;
     padding: 0;
     width: 100%;
+    height: 100%;
+    line-height: 70px;
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
+    vertical-align: bottom;
     &:active {
         border: none;
         outline: none;
