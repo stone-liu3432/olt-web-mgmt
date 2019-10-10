@@ -273,4 +273,19 @@ div.cover+div{
         border-bottom: 2px solid #ddd;
     }
 }
+a.btn-text {
+    background: transparent;
+    color: #3093f7;
+    width: auto;
+    height: auto;
+    line-height: initial;
+    padding: 6px 6px;
+    &:hover {
+        color: #77b5f3;
+    }
+    &:active{
+        border-color: transparent;
+        color: #3093f7;
+    }
+}
 </style>
