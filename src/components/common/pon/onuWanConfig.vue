@@ -2,233 +2,298 @@
     <div>
         <h3>
             {{ lanMap['wan_connect'] }}
-            <select v-model.number="formData.index" style="margin-left: 30px;">
+            <!-- <select v-model.number="formData.index" style="margin-left: 30px;">
                 <option :value="-1">{{ lanMap['create'] }}</option>
                 <template v-for="item in wanInfo">
                     <option :value="item.index">{{ item.name }}</option>
                 </template>
-            </select>
+            </select>-->
             <a
                 href="javascript: void(0);"
                 style="margin-left: 60px; height: 28px; line-height: 28px;"
-                @click="confirm_clear"
-            >{{ lanMap['delete_all'] }}</a>
-        </h3>
-        <div class="onu-wan-form" v-if="formData.index === -1" style="margin-top: 20px;">
-            <div>
-                <span>{{ lanMap['name'] }}</span>
-                <input
-                    type="text"
-                    v-model="formData.name"
-                    :class="{ 'invalid-input': !valid_name }"
-                />
-                <span class="tips">4-32 characters</span>
-            </div>
-        </div>
-        <div class="onu-wan-form">
-            <div>
-                <span>{{ lanMap['ipmode'] }}</span>
-                <select v-model.number="formData.ipmode">
-                    <template v-for="(item, index) in ipmodes">
-                        <option :value="index">{{ item }}</option>
-                    </template>
-                </select>
-            </div>
-        </div>
-        <div class="onu-wan-form">
-            <div>
-                <span>{{ lanMap['ctype'] }}</span>
-                <select v-model.number="formData.ctype" disabled>
-                    <template v-for="(item, index) in ctypes">
-                        <option :value="index">{{ item }}</option>
-                    </template>
-                </select>
-            </div>
-        </div>
-        <div class="onu-wan-form" v-if="formData.ipmode !== 3">
-            <div>
-                <span>{{ lanMap['mtu'] }}</span>
-                <input type="text" v-model.number="formData.mtu" :class="{ 'invalid-input': !valid_mtu }" />
-                <span class="tips">Range: 70 - 1500</span>
-            </div>
-        </div>
-        <div class="onu-wan-form">
-            <div>
-                <span>{{ lanMap['tagmode'] }}</span>
-                <div class="switch">
-                    <input type="checkbox" v-model="formData.tagmode" />
-                    <span :class="{ 'checked' : formData.tagmode }" @click="changeVlanMode"></span>
-                </div>
-            </div>
-        </div>
-        <div class="onu-wan-form">
-            <div>
-                <span>{{ lanMap['vlan_id'] }}</span>
-                <input
-                    type="text"
-                    v-model.number="formData.vlan_id"
-                    :disabled="!formData.tagmode"
-                    :class="{ 'invalid-input': !valid_vlanid }"
-                />
-                <span class="tips">Range: 1 - 4094</span>
-            </div>
-        </div>
-        <!-- static IP && DHCP && PPPoE -->
-        <div class="onu-wan-form" v-if="formData.ipmode === 0 || formData.ipmode === 1">
-            <div>
-                <span>{{ lanMap['ipproto'] }}</span>
-                <select v-model.number="formData.ipproto" disabled>
-                    <template v-for="(item, index) in ipprotos">
-                        <option :value="index">{{ item }}</option>
-                    </template>
-                </select>
-            </div>
-        </div>
-        <!-- static IP && DHCP -->
-        <template v-if="formData.ipmode === 0 || formData.ipmode === 1">
-            <!-- static IP  -->
-            <template v-if="formData.ipmode === 0">
-                <div class="onu-wan-form">
-                    <div>
-                        <span>{{ lanMap['ipaddr'] }}</span>
-                        <input
-                            type="text"
-                            v-model="formData.ipaddr"
-                            :class="{ 'invalid-input': !valid_ipaddr }"
-                        />
-                        <span class="tips">ex: 127.0.0.1</span>
-                    </div>
-                </div>
-                <div class="onu-wan-form">
-                    <div>
-                        <span>{{ lanMap['ipmask'] }}</span>
-                        <input
-                            type="text"
-                            v-model="formData.ipmask"
-                            :class="{ 'invalid-input': !valid_ipmask }"
-                        />
-                        <span class="tips">ex: 255.255.255.0</span>
-                    </div>
-                </div>
-                <div class="onu-wan-form">
-                    <div>
-                        <span>{{ lanMap['gateway'] }}</span>
-                        <input
-                            type="text"
-                            v-model="formData.gateway"
-                            :class="{ 'invalid-input': !valid_gateway }"
-                        />
-                        <span class="tips">ex: 127.0.0.1</span>
-                    </div>
-                </div>
-            </template>
-            <div class="onu-wan-form">
-                <div>
-                    <span>{{ lanMap['reqdns'] }}</span>
-                    <div class="switch">
-                        <input type="checkbox" v-model="formData.reqdns" />
-                        <span :class="{ 'checked' : formData.reqdns }" @click="changeDnsMode"></span>
-                    </div>
-                </div>
-            </div>
-            <div class="onu-wan-form">
-                <div>
-                    <span>{{ lanMap['pridns'] }}</span>
-                    <input
-                        type="text"
-                        v-model="formData.pridns"
-                        :disabled="!formData.reqdns"
-                        :class="{ 'invalid-input': !valid_pridns }"
-                    />
-                    <span class="tips">ex: 127.0.0.1</span>
-                </div>
-            </div>
-            <div class="onu-wan-form">
-                <div>
-                    <span>{{ lanMap['secdns'] }}</span>
-                    <input
-                        type="text"
-                        v-model="formData.secdns"
-                        :disabled="!formData.reqdns"
-                        :class="{ 'invalid-input': !valid_secdns }"
-                    />
-                    <span class="tips">ex: 127.0.0.1</span>
-                </div>
-            </div>
-        </template>
-        <!-- PPPoE -->
-        <template v-if="formData.ipmode === 2">
-            <div class="onu-wan-form">
-                <div>
-                    <span>{{ lanMap['user'] }}</span>
-                    <input
-                        type="text"
-                        v-model="formData.user"
-                        :class="{ 'invalid-input': !valid_user }"
-                    />
-                    <span class="tips">4-32 characters</span>
-                </div>
-            </div>
-            <div class="onu-wan-form">
-                <div>
-                    <span>{{ lanMap['password'] }}</span>
-                    <input
-                        type="text"
-                        v-model="formData.password"
-                        :class="{ 'invalid-input': !valid_password }"
-                    />
-                    <span class="tips">4-32 characters</span>
-                </div>
-            </div>
-            <div class="onu-wan-form">
-                <div>
-                    <span>{{ lanMap['pppoemode'] }}</span>
-                    <select v-model.number="formData.pppoemode">
-                        <template v-for="(item, index) in pppoemodes">
-                            <option :value="index">{{ item }}</option>
-                        </template>
-                    </select>
-                </div>
-            </div>
-        </template>
-        <div class="onu-wan-form">
-            <div>
-                <span>{{ lanMap['portmap'] }}</span>
-                <label>
-                    <input type="checkbox" :value="1" v-model="formData.portmap" />
-                    lan 1
-                </label>
-            </div>
-        </div>
-        <div class="onu-wan-form">
-            <div>
-                <span>{{ lanMap['igmpproxy'] }}</span>
-                <select v-model.number="formData.igmpproxy">
-                    <template v-for="(item, index) in igmpproxys">
-                        <option :value="index">{{ lanMap[item] }}</option>
-                    </template>
-                </select>
-            </div>
-        </div>
-        <div class="onu-wan-btn-group">
-            <a href="javascript: void(0);" @click="confirm_submit">{{ lanMap['apply'] }}</a>
+                @click="openDialog(null, 'add')"
+            >{{ lanMap['add'] }}</a>
             <a
                 href="javascript: void(0);"
-                :class="{ 'disabled': formData.index === -1 }"
-                @click="confirm_delete"
-            >{{ lanMap['delete'] }}</a>
+                style="margin-left: 30px; height: 28px; line-height: 28px;"
+                @click="confirm_clear"
+                v-if="wanInfo.length"
+            >{{ lanMap['delete_all'] }}</a>
+        </h3>
+        <table border="1" v-if="wanInfo.length">
+            <thead>
+                <tr>
+                    <th>{{ lanMap['name'] }}</th>
+                    <th>{{ lanMap['vlan_id'] }}</th>
+                    <th>{{ lanMap['ctype'] }}</th>
+                    <th>{{ lanMap['ipmode'] }}</th>
+                    <th>{{ lanMap['ipaddr'] }}</th>
+                    <th>{{ lanMap['gateway'] }}</th>
+                    <th>{{ lanMap['status'] }}</th>
+                    <th>{{ lanMap['config'] }}</th>
+                </tr>
+            </thead>
+            <tbody>
+                <template v-for="item in wanInfo">
+                    <tr>
+                        <td>{{ item.name || `wan-${item.index}` }}</td>
+                        <td>{{ item.vlan_id }}</td>
+                        <td>{{ ctypes[item.ctype] }}</td>
+                        <td>{{ ipmodes[item.ipmode] }}</td>
+                        <td>{{ item.ipaddr || ' - ' }}</td>
+                        <td>{{ item.gateway || ' - ' }}</td>
+                        <td>{{ item.status ? 'Up' : 'Down' }}</td>
+                        <td>
+                            <a
+                                @click="openDialog(item, 'set')"
+                                class="btn-text"
+                                href="javascript: void(0);"
+                            >{{ lanMap['config'] }}</a>
+                            <a
+                                @click="confirm_delete(item)"
+                                class="btn-text"
+                                href="javascript: void(0);"
+                            >{{ lanMap['delete'] }}</a>
+                        </td>
+                    </tr>
+                </template>
+            </tbody>
+        </table>
+        <p style="margin: 20px 0 20px 20px; color: red;" v-else>{{ lanMap['no_more_data'] }}</p>
+        <div class="modal-dialog" v-if="showDialog">
+            <div class="cover"></div>
+            <div class="wan-connect-modal-content">
+                <div>
+                    <div
+                        class="modal-header"
+                    >{{ formData.index === -1 ? lanMap['add'] : (formData.name || `wan_${formData.index}`) }}</div>
+                    <div style="margin: 20px 0;" class="wan-dialog-scroll">
+                        <div class="onu-wan-form" v-if="formData.index === -1">
+                            <div>
+                                <span>{{ lanMap['name'] }}</span>
+                                <input
+                                    type="text"
+                                    v-model="formData.name"
+                                    :class="{ 'invalid-input': !valid_name }"
+                                />
+                                <span class="tips">4-32 characters</span>
+                            </div>
+                        </div>
+                        <div class="onu-wan-form">
+                            <div>
+                                <span>{{ lanMap['ipmode'] }}</span>
+                                <select v-model.number="formData.ipmode">
+                                    <template v-for="(item, index) in ipmodes">
+                                        <option :value="index">{{ item }}</option>
+                                    </template>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="onu-wan-form">
+                            <div>
+                                <span>{{ lanMap['ctype'] }}</span>
+                                <select v-model.number="formData.ctype" disabled>
+                                    <template v-for="(item, index) in ctypes">
+                                        <option :value="index">{{ item }}</option>
+                                    </template>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="onu-wan-form" v-if="formData.ipmode !== 3">
+                            <div>
+                                <span>{{ lanMap['mtu'] }}</span>
+                                <input
+                                    type="text"
+                                    v-model.number="formData.mtu"
+                                    :class="{ 'invalid-input': !valid_mtu }"
+                                />
+                                <span class="tips">Range: 70 - 1500</span>
+                            </div>
+                        </div>
+                        <div class="onu-wan-form">
+                            <div>
+                                <span>{{ lanMap['tagmode'] }}</span>
+                                <div class="switch">
+                                    <input type="checkbox" v-model="formData.tagmode" />
+                                    <span
+                                        :class="{ 'checked' : formData.tagmode }"
+                                        @click="changeVlanMode"
+                                    ></span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="onu-wan-form">
+                            <div>
+                                <span>{{ lanMap['vlan_id'] }}</span>
+                                <input
+                                    type="text"
+                                    v-model.number="formData.vlan_id"
+                                    :disabled="!formData.tagmode"
+                                    :class="{ 'invalid-input': !valid_vlanid }"
+                                />
+                                <span class="tips">Range: 1 - 4094</span>
+                            </div>
+                        </div>
+                        <!-- static IP && DHCP && PPPoE -->
+                        <div
+                            class="onu-wan-form"
+                            v-if="formData.ipmode === 0 || formData.ipmode === 1"
+                        >
+                            <div>
+                                <span>{{ lanMap['ipproto'] }}</span>
+                                <select v-model.number="formData.ipproto" disabled>
+                                    <template v-for="(item, index) in ipprotos">
+                                        <option :value="index">{{ item }}</option>
+                                    </template>
+                                </select>
+                            </div>
+                        </div>
+                        <!-- static IP && DHCP -->
+                        <template v-if="formData.ipmode === 0 || formData.ipmode === 1">
+                            <!-- static IP  -->
+                            <template v-if="formData.ipmode === 0">
+                                <div class="onu-wan-form">
+                                    <div>
+                                        <span>{{ lanMap['ipaddr'] }}</span>
+                                        <input
+                                            type="text"
+                                            v-model="formData.ipaddr"
+                                            :class="{ 'invalid-input': !valid_ipaddr }"
+                                        />
+                                        <span class="tips">ex: 127.0.0.1</span>
+                                    </div>
+                                </div>
+                                <div class="onu-wan-form">
+                                    <div>
+                                        <span>{{ lanMap['ipmask'] }}</span>
+                                        <input
+                                            type="text"
+                                            v-model="formData.ipmask"
+                                            :class="{ 'invalid-input': !valid_ipmask }"
+                                        />
+                                        <span class="tips">ex: 255.255.255.0</span>
+                                    </div>
+                                </div>
+                                <div class="onu-wan-form">
+                                    <div>
+                                        <span>{{ lanMap['gateway'] }}</span>
+                                        <input
+                                            type="text"
+                                            v-model="formData.gateway"
+                                            :class="{ 'invalid-input': !valid_gateway }"
+                                        />
+                                        <span class="tips">ex: 127.0.0.1</span>
+                                    </div>
+                                </div>
+                            </template>
+                            <div class="onu-wan-form">
+                                <div>
+                                    <span>{{ lanMap['reqdns'] }}</span>
+                                    <div class="switch">
+                                        <input type="checkbox" v-model="formData.reqdns" />
+                                        <span
+                                            :class="{ 'checked' : formData.reqdns }"
+                                            @click="changeDnsMode"
+                                        ></span>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="onu-wan-form">
+                                <div>
+                                    <span>{{ lanMap['pridns'] }}</span>
+                                    <input
+                                        type="text"
+                                        v-model="formData.pridns"
+                                        :disabled="!formData.reqdns"
+                                        :class="{ 'invalid-input': !valid_pridns }"
+                                    />
+                                    <span class="tips">ex: 127.0.0.1</span>
+                                </div>
+                            </div>
+                            <div class="onu-wan-form">
+                                <div>
+                                    <span>{{ lanMap['secdns'] }}</span>
+                                    <input
+                                        type="text"
+                                        v-model="formData.secdns"
+                                        :disabled="!formData.reqdns"
+                                        :class="{ 'invalid-input': !valid_secdns }"
+                                    />
+                                    <span class="tips">ex: 127.0.0.1</span>
+                                </div>
+                            </div>
+                        </template>
+                        <!-- PPPoE -->
+                        <template v-if="formData.ipmode === 2">
+                            <div class="onu-wan-form">
+                                <div>
+                                    <span>{{ lanMap['user'] }}</span>
+                                    <input
+                                        type="text"
+                                        v-model="formData.user"
+                                        :class="{ 'invalid-input': !valid_user }"
+                                    />
+                                    <span class="tips">1-32 characters</span>
+                                </div>
+                            </div>
+                            <div class="onu-wan-form">
+                                <div>
+                                    <span>{{ lanMap['password'] }}</span>
+                                    <input
+                                        type="text"
+                                        v-model="formData.password"
+                                        :class="{ 'invalid-input': !valid_password }"
+                                    />
+                                    <span class="tips">1-32 characters</span>
+                                </div>
+                            </div>
+                            <div class="onu-wan-form">
+                                <div>
+                                    <span>{{ lanMap['pppoemode'] }}</span>
+                                    <select v-model.number="formData.pppoemode">
+                                        <template v-for="(item, index) in pppoemodes">
+                                            <option :value="index">{{ item }}</option>
+                                        </template>
+                                    </select>
+                                </div>
+                            </div>
+                        </template>
+                        <div class="onu-wan-form">
+                            <div>
+                                <span>{{ lanMap['portmap'] }}</span>
+                                <label>
+                                    <input type="checkbox" :value="1" v-model="formData.portmap" />
+                                    lan 1
+                                </label>
+                            </div>
+                        </div>
+                        <div class="onu-wan-form">
+                            <div>
+                                <span>{{ lanMap['igmpproxy'] }}</span>
+                                <select v-model.number="formData.igmpproxy">
+                                    <template v-for="(item, index) in igmpproxys">
+                                        <option :value="index">{{ lanMap[item] }}</option>
+                                    </template>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="onu-wan-btn-group">
+                        <a href="javascript: void(0);" @click="confirm_submit">{{ lanMap['apply'] }}</a>
+                        <a href="javascript: void(0);" @click="closeDialog">{{ lanMap['cancel'] }}</a>
+                    </div>
+                </div>
+                <div class="close" @click="closeDialog"></div>
+            </div>
         </div>
-        <confirm v-if="showConfirm" @choose="result"></confirm>
     </div>
 </template>
 
 <script>
 import { mapState, mapMutations } from "vuex";
 import { testIPAddr } from "@/utils/common";
-import confirm from "./../confirm";
 export default {
     name: "onuWanConfig",
-    components: { confirm },
     props: {
         portData: {
             type: Object,
@@ -264,7 +329,7 @@ export default {
                 ipaddr: "",
                 ipmask: "",
                 gateway: "",
-                pppoemode: 1,
+                pppoemode: 0,
                 user: "",
                 password: "",
                 tagmode: 0,
@@ -279,7 +344,26 @@ export default {
             resetData: {},
             cacheForm: {},
             showConfirm: false,
-            wanInfo: []
+            showDialog: false,
+            wanInfo: [
+                // {
+                //     name: "wan0",
+                //     index: 0,
+                //     ipmode: 1,
+                //     ctype: 1,
+                //     tagmode: 0,
+                //     vlan_id: 123,
+                //     ipaddr: "192.168.5.11",
+                //     ipmask: "255.255.255.0",
+                //     gateway: "192.168.5.1",
+                //     pppoemode: 1,
+                //     user: "123",
+                //     password: "123",
+                //     requestdns: 0,
+                //     pridns: "8.8.8.8",
+                //     secdns: "4.4.4.4"
+                // }
+            ]
         };
     },
     computed: {
@@ -582,7 +666,7 @@ export default {
         submit(data) {
             this.cacheForm = data;
             this.handleFlag = "config";
-            this.showConfirm = true;
+            this.result(true);
         },
         confirm_submit() {
             const handles = {
@@ -627,28 +711,40 @@ export default {
             ) {
                 handles[this.ipmodes[this.formData.ipmode]].call(this);
             }
+            this.closeDialog();
         },
-        confirm_delete() {
+        closeDialog() {
+            this.showDialog = false;
             if (this.formData.index === -1) {
-                return;
+                this.resetForm();
+            } else {
+                this.formData.index = -1;
             }
-            this.showConfirm = true;
-            this.handleFlag = "delete";
+        },
+        confirm_delete(node) {
+            this.$confirm(this.lanMap['if_sure'])
+                .then(_ => {
+                    const data = {
+                        method: "delete",
+                        param: {
+                            port_id: this.portid,
+                            onu_id: this.onuid,
+                            name: node.name,
+                            index: node.index
+                        }
+                    };
+                    this.delWan(data);
+                })
+                .catch(_ => {});
         },
         confirm_clear() {
-            this.showConfirm = true;
-            this.handleFlag = "clear";
+            this.$confirm(this.lanMap['if_sure'])
+                .then(_ => {
+                    this.clearAll();
+                })
+                .catch(_ => {});
         },
-        delWan() {
-            const data = {
-                method: "delete",
-                param: {
-                    port_id: this.portid,
-                    onu_id: this.onuid,
-                    name: this.formData.name,
-                    index: this.formData.index
-                }
-            };
+        delWan(data) {
             this.$http
                 .post("/onumgmt?form=wan", data)
                 .then(res => {
@@ -672,14 +768,9 @@ export default {
                 if (this.handleFlag === "config") {
                     this.submitForm();
                 }
-                if (this.handleFlag === "delete") {
-                    this.delWan();
-                }
-                if (this.handleFlag === "clear") {
-                    this.clearAll();
-                }
             }
             this.showConfirm = false;
+            this.resetForm();
         },
         clearAll() {
             const data = {
@@ -707,6 +798,15 @@ export default {
                     }
                 })
                 .catch(err => {});
+        },
+        openDialog(node, operate) {
+            this.showDialog = true;
+            if (operate === "add") {
+                this.formData.index = -1;
+            }
+            if (operate === "set" && node) {
+                this.formData.index = node.index;
+            }
         }
     },
     watch: {
@@ -719,8 +819,8 @@ export default {
                         Object.keys(item).forEach(key => {
                             this.formData[key] = item[key];
                         });
-                        if(!this.formData.name){
-                            this.formData.name = `wan${item['index']}`;
+                        if (!this.formData.name) {
+                            this.formData.name = `wan-${item["index"]}`;
                         }
                     }
                 });
@@ -822,15 +922,6 @@ div.switch {
         margin-left: 30px;
     }
 }
-.onu-wan-btn-group {
-    margin: 30px 0 20px 0;
-    a {
-        margin-left: 80px;
-        &:first-child {
-            margin-left: 20px;
-        }
-    }
-}
 .invalid-input {
     border-color: red;
     &:focus {
@@ -848,5 +939,41 @@ span.tips {
 }
 input[type="checkbox"] {
     vertical-align: middle;
+}
+table {
+    border: 1px solid #ddd;
+    margin: 20px 10px 20px 10px;
+    width: calc(~"100% - 20px");
+    th,
+    td {
+        text-align: center;
+        padding: 6px 0;
+    }
+    th {
+        font-weight: 600;
+        color: #666;
+        padding: 12px;
+    }
+}
+div.wan-connect-modal-content {
+    width: 620px;
+    height: auto;
+    max-height: 100%;
+    a {
+        margin: 12px 0px 16px 135px;
+    }
+}
+//  溢出时的处理
+@media (max-height: 768px) {
+    .wan-dialog-scroll {
+        max-height: 420px;
+        overflow-y: auto;
+    }
+}
+@media (min-height: 769px) and (max-height: 900px) {
+    .wan-dialog-scroll {
+        max-height: 600px;
+        overflow-y: auto;
+    }
 }
 </style>
