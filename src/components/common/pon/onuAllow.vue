@@ -25,11 +25,11 @@
                         <p><i class="verified-actived"></i>{{ lanMap['tips_cfm_onu'] }}</p>
                         <p><i class="unverified"></i>{{ lanMap['tips_n_cfm_onu'] }}</p>
                     </div>
-                    <div>
+                    <!-- <div>
                         <p>{{ lanMap['config'] }}</p>
-                        <!-- <p>
+                        <p>
                             {{ lanMap['click'] }}<i class="reload"></i>{{ lanMap['tips_page_refresh'] }}
-                        </p> -->
+                        </p>
                         <p>
                             {{ lanMap['click'] }}<i class="onu-detail"></i>{{ lanMap['tips_onu_btn_detail'] }}
                         </p>
@@ -42,7 +42,7 @@
                         <p>
                             {{ lanMap['click'] }}<i class="reset-onu"></i>{{ lanMap['tips_onu_restart'] }}
                         </p>
-                    </div>
+                    </div> -->
                 </div>
             </div>
         </div>
@@ -113,6 +113,8 @@
                     <td style="width: 80px;">{{ lanMap['status'] }}</td>
                     <td style="width: 100px;">{{ lanMap['auth_state'] }}</td>
                     <td>{{ lanMap['register_time'] }}</td>
+                    <td>{{ lanMap['last_down_time'] }}</td>
+                    <td>{{ lanMap['last_down_reason'] }}</td>
                     <td style="width: 160px;">{{ lanMap['config'] }}</td>
                 </tr>
             </thead>
@@ -140,10 +142,27 @@
                         {{ item.register_time }}
                     </td>
                     <td>
-                        <i :title="lanMap['detail']" class="onu-detail" @click="onu_detail(item.port_id,item.onu_id)"></i>
+                        {{ item.last_down_time }}
+                    </td>
+                    <td>
+                        {{ item.last_down_reason }}
+                    </td>
+                    <td>
+                        <!-- <i :title="lanMap['detail']" class="onu-detail" @click="onu_detail(item.port_id,item.onu_id)"></i>
                         <i :title="lanMap['del_onu']" class="onu-delete" @click="delete_onu(item)"></i>
                         <i :title="lanMap['add_to_deny']" class="onu-remove" @click="remove_onu(item)"></i>
-                        <i :title="lanMap['reboot_onu']" class="reset-onu" @click="reboot(item)"></i>
+                        <i :title="lanMap['reboot_onu']" class="reset-onu" @click="reboot(item)"></i> -->
+                        <div class="onu-table-dropdown-menu" @mouseover="mouseoverCb" @mouseout="mouseoutCb">
+                            <span>{{ lanMap['config'] }}</span>
+                            <svg t="1570759962108" style="vertical-align: middle;" viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg" p-id="6745" width="16" height="16"><path d="M824.001 335.037c-9.083-9.083-24.049-9.083-33.132 0l-278.991 279.094-279.094-279.09399999c-9.083-9.083-24.049-9.083-33.132-1e-8-9.083 9.083-9.083 24.049 0 33.13200001l292.92499999 292.92499999c0.723 1.032 1.548 2.064 2.47700002 2.993 4.645 4.645 10.734 6.915 16.82399999 6.812 6.09 0.103 12.179-2.168 16.824-6.812 0.929-0.929 1.755-1.961 2.477-2.993l292.822-292.925c9.083-9.083 9.083-24.049 0-33.132z" p-id="6746" fill="#2c2c2c"></path></svg>
+                            <div :style="dropdownPosition">
+                                <div @click="onu_detail(item.port_id,item.onu_id)">{{ lanMap['detail'] }}</div>
+                                <div @click="onu_port_config(item.port_id, item.onu_id)">{{ lanMap['onu_port_cfg'] }}</div>
+                                <div @click="delete_onu(item)">{{ lanMap['del_onu'] }}</div>
+                                <div @click="remove_onu(item)">{{ lanMap['add_to_deny'] }}</div>
+                                <div @click="reboot(item)">{{ lanMap['reboot_onu'] }}</div>
+                            </div>
+                        </div>
                     </td>
                 </tr>
             </tbody>
@@ -202,7 +221,6 @@ import { mapState,mapMutations } from 'vuex'
                 onu_allow_list: {},
                 portid: 0,
                 add_dialog: false,
-                testMacaddr: false,
                 add_onuid: '',
                 add_macaddr: '',
                 add_onustate: 0,
@@ -219,10 +237,20 @@ import { mapState,mapMutations } from 'vuex'
                 batch_onulist: [],
                 select_all: false,
                 selectall_state: false,
-                post_url: ''
+                post_url: '',
+                dropdownPosition: {}
             }
         },
-        computed: mapState(['lanMap','port_name','menu','change_url']),
+        computed: {
+            ...mapState(['lanMap','port_name','menu','change_url']),
+            testMacaddr(){
+                var reg = /^([0-9abcdefABCDEF]{2}\:){5}[0-9abcdefABCDEF]{2}$/;
+                if(!reg.test(this.add_macaddr)){
+                    return true;
+                }
+                return false;
+            }
+        },
         activated(){
             var pid = sessionStorage.getItem('pid');
             this.portid = this.$route.query.port_id || pid;
@@ -530,6 +558,18 @@ import { mapState,mapMutations } from 'vuex'
                 sessionStorage.setItem('first_menu', 'onu_mgmt');
                 sessionStorage.setItem('sec_menu', 'onu_basic_info');
             },
+            //  跳转 onu端口管理
+            onu_port_config(portid, onuid){
+                sessionStorage.setItem('pid', portid);
+                sessionStorage.setItem('oid', onuid);
+                this.$router.push(`/onu_port_cfg`);
+                this.changeMenu('advanced_setting');
+                this.changeFMenu('onu_mgmt');
+                this.changeAdvMenu('onu_port_cfg');
+                sessionStorage.setItem('f_menu', 'advanced_setting');
+                sessionStorage.setItem('first_menu', 'onu_mgmt');
+                sessionStorage.setItem('sec_menu', 'onu_port_cfg');
+            },
             //  删除确认框
             result_delete(bool){
                 if(bool){
@@ -603,6 +643,20 @@ import { mapState,mapMutations } from 'vuex'
                     }
                     this.onu_allow_list.data = arr;
                 }
+            },
+            mouseoverCb(e){
+                const el = e.currentTarget;
+                const { bottom } = el.getBoundingClientRect();
+                const clientHeight = document.documentElement.clientHeight;
+                //  162 为下拉菜单的高度，30为补足footer栏高度
+                if(bottom + 162 + 30 > clientHeight){
+                    this.dropdownPosition = { top: '-162px' };
+                }else{
+                    this.dropdownPosition = {};
+                }
+            },
+            mouseoutCb(){
+                this.dropdownPosition = {};
             }
         },
         watch: {
@@ -610,14 +664,6 @@ import { mapState,mapMutations } from 'vuex'
                 sessionStorage.setItem('pid',Number(this.portid));
                 this.getData();
                 this.batch_onulist = [];
-            },
-            add_macaddr(){
-                var reg = /^([0-9abcdefABCDEF]{2}\:){5}[0-9abcdefABCDEF]{2}$/;
-                if(!reg.test(this.add_macaddr)){
-                    this.testMacaddr = true;
-                }else{
-                    this.testMacaddr = false;
-                }
             },
             search_macaddr(){
                 // if(!this.search_macaddr){
@@ -857,7 +903,7 @@ div.tool-tips{
     >div{
         display: none;
         width: 300px;
-        height: 300px;
+        //height: 300px;
         background: #ddd;
         border-radius: 10px;
         padding: 10px;
@@ -868,7 +914,7 @@ div.tool-tips{
         >div{
             padding: 5px 0;
             &:first-child{
-                border-bottom: 1px solid #333;
+                //border-bottom: 1px solid #333;
                 margin-top: 5px;
                 margin-bottom: 5px;
             }
@@ -939,6 +985,7 @@ table{
         box-sizing: border-box;
         text-align: center;
         word-break: break-all;
+        border-color: #ddd;
     }
     thead{
         background: #2361a2;
@@ -952,6 +999,42 @@ table{
         }
         span{
             width: auto;
+        }
+    }
+}
+.onu-table-dropdown-menu{
+    position: relative;
+    cursor: pointer;
+    padding: 3px 0;
+    &:hover{
+        >div{
+            max-height: 180px;
+        }
+    }
+    >div{
+        background: #fff;
+        transition: all .2s linear;
+        box-shadow: 0 2px 12px 0 rgba(0,0,0,.1);
+        max-height: 0;
+        width: 160px;
+        z-index: 1;
+        overflow: hidden;
+        position: absolute;
+        left: -7px;
+        top: 24px;
+        border-radius: 5px;
+        color: #444;
+        >div{
+            padding: 6px 16px;
+            &:hover{
+                color: #67aef6;
+            }
+            &:first-child{
+                margin-top: 6px;
+            }
+            &:last-child{
+                margin-bottom: 6px;
+            }
         }
     }
 }
