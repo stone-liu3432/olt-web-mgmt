@@ -695,9 +695,11 @@ var en = {
     pridns: "Priamry DNS Server",
     secdns: "Secondary DNS Server",
     portmap: "Port Mapping",
-    not_concerned: 'Not concerned',
+    not_concerned: "Not concerned",
     gateway: "Gateway",
-    distance: "Distance(m)"
+    distance: "Distance(m)",
+    last_down_time: "Last Deregister Time",
+    last_down_reason: "Last Deregister Reason"
 };
 
 export default en;

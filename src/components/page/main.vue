@@ -1,180 +1,241 @@
 <template>
-  <div id="main-content">
-      <topBanner></topBanner>
-      <router-view v-if="isRouterAlive"></router-view>
-      <bottom-footer></bottom-footer>
-  </div>
+    <div id="main-content">
+        <topBanner></topBanner>
+        <router-view v-if="isRouterAlive"></router-view>
+        <bottom-footer></bottom-footer>
+    </div>
 </template>
 
 <script>
-import { mapState,mapMutations, mapActions } from 'vuex'
-import topBanner from '@/components/page/header'
-import contentArea from '@/components/page/content'
-import bottomFooter from '@/components/page/footer'
-    export default {
-        name: 'mainContent',
-        components: {
-            topBanner,
-            contentArea,
-            bottomFooter
-        },
-        data(){
-            return {
-                modal: false,
-                count: 0,
-                max_time: 300,
-                time: 0,
-                interval: null,
-                uName: '',
-                isRouterAlive: true
-            }
-        },
-        created(){
-            //根组件创建之前，初始化vuex部分数据
-            this.getSystem();
-            this.getMenu();
-            this.uName = sessionStorage.getItem('uname');
-            this.getData();
-            var f_menu = sessionStorage.getItem('first_menu');
-            var sec_menu = sessionStorage.getItem('sec_menu');
-            if(f_menu || sec_menu){
-                this.changeNav('advanced_setting');
-            }
-        },
-        mounted(){
-            this.time = this.max_time;
-            // this.interval = setInterval(()=>{
-            //     this.time--;
-            //     if(this.time <= 0){
-            //         var post_params = {
-            //             "method": "set",
-            //             "param": {
-            //                 "name": this.uName
-            //             }
-            //         }
-            //         this.$http.post('/userlogin?form=logout',post_params).then(res=>{
-            //             this.$message({
-            //                 type: 'success',
-            //                 text: this.lanMap['login_out']
-            //             })
-            //             sessionStorage.removeItem('x-token');
-            //             this.$router.replace('/login');
-            //         }).catch(err=>{
-            //             // to do
-            //         })
-            //     }
-            // },1000)
-            document.body.addEventListener('mousemove',this.user_timeout);
-            document.body.addEventListener('keydown',this.user_timeout);
-            document.body.addEventListener('mousedown',this.user_timeout);
-            //  手机登录时，调整高度
-            this.$nextTick(()=>{
-                if(window){
-                    var os = function() {
-                        var ua = navigator.userAgent,
+import { mapState, mapMutations, mapActions } from "vuex";
+import topBanner from "@/components/page/header";
+import contentArea from "@/components/page/content";
+import bottomFooter from "@/components/page/footer";
+export default {
+    name: "mainContent",
+    components: {
+        topBanner,
+        contentArea,
+        bottomFooter
+    },
+    data() {
+        return {
+            modal: false,
+            count: 0,
+            max_time: 300,
+            time: 0,
+            interval: null,
+            uName: "",
+            isRouterAlive: true,
+            ws: null,
+            ws_limit: 0
+        };
+    },
+    created() {
+        //根组件创建之前，初始化vuex部分数据
+        this.getSystem();
+        this.getMenu();
+        this.uName = sessionStorage.getItem("uname");
+        this.getData();
+        var f_menu = sessionStorage.getItem("first_menu");
+        var sec_menu = sessionStorage.getItem("sec_menu");
+        if (f_menu || sec_menu) {
+            this.changeNav("advanced_setting");
+        }
+    },
+    mounted() {
+        this.time = this.max_time;
+        // this.interval = setInterval(()=>{
+        //     this.time--;
+        //     if(this.time <= 0){
+        //         var post_params = {
+        //             "method": "set",
+        //             "param": {
+        //                 "name": this.uName
+        //             }
+        //         }
+        //         this.$http.post('/userlogin?form=logout',post_params).then(res=>{
+        //             this.$message({
+        //                 type: 'success',
+        //                 text: this.lanMap['login_out']
+        //             })
+        //             sessionStorage.removeItem('x-token');
+        //             this.$router.replace('/login');
+        //         }).catch(err=>{
+        //             // to do
+        //         })
+        //     }
+        // },1000)
+        document.body.addEventListener("mousemove", this.user_timeout);
+        document.body.addEventListener("keydown", this.user_timeout);
+        document.body.addEventListener("mousedown", this.user_timeout);
+        //  手机登录时，调整高度
+        this.$nextTick(() => {
+            if (window) {
+                var os = (function() {
+                    var ua = navigator.userAgent,
                         isWindowsPhone = /(?:Windows Phone)/.test(ua),
-                        isSymbian = /(?:SymbianOS)/.test(ua) || isWindowsPhone, 
-                        isAndroid = /(?:Android)/.test(ua), 
-                        isFireFox = /(?:Firefox)/.test(ua), 
+                        isSymbian = /(?:SymbianOS)/.test(ua) || isWindowsPhone,
+                        isAndroid = /(?:Android)/.test(ua),
+                        isFireFox = /(?:Firefox)/.test(ua),
                         isChrome = /(?:Chrome|CriOS)/.test(ua),
-                        isTablet = /(?:iPad|PlayBook)/.test(ua) || (isAndroid && !/(?:Mobile)/.test(ua)) || (isFireFox && /(?:Tablet)/.test(ua)),
+                        isTablet =
+                            /(?:iPad|PlayBook)/.test(ua) ||
+                            (isAndroid && !/(?:Mobile)/.test(ua)) ||
+                            (isFireFox && /(?:Tablet)/.test(ua)),
                         isPhone = /(?:iPhone)/.test(ua) && !isTablet,
                         isPc = !isPhone && !isAndroid && !isSymbian;
-                        return {
-                            isTablet: isTablet,
-                            isPhone: isPhone,
-                            isAndroid : isAndroid,
-                            isPc : isPc
-                        };
-                    }();
-                    if(!os.isPc){
-                        document.body.style.height = window.innerHeight + 'px';
-                    }
+                    return {
+                        isTablet: isTablet,
+                        isPhone: isPhone,
+                        isAndroid: isAndroid,
+                        isPc: isPc
+                    };
+                })();
+                if (!os.isPc) {
+                    document.body.style.height = window.innerHeight + "px";
                 }
-            })
+            }
+        });
+    },
+    beforeDestroy() {
+        sessionStorage.removeItem("pid");
+        sessionStorage.removeItem("oid");
+        sessionStorage.removeItem("f_menu");
+        sessionStorage.removeItem("first_menu");
+        sessionStorage.removeItem("sec_menu");
+        clearInterval(this.interval);
+        document.body.removeEventListener("mousemove", this.user_timeout);
+        document.body.removeEventListener("mousedown", this.user_timeout);
+        document.body.removeEventListener("keydown", this.user_timeout);
+    },
+    methods: {
+        ...mapMutations({
+            portInfo: "updatePortData",
+            portName: "updatePortName",
+            changeNav: "updateNavMenu"
+        }),
+        ...mapActions({
+            getSystem: "updateSystem",
+            getMenu: "updateMenu"
+        }),
+        reload() {
+            this.isRouterAlive = false;
+            this.$nextTick(() => {
+                this.isRouterAlive = true;
+            });
         },
-        beforeDestroy(){
-            sessionStorage.removeItem('pid');
-            sessionStorage.removeItem('oid');
-            sessionStorage.removeItem('f_menu');
-            sessionStorage.removeItem('first_menu');
-            sessionStorage.removeItem('sec_menu');
-            clearInterval(this.interval);
-            document.body.removeEventListener('mousemove',this.user_timeout);
-            document.body.removeEventListener('mousedown',this.user_timeout);
-            document.body.removeEventListener('keydown',this.user_timeout);
+        user_timeout(e) {
+            this.time = this.max_time;
         },
-        methods: {
-            ...mapMutations({
-                portInfo: 'updatePortData',
-                portName: 'updatePortName',
-                changeNav: 'updateNavMenu'
-            }),
-            ...mapActions({
-                getSystem: 'updateSystem',
-                getMenu: 'updateMenu'
-            }),
-            reload(){
-                this.isRouterAlive = false;
-                this.$nextTick(()=>{
-                    this.isRouterAlive = true;
-                })
-            },
-            user_timeout(e){
-                this.time = this.max_time;
-            },
-            getData(){
-                this.$http.get(this.change_url.port).then(res=>{
+        getData() {
+            this.$http
+                .get(this.change_url.port)
+                .then(res => {
                     this.portInfo(res.data);
                     var pon = this.system.data.ponports;
                     var ge = this.system.data.geports;
                     var xge = this.system.data.xgeports;
-                    var pon_count,ge_count,xge_count,portName;
-                    pon_count = res.data.data.slice(0,pon);
-                    if(!xge){
+                    var pon_count, ge_count, xge_count, portName;
+                    pon_count = res.data.data.slice(0, pon);
+                    if (!xge) {
                         ge_count = res.data.data.slice(pon);
                         portName = {
-                            pon: this.get_portName(pon_count,'PON'),
-                            ge: this.get_portName(ge_count,'GE')
+                            pon: this.get_portName(pon_count, "PON"),
+                            ge: this.get_portName(ge_count, "GE")
                         };
-                    }else{
-                        ge_count = res.data.data.slice(pon,pon+ge);
-                        xge_count = res.data.data.slice(pon+ge);
+                    } else {
+                        ge_count = res.data.data.slice(pon, pon + ge);
+                        xge_count = res.data.data.slice(pon + ge);
                         portName = {
-                            pon: this.get_portName(pon_count,'PON'),
-                            ge: this.get_portName(ge_count,'GE'),
-                            xge: this.get_portName(xge_count,'XGE')
-                        }
+                            pon: this.get_portName(pon_count, "PON"),
+                            ge: this.get_portName(ge_count, "GE"),
+                            xge: this.get_portName(xge_count, "XGE")
+                        };
                     }
                     this.portName(portName);
                     //this.reload();
-                }).catch(err=>{
-                    // to do
                 })
-            },
-            // 根据port_id 分配端口名
-            get_portName(arr,prefix){
-                var obj = {};
-                for(var i=0;i<arr.length;i++){
-                    obj[arr[i].port_id] = {};
-                    obj[arr[i].port_id].name = (i < 9 ? prefix + '0' + (i + 1) : prefix + (i + 1)) + (arr[i].link_aggregation ? '(LAG' + arr[i].link_aggregation + ')'  : '');
-                    obj[arr[i].port_id].id = arr[i].port_id;
-                    obj[arr[i].port_id].lag = arr[i].link_aggregation || 0;
-                    obj[arr[i].port_id].data = arr[i]; 
-                }
-                return obj;
+                .catch(err => {
+                    // to do
+                });
+        },
+        // 根据port_id 分配端口名
+        get_portName(arr, prefix) {
+            var obj = {};
+            for (var i = 0; i < arr.length; i++) {
+                obj[arr[i].port_id] = {};
+                obj[arr[i].port_id].name =
+                    (i < 9 ? prefix + "0" + (i + 1) : prefix + (i + 1)) +
+                    (arr[i].link_aggregation
+                        ? "(LAG" + arr[i].link_aggregation + ")"
+                        : "");
+                obj[arr[i].port_id].id = arr[i].port_id;
+                obj[arr[i].port_id].lag = arr[i].link_aggregation || 0;
+                obj[arr[i].port_id].data = arr[i];
+            }
+            return obj;
+        },
+        initSocket() {
+            let status = "";
+            if ("WebSocket" in window) {
+                let ws = new WebSocket(`ws://${window.location.host}/ws`);
+                ws.onopen = () => {
+                    if (ws.readyState === 1) {
+                        status = "open";
+                    }
+                };
+                ws.onmessage = e => {
+                    let { message } = evt.data;
+                    message && this.$notify.info(message);
+                };
+                ws.onclose = e => {
+                    //  网络连接中断 或 非正常断开连接
+                    if (e.code === 1006 || !e.wasClean) {
+                        status = "error";
+                        this.closeHandle(status);
+                    } else {
+                        status = "close";
+                        this.closeHandle(status);
+                    }
+                };
+                ws.onerror = e => {
+                    status = "error";
+                    this.closeHandle(status);
+                };
+                this.ws = ws;
             }
         },
-        computed: mapState(['port_info','system','change_url','lanMap'])
-    }
+        closeHandle(status) {
+            if (status !== "close") {
+                if(this.ws_limit < 5){
+                    this.initSocket();
+                    this.ws_limit++;
+                }else{
+                    this.closeWs();
+                    this.ws_limit = 0;
+                }
+            } else {
+                this.ws_limit = 0;
+                this.closeWs();
+            }
+        },
+        closeWs() {
+            if (this.ws) {
+                this.ws.close();
+            }
+        }
+    },
+    computed: mapState(["port_info", "system", "change_url", "lanMap"])
+};
 </script>
 
 <style lang="less">
-#main-content{
+#main-content {
     //height:100%;
     padding-bottom: 30px;
 }
-div.tips-body{
+div.tips-body {
     width: 500px;
     height: 300px;
     position: absolute;
@@ -186,7 +247,7 @@ div.tips-body{
     background: #fff;
     border-radius: 10px;
 }
-div.tips-body>div{
+div.tips-body > div {
     font-size: 20px;
     font-weight: 600;
     color: red;
