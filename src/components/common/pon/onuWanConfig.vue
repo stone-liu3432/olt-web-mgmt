@@ -48,7 +48,7 @@
                                 @click="openDialog(item, 'set')"
                                 class="btn-text"
                                 href="javascript: void(0);"
-                            >{{ lanMap['config'] }}</a>
+                            >{{ lanMap['show_detail'] }}</a>
                             <a
                                 @click="confirm_delete(item)"
                                 class="btn-text"
@@ -62,7 +62,7 @@
         <p style="margin: 20px 0 20px 20px; color: red;" v-else>{{ lanMap['no_more_data'] }}</p>
         <div class="modal-dialog" v-if="showDialog">
             <div class="cover"></div>
-            <div class="wan-connect-modal-content">
+            <div class="wan-connect-modal-content" ref="wan-config-content">
                 <div>
                     <div
                         class="modal-header"
@@ -267,7 +267,10 @@
                                 </label>
                             </div>
                         </div>
-                        <div class="onu-wan-form">
+                        <div
+                            class="onu-wan-form"
+                            :style="{ 'margin-bottom': formData.index === -1 ? '' : '20px;'}"
+                        >
                             <div>
                                 <span>{{ lanMap['igmpproxy'] }}</span>
                                 <select v-model.number="formData.igmpproxy">
@@ -278,7 +281,7 @@
                             </div>
                         </div>
                     </div>
-                    <div class="onu-wan-btn-group">
+                    <div class="onu-wan-btn-group" v-if="formData.index === -1">
                         <a href="javascript: void(0);" @click="confirm_submit">{{ lanMap['apply'] }}</a>
                         <a href="javascript: void(0);" @click="closeDialog">{{ lanMap['cancel'] }}</a>
                     </div>
@@ -722,7 +725,7 @@ export default {
             }
         },
         confirm_delete(node) {
-            this.$confirm(this.lanMap['if_sure'])
+            this.$confirm(this.lanMap["if_sure"])
                 .then(_ => {
                     const data = {
                         method: "delete",
@@ -738,7 +741,7 @@ export default {
                 .catch(_ => {});
         },
         confirm_clear() {
-            this.$confirm(this.lanMap['if_sure'])
+            this.$confirm(this.lanMap["if_sure"])
                 .then(_ => {
                     this.clearAll();
                 })
@@ -806,6 +809,20 @@ export default {
             }
             if (operate === "set" && node) {
                 this.formData.index = node.index;
+                //  config 更改为 show detail，不能配置，只能查看
+                this.$nextTick(_ => {
+                    const el = this.$refs["wan-config-content"];
+                    const inputs = Array.from(el.getElementsByTagName("input"));
+                    const selects = Array.from(
+                        el.getElementsByTagName("select")
+                    );
+                    inputs.forEach(item => {
+                        item.disabled = true;
+                    });
+                    selects.forEach(item => {
+                        item.disabled = true;
+                    });
+                });
             }
         }
     },
