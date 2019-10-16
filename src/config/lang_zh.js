@@ -678,7 +678,44 @@ var zh = {
     gateway: "网关",
     distance: "距离(米)",
     last_down_time: "最后掉线时间",
-    last_down_reason: "掉线原因"
+    last_down_reason: "掉线原因",
+
+    optical_module: "光模块信息",
+    portstate: "端口状态",
+    mstate: "模块状态",
+    vendor_name: "厂商名称",
+    vendor_oui: "厂商代码",
+    vendor_rev: "厂商REV",
+    vendor_pn: "厂商PN",
+    vendor_sn: "厂商SN",
+    date_code: "日期",
+    vendor_specific: "厂商指定",
+    module_type: "模块类型",
+    max_distance: "最大距离",
+    wave_length: "波长",
+    fiber_type: "光纤类型",
+    identifier: "封装形式",
+    connector: "连接器",
+    encoding: "编码",
+    cc_base: "CC Base",
+
+    temp_warn_threshold: "温度警告阈值(c))",
+    temp_alarm_threshold: "温度报警阈值(c)",
+    vol_warn_threshold: "电压警告阈值(c)",
+    vol_alarm_threshold: "电压警报阈值(c)",
+    tx_bias_warn_threshold: "发射偏差警告阈值(c)",
+    tx_bias_alarm_threshold: "发射偏差警报阈值(c)",
+    tx_power_warn_threshold: "发射功率警告阈值(c)",
+    tx_power_alarm_threshold: "发射功率警报阈值(c)",
+    rx_power_warn_threshold: "接收功率警告阈值(c)",
+    rx_power_alarm_threshold: "接收功率警报阈值(c)",
+
+    o_m_state: "光模块状态",
+    o_m_static_info: "光模块静态信息",
+    o_m_maunu_info: "光模块制造商信息",
+    o_m_threshold: "光模块阈值参数",
+    detected: '在位',
+    undetected: "不在位"
 };
 
 export default zh;

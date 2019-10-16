@@ -699,7 +699,44 @@ var en = {
     gateway: "Gateway",
     distance: "Distance(m)",
     last_down_time: "Last Deregister Time",
-    last_down_reason: "Last Deregister Reason"
+    last_down_reason: "Last Deregister Reason",
+
+    optical_module: "Optical Module Information",
+    portstate: "Port State",
+    mstate: "Module State",
+    vendor_name: "Vendor Name",
+    vendor_oui: "Vendor OUI",
+    vendor_rev: "Vendor REV",
+    vendor_pn: "Vendor PN",
+    vendor_sn: "Vendor SN",
+    date_code: "Date",
+    vendor_specific: "Vendor Specific",
+    module_type: "Module Type",
+    max_distance: "Max Distance",
+    wave_length: "Wave Length",
+    fiber_type: "Fiber Type",
+    identifier: "Identifier",
+    connector: "Connector",
+    encoding: "Encoding",
+    cc_base: "CC Base",
+
+    temp_warn_threshold: "Temperature warning threshold(c)",
+    temp_alarm_threshold: "Temperature alarm threshold(c)",
+    vol_warn_threshold: "Voltage warning threshold(c)",
+    vol_alarm_threshold: "Voltage alarm threshold(c)",
+    tx_bias_warn_threshold: "Tx bias warning threshold(c)",
+    tx_bias_alarm_threshold: "Tx bias alarm threshold(c)",
+    tx_power_warn_threshold: "Tx power warning threshold(c)",
+    tx_power_alarm_threshold: "Tx power alarm threshold(c)",
+    rx_power_warn_threshold: "Rx power warning threshold(c)",
+    rx_power_alarm_threshold: "Rx power alarm threshold(c)",
+
+    o_m_state: "Optical Module State",
+    o_m_static_info: "Optical Module Static Information",
+    o_m_maunu_info: "Optical Module Manufacturer Information",
+    o_m_threshold: "Optical Module Threshold Parameter",
+    detected: 'Detected',
+    undetected: "Not Detected"
 };
 
 export default en;
