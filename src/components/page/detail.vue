@@ -1,7 +1,9 @@
 <template>
     <div id="detail" class="lf">
         <div v-if="port_name.pon && port_name.ge">
-            <keep-alive :include="['onuAllow','ponSetting','onuDeny','onuBasicInfo','slaCfg','onuPortCfg','perfInfo','portCfg','portVlan','igmp','multicast','multiVlan']">
+            <keep-alive
+                :include="['onuAllow','ponSetting','onuDeny','onuBasicInfo','slaCfg','onuPortCfg','perfInfo','portCfg','portVlan','igmp','multicast','multiVlan']"
+            >
                 <router-view v-if="isRouterAlive"></router-view>
             </keep-alive>
         </div>
@@ -9,97 +11,58 @@
 </template>
 
 <script>
-    import { mapState,mapMutations } from 'vuex'
-    export default {
-        name: 'detail',
-        data(){
-            return {
-                isRouterAlive: true
-            }
+import { mapState, mapMutations } from "vuex";
+export default {
+    name: "detail",
+    data() {
+        return {
+            isRouterAlive: true
+        };
+    },
+    computed: mapState(["lanMap", "change_url", "system", "port_name"]),
+    created() {
+        document.body.addEventListener("keydown", this.preventRefresh, false);
+    },
+    methods: {
+        ...mapMutations({
+            portInfo: "updatePortData",
+            portName: "updatePortName"
+        }),
+        //  控制router子组件，销毁再加载，实现子组件更新
+        reload() {
+            this.isRouterAlive = false;
+            this.$nextTick(() => {
+                this.isRouterAlive = true;
+            });
         },
-        computed: mapState(['lanMap','change_url','system','port_name']),
-        created(){
-            document.body.addEventListener('keydown',this.preventRefresh,false);
-            //this.getData();
-        },
-        methods: {
-            ...mapMutations({
-                portInfo: 'updatePortData',
-                portName: 'updatePortName'
-            }),
-            //  控制router子组件，销毁再加载，实现子组件更新
-            reload(){
-                this.isRouterAlive = false;
-                this.$nextTick(()=>{
-                    this.isRouterAlive = true;
-                })
-            },
-            //  接管f5刷新页面
-            preventRefresh(e){
-                var e = window.event || e;
-                if(e.keyCode === 116 || (e.ctrlKey && e.keyCode==82)){
-                    if(window.event){
-                        try{e.keyCode = 0}catch(e){}
-                        e.returnValue = false;
-                    }
-                    e.preventDefault();
-                    this.reload();
-                    return false
+        //  接管f5刷新页面
+        preventRefresh(e) {
+            var e = window.event || e;
+            if (e.keyCode === 116 || (e.ctrlKey && e.keyCode == 82)) {
+                if (window.event) {
+                    try {
+                        e.keyCode = 0;
+                    } catch (e) {}
+                    e.returnValue = false;
                 }
-            },
-            // getData(){
-            //     this.$http.get(this.change_url.port).then(res=>{
-            //         this.portInfo(res.data);
-            //         var pon = this.system.data.ponports;
-            //         var ge = this.system.data.geports;
-            //         var xge = this.system.data.xgeports;
-            //         var pon_count,ge_count,xge_count,portName;
-            //         pon_count = res.data.data.slice(0,pon);
-            //         if(!xge){
-            //             ge_count = res.data.data.slice(pon);
-            //             portName = {
-            //                 pon: this.get_portName(pon_count,'PON'),
-            //                 ge: this.get_portName(ge_count,'GE')
-            //             };
-            //         }else{
-            //             ge_count = res.data.data.slice(pon,pon+ge);
-            //             xge_count = res.data.data.slice(pon+ge);
-            //             portName = {
-            //                 pon: this.get_portName(pon_count,'PON'),
-            //                 ge: this.get_portName(ge_count,'GE'),
-            //                 xge: this.get_portName(xge_count,'XGE')
-            //             }
-            //         }
-            //         this.portName(portName);
-            //         this.reload();
-            //     }).catch(err=>{
-            //         // to do
-            //     })
-            // },
-            // // 根据port_id 分配端口名
-            // get_portName(arr,prefix){
-            //     var obj = {};
-            //     for(var i=0;i<arr.length;i++){
-            //         obj[arr[i].port_id] = {};
-            //         obj[arr[i].port_id].name = i < 10 ? prefix + '0' + (i + 1) : prefix + (i + 1);
-            //         obj[arr[i].port_id].id = arr[i].port_id;
-            //         obj[arr[i].port_id].data = arr[i]; 
-            //     }
-            //     return obj;
-            // }
-        },
-        beforeDestroy(){
-            document.body.removeEventListener('keydown',this.preventRefresh);
+                e.preventDefault();
+                this.reload();
+                return false;
+            }
         }
+    },
+    beforeDestroy() {
+        document.body.removeEventListener("keydown", this.preventRefresh);
     }
+};
 </script>
 
 <style>
-#detail{
-    margin:0 0 0 220px;
-    padding:20px;
+#detail {
+    margin: 0 0 0 220px;
+    padding: 20px;
     width: 81%;
     min-width: 1020px;
-    min-height:800px;
+    min-height: 800px;
 }
 </style>
