@@ -9,7 +9,9 @@
             "macaddr": "38:3a:21:20:06:e0",
             "status": "Offline",
             "auth_state": 1,
-            "register_time": "2019/03/04 12:29:54"
+            "register_time": "2019/03/04 12:29:54",
+            "last_down_time":"2000/04/06 22:39:24",
+            "last_down_reason":"Power Down"
         },
         {
             "port_id": 1,
@@ -18,7 +20,9 @@
             "macaddr": "00:00:00:00:00:33",
             "status": "Offline",
             "auth_state": 0,
-            "register_time": "2019/03/04 12:29:54"
+            "register_time": "2019/03/04 12:29:54",
+            "last_down_time":"2000/04/06 22:39:24",
+            "last_down_reason":"Power Down"
         },
         {
             "port_id": 1,
@@ -27,7 +31,9 @@
             "macaddr": "38:3a:21:20:22:79",
             "status": "Online",
             "auth_state": 1,
-            "register_time": "2019/03/04 12:29:54"
+            "register_time": "2019/03/04 12:29:54",
+            "last_down_time":"2000/04/06 22:39:24",
+            "last_down_reason":"Power Down"
         },
         {
             "port_id": 1,
@@ -36,7 +42,9 @@
             "macaddr": "38:3a:21:20:22:6b",
             "status": "Online",
             "auth_state": 1,
-            "register_time": "2019/03/04 12:29:57"
+            "register_time": "2019/03/04 12:29:57",
+            "last_down_time":"2000/04/06 22:39:24",
+            "last_down_reason":"Power Down"
         },
         {
             "port_id": 1,
@@ -45,7 +53,9 @@
             "macaddr": "38:3a:21:20:22:81",
             "status": "Online",
             "auth_state": 1,
-            "register_time": "2019/03/04 12:30:00"
+            "register_time": "2019/03/04 12:30:00",
+            "last_down_time":"2000/04/06 22:39:24",
+            "last_down_reason":"Power Down"
         },
         {
             "port_id": 1,
@@ -54,7 +64,9 @@
             "macaddr": "38:3a:21:20:22:c6",
             "status": "Online",
             "auth_state": 1,
-            "register_time": "2019/03/04 12:30:03"
+            "register_time": "2019/03/04 12:30:03",
+            "last_down_time":"2000/04/06 22:39:24",
+            "last_down_reason":"Power Down"
         },
         {
             "port_id": 1,
@@ -63,7 +75,9 @@
             "macaddr": "38:3a:21:20:22:7d",
             "status": "Online",
             "auth_state": 1,
-            "register_time": "2019/03/04 12:30:05"
+            "register_time": "2019/03/04 12:30:05",
+            "last_down_time":"2000/04/06 22:39:24",
+            "last_down_reason":"Power Down"
         },
         {
             "port_id": 1,
@@ -72,7 +86,9 @@
             "macaddr": "38:3a:21:20:22:c0",
             "status": "Online",
             "auth_state": 1,
-            "register_time": "2019/03/04 12:30:08"
+            "register_time": "2019/03/04 12:30:08",
+            "last_down_time":"2000/04/06 22:39:24",
+            "last_down_reason":"Power Down"
         },
         {
             "port_id": 1,
@@ -81,7 +97,9 @@
             "macaddr": "38:3a:21:20:22:86",
             "status": "Online",
             "auth_state": 1,
-            "register_time": "2019/03/04 12:30:11"
+            "register_time": "2019/03/04 12:30:11",
+            "last_down_time":"2000/04/06 22:39:24",
+            "last_down_reason":"Power Down"
         },
         {
             "port_id": 1,
@@ -90,7 +108,9 @@
             "macaddr": "38:3a:21:20:22:8d",
             "status": "Online",
             "auth_state": 1,
-            "register_time": "2019/03/04 12:30:14"
+            "register_time": "2019/03/04 12:30:14",
+            "last_down_time":"2000/04/06 22:39:24",
+            "last_down_reason":"Power Down"
         },
         {
             "port_id": 1,
@@ -99,7 +119,9 @@
             "macaddr": "38:3a:21:20:22:71",
             "status": "Online",
             "auth_state": 1,
-            "register_time": "2019/03/04 12:30:17"
+            "register_time": "2019/03/04 12:30:17",
+            "last_down_time":"2000/04/06 22:39:24",
+            "last_down_reason":"Power Down"
         },
         {
             "port_id": 1,
@@ -108,7 +130,9 @@
             "macaddr": "38:3a:21:20:22:cc",
             "status": "Online",
             "auth_state": 1,
-            "register_time": "2019/03/04 12:30:20"
+            "register_time": "2019/03/04 12:30:20",
+            "last_down_time":"2000/04/06 22:39:24",
+            "last_down_reason":"Power Down"
         },
         {
             "port_id": 1,
@@ -117,7 +141,9 @@
             "macaddr": "38:3a:21:20:22:c2",
             "status": "Online",
             "auth_state": 1,
-            "register_time": "2019/03/04 12:30:23"
+            "register_time": "2019/03/04 12:30:23",
+            "last_down_time":"2000/04/06 22:39:24",
+            "last_down_reason":"Power Down"
         },
         {
             "port_id": 1,
@@ -126,7 +152,9 @@
             "macaddr": "38:3a:21:20:22:a0",
             "status": "Online",
             "auth_state": 1,
-            "register_time": "2019/03/04 12:30:26"
+            "register_time": "2019/03/04 12:30:26",
+            "last_down_time":"2000/04/06 22:39:24",
+            "last_down_reason":"Power Down"
         },
         {
             "port_id": 1,
@@ -135,7 +163,9 @@
             "macaddr": "38:3a:21:20:22:72",
             "status": "Online",
             "auth_state": 1,
-            "register_time": "2019/03/04 12:30:29"
+            "register_time": "2019/03/04 12:30:29",
+            "last_down_time":"2000/04/06 22:39:24",
+            "last_down_reason":"Power Down"
         },
         {
             "port_id": 1,
@@ -144,7 +174,9 @@
             "macaddr": "38:3a:21:20:22:c1",
             "status": "Online",
             "auth_state": 1,
-            "register_time": "2019/03/04 12:30:32"
+            "register_time": "2019/03/04 12:30:32",
+            "last_down_time":"2000/04/06 22:39:24",
+            "last_down_reason":"Power Down"
         },
         {
             "port_id": 1,
@@ -153,7 +185,9 @@
             "macaddr": "38:3a:21:20:22:89",
             "status": "Online",
             "auth_state": 1,
-            "register_time": "2019/03/04 12:30:35"
+            "register_time": "2019/03/04 12:30:35",
+            "last_down_time":"2000/04/06 22:39:24",
+            "last_down_reason":"Power Down"
         },
         {
             "port_id": 1,
@@ -162,7 +196,9 @@
             "macaddr": "38:3a:21:20:22:73",
             "status": "Online",
             "auth_state": 1,
-            "register_time": "2019/03/04 12:30:38"
+            "register_time": "2019/03/04 12:30:38",
+            "last_down_time":"2000/04/06 22:39:24",
+            "last_down_reason":"Power Down"
         },
         {
             "port_id": 1,
@@ -171,7 +207,9 @@
             "macaddr": "38:3a:21:20:22:80",
             "status": "Online",
             "auth_state": 1,
-            "register_time": "2019/03/04 12:30:41"
+            "register_time": "2019/03/04 12:30:41",
+            "last_down_time":"2000/04/06 22:39:24",
+            "last_down_reason":"Power Down"
         },
         {
             "port_id": 1,
@@ -180,7 +218,9 @@
             "macaddr": "38:3a:21:20:22:a8",
             "status": "Online",
             "auth_state": 1,
-            "register_time": "2019/03/04 12:30:44"
+            "register_time": "2019/03/04 12:30:44",
+            "last_down_time":"2000/04/06 22:39:24",
+            "last_down_reason":"Power Down"
         },
         {
             "port_id": 1,
@@ -189,7 +229,9 @@
             "macaddr": "38:3a:21:20:22:ba",
             "status": "Online",
             "auth_state": 1,
-            "register_time": "2019/03/04 12:30:47"
+            "register_time": "2019/03/04 12:30:47",
+            "last_down_time":"2000/04/06 22:39:24",
+            "last_down_reason":"Power Down"
         },
         {
             "port_id": 1,
@@ -198,7 +240,9 @@
             "macaddr": "38:3a:21:20:18:3b",
             "status": "Online",
             "auth_state": 1,
-            "register_time": "2019/03/04 12:30:50"
+            "register_time": "2019/03/04 12:30:50",
+            "last_down_time":"2000/04/06 22:39:24",
+            "last_down_reason":"Power Down"
         },
         {
             "port_id": 1,
@@ -207,7 +251,9 @@
             "macaddr": "38:3a:21:20:22:b9",
             "status": "Online",
             "auth_state": 1,
-            "register_time": "2019/03/04 12:30:52"
+            "register_time": "2019/03/04 12:30:52",
+            "last_down_time":"2000/04/06 22:39:24",
+            "last_down_reason":"Power Down"
         },
         {
             "port_id": 1,
@@ -216,7 +262,9 @@
             "macaddr": "38:3a:21:20:22:f5",
             "status": "Online",
             "auth_state": 1,
-            "register_time": "2019/03/04 12:30:55"
+            "register_time": "2019/03/04 12:30:55",
+            "last_down_time":"2000/04/06 22:39:24",
+            "last_down_reason":"Power Down"
         },
         {
             "port_id": 1,
@@ -225,7 +273,9 @@
             "macaddr": "38:3a:21:20:22:bf",
             "status": "Online",
             "auth_state": 1,
-            "register_time": "2019/03/04 12:30:58"
+            "register_time": "2019/03/04 12:30:58",
+            "last_down_time":"2000/04/06 22:39:24",
+            "last_down_reason":"Power Down"
         },
         {
             "port_id": 1,
@@ -234,7 +284,9 @@
             "macaddr": "38:3a:21:20:22:b2",
             "status": "Online",
             "auth_state": 1,
-            "register_time": "2019/03/04 12:31:01"
+            "register_time": "2019/03/04 12:31:01",
+            "last_down_time":"2000/04/06 22:39:24",
+            "last_down_reason":"Power Down"
         },
         {
             "port_id": 1,
@@ -243,7 +295,9 @@
             "macaddr": "38:3a:21:20:22:9d",
             "status": "Online",
             "auth_state": 1,
-            "register_time": "2019/03/04 12:31:03"
+            "register_time": "2019/03/04 12:31:03",
+            "last_down_time":"2000/04/06 22:39:24",
+            "last_down_reason":"Power Down"
         },
         {
             "port_id": 1,
@@ -252,7 +306,9 @@
             "macaddr": "38:3a:21:20:22:98",
             "status": "Online",
             "auth_state": 1,
-            "register_time": "2019/03/04 12:31:06"
+            "register_time": "2019/03/04 12:31:06",
+            "last_down_time":"2000/04/06 22:39:24",
+            "last_down_reason":"Power Down"
         },
         {
             "port_id": 1,
@@ -261,7 +317,9 @@
             "macaddr": "38:3a:21:20:22:b5",
             "status": "Online",
             "auth_state": 1,
-            "register_time": "2019/03/04 12:31:09"
+            "register_time": "2019/03/04 12:31:09",
+            "last_down_time":"2000/04/06 22:39:24",
+            "last_down_reason":"Power Down"
         },
         {
             "port_id": 1,
@@ -270,7 +328,9 @@
             "macaddr": "38:3a:21:20:22:96",
             "status": "Online",
             "auth_state": 1,
-            "register_time": "2019/03/04 12:31:12"
+            "register_time": "2019/03/04 12:31:12",
+            "last_down_time":"2000/04/06 22:39:24",
+            "last_down_reason":"Power Down"
         },
         {
             "port_id": 1,
@@ -279,7 +339,9 @@
             "macaddr": "38:3a:21:20:22:f0",
             "status": "Online",
             "auth_state": 1,
-            "register_time": "2019/03/04 12:31:15"
+            "register_time": "2019/03/04 12:31:15",
+            "last_down_time":"2000/04/06 22:39:24",
+            "last_down_reason":"Power Down"
         },
         {
             "port_id": 1,
@@ -288,7 +350,9 @@
             "macaddr": "38:3a:21:20:22:c7",
             "status": "Online",
             "auth_state": 1,
-            "register_time": "2019/03/04 12:31:18"
+            "register_time": "2019/03/04 12:31:18",
+            "last_down_time":"2000/04/06 22:39:24",
+            "last_down_reason":"Power Down"
         },
         {
             "port_id": 1,
@@ -297,7 +361,9 @@
             "macaddr": "38:3a:21:20:22:8c",
             "status": "Online",
             "auth_state": 1,
-            "register_time": "2019/03/04 12:31:20"
+            "register_time": "2019/03/04 12:31:20",
+            "last_down_time":"2000/04/06 22:39:24",
+            "last_down_reason":"Power Down"
         },
         {
             "port_id": 1,
@@ -306,7 +372,9 @@
             "macaddr": "38:3a:21:20:22:99",
             "status": "Online",
             "auth_state": 1,
-            "register_time": "2019/03/04 12:31:23"
+            "register_time": "2019/03/04 12:31:23",
+            "last_down_time":"2000/04/06 22:39:24",
+            "last_down_reason":"Power Down"
         },
         {
             "port_id": 1,
@@ -315,7 +383,9 @@
             "macaddr": "00:00:00:33:00:00",
             "status": "Initial",
             "auth_state": 0,
-            "register_time": "2019/03/04 12:32:41"
+            "register_time": "2019/03/04 12:32:41",
+            "last_down_time":"2000/04/06 22:39:24",
+            "last_down_reason":"Power Down"
         }
     ]
 }
