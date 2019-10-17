@@ -113,8 +113,9 @@ export default {
         },
         opParamData() {
             return Object.keys(this.opParams).reduce((prev, item) => {
-                prev[item] = `[${this.op_info[this.opParams[item][0]] ||
-                    " - "}, ${this.op_info[this.opParams[item][1]] || " - "}]`;
+                prev[item] = `[${this.op_info[this.opParams[item][0]].toFixed(
+                    2
+                )}, ${this.op_info[this.opParams[item][1]].toFixed(2)}]`;
                 return prev;
             }, {});
         }
@@ -273,6 +274,10 @@ table {
         text-align: center;
         border: 1px solid #ddd;
         padding: 6px 12px;
+    }
+    th{
+        background: #2361a2;
+        color: #fff;
     }
 }
 div.om-dialog-content {

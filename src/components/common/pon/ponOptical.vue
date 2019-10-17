@@ -288,7 +288,7 @@ export default {
                 .get("/ponmgmt?form=optical_poninfo")
                 .then(res => {
                     if (res.data.code === 1) {
-                        this.potical_module_info = res.data;
+                        this.optical_module_info = res.data;
                     }
                 })
                 .catch(err => {});
