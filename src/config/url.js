@@ -82,3 +82,12 @@ var change_url = {
 }
 
 export default change_url
+
+let wsUrl;
+if(process.env.NODE_ENV == 'development'){
+    wsUrl = `ws://${window.location.hostname}:8201/ws`;
+}else if(process.env.NODE_ENV == 'production'){
+    wsUrl = `ws://${window.location.hostname}:8080/ws`;
+}
+
+export { wsUrl }

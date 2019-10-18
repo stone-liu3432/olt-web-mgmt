@@ -11,6 +11,7 @@ import { mapState, mapMutations, mapActions } from "vuex";
 import topBanner from "@/components/page/header";
 import contentArea from "@/components/page/content";
 import bottomFooter from "@/components/page/footer";
+import { wsUrl } from '@/config/url.js';
 export default {
     name: "mainContent",
     components: {
@@ -180,12 +181,15 @@ export default {
         initSocket() {
             let status = "";
             if ("WebSocket" in window) {
-                let ws = new WebSocket(
-                    `ws://${window.location.hostname}:8080/ws`
-                );
+                let ws = new WebSocket(wsUrl);
                 ws.onopen = () => {
                     if (ws.readyState === 1) {
                         status = "open";
+                        ws.send(JSON.stringify({
+                            type: 1,
+                            xtoken: sessionStorage.getItem('x-token'),
+                            username: sessionStorage.getItem('uname')
+                        }));
                     }
                 };
                 ws.onmessage = e => {
