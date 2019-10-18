@@ -44,6 +44,7 @@ export default {
         }
     },
     mounted() {
+        this.initSocket();
         this.time = this.max_time;
         // this.interval = setInterval(()=>{
         //     this.time--;
@@ -179,15 +180,22 @@ export default {
         initSocket() {
             let status = "";
             if ("WebSocket" in window) {
-                let ws = new WebSocket(`ws://${window.location.host}/ws`);
+                let ws = new WebSocket(
+                    `ws://${window.location.hostname}:8080/ws`
+                );
                 ws.onopen = () => {
                     if (ws.readyState === 1) {
                         status = "open";
                     }
                 };
                 ws.onmessage = e => {
-                    let { message } = evt.data;
-                    message && this.$notify.info(message);
+                    let { type, content } = JSON.parse(e.data);
+                    content &&
+                        this.$notify({
+                            message: content,
+                            position: "top-right",
+                            type: "info"
+                        });
                 };
                 ws.onclose = e => {
                     //  网络连接中断 或 非正常断开连接
@@ -201,23 +209,22 @@ export default {
                 };
                 ws.onerror = e => {
                     status = "error";
-                    this.closeHandle(status);
+                    this.closeWs();
                 };
                 this.ws = ws;
             }
         },
         closeHandle(status) {
+            this.closeWs();
             if (status !== "close") {
-                if(this.ws_limit < 5){
+                if (this.ws_limit < 5) {
                     this.initSocket();
                     this.ws_limit++;
-                }else{
-                    this.closeWs();
+                } else {
                     this.ws_limit = 0;
                 }
             } else {
                 this.ws_limit = 0;
-                this.closeWs();
             }
         },
         closeWs() {
