@@ -708,6 +708,14 @@ export default {
                     }`
                 });
             }
+            if (!this.formData.portmap.length) {
+                return this.$message({
+                    type: "error",
+                    text: `${this.lanMap["required"]}: ${
+                        this.lanMap["portmap"]
+                    }`
+                });
+            }
             if (
                 typeof handles[this.ipmodes[this.formData.ipmode]] ===
                 "function"
