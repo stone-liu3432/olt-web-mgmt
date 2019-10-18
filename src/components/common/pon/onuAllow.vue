@@ -1006,6 +1006,7 @@ table{
     position: relative;
     cursor: pointer;
     padding: 3px 0;
+    line-height: 18px;
     &:hover{
         >div{
             max-height: 180px;
@@ -1025,7 +1026,7 @@ table{
         border-radius: 5px;
         color: #444;
         >div{
-            padding: 6px 16px;
+            line-height: 30px;
             &:hover{
                 color: #67aef6;
             }
