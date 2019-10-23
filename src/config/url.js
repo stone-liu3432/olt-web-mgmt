@@ -84,10 +84,11 @@ var change_url = {
 export default change_url
 
 let wsUrl;
+let protocol = location.protocol.indexOf('https') > -1 ? 'wss:' : 'ws:';
 if(process.env.NODE_ENV == 'development'){
-    wsUrl = `ws://${window.location.hostname}:8201/ws`;
+    wsUrl = `${protocol}//${window.location.hostname}:8201/ws`;
 }else if(process.env.NODE_ENV == 'production'){
-    wsUrl = `ws://${window.location.hostname}:8080/ws`;
+    wsUrl = `${protocol}//${window.location.host}/ws`;
 }
 
 export { wsUrl }
