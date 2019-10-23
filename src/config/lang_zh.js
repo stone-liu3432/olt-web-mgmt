@@ -715,7 +715,9 @@ var zh = {
     o_m_maunu_info: "光模块制造商信息",
     o_m_threshold: "光模块阈值参数",
     detected: '在位',
-    undetected: "不在位"
+    undetected: "不在位",
+    
+    conn_error: '网络错误,请检查网络连接。'
 };
 
 export default zh;

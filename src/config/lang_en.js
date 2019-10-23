@@ -735,8 +735,10 @@ var en = {
     o_m_static_info: "Optical Module Static Information",
     o_m_maunu_info: "Optical Module Manufacturer Information",
     o_m_threshold: "Optical Module Threshold Parameter",
-    detected: 'Detected',
-    undetected: "Not Detected"
+    detected: "Detected",
+    undetected: "Not Detected",
+
+    conn_error: "Network error, Please check the network connection."
 };
 
 export default en;
