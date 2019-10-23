@@ -2,88 +2,104 @@
     <div>
         <div class="alarm-title">
             {{ lanMap['alarm_info'] }}
-            <a href="javascript:void(0);" @click="getData">{{ lanMap['refresh'] }}</a>
-            <a href="javascript:void(0);" @click="open_cfm">{{ lanMap['download'] }}</a>
+            <a
+                href="javascript:void(0);"
+                @click="getData"
+            >{{ lanMap['refresh'] }}</a>
+            <a href="javascript:void(0);" @click="downloadAlarm">{{ lanMap['download'] }}</a>
         </div>
-        <ul v-if="alarm_data.data && alarm_data.data.length > 0" v-for="(item,index) in alarm_data.data" :key="index">
+        <ul
+            v-if="alarm_data.data && alarm_data.data.length > 0"
+            v-for="(item,index) in alarm_data.data"
+            :key="index"
+        >
             <li>{{ item }}</li>
         </ul>
-        <div  v-if="!alarm_data.data" class="no-more-data">{{ lanMap['no_more_data'] }}</div>
+        <div v-if="!alarm_data.data" class="no-more-data">{{ lanMap['no_more_data'] }}</div>
         <scroll-top></scroll-top>
-        <confirm v-if="isShow" @choose="view_result"></confirm>
     </div>
 </template>
 
 <script>
-import { mapState } from 'vuex'
-import scrollTop from '@/components/common/scrollTop'
+import { mapState } from "vuex";
+import scrollTop from "@/components/common/scrollTop";
 export default {
-    name: 'alarm',
-    computed: mapState(['lanMap']),
+    name: "alarm",
+    computed: mapState(["lanMap"]),
     components: { scrollTop },
-    data(){
+    data() {
         return {
-            alarm_data: {},
-            isShow: false
-        }
+            alarm_data: {}
+        };
     },
-    created(){
+    created() {
         this.getData();
     },
     methods: {
-        getData(){
-            this.$http.get('/alarm?form=info').then(res=>{
-                if(res.data.code === 1){
-                    this.alarm_data = res.data;
-                }else{
-                    this.alarm_data = {}
-                }
-            }).catch(err=>{
-                // to do
-            })
-        },
-        open_cfm(){
-            this.isShow = true;
-        },
-        view_result(bool){
-            if(bool){
-                this.$http.get('/alarm?form=download').then(res=>{
-                    if(res.data.code === 1){
-                        try{
-                            var a = document.createElement('a');
-                            a.href = '/' + res.data.data.filename;
-                            //a.download = res.data.data.filename;
-                            a.setAttribute('download', res.data.data.filename);
-                            a.style.display = 'none';
-                            document.body.appendChild(a);
-                            a.click();
-                            document.body.removeChild(a);
-                        }catch(e){
-                            //this.view_result(true);
-                        }
-                    }else if(res.data.code > 1){
-                        this.$message({
-                            type: res.data.type,
-                            text: '(' + res.data.code + ') ' + res.data.message
-                        })
+        getData() {
+            this.$http
+                .get("/alarm?form=info")
+                .then(res => {
+                    if (res.data.code === 1) {
+                        this.alarm_data = res.data;
+                    } else {
+                        this.alarm_data = {};
                     }
-                }).catch(err=>{
-                    // to do
                 })
-            }
-            this.isShow = false;
+                .catch(err => {
+                    // to do
+                });
+        },
+        downloadAlarm() {
+            this.$confirm()
+                .then(_ => {
+                    this.$http
+                        .get("/alarm?form=download")
+                        .then(res => {
+                            if (res.data.code === 1) {
+                                try {
+                                    var a = document.createElement("a");
+                                    a.href = "/" + res.data.data.filename;
+                                    //a.download = res.data.data.filename;
+                                    a.setAttribute(
+                                        "download",
+                                        res.data.data.filename
+                                    );
+                                    a.style.display = "none";
+                                    document.body.appendChild(a);
+                                    a.click();
+                                    document.body.removeChild(a);
+                                } catch (e) {
+                                    //this.view_result(true);
+                                }
+                            } else if (res.data.code > 1) {
+                                this.$message({
+                                    type: res.data.type,
+                                    text:
+                                        "(" +
+                                        res.data.code +
+                                        ") " +
+                                        res.data.message
+                                });
+                            }
+                        })
+                        .catch(err => {
+                            // to do
+                        });
+                })
+                .catch(_ => {});
         }
     }
-}
+};
 </script>
 
 <style lang="less" scoped>
-div.alarm-title{
+div.alarm-title {
     font-size: 24px;
     margin: 20px 10px;
     font-weight: bold;
-    color: #67AEF7;
-    a{
+    color: #67aef7;
+    a {
         font-size: 16px;
         font-weight: normal;
         width: 120px;
@@ -91,13 +107,13 @@ div.alarm-title{
         padding: 0;
     }
 }
-ul{
+ul {
     margin-left: 20px;
-    li{
+    li {
         margin: 10px 0;
     }
 }
-div.no-more-data{
+div.no-more-data {
     margin: 20px 10px;
     color: red;
 }
