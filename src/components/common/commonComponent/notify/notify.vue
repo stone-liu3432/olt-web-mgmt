@@ -117,7 +117,7 @@ export default {
         bottom 0.3s;
     > p {
         line-height: 21px;
-        word-break: break-all;
+        word-break: break-word;
         font-size: 16px;
     }
     p.info {
