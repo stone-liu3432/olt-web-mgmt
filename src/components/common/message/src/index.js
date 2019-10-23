@@ -21,7 +21,7 @@ const messageBox = (options) => {
         if (typeof msg === "string") {
             const options = {
                 type,
-                msg
+                text: msg
             };
             messageBox(options);
         }
