@@ -3,14 +3,17 @@ import messageVue from "./message.vue";
 
 const messageVueConstructor = Vue.extend(messageVue);
 
-const messageBox = (options) => {
+const messageBox = options => {
     if (Vue.prototype.$isServer) return;
     let parent = document.body;
     let instance = new messageVueConstructor({
         data: options
     }).$mount();
     parent.appendChild(instance.$el);
-    if (options.type === "success" || options.type === "info") {
+    if (
+        (options.type === "success" || options.type === "info") &&
+        !options.duration
+    ) {
         options.duration = "2000";
     }
     return instance;
