@@ -75,7 +75,7 @@
             <div
                 :class="['msg-close', type ? `msg-close-${type}` : '']"
                 @click="close"
-                v-if="type !== 'success' && type !== 'info'"
+                v-if="type !== 'success'"
             ></div>
         </div>
     </transition>
