@@ -8,21 +8,22 @@
                 <a href="javascript:void(0);" @click="open_del_user" v-if="user_info.data && user_info.data.length > 0">{{ lanMap['delete'] + lanMap['user'] }}</a>
                 <a href="javascript:void(0);" @click="open_modify_user">{{ lanMap['modify_user_pwd'] }}</a>
             </div>
-            <div class="user-item bg-title">
-                <span>{{ lanMap['user'] }}</span>
-                <span>{{ lanMap['status'] }}</span>
-                <span>{{ lanMap['user_level'] }}</span>
-                <span>{{ lanMap['user_reenter'] }}</span>
-                <span>{{ lanMap['desc'] }}</span>
-            </div>
-            <div v-for="(item,index) in user_info.data" class="user-item">
-                <span :title="item.name">{{ item.name }}</span>
-                <span>{{ item.status ? lanMap['online'] : lanMap['offline'] }}</span>
-                <span>{{ u_level[item.level] }}</span>
-                <span>{{ item.reenter }}</span>
-                <span :title="item.info">{{ item.info }}</span>
-            </div>
         </div>
+        <nms-table :rows="user_info.data" border>
+            <nms-table-column prop="name" :label="lanMap['user']"></nms-table-column>
+            <nms-table-column prop="status" :label="lanMap['status']">
+                <template slot-scope="row">
+                    {{ row.status ? lanMap['online'] : lanMap['offline'] }}
+                </template>
+            </nms-table-column>
+            <nms-table-column prop="level" :label="lanMap['user_level']">
+                <template slot-scope="row">
+                    {{ u_level[row.level] }}
+                </template></nms-table-column>
+            <nms-table-column prop="reenter" :label="lanMap['user_reenter']"></nms-table-column>
+            <nms-table-column prop="logins" :label="lanMap['logins']"></nms-table-column>
+            <nms-table-column prop="info" :label="lanMap['desc']" min-width="350px"></nms-table-column>
+        </nms-table>
         <div class="modal-dialog" v-if="show_add_modal">
             <div class="cover"></div>
             <div class="user-content">
