@@ -729,7 +729,10 @@ var zh = {
     tx_discard_frame: "发送丢弃帧",
     tx_error_frame: "发送错误帧",
 
-    clear: '清除'
+    clear: '清除',
+    mtype: "校准",
+    ex_cali: "外部校准",
+    in_cali: "内部校准"
 };
 
 export default zh;

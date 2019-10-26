@@ -8,183 +8,236 @@
 <script>
 import { mapState, mapMutations } from "vuex";
 import loading from "@/components/common/loading";
-import zh from '@/config/lang_zh';
-import en from '@/config/lang_en';
+import zh from "@/config/lang_zh";
+import en from "@/config/lang_en";
 export default {
     name: "hsgq",
     components: { loading },
-    data(){
+    data() {
         return {
             lang: {
                 zh: {},
                 en: {}
             }
-        }
+        };
     },
     created() {
         this.lang = {
             zh,
             en
-        }
-        var def_lang = sessionStorage.getItem('def_lang');
-        if(def_lang){
+        };
+        var def_lang = sessionStorage.getItem("def_lang");
+        if (def_lang) {
             this.set_language(def_lang);
             this.add_lanMap(this.lang[def_lang]);
-        }else{
-            this.$http.get(this.change_url.get_lang).then(res => {
-                if (res.data.code === 1) {
-                    this.set_language(res.data.data.lang);
-                    //  缓存用户选择的语言类型，防止用户手动刷新数据消失
-                    sessionStorage.setItem('def_lang',res.data.data.lang);
-                }else{
-                    this.set_language('en');
-                    sessionStorage.setItem('def_lang','en');
-                }
-            }).catch(err => {
-                // to do
-            });
+        } else {
+            this.$http
+                .get(this.change_url.get_lang)
+                .then(res => {
+                    if (res.data.code === 1) {
+                        this.set_language(res.data.data.lang);
+                        //  缓存用户选择的语言类型，防止用户手动刷新数据消失
+                        sessionStorage.setItem("def_lang", res.data.data.lang);
+                    } else {
+                        this.set_language("en");
+                        sessionStorage.setItem("def_lang", "en");
+                    }
+                })
+                .catch(err => {
+                    // to do
+                });
         }
         this.http_interceptors();
     },
-     methods: {
+    methods: {
         ...mapMutations({
             add_lanMap: "updateLanMap",
             loading: "updateLoading",
             set_language: "updateLang"
         }),
         //  http响应拦截器，如返回登录超时或登录信息异常时进行强制跳转
-        http_interceptors(){    
-            this.$http.interceptors.response.use(response=>{
-                //  返回 0 ，非法登录信息
-                if(response.data.code === 0){
-                    this.$message({
-                        type: 'error',
-                        text: this.lanMap['illegal_login_info']
-                    })
-                    sessionStorage.clear();
-                    this.$router.push('/login');
-                }
-                //  返回 -1，登录超时
-                if(response.data.code === -1){
-                    this.$message({
-                        type: 'error',
-                        text: this.lanMap['login_timeout']
-                    })
-                    sessionStorage.clear();
-                    this.$router.push('/login');
-                }
-                if(response.data.code > 1){
-                    if(/^\s*error/i.test(response.data.message)){
-                        response.data.type = 'error';
-                    }else if(/^\s*warning/i.test(response.data.message)){
-                        response.data.type = 'warning';
-                    }else{
-                        response.data.type = 'info';
+        http_interceptors() {
+            this.$http.interceptors.response.use(
+                response => {
+                    //  返回 0 ，非法登录信息
+                    if (response.data.code === 0) {
+                        this.$message({
+                            type: "error",
+                            text: this.lanMap["illegal_login_info"]
+                        });
+                        sessionStorage.clear();
+                        this.$router.push("/login");
                     }
-                }else if(response.data.code === 1){
-                    response.data.type = 'success';
+                    //  返回 -1，登录超时
+                    if (response.data.code === -1) {
+                        this.$message({
+                            type: "error",
+                            text: this.lanMap["login_timeout"]
+                        });
+                        sessionStorage.clear();
+                        this.$router.push("/login");
+                    }
+                    if (response.data.code > 1) {
+                        if (/^\s*error/i.test(response.data.message)) {
+                            response.data.type = "error";
+                        } else if (/^\s*warning/i.test(response.data.message)) {
+                            response.data.type = "warning";
+                        } else {
+                            response.data.type = "info";
+                        }
+                    } else if (response.data.code === 1) {
+                        response.data.type = "success";
+                    }
+                    return response;
+                },
+                err => {
+                    return Promise.reject(err);
                 }
-                return response;
-            },err=>{
-                return Promise.reject(err);
-            });
+            );
         }
     },
-    computed: mapState(["port_info","system","isLoading","language","change_url",'lanMap']),
+    computed: mapState([
+        "port_info",
+        "system",
+        "isLoading",
+        "language",
+        "change_url",
+        "lanMap"
+    ]),
     watch: {
-        language(){
+        language() {
             this.add_lanMap(this.lang[this.language]);
-            sessionStorage.setItem('def_lang',this.language);
+            sessionStorage.setItem("def_lang", this.language);
         }
     }
 };
 </script>
 
 <style lang="less">
-//  #184777  
+//  #184777
 //  #2C72BB
 //  #E0EFE7
 #hsgq {
-  font-family: Arial,"Avenir", Helvetica, sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-  height: 100%;
-  width: 100%;
-  min-width: 1280px;
-  max-width: 1980px;
-  font-size: 16px;
-  overflow-y: scroll;
-  background: #e0efe7;
+    font-family: Arial, "Avenir", Helvetica, sans-serif;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    height: 100%;
+    width: 100%;
+    min-width: 1280px;
+    max-width: 1980px;
+    font-size: 16px;
+    overflow-y: scroll;
+    background: #e0efe7;
 }
 .global-load {
-  display: none;
+    display: none;
 }
-html,body{
+html,
+body {
     height: 100%;
 }
 /**************** RESET STYLE****************/
-body,div,dl,dt,dd,ul,ol,li,h1,h2,h3,h4,h5,h6,pre,form,fieldset,input,textarea,p,blockquote,th,td{
-  padding: 0;
-  margin: 0;
+body,
+div,
+dl,
+dt,
+dd,
+ul,
+ol,
+li,
+h1,
+h2,
+h3,
+h4,
+h5,
+h6,
+pre,
+form,
+fieldset,
+input,
+textarea,
+p,
+blockquote,
+th,
+td {
+    padding: 0;
+    margin: 0;
 }
 table {
-  border-collapse: collapse;
-  border-spacing: 0;
+    border-collapse: collapse;
+    border-spacing: 0;
 }
 fieldset,
 img {
-  border: 0;
+    border: 0;
 }
-address,caption,cite,code,dfn,em,strong,th,var{
-  font-weight: normal;
-  font-style: normal;
+address,
+caption,
+cite,
+code,
+dfn,
+em,
+strong,
+th,
+var {
+    font-weight: normal;
+    font-style: normal;
 }
-ol,ul{
-  list-style: none;
+ol,
+ul {
+    list-style: none;
 }
-caption,th {
-  text-align: left;
+caption,
+th {
+    text-align: left;
 }
-h1,h2,h3,h4,h5,h6 {
-  font-weight: normal;
-  font-size: 100%;
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+    font-weight: normal;
+    font-size: 100%;
 }
-q:before,q:after {
-  content: "";
-  /*content:none;*/
+q:before,
+q:after {
+    content: "";
+    /*content:none;*/
 }
-abbr,acronym {
-  border: 0;
+abbr,
+acronym {
+    border: 0;
 }
 .lf {
-  float: left;
+    float: left;
 }
 .rt {
-  float: right;
+    float: right;
 }
 select {
-  border: 1px solid #ccc;
-  padding-left: 10px\9\0;
+    border: 1px solid #ccc;
+    padding-left: 10px\9\0;
 }
 .flex-box {
-  display: flex;
+    display: flex;
 }
 input[type="text"] {
-  text-indent: 10px;
-  font-size: 16px;
-  height: 30px;
-  line-height: 30px;
-  border: 1px solid #c8cccf;
-  border-radius: 3px;
-  color: #000;
-  outline: 0;
-  text-decoration: none;
+    text-indent: 10px;
+    font-size: 16px;
+    height: 30px;
+    line-height: 30px;
+    border: 1px solid #c8cccf;
+    border-radius: 3px;
+    color: #000;
+    outline: 0;
+    text-decoration: none;
 }
 input[type="text"]:focus {
-  border: 1px solid #1e90ff;
-  border-radius: 3px;
+    border: 1px solid #1e90ff;
+    border-radius: 3px;
 }
-select{
+select {
     border-radius: 3px;
     font-size: 16px;
     height: 30px;
@@ -205,62 +258,62 @@ a {
     background: #666;
     color: #fff;
     vertical-align: middle;
-    transition: all .2s linear;
+    transition: all 0.2s linear;
 }
-a:hover{
+a:hover {
     color: #67aef6;
 }
 a:active {
     border: 1px solid #1e90ff;
     background: #444;
 }
-i{
+i {
     user-select: none;
 }
 /* 复用模态框类 */
 .modal-dialog {
-  position: fixed;
-  left: 0;
-  top: 0;
-  width: 100%;
-  height: 100%;
-  z-index: 99999;
-  overflow-y: auto;
-  margin: 0 !important;
+    position: fixed;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 99999;
+    overflow-y: auto;
+    margin: 0 !important;
 }
 .cover {
-  width: 100%;
-  height: 100%;
-  position: fixed;
-  top: 0;
-  left: 0;
-  background: #666;
-  opacity: 0.5;
-  z-index: 999;
+    width: 100%;
+    height: 100%;
+    position: fixed;
+    top: 0;
+    left: 0;
+    background: #666;
+    opacity: 0.5;
+    z-index: 999;
 }
 .close {
-  position: absolute;
-  top: 0;
-  right: 0;
-  width: 60px;
-  height: 60px;
-  cursor: pointer;
-  background: url("./assets/close_msg.png") no-repeat;
+    position: absolute;
+    top: 0;
+    right: 0;
+    width: 60px;
+    height: 60px;
+    cursor: pointer;
+    background: url("./assets/close_msg.png") no-repeat;
 }
 .close:hover {
-  background: url("./assets/close_msg_hover.png") no-repeat;
+    background: url("./assets/close_msg_hover.png") no-repeat;
 }
-div.cover+div{
+div.cover + div {
     z-index: 1000;
     position: absolute;
-    top:50%;
-    left:50%;
-    transform:translate(-50%,-50%);	
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
     width: 500px;
     height: 400px;
     background: #fff;
     border-radius: 5px;
-    .modal-header{
+    .modal-header {
         box-sizing: border-box;
         width: 100%;
         height: 60px;
@@ -283,9 +336,15 @@ a.btn-text {
     &:hover {
         color: #77b5f3;
     }
-    &:active{
+    &:active {
         border-color: transparent;
         color: #3093f7;
     }
+}
+.flexible-layout {
+    display: flex;
+}
+.flex-evenly {
+    justify-content: space-evenly;
 }
 </style>

@@ -40,7 +40,7 @@
                 >{{`${lanMap['port_id']}: ${ op_info.port_id ? portName(op_info.port_id) : ""}` }}</div>
                 <div class="layout-row">
                     <div class="row-40">
-                        <cus-table :data="mstateData" :title="lanMap['o_m_state']"></cus-table>
+                        <cus-table :data="mstateData" :title="lanMap['o_m_state']" :cus-layout="layoutMtype('mtype')"></cus-table>
                     </div>
                     <div class="row-60">
                         <cus-table :data="manuInfoData" :title="lanMap['o_m_maunu_info']"></cus-table>
@@ -132,6 +132,7 @@ export default {
             mStates: [
                 "portstate",
                 "mstate",
+                "mtype",
                 "work_temprature",
                 "work_voltage",
                 "transmit_bias",
@@ -187,6 +188,7 @@ export default {
                 // port_id: 1,
                 // portstate: 1,
                 // mstate: 1,
+                // mtype: 0,
                 // work_temprature: "21 C",
                 // work_voltage: "3.29 V",
                 // transmit_bias: "13 mA",
@@ -259,6 +261,14 @@ export default {
         closeDialog() {
             this.op_info = {};
             this.visible = false;
+        },
+        layoutMtype(){
+            const mtype_map = ['in_cali', 'ex_cali'], _this = this;
+            return {
+                mtype(val){
+                    return _this.lanMap[mtype_map[val]]
+                }
+            }
         }
     }
 };

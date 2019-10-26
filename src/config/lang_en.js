@@ -750,7 +750,10 @@ var en = {
     tx_discard_frame: "Transmits Discard",
     tx_error_frame: "Transmits Error",
 
-    clear: 'Clear'
+    clear: "Clear",
+    mtype: "Calibrated",
+    ex_cali: "Externally Calibrated",
+    in_cali: "Internal Calibrated"
 };
 
 export default en;

@@ -6,7 +6,7 @@
                 <template v-for="(item, key) in data">
                     <tr>
                         <td>{{ lanMap[key] }}</td>
-                        <td>{{ item }}</td>
+                        <td>{{ cusLayout[key] ? cusLayout[key](item) : item }}</td>
                     </tr>
                 </template>
             </tbody>
@@ -36,6 +36,11 @@ export default {
         customClass: {
             type: String,
             drfault: ''
+        },
+        //  key: (item) => {}  自定义显示函数
+        cusLayout: {
+            type: Object,
+            default: _ => ({})
         }
     },
     methods: {}
