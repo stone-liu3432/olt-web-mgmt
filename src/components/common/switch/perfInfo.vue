@@ -1,183 +1,180 @@
 <template>
     <div>
-        <div class="perf-info">
-            <h2>{{ lanMap['perf_info'] }}</h2>
-            <div>
-                <span>{{ lanMap['port_id'] }}</span>
-                <select v-model.number="portid">
-                    <option v-for="(item,index) in port_name.pon" :key="index" :value="item.id">{{ item.name }}</option>
-                    <option v-for="(item,index) in port_name.ge" :key="index" :value="item.id">{{ item.name }}</option>
-                    <option v-if="port_name.xge" v-for="(item,index) in port_name.xge" :key="index" :value="item.id">{{ item.name }}</option>
-                </select>
-                <a href="javascript:void(0);" @click="openCfm">{{ lanMap['clear_perf'] }}</a>
+        <h2>{{ lanMap['perf_info'] }}</h2>
+        <hr />
+        <nms-table :rows="perf_list" border>
+            <nms-table-column prop="port_id" :label="lanMap['port_id']" width="80px">
+                <template slot-scope="{ port_id }">
+                    {{
+                    port_id ?
+                    port_name.pon[port_id] ?
+                    port_name.pon[port_id].name :
+                    port_name.ge[port_id] ?
+                    port_name.ge[port_id].name :
+                    port_name.xge[port_id].name : ''
+                    }}
+                </template>
+            </nms-table-column>
+            <nms-table-column prop="rx_octets" :label="lanMap['rx_octets']"></nms-table-column>
+            <nms-table-column prop="rx_frame" :label="lanMap['rx_frame']"></nms-table-column>
+            <nms-table-column prop="rx_discard_frame" :label="lanMap['rx_discard_frame']"></nms-table-column>
+            <nms-table-column prop="rx_error_frame" :label="lanMap['rx_error_frame']"></nms-table-column>
+            <nms-table-column prop="tx_octets" :label="lanMap['tx_octets']"></nms-table-column>
+            <nms-table-column prop="tx_frame" :label="lanMap['tx_frame']"></nms-table-column>
+            <nms-table-column prop="tx_discard_frame" :label="lanMap['tx_discard_frame']"></nms-table-column>
+            <nms-table-column prop="tx_error_frame" :label="lanMap['tx_error_frame']"></nms-table-column>
+            <nms-table-column :label="lanMap['config']" width="150px">
+                <template slot-scope="row">
+                    <a
+                        href="javascript: void(0);"
+                        class="btn-text"
+                        @click="showDetail(row.port_id)"
+                    >{{ lanMap['detail'] }}</a>
+                    <a
+                        href="javascript: void(0);"
+                        class="btn-text"
+                        @click="clearPerf(row.port_id)"
+                    >{{ lanMap['clear'] }}</a>
+                </template>
+            </nms-table-column>
+        </nms-table>
+        <nms-dialog :visible.sync="visible">
+            <template slot="title">
+                {{ lanMap['port_id'] }}: &nbsp;{{ portid | getPortName }}
+            </template>
+            <div class="perf-detail-content">
+                <template v-for="(item, key) in perf_detail">
+                    <div v-if="key !== 'port_id'">
+                        <span>{{ key.replace(/_/g, ' ') }}</span>
+                        <span>{{ item }}</span>
+                    </div>
+                </template>
             </div>
-        </div>
-        <hr>
-        <div v-if="data.data">
-            <ul class="lf">
-                <li v-for="(item,key) in this.data.data" :key="key"  v-if=" key !== 'port_id' && key.substring(0,2).indexOf('rx') !== -1">
-                    <span>{{ key.replace(/_/g,' ') }}</span>
-                    <span>{{ item }}</span>
-                </li>
-            </ul>
-            <ul class="lf">
-                <li v-for="(item,key) in this.data.data" :key="key"  v-if=" key !== 'port_id' && key.substring(0,2).indexOf('tx') !== -1">
-                    <span>{{ key.replace(/_/g,' ') }}</span>
-                    <span>{{ item }}</span>
-                </li>
-            </ul>
-        </div>
-        <confirm v-if="isShow" @choose="clearData"></confirm>
+        </nms-dialog>
     </div>
 </template>
 
 <script>
-import { mapState } from 'vuex'
-    export default {
-        name: 'perfInfo',
-        computed: mapState(['lanMap','port_name','port_info','change_url']),
-        data(){
-            return {
-                data: {},
-                portid: 0,
-                isShow: false
-            }
-        },
-        activated(){
-            this.getData();
-        },
-        created(){
-            var pid = sessionStorage.getItem('portid');
-            this.portid = Number(pid) || 1;
-            //请求url: /switch_port?form=statistic&port_id=1   //  打包时删除
-            if(this.change_url.beta === 'test'){
-                var url;
-                if(this.change_url.perf[this.change_url.perf.length - 1] != '='){
-                    url = this.change_url.perf;
-                }else{
-                    url = this.change_url.perf + this.portid;
-                }
-                this.$http.get(url).then(res=>{
-                    this.data = res.data;
-                }).catch(err=>{
-                    // to do 
-                })
-            }
-        },
-        methods: {
-            getData(){
-                this.$http.get('/switch_port?form=statistic&port_id='+this.portid).then(res=>{
-                    if(res.data.code === 1){
-                        this.data = res.data;
-                    }else if(res.data.code >1){
-                        this.data = {}
-                    }
-                }).catch(err=>{
-                    // to do 
-                })
-            },
-            clearData(bool){
-                if(bool){
-                    this.$http.get('/switch_port?form=nostatistic', { params: { port_id: this.portid } }).then(res =>{
-                        if(res.data.code === 1){
-                            this.$message({
-                                type: res.data.type,
-                                text: this.lanMap['clear_perf'] + this.lanMap['setting_ok']
-                            })
-                            this.getData();
-                        }else{
-                            this.$message({
-                                type: res.data.type,
-                                text: '(' + res.data.code + ')' + res.data.message
-                            })
+import { mapState } from "vuex";
+export default {
+    name: "perfInfo",
+    computed: mapState(["lanMap", "port_name", "port_info", "change_url"]),
+    data() {
+        return {
+            portid: 0,
+            visible: false,
+            perf_list: [],
+            perf_detail: {}
+        };
+    },
+    activated() {
+        this.getData();
+    },
+    created() {
+        this.getData();
+    },
+    methods: {
+        getData() {
+            this.perf_list = [];
+            this.$http
+                .get("/switch_port?form=statistictab")
+                .then(res => {
+                    if (res.data.code === 1) {
+                        if (res.data.data && res.data.data.length) {
+                            this.perf_list = res.data.data;
                         }
-                    }).catch(err =>{})
-                }
-                this.isShow = false;
-            },
-            openCfm(){
-                this.isShow = true;
-            }
+                    }
+                })
+                .catch(err => {
+                    // to do
+                });
         },
-        watch:{
-            portid(){
-                sessionStorage.setItem('portid',Number(this.portid));
-                this.getData();
+        clearPerf(portid) {
+            this.$confirm()
+                .then(_ => {
+                    this.$http
+                        .get("/switch_port?form=nostatistic", {
+                            params: { port_id: portid }
+                        })
+                        .then(res => {
+                            if (res.data.code === 1) {
+                                this.$message({
+                                    type: res.data.type,
+                                    text:
+                                        this.lanMap["clear_perf"] +
+                                        this.lanMap["setting_ok"]
+                                });
+                                this.getData();
+                            } else {
+                                this.$message({
+                                    type: res.data.type,
+                                    text:
+                                        "(" +
+                                        res.data.code +
+                                        ")" +
+                                        res.data.message
+                                });
+                            }
+                        })
+                        .catch(err => {});
+                })
+                .catch(_ => {});
+        },
+        showDetail(portid) {
+            this.visible = true;
+            this.getDetail(portid);
+        },
+        getDetail(port_id) {
+            this.perf_detail = {};
+            this.portid = port_id;
+            this.$http
+                .get("/switch_port", { params: { form: "statistic", port_id } })
+                .then(res => {
+                    if (res.data.code === 1) {
+                        if (res.data.data) {
+                            this.perf_detail = res.data.data;
+                        }
+                    }
+                })
+                .catch(err => {});
+        }
+    }
+};
+</script>
+
+<style lang="less" scoped>
+h2 {
+    margin: 10px 0 10px 0;
+    display: inline-block;
+    width: 300px;
+    font-size: 24px;
+    font-weight: 600;
+    color: #67aef7;
+}
+a.btn-text {
+    padding: 0 6px;
+}
+.perf-detail-content{
+    >div{
+        border-bottom: 1px solid #ccc;
+        float: left;
+        padding: 3px 6px;
+        box-sizing: border-box;
+        width: 50%;
+        line-height: 24px;
+        span{
+            text-transform: capitalize;
+            display: inline-block;
+            box-sizing: border-box;
+            vertical-align: middle;
+            width: 49%;
+            &:first-child{
+                text-align: right;
+            }
+            &:last-child{
+                padding-left: 30px;
             }
         }
     }
-</script>
-
-<style scoped>
-.perf-info{
-    margin: 10px 0 20px 0;
-}
-.perf-info>h2,.perf-info>select{
-    float: left;
-}
-select{
-    margin-left: 6px;
-}
-.perf-info>div>span{
-    display: inline;
-    padding: 0;
-    border: none;
-    font-size: 16px;
-    font-weight: 500;
-}
-.perf-info:after{
-    content: "";
-    display: table;
-    clear: both;
-}
-div.perf-info+div{
-    overflow: hidden;
-    margin: 0 0 0 10px;
-}
-select{
-    width: 150px;
-    height: 30px;
-    font-size: 16px;
-    text-indent: 10px;
-}
-h2{
-    display: inline-block;
-	width: 300px;
-	font-size: 24px;
-	font-weight: 600;
-	color: 	#67AEF7;
-}
-hr+div{
-    margin: 20px 0 0 10px;
-}
-hr+div:after{
-    content: "";
-    display: table;
-    clear: both;
-}
-ul{
-    width: 50%;
-}
-li{
-    border: 1px solid #ccc;
-    border-bottom: none;
-}
-li:last-child{
-    border-bottom: 1px solid #ccc;
-}
-span{
-    display: inline-block;
-    border-top: none;
-    font-size:16px;
-    width: 30%;
-    padding: 5px 20px;
-}
-span:first-child{
-    text-align: right;
-    width: 50%;
-    border-right: 1px solid #ccc;
-}
-a{
-    margin-left: 30px;
 }
 </style>
