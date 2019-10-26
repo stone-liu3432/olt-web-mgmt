@@ -714,10 +714,22 @@ var zh = {
     o_m_static_info: "光模块静态信息",
     o_m_maunu_info: "光模块制造商信息",
     o_m_threshold: "光模块阈值参数",
-    detected: '在位',
+    detected: "在位",
     undetected: "不在位",
-    
-    conn_error: '网络错误,请检查网络连接。'
+
+    conn_error: "网络错误,请检查网络连接。",
+    logins: "已登录次数",
+
+    rx_octets: "接收字节数",
+    rx_frame: "接收帧数",
+    rx_discard_frame: "接收丢弃帧",
+    rx_error_frame: "接收错误帧",
+    tx_octets: "发送字节数",
+    tx_frame: "发送帧数",
+    tx_discard_frame: "发送丢弃帧",
+    tx_error_frame: "发送错误帧",
+
+    clear: '清除'
 };
 
 export default zh;

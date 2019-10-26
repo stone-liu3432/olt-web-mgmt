@@ -738,7 +738,19 @@ var en = {
     detected: "Detected",
     undetected: "Not Detected",
 
-    conn_error: "Network error, Please check the network connection."
+    conn_error: "Network error, Please check the network connection.",
+    logins: "Number of logins",
+
+    rx_octets: "Recieved Bytes",
+    rx_frame: "Recieved Frames",
+    rx_discard_frame: "Recieved Discard",
+    rx_error_frame: "Recieved Error",
+    tx_octets: "Transmits Bytes",
+    tx_frame: "Transmits Frames",
+    tx_discard_frame: "Transmits Discard",
+    tx_error_frame: "Transmits Error",
+
+    clear: 'Clear'
 };
 
 export default en;
