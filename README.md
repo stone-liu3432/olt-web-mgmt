@@ -4,9 +4,9 @@
 
 > 项目原托管在[码云](https://www.gitee.com)上，后迁移至github
 
-** table组件 **
+## table组件
 
-*** table props ***
+#### table props
 |参数|说明|类型|可选值|默认值|
 |:---|:---|:---|:---|:---|
 |row|显示的数据|array|--|[]|
@@ -16,12 +16,12 @@
 |row-style|行的style回调，传入object时，为所有行设置一样的style|object,function(row, rowIndex)|--|--|
 |row-class|行的className回调，传入string时，为所有行添加一个固定的className|string,function(row, rowIndex)|--|--|
 
-*** table slots ***
+#### table slots
 |name|说明|
 |:---|:---|
 |empty|数据为空时显示的内容|
 
-*** table-column props ***
+#### table-column props
 |参数|说明|类型|可选值|默认值|
 |:---|:---|:---|:---|:---|
 |prop|列对应的字段名|string|--|--|
@@ -30,12 +30,12 @@
 |cell-style|列的style回调，传入object时，为所有行的当前列设置一样的style|object,function(row, colIndex)|--|--|
 |cell-class|列的className回调，传入string时，为所有当前列添加一个固定的className|string|function(row, colIndex)|--|--|
 
-*** table-column slot ***
+#### table-column slot
 |name|说明|
 |:---|:---|
 |default|自定义列显示的内容，参数为row(当前行的数据)|
 
-* dialog组件 *
+## dialog组件
 |参数|说明|类型|可选值|默认值|
 |:---|:---|:---|:---|:---|
 |visible|是否显示dialog，支持.sync修饰符|boolean|--|false|
