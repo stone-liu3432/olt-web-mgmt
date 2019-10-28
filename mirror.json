@@ -1,9 +1,0 @@
-{
-    "code":1,
-    "msg": "success",
-    "data":{
-        "src_port":1,
-        "dst_port":5,
-        "type":1
-    }
-}

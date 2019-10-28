@@ -80,7 +80,7 @@ export default {
         },
         theads() {
             const ths = [];
-            this.headNodes_.forEach(item => {
+            this.headNodes_ && this.headNodes_.forEach(item => {
                 item.child && item.child.__IS_HEAD__ && 
                     (item.child.label !== undefined
                         ? ths.push(item.child.label)
@@ -103,7 +103,6 @@ export default {
         };
     },
     provide() {
-        const _this = this;
         return {
             commit: this.commitData
         };
@@ -180,5 +179,8 @@ th {
     background: #2361a2;
     color: #fff;
     box-sizing: border-box;
+}
+tr:hover{
+    background: #F5F7FA;
 }
 </style>

@@ -150,7 +150,7 @@ import onuWanConfig from './onuWanConfig';
             //  防止同时触发 created 和 activated
             this.isCreated = true;
             if(this.change_url.beta === 'test'){
-                this.$http.get('./onu_resource.json').then(res=>{
+                this.$http.get('./simulation_data/onu_resource.json').then(res=>{
                     if(res.data.code === 1){
                         var _onu_list = this.analysis(res.data.data.resource);
                         if(!_onu_list) return
@@ -160,9 +160,9 @@ import onuWanConfig from './onuWanConfig';
                         }
                         this.addonu_list(obj);
                         this.onuid = this.$route.query.onu_id || this.onu_list.data[0];
-                        this.$http.get('./onu_basic_info.json').then(res=>{
+                        this.$http.get('./simulation_data/onu_basic_info.json').then(res=>{
                             this.onu_basic_info = res.data;
-                            this.$http.get('./onu_fec_mode.json').then(res=>{
+                            this.$http.get('./simulation_data/onu_fec_mode.json').then(res=>{
                                 this.onu_fec_mode = res.data;
                             }).catch(err=>{
                                 // to do

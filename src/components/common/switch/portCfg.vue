@@ -251,7 +251,7 @@ import { mapState } from 'vuex'
                 this.$router.push('/port_cfg');
             }
             if(this.change_url.beta == 'test'){
-                this.$http.get('./swich_port_info.json').then(res=>{
+                this.$http.get('./simulation_data/swich_port_info.json').then(res=>{
                     if(res.data.code ===1){
                         this.swich_port_info = res.data;
                         for(var key in res.data.data){
@@ -263,7 +263,7 @@ import { mapState } from 'vuex'
                 }).catch(err=>{
                     // to do
                 })
-                this.$http.get('./storm.json').then(res=>{
+                this.$http.get('./simulation_data/storm.json').then(res=>{
                     if(res.data.code ===1){
                         this.stormctrl_data = res.data;
                         for(var key in res.data.data){
@@ -275,7 +275,7 @@ import { mapState } from 'vuex'
                 }).catch(err=>{
                     // to do
                 })
-                this.$http.get('./mirror.json').then(res=>{
+                this.$http.get('./simulation_data/mirror.json').then(res=>{
                     if(res.data.code === 1){
                         this.mirror_data = res.data;
                         for(var key in res.data.data){
