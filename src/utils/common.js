@@ -126,7 +126,7 @@ export function getPortName(port_id) {
         ? names.pon[port_id].name
         : names.ge[port_id]
         ? names.ge[port_id].name
-        : names.xge[port_id]
+        : names.xge && names.xge[port_id]
         ? names.xge[port_id].name
         : "";
 }
