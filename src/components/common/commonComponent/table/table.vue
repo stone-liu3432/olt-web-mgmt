@@ -73,7 +73,7 @@ export default {
             const cols = [];
             if (this.rows) {
                 this.$children.forEach(item => {
-                    item.prop === undefined ? cols.push('') : cols.push(item.prop);
+                    item.prop !== undefined && cols.push(item.prop);
                 });
             }
             return cols;
