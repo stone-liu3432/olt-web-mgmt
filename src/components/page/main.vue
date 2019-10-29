@@ -45,13 +45,24 @@ const messageActions = {
 };
 const typeActions = {
     alarm(data) {
-        const { content, level } = data;
+        const { content, level, alarm_id } = data;
         content &&
             this.$notify({
                 message: content,
                 position: "top-right",
                 type: LEVEL[level] || "info"
             });
+            //  设备重启告警
+            if(alarm_id === 0x1001){
+                this.$message({
+                    type: 'warning',
+                    text: content,
+                    duration: 60000
+                })
+                sessionStorage.removeItem("x-token");
+                sessionStorage.removeItem("uname");
+                this.$router.replace("/login");
+            }
     },
     message(data) {
         //  action:  1-resgister，2-timeout，3-heartbeats
