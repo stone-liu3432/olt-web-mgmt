@@ -319,8 +319,5 @@ div.om-dialog-content {
         float: left;
         width: 60%;
     }
-    > div {
-        text-transform: capitalize;
-    }
 }
 </style>
