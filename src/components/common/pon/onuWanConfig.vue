@@ -2,12 +2,6 @@
     <div>
         <h3>
             {{ lanMap['wan_connect'] }}
-            <!-- <select v-model.number="formData.index" style="margin-left: 30px;">
-                <option :value="-1">{{ lanMap['create'] }}</option>
-                <template v-for="item in wanInfo">
-                    <option :value="item.index">{{ item.name }}</option>
-                </template>
-            </select>-->
             <a
                 href="javascript: void(0);"
                 style="margin-left: 60px; height: 28px; line-height: 28px;"
@@ -20,46 +14,41 @@
                 v-if="wanInfo.length"
             >{{ lanMap['delete_all'] }}</a>
         </h3>
-        <table border="1" v-if="wanInfo.length">
-            <thead>
-                <tr>
-                    <th>{{ lanMap['name'] }}</th>
-                    <th>{{ lanMap['vlan_id'] }}</th>
-                    <th>{{ lanMap['ctype'] }}</th>
-                    <th>{{ lanMap['ipmode'] }}</th>
-                    <th>{{ lanMap['ipaddr'] }}</th>
-                    <th>{{ lanMap['gateway'] }}</th>
-                    <th>{{ lanMap['status'] }}</th>
-                    <th>{{ lanMap['config'] }}</th>
-                </tr>
-            </thead>
-            <tbody>
-                <template v-for="item in wanInfo">
-                    <tr>
-                        <td>{{ item.name || `wan-${item.index}` }}</td>
-                        <td>{{ item.vlan_id }}</td>
-                        <td>{{ ctypes[item.ctype] }}</td>
-                        <td>{{ ipmodes[item.ipmode] }}</td>
-                        <td>{{ item.ipaddr || ' - ' }}</td>
-                        <td>{{ item.gateway || ' - ' }}</td>
-                        <td>{{ item.status ? 'Up' : 'Down' }}</td>
-                        <td>
-                            <a
-                                @click="openDialog(item, 'set')"
-                                class="btn-text"
-                                href="javascript: void(0);"
-                            >{{ lanMap['show_detail'] }}</a>
-                            <a
-                                @click="confirm_delete(item)"
-                                class="btn-text"
-                                href="javascript: void(0);"
-                            >{{ lanMap['delete'] }}</a>
-                        </td>
-                    </tr>
+        <nms-table :rows="wanInfo" border>
+            <nms-table-column prop="name" :label="lanMap['name']">
+                <template slot-scope="row">{{ row.name || `wan-${row.index}` }}</template>
+            </nms-table-column>
+            <nms-table-column prop="vlan_id" :label="lanMap['vlan_id']"></nms-table-column>
+            <nms-table-column prop="ctype" :label="lanMap['ctype']">
+                <template slot-scope="row">{{ ctypes[row.ctype] }}</template>
+            </nms-table-column>
+            <nms-table-column prop="ipmode" :label="lanMap['ipmode']">
+                <template slot-scope="row">{{ ipmodes[row.ipmode] }}</template>
+            </nms-table-column>
+            <nms-table-column prop="ipaddr" :label="lanMap['ipaddr']">
+                <template slot-scope="row">{{ row.ipaddr || ' - ' }}</template>
+            </nms-table-column>
+            <nms-table-column prop="gateway" :label="lanMap['gateway']">
+                <template slot-scope="row">{{ row.gateway || ' - ' }}</template>
+            </nms-table-column>
+            <nms-table-column prop="status" :label="lanMap['status']">
+                <template slot-scope="row">{{ row.status ? 'Up' : 'Down' }}</template>
+            </nms-table-column>
+            <nms-table-column prop="config" :label="lanMap['config']" width="150px">
+                <template slot-scope="row">
+                    <a
+                        href="javascript: void(0);"
+                        @click="openDialog(row, 'set')"
+                        class="btn-text"
+                    >{{ lanMap['detail'] }}</a>
+                    <a
+                        href="javascript: void(0);"
+                        @click="confirm_delete(row)"
+                        class="btn-text"
+                    >{{ lanMap['delete'] }}</a>
                 </template>
-            </tbody>
-        </table>
-        <p style="margin: 20px 0 20px 20px; color: red;" v-else>{{ lanMap['no_more_data'] }}</p>
+            </nms-table-column>
+        </nms-table>
         <div class="modal-dialog" v-if="showDialog">
             <div class="cover"></div>
             <div class="wan-connect-modal-content" ref="wan-config-content">
@@ -479,9 +468,11 @@ export default {
             this.formData.reqdns = Number(!this.formData.reqdns);
         },
         submitForm() {
+            const load = this.$loading();
             this.$http
                 .post("/onumgmt?form=wan", this.cacheForm)
                 .then(res => {
+                    load && load.close();
                     if (res.data.code === 1) {
                         this.$message({
                             type: "success",
@@ -495,7 +486,9 @@ export default {
                         });
                     }
                 })
-                .catch(err => {});
+                .catch(err => {
+                    load && load.close();
+                });
         },
         resetForm() {
             for (var key in this.resetData) {
@@ -756,9 +749,11 @@ export default {
                 .catch(_ => {});
         },
         delWan(data) {
+            const load = this.$loading();
             this.$http
                 .post("/onumgmt?form=wan", data)
                 .then(res => {
+                    load && load.close();
                     if (res.data.code === 1) {
                         this.$message({
                             type: "success",
@@ -772,7 +767,9 @@ export default {
                         });
                     }
                 })
-                .catch(err => {});
+                .catch(err => {
+                    load && load.close();
+                });
         },
         result(bool) {
             if (bool) {
@@ -791,9 +788,11 @@ export default {
                     onu_id: this.onuid
                 }
             };
+            const load = this.$loading();
             this.$http
                 .post("/onumgmt?form=wan", data)
                 .then(res => {
+                    load && load.close();
                     if (res.data.code === 1) {
                         this.$message({
                             type: res.data.type,
@@ -808,7 +807,9 @@ export default {
                         });
                     }
                 })
-                .catch(err => {});
+                .catch(err => {
+                    load && load.close();
+                });
         },
         openDialog(node, operate) {
             this.showDialog = true;
@@ -979,6 +980,9 @@ table {
         color: #666;
         padding: 12px;
     }
+}
+a.btn-text {
+    padding: 0 6px;
 }
 div.wan-connect-modal-content {
     width: 620px;
