@@ -15,6 +15,7 @@ import Notification from '@/components/common/commonComponent/notify';
 import nmsTable from '@/components/common/commonComponent/table/table';
 import nmsTableColumn from '@/components/common/commonComponent/table/tableColumn';
 import nmsDialog from '@/components/common/commonComponent/dialog/dialog';
+import loading from '@/components/common/commonComponent/loading';
 
 Vue.use(VueMessage)
 
@@ -47,7 +48,8 @@ axios.interceptors.response.use(response=>{
 
 Vue.prototype.$confirm = serviceCconfirm;
 Vue.prototype.$notify = Notification;
-Vue.prototype.$http = axios
+Vue.prototype.$http = axios;
+Vue.prototype.$loading = loading;
 
 //  页面加载时，该元素将获取焦点  调用： v-focus
 Vue.directive('focus',{
