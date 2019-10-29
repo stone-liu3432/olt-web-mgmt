@@ -14,7 +14,7 @@
             <a href="javascript:void(0);" @click="reload">{{ lanMap['refresh'] }}</a>
             <a href="javascript:void(0);" @click="add_onu">{{ lanMap['add'] }}</a>
             <a href="javascript:void(0);" @click="onu_bandwieth">{{ lanMap['sla_cfg'] }}</a>
-            <!-- <a href="javascript:void(0);" @click="switch_display_mode">{{ lanMap['switch_display'] }}</a> -->
+            <a href="javascript:void(0);" @click="onu_deny">{{ lanMap['onu_deny'] }}</a>
             <a href="javascript:void(0);" @click="show_batchmgmt" v-if="!is_batch_mgmt">{{ lanMap['batch_mgmt_onu'] }}</a>
             <a href="javascript:void(0);" @click="show_batchmgmt" v-else>{{ lanMap['exit_batch_onu'] }}</a>
             <div class="rt tool-tips">
@@ -25,24 +25,6 @@
                         <p><i class="verified-actived"></i>{{ lanMap['tips_cfm_onu'] }}</p>
                         <p><i class="unverified"></i>{{ lanMap['tips_n_cfm_onu'] }}</p>
                     </div>
-                    <!-- <div>
-                        <p>{{ lanMap['config'] }}</p>
-                        <p>
-                            {{ lanMap['click'] }}<i class="reload"></i>{{ lanMap['tips_page_refresh'] }}
-                        </p>
-                        <p>
-                            {{ lanMap['click'] }}<i class="onu-detail"></i>{{ lanMap['tips_onu_btn_detail'] }}
-                        </p>
-                        <p>
-                            {{ lanMap['click'] }}<i class="onu-delete"></i>{{ lanMap['tips_onu_btn_del'] }}
-                        </p>
-                        <p>
-                            {{ lanMap['click'] }}<i class="onu-remove"></i>{{ lanMap['tips_onu_btn_rej'] }}
-                        </p>
-                        <p>
-                            {{ lanMap['click'] }}<i class="reset-onu"></i>{{ lanMap['tips_onu_restart'] }}
-                        </p>
-                    </div> -->
                 </div>
             </div>
         </div>
@@ -148,10 +130,6 @@
                         {{ item.last_down_reason }}
                     </td>
                     <td>
-                        <!-- <i :title="lanMap['detail']" class="onu-detail" @click="onu_detail(item.port_id,item.onu_id)"></i>
-                        <i :title="lanMap['del_onu']" class="onu-delete" @click="delete_onu(item)"></i>
-                        <i :title="lanMap['add_to_deny']" class="onu-remove" @click="remove_onu(item)"></i>
-                        <i :title="lanMap['reboot_onu']" class="reset-onu" @click="reboot(item)"></i> -->
                         <div class="onu-table-dropdown-menu" @mouseover="mouseoverCb" @mouseout="mouseoutCb">
                             <span>{{ lanMap['config'] }}</span>
                             <svg t="1570759962108" style="vertical-align: middle;" viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg" p-id="6745" width="16" height="16"><path d="M824.001 335.037c-9.083-9.083-24.049-9.083-33.132 0l-278.991 279.094-279.094-279.09399999c-9.083-9.083-24.049-9.083-33.132-1e-8-9.083 9.083-9.083 24.049 0 33.13200001l292.92499999 292.92499999c0.723 1.032 1.548 2.064 2.47700002 2.993 4.645 4.645 10.734 6.915 16.82399999 6.812 6.09 0.103 12.179-2.168 16.824-6.812 0.929-0.929 1.755-1.961 2.477-2.993l292.822-292.925c9.083-9.083 9.083-24.049 0-33.132z" p-id="6746" fill="#2c2c2c"></path></svg>
@@ -167,38 +145,6 @@
                 </tr>
             </tbody>
         </table>
-        <!-- <ul v-if="onu_allow_list.data && onu_allow_list.data.length>0 && onu_display_style === 1">
-            <li class="onulist-item">
-                <span></span>
-                <span v-for="(item,key) in onu_allow_list.data[0]" :key="key" v-if=" key != 'port_id' && key !== 'onu_name'">
-                    {{ lanMap[key] }}
-                </span>
-                <span>{{ lanMap['config'] }}</span>
-            </li>
-            <li v-for="(item,index) in onu_allow_list.data" :key="index" class="onulist-item" :style="{ 'color' : item.status.toLowerCase() !== 'online' ? 'red' : '' }">
-                <span>
-                    <label :for="'ONU0'+item.port_id +'/'+ item.onu_id" v-if="is_batch_mgmt">
-                        <input type="checkbox" :value="item.onu_id" v-model="batch_onulist" :id="'ONU0'+item.port_id +'/'+ item.onu_id" name="onulist">
-                    </label>
-                </span>
-                <span :title="item.onu_name" class="onu-name-ellipsis">
-                    {{ item.onu_name || 'ONU0'+item.port_id +'/'+ item.onu_id }}
-                </span>
-                <span>{{ item.macaddr }}</span>
-                <span>{{ item.status }}</span>
-                <span>
-                    <span>{{ item.auth_state ? 'true' : 'false' }}</span>
-                    <i :class="[item.auth_state ? 'verified-actived' : 'unverified']" @click="authstate(item)"></i>
-                </span>
-                <span>{{ item.register_time }}</span>
-                <span>
-                    <i :title="lanMap['detail']" class="onu-detail" @click="onu_detail(item.port_id,item.onu_id)"></i>
-                    <i :title="lanMap['del_onu']" class="onu-delete" @click="delete_onu(item)"></i>
-                    <i :title="lanMap['add_to_deny']" class="onu-remove" @click="remove_onu(item)"></i>
-                    <i :title="lanMap['reboot_onu']" class="reset-onu" @click="reboot(item)"></i>
-                </span>
-            </li>
-        </ul> -->
         <!-- <onuCard v-if="onu_allow_list.data && onu_allow_list.data.length > 0 && onu_display_style === 2" :onu-allow-list="onu_allow_list" 
             :batch-onulist="batch_onulist" :is-batch-mgmt="is_batch_mgmt" @updateData="getData"></onuCard> -->
         <p v-if="!onu_allow_list.data || onu_allow_list.data.length <= 0">{{ lanMap['no_more_data'] }}</p>
@@ -569,6 +515,17 @@ import { mapState,mapMutations } from 'vuex'
                 sessionStorage.setItem('f_menu', 'advanced_setting');
                 sessionStorage.setItem('first_menu', 'onu_mgmt');
                 sessionStorage.setItem('sec_menu', 'onu_port_cfg');
+            },
+            //  跳转到 onu阻止列表
+            onu_deny(portid){
+                sessionStorage.setItem('pid', this.portid);
+                this.$router.push('/onu_deny');
+                this.changeMenu('advanced_setting');
+                this.changeFMenu('pon_mgmt');
+                this.changeAdvMenu('onu_deny');
+                sessionStorage.setItem('f_menu', 'advanced_setting');
+                sessionStorage.setItem('first_menu', 'pon_mgmt');
+                sessionStorage.setItem('sec_menu', 'onu_deny');
             },
             //  删除确认框
             result_delete(bool){
@@ -1009,7 +966,7 @@ table{
     line-height: 18px;
     &:hover{
         >div{
-            max-height: 180px;
+            max-height: 210px;
         }
     }
     >div{
