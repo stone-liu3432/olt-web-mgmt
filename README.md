@@ -5,7 +5,7 @@
 > 项目原托管在[码云](https://www.gitee.com)上，后迁移至github
 
 目前已有组件
-- [table](#table props)
+- [table](#table组件)
 - [dialog](#dialog组件)
 - [loading](#loading组件)
 - [message](#message组件)
