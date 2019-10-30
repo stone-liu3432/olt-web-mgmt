@@ -1,5 +1,5 @@
 <template>
-    <div class="loading">
+    <div class="loading" v-if="loading">
         <div class="loading-cover"></div>
         <div class="loading-content">
             <div>
@@ -39,7 +39,17 @@
 
 <script>
     export default {
-        name: 'loading'
+        name: 'loading',
+        data(){
+            return {
+                loading: true
+            }
+        },
+        methods: {
+            close(){
+                this.loading = false;
+            }
+        }
     }
 </script>
 
