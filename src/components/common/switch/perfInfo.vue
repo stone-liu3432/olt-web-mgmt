@@ -3,16 +3,9 @@
         <h2>{{ lanMap['perf_info'] }}</h2>
         <hr />
         <nms-table :rows="perf_list" border>
-            <nms-table-column prop="port_id" :label="lanMap['port_id']" width="80px">
+            <nms-table-column prop="port_id" :label="lanMap['port_id']" min-width="80px">
                 <template slot-scope="{ port_id }">
-                    {{
-                    port_id ?
-                    port_name.pon[port_id] ?
-                    port_name.pon[port_id].name :
-                    port_name.ge[port_id] ?
-                    port_name.ge[port_id].name :
-                    port_name.xge[port_id].name : ''
-                    }}
+                    {{ port_id | getPortName }}
                 </template>
             </nms-table-column>
             <nms-table-column prop="rx_octets" :label="lanMap['rx_octets']"></nms-table-column>
@@ -39,9 +32,7 @@
             </nms-table-column>
         </nms-table>
         <nms-dialog :visible.sync="visible">
-            <template slot="title">
-                {{ lanMap['port_id'] }}: &nbsp;{{ portid | getPortName }}
-            </template>
+            <template slot="title">{{ lanMap['port_id'] }}: &nbsp;{{ portid | getPortName }}</template>
             <div class="perf-detail-content">
                 <template v-for="(item, key) in perf_detail">
                     <div v-if="key !== 'port_id'">
@@ -154,24 +145,24 @@ h2 {
 a.btn-text {
     padding: 0 6px;
 }
-.perf-detail-content{
-    >div{
+.perf-detail-content {
+    > div {
         border-bottom: 1px solid #ccc;
         float: left;
         padding: 3px 6px;
         box-sizing: border-box;
         width: 50%;
         line-height: 24px;
-        span{
+        span {
             text-transform: capitalize;
             display: inline-block;
             box-sizing: border-box;
             vertical-align: middle;
             width: 49%;
-            &:first-child{
+            &:first-child {
                 text-align: right;
             }
-            &:last-child{
+            &:last-child {
                 padding-left: 30px;
             }
         }
