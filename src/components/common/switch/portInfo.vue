@@ -4,40 +4,8 @@
             <h2>{{ lanMap['port_info'] }}</h2>
         </div>
         <hr>
-        <!-- <table border="1" style="width: 100%;" v-if="port_info.data && port_info.data.length">
-            <tr>
-                <th>{{ lanMap['port_id'] }}</th>
-                <th>{{ lanMap['admin_status'] }}</th>
-                <th>{{ lanMap['link_status'] }}</th>
-                <th>{{ lanMap['auto_neg'] }}</th>
-                <th>{{ lanMap['speed'] }}</th>
-                <th>{{ lanMap['duplex'] }}</th>
-                <th>{{ lanMap['flow_ctrl'] }}</th>
-                <th>{{ lanMap['mtu'] }}</th>
-                <th>{{ lanMap['media'] }}</th>
-                <th>{{ lanMap['pvid'] }}</th>
-                <th>{{ lanMap['config'] }}</th>
-            </tr>
-            <tr v-for="(item,index) in port_info.data" :key="index">
-                <td>{{ port_name.pon[item.port_id] ? port_name.pon[item.port_id].name : port_name.ge[item.port_id] ? port_name.ge[item.port_id].name : port_name.xge[item.port_id].name }}</td>
-                <td>{{ item.admin_status >= 1 ? "Enable" : "Disable" }}</td>
-                <td :style="{ 'color': item.link_status ? '#3990E5' : 'red'}">
-                    {{ item.link_status >=1 ? lanMap['link_up'] : lanMap['link_down'] }}
-                </td>
-                <td>{{ item.auto_neg >=1 ? "Enable" : "Disable" }}</td>
-                <td>{{ item.speed === "10/100/1000M" ? "Auto" : item.speed }}</td>
-                <td>{{ item.duplex >= 1 ? "full" : "half" }}</td>
-                <td>{{ item.flow_ctrl >= 1 ? "Enable" : "Disable" }}</td>
-                <td>{{ item.mtu }}</td>
-                <td>{{ lanMap[item.media] }}</td>
-                <td>{{ item.pvid }}</td>
-                <td>
-                    <span class="cfg-btn" @click="jump(item.port_id)">{{ lanMap['config'] }}</span>
-                </td>
-            </tr>
-        </table> -->
         <nms-table :rows="port_info.data" border>
-            <nms-table-column prop="port_id" :label="lanMap['port_id']">
+            <nms-table-column prop="port_id" :label="lanMap['port_id']" min-width="80px">
                 <template slot-scope="row">
                     {{ row.port_id | getPortName }}
                 </template>
@@ -52,14 +20,34 @@
                     {{ row.link_status >=1 ? lanMap['link_up'] : lanMap['link_down'] }}
                 </template>
             </nms-table-column>
-            <nms-table-column prop="auto_neg" :label="lanMap['auto_neg']"></nms-table-column>
-            <nms-table-column prop="speed" :label="lanMap['speed']"></nms-table-column>
-            <nms-table-column prop="duplex" :label="lanMap['duplex']"></nms-table-column>
-            <nms-table-column prop="flow_ctrl" :label="lanMap['flow_ctrl']"></nms-table-column>
+            <nms-table-column prop="auto_neg" :label="lanMap['auto_neg']">
+                <template slot-scope="row">
+                    {{ row.auto_neg >=1 ? "Enable" : "Disable" }}
+                </template>
+            </nms-table-column>
+            <nms-table-column prop="speed" :label="lanMap['speed']">
+                <template slot-scope="row">
+                    {{ row.speed === "10/100/1000M" ? "Auto" : row.speed }}
+                </template>
+            </nms-table-column>
+            <nms-table-column prop="duplex" :label="lanMap['duplex']">
+                <template slot-scope="row">
+                    {{ row.duplex >= 1 ? "full" : "half" }}
+                </template>
+            </nms-table-column>
+            <nms-table-column prop="flow_ctrl" :label="lanMap['flow_ctrl']">
+                <template slot-scope="row">
+                    {{ row.flow_ctrl >= 1 ? "Enable" : "Disable" }}
+                </template>
+            </nms-table-column>
             <nms-table-column prop="mtu" :label="lanMap['mtu']"></nms-table-column>
-            <nms-table-column prop="media" :label="lanMap['media']"></nms-table-column>
+            <nms-table-column prop="media" :label="lanMap['media']">
+                <template slot-scope="row">
+                    {{ lanMap[row.media] }}
+                </template>
+            </nms-table-column>
             <nms-table-column prop="pvid" :label="lanMap['pvid']"></nms-table-column>
-            <nms-table-column :label="lanMap['config']">
+            <nms-table-column :label="lanMap['config']" width="90px">
                 <template slot-scope="row">
                     <a href="javascript: void(0);" class="btn-text" @click="jump(row.port_id)">{{ lanMap['config'] }}</a>
                 </template>
