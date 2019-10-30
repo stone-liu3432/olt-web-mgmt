@@ -20,8 +20,22 @@
                 <span class="multi-ip">{{ item.multi_ip }}</span>
                 <span class="vid">{{ item.vid }}</span>
                 <span class="action">{{ item.action ? lanMap['static'] : lanMap['dynamic'] }}</span>
-                <span class="port-list">{{ item.host_portlist | analysis(system.data.ponports,system.data.geports) }}</span>
-                <span class="port-list">{{ item.router_portlist | analysis(system.data.ponports,system.data.geports) }}</span>
+                <span class="port-list">
+                    <template v-if="item.host_portlist">
+                        {{ item.host_portlist | parsePortList }}
+                    </template>
+                    <template v-else>
+                        -
+                    </template>
+                </span>
+                <span class="port-list">
+                    <template v-if="item.router_portlist">
+                        {{ item.router_portlist | parsePortList }}
+                    </template>
+                    <template v-else>
+                        -
+                    </template>
+                </span>
             </li>
         </ul>
         <div class="tab-bar" v-if="page > 1">

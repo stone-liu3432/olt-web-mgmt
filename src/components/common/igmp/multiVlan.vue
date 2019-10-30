@@ -26,7 +26,14 @@
             </div>
             <div>
                 <span>{{ lanMap['router_portlist'] }}</span>
-                <span>{{ router_plist.router_portlist | analysis(system.data.ponports,system.data.geports) }}</span>
+                <span>
+                    <template v-if="router_plist.router_portlist">
+                        {{ router_plist.router_portlist | parsePortList }}
+                    </template>
+                    <template v-else>
+                        -
+                    </template>
+                </span>
             </div>
             <div v-if="mc_unknown_info.data">
                 <span>{{ lanMap['mc_unknown_policy'] }}</span>
