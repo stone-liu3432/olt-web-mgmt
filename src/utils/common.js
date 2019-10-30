@@ -94,21 +94,9 @@ export function parsePortList(str) {
     }
     return result.reduce((initVal, val) => {
         if (initVal) {
-            return `${initVal},${
-                store.state.port_name.pon[val]
-                    ? store.state.port_name.pon[val].name
-                    : store.state.port_name.ge[val]
-                    ? store.state.port_name.ge[val].name
-                    : store.state.port_name.xge[val].name
-            }`;
+            return `${initVal},${ getPortName(val) }`;
         }
-        return `${
-            store.state.port_name.pon[val]
-                ? store.state.port_name.pon[val].name
-                : store.state.port_name.ge[val]
-                ? store.state.port_name.ge[val].name
-                : store.state.port_name.xge[val].name
-        }`;
+        return getPortName(val);
     }, "");
 }
 

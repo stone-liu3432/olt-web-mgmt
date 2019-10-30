@@ -753,7 +753,16 @@ var en = {
     clear: "Clear",
     mtype: "Calibrated",
     ex_cali: "Externally Calibrated",
-    in_cali: "Internal Calibrated"
+    in_cali: "Internal Calibrated",
+
+    onu_wlan: "WLAN",
+    encrypt: "Encryption",
+    clear_wlan_tips: "Note: Clearing the WLAN connection will only clear the configured WLAN connection on the current device.",
+
+    
+    composeRange(min, max) {
+        return `${min} - ${max} characters`;
+    }
 };
 
 export default en;

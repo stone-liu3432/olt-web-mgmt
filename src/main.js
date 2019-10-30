@@ -9,7 +9,7 @@ import store from './vuex/store'
 import VueMessage from '@/components/common/message'
 import confirm from '@/components/common/confirm'
 import tabBar from '@/components/common/tabBar'
-import { analysis, getPortName } from './utils/common.js'
+import { analysis, getPortName, parsePortList } from './utils/common.js'
 import serviceCconfirm from '@/components/common/commonComponent/confirm';
 import Notification from '@/components/common/commonComponent/notify';
 import nmsTable from '@/components/common/commonComponent/table/table';
@@ -27,6 +27,7 @@ Vue.component('nmsDialog', nmsDialog);
 
 Vue.filter('analysis', analysis);
 Vue.filter('getPortName', getPortName);
+Vue.filter('parsePortList', parsePortList);
 //  request拦截器  -->  全局request添加请求头
 axios.interceptors.request.use(config => {
 	var xtoken = sessionStorage.getItem('x-token');

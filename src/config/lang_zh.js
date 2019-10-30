@@ -732,7 +732,17 @@ var zh = {
     clear: '清除',
     mtype: "校准",
     ex_cali: "外部校准",
-    in_cali: "内部校准"
+    in_cali: "内部校准",
+
+    onu_wlan: "WLAN",
+    encrypt: "加密方式",
+    clear_wlan_tips: "注：清除WLAN连接，只会清除在当前设备上的配置的WLAN连接",
+
+
+    
+    composeRange(min, max){
+        return `${min} - ${max}位字符`;
+    }
 };
 
 export default zh;
