@@ -4,7 +4,6 @@ import store from "../vuex/store";
 import login from "../components/page/login";
 import sysSetting from '../components/page/sys-setting';
 import advancedSettingRouter from './advancedSettingRouter';
-import hsgq from '../Hsgq'
 
 Vue.use(Router);
 

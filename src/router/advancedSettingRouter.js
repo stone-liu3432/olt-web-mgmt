@@ -21,6 +21,7 @@ const onuMulticast = () => import(/* webpackChunkName: "ponmgmt-page" */  '@/com
 const ponOptical = () => import(/* webpackChunkName: "ponmgmt-page" */  '@/components/common/pon/ponOptical')
 const loid = () => import(/* webpackChunkName: "ponmgmt-page" */  '@/components/common/pon/loid')
 const onuPerf = () => import(/* webpackChunkName: "ponmgmt-page" */  '@/components/common/pon/onuPerf')
+const batchConfig = () => import(/* webpackChunkName: "ponmgmt-page" */ '@/components/common/pon/batchConfig')
 // switch
 const portInfo = () => import(/* webpackChunkName: "switch-page" */  '@/components/common/switch/portInfo')
 const perfInfo = () => import(/* webpackChunkName: "switch-page" */  '@/components/common/switch/perfInfo')
@@ -163,6 +164,13 @@ export default [
         meta: {
             requireAuth: true,
             keepAlive: true
+        }
+    },
+    {
+        path: '/batch_config',
+        component: batchConfig,
+        meta: {
+            requireAuth: true
         }
     },
     {
