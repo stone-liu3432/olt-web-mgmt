@@ -23,21 +23,8 @@ const messageActions = {
         sessionStorage.removeItem("uname");
         this.$router.replace("/login");
     },
-    //  client连接server成功时，给server发送一条注册消息
-    register() {
-        const xtoken = sessionStorage.getItem("x-token"),
-            username = sessionStorage.getItem("uname");
-        xtoken &&
-            username &&
-            this.ws.send(
-                JSON.stringify({
-                    type: 2, // message
-                    action: 1, // register
-                    xtoken,
-                    username
-                })
-            );
-    },
+    //  接收到服务器返回的register消息直接忽略，不作任何处理
+    register() {},
     //  接收到server发送的pong包时的动作
     heartbeats() {
         this.resetHeartBeat();
@@ -52,17 +39,17 @@ const typeActions = {
                 position: "top-right",
                 type: LEVEL[level] || "info"
             });
-            //  设备重启告警
-            if(alarm_id === 0x1001){
-                this.$message({
-                    type: 'warning',
-                    text: content,
-                    duration: 60000
-                })
-                sessionStorage.removeItem("x-token");
-                sessionStorage.removeItem("uname");
-                this.$router.replace("/login");
-            }
+        //  设备重启告警
+        if (alarm_id === 0x1001) {
+            this.$message({
+                type: "warning",
+                text: content,
+                duration: 60000
+            });
+            sessionStorage.removeItem("x-token");
+            sessionStorage.removeItem("uname");
+            this.$router.replace("/login");
+        }
     },
     message(data) {
         //  action:  1-resgister，2-timeout，3-heartbeats
@@ -246,7 +233,7 @@ export default {
                 let ws = new WebSocket(wsUrl);
                 ws.onopen = e => {
                     if (ws.readyState === 1) {
-                        messageActions.register.call(this);
+                        this.sendRegisterMsg();
                         //  心跳检测
                         this.startHeartBeat();
                     }
@@ -293,6 +280,20 @@ export default {
         resetHeartBeat() {
             clearTimeout(this.timeout);
             this.startHeartBeat();
+        },
+        sendRegisterMsg() {
+            const xtoken = sessionStorage.getItem("x-token"),
+                username = sessionStorage.getItem("uname");
+            xtoken &&
+                username &&
+                this.ws.send(
+                    JSON.stringify({
+                        type: 2, // message
+                        action: 1, // register
+                        xtoken,
+                        username
+                    })
+                );
         }
     },
     computed: mapState(["port_info", "system", "change_url", "lanMap"])
