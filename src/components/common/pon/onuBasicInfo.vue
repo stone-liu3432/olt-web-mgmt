@@ -73,6 +73,7 @@
         </div>
         <onuAlarm v-if="show_page === 'onu_alarm'" :port-data="{ portid, onuid }" ref="onuAlarm"></onuAlarm>
         <onu-wan-config v-if="show_page === 'wan_connect'" :port-data="{ portid, onuid }" ref="onuWan"></onu-wan-config>
+        <onu-wlan v-if="show_page === 'onu_wlan'" :port-data="{ portid, onuid }" ref="onuWlan"></onu-wlan>
         <div class="modal-dialog" v-if="onu_cfg_name">
             <div class="cover"></div>
             <div class="onu-desc">
@@ -107,22 +108,27 @@
 import { mapState,mapMutations } from 'vuex'
 import onuAlarm from './onuAlarm';
 import onuWanConfig from './onuWanConfig';
+import onuWlan from './onuWlan';
     export default {
         name: 'onuBasicInfo',
         computed: {
             ...mapState(['lanMap','port_name','port_info','change_url','onu_list']),
             tabs(){
+                //return ['onu_info', 'onu_alarm', 'wan_connect', 'onu_wlan'];
                 let list = ['onu_info', 'onu_alarm'];
                 if(this.onu_basic_info.data && this.onu_basic_info.data.fw_ver){
                     let fw_ver = this.onu_basic_info.data.fw_ver, reg = /^4853/;
                     if(reg.test(fw_ver)){
                         list.push('wan_connect');
+                        if(this.onu_basic_info.data.wlan){
+                            list.push('onu_wlan');
+                        }
                     }
                 }
                 return list
             }
         },
-        components: { onuAlarm, onuWanConfig },
+        components: { onuAlarm, onuWanConfig, onuWlan },
         data(){
             return {
                 onu_basic_info: {},
@@ -141,7 +147,8 @@ import onuWanConfig from './onuWanConfig';
                 //  升级确认框
                 upgrade_confirm: false,
                 show_page: 'onu_info',
-                isCreated: false
+                isCreated: false,
+                wlan: 0
             }
         },
         created(){
@@ -497,6 +504,10 @@ import onuWanConfig from './onuWanConfig';
                             this.$nextTick(_ =>{
                                 this.$refs.onuWan.getData();
                             })
+                        }else if(this.show_page === 'onu_wlan'){
+                            this.$nextTick(_ => {
+                                this.$refs.onuWlan.getData();
+                            })
                         }
                     }else{
                         this.addonu_list({});
@@ -540,6 +551,10 @@ import onuWanConfig from './onuWanConfig';
                 }else if(this.show_page === 'wan_connect'){
                     this.$nextTick(_ => {
                         this.$refs.onuWan.getData();
+                    })
+                }else if(this.show_page === 'onu_wlan'){
+                    this.$nextTick(_ => {
+                        this.$refs.onuWlan.getData();
                     })
                 }
                 this.clearFile();
