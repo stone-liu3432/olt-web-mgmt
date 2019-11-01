@@ -153,9 +153,14 @@ import onuWlan from './onuWlan';
         },
         created(){
             var pid = Number(sessionStorage.getItem('pid'));
+            const { port_id, onu_id, flag } = this.$route.query;
             this.portid = Number(this.$route.query.port_id) || pid || 1;
             //  防止同时触发 created 和 activated
             this.isCreated = true;
+            if(flag){
+                flag === 'wan' && (this.show_page = 'wanwan_connect');
+                return
+            }
             if(this.change_url.beta === 'test'){
                 this.$http.get('./simulation_data/onu_resource.json').then(res=>{
                     if(res.data.code === 1){
@@ -191,10 +196,14 @@ import onuWlan from './onuWlan';
                 this.isCreated = false;
                 return;
             }
+            const { port_id, onu_id, flag } = this.$route.query;
             var pid = Number(sessionStorage.getItem('pid'));
             this.portid = Number(this.$route.query.port_id) || pid || 1;
             if(pid === this.portid){
                 this.get_resource();
+            }
+            if(flag){
+                flag === 'wan' && (this.show_page = 'wanwan_connect');
             }
         },
 		methods:{
@@ -491,7 +500,7 @@ import onuWlan from './onuWlan';
                             return
                         }
                         if(this.$route.query.onu_id){
-                            this.$route.query.onu_id = null;
+                            this.$router.push('/onu_basic_info')
                         }
                         if(this.show_page === 'onu_info'){
                             this.getData();
