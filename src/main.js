@@ -8,7 +8,7 @@ import axios from 'axios'
 import store from './vuex/store'
 import VueMessage from '@/components/common/message'
 import confirm from '@/components/common/confirm'
-import tabBar from '@/components/common/tabBar'
+import tabBar from '@/components/common/commonComponent/tabs';
 import { analysis, getPortName, parsePortList } from './utils/common.js'
 import serviceCconfirm from '@/components/common/commonComponent/confirm';
 import Notification from '@/components/common/commonComponent/notify';
@@ -16,11 +16,13 @@ import nmsTable from '@/components/common/commonComponent/table/table';
 import nmsTableColumn from '@/components/common/commonComponent/table/tableColumn';
 import nmsDialog from '@/components/common/commonComponent/dialog/dialog';
 import loading from '@/components/common/commonComponent/loading';
+import portHeader from '@/components/common/commonComponent/pageHeader';
 
 Vue.use(VueMessage)
+Vue.use(portHeader);
+Vue.use(tabBar);
 
-Vue.component('confirm', confirm)
-Vue.component('tabBar', tabBar)
+Vue.component('confirm', confirm);
 Vue.component('nmsTable', nmsTable);
 Vue.component('nmsTableColumn', nmsTableColumn);
 Vue.component('nmsDialog', nmsDialog);
