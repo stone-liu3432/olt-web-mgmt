@@ -347,4 +347,7 @@ a.btn-text {
 .flex-evenly {
     justify-content: space-evenly;
 }
+td a.btn-text{
+    padding: 0 6px;
+}
 </style>
