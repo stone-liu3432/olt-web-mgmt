@@ -737,9 +737,12 @@ var zh = {
     onu_wlan: "WLAN",
     encrypt: "加密方式",
     clear_wlan_tips: "注：清除WLAN连接，只会清除在当前设备上的配置的WLAN连接",
+    batch_config: "批量配置",
+    op_vlan: "ONU端口VLAN",
+    wan_count: "已配置",
+    wan_count_max: "最大支持数量",
 
 
-    
     composeRange(min, max){
         return `${min} - ${max}位字符`;
     }

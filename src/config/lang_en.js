@@ -54,7 +54,7 @@ var en = {
     type: " Type",
     using: " Enable",
     forbidden: " Disable",
-    st_success: "  Success",
+    st_success: " Success",
     st_fail: "  Failed",
     range: " Range",
     onu_info: " ONU Info",
@@ -758,8 +758,11 @@ var en = {
     onu_wlan: "WLAN",
     encrypt: "Encryption",
     clear_wlan_tips: "Note: Clearing the WLAN connection will only clear the configured WLAN connection on the current device.",
+    batch_config: "Batch Configuration",
+    op_vlan: "ONU Port VLAN",
+    wan_count: "Configured",
+    wan_count_max: "Maximum support quantity",
 
-    
     composeRange(min, max) {
         return `${min} - ${max} characters`;
     }
