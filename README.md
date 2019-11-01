@@ -17,7 +17,7 @@
 #### table props
 |参数|说明|类型|可选值|默认值|
 |:---|:---|:---|:---|:---|
-|row|显示的数据|array|--|[]|
+|rows|显示的数据|array|--|[]|
 |border|是否显示边框|boolean|--|false|
 |stripe|是否隔行变色(斑马纹)|boolean|--|false|
 |empty-text|数据为空时显示的文字,也可以通过slot="empty"来设置|string|--|"No data"|
@@ -47,6 +47,7 @@
 |参数|说明|类型|可选值|默认值|
 |:---|:---|:---|:---|:---|
 |visible|是否显示dialog，支持.sync修饰符|boolean|--|false|
+|width|dialog的内容区的宽度|string|--|--|
 |title|dialog的标题，也可通过slot="title"传入|string|--|--|
 |show-close|是否显示关闭按钮|boolean|--|true|
 |before-close|dialog关闭前的回调，会暂停dialog的关闭|function(done)，要关闭dialog，必须显式调用done()|--|--|
