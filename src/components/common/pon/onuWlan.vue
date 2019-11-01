@@ -98,7 +98,7 @@ export default {
             return this.portData.onuid;
         },
         valid_ssid() {
-            const reg = /^\w{4,32}|[\u4e00-\u9fa5]{2,16}$/;
+            const reg = /^\w{4,32}|[\u4e00-\u9fa5\w\-]{2,16}$/;
             return reg.test(this.ssid);
         },
         valid_password() {
