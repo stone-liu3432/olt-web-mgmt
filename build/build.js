@@ -53,7 +53,7 @@ const autoArchiver = () => {
   console.time("文件压缩成功，共计用时：");
   // 创建文件输出流
   let filename =
-      path.resolve(__dirname, "../dist/nms") + timeStramp() + ".zip";
+      path.resolve(__dirname, "../dist/dist") + timeStramp() + ".zip";
   let output = fs.createWriteStream(filename);
   let archive = archiver("zip", {
       zlib: { level: 9 } // 设置压缩级别
