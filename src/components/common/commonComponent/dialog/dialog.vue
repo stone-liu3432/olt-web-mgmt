@@ -1,7 +1,7 @@
 <template>
     <div :class="['modal-dialog', customClass]" v-if="visible">
         <div class="cover"></div>
-        <div>
+        <div :style="{ width }">
             <div class="modal-header">
                 <slot name="title">
                     {{ title }}
@@ -41,6 +41,10 @@ export default {
         },
         customClass: {
             type: String
+        },
+        width: {
+            type: String,
+            default: '70%'
         }
     },
     methods: {
@@ -62,7 +66,6 @@ export default {
 <style lang="less" scoped>
 div.modal-dialog{
     >div.cover+div{
-        width: 70%;
         height: auto;
     }
 }
