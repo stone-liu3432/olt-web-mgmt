@@ -1,45 +1,72 @@
 <template>
     <div>
         <div class="tab-bar">
-            <div :class="{actived: show_index === index}" @click="select_tab(item,index)" v-for="(item,index) in tab" :key="index">{{ lanMap[item] ? lanMap[item] : item }}</div>
+            <div
+                :class="{ actived: show === item }"
+                @click="select_tab(item)"
+                v-for="(item,index) in tab"
+                :key="index"
+            >{{ lanMap[item] ? lanMap[item] : item }}</div>
         </div>
     </div>
 </template>
 
 <script>
-import { mapState } from 'vuex'
+import { mapState } from "vuex";
 export default {
-    name: 'tabBar',
-    props: ['tab'],
-    computed: mapState(['lanMap']),
-    data(){
-        return {
-            show_index: 0
+    name: "tabBar",
+    model: {
+        prop: 'show_index',
+        event: 'togglePage'
+    },
+    props: {
+        tab: {
+            type: Array,
+            required: true
+        },
+        show_index: {
+            type: String
         }
     },
+    computed: {
+        ...mapState(["lanMap"])
+    },
+    data() {
+        return {
+            show: this.show_index || this.tab[0]
+        };
+    },
     methods: {
-        select_tab(item,index){
-            this.show_index = index;
-            this.$emit('togglePage',item);
+        select_tab(item) {
+            if(this.show === item) return
+            this.show = item;
+            this.$emit("togglePage", item);
+        }
+    },
+    watch: {
+        show_index(){
+            if(this.show === this.show_index) return
+            this.show = this.show_index;
+            this.$emit("togglePage", this.show_index);
         }
     }
-}
+};
 </script>
 
 <style lang="less" scoped>
-div.tab-bar{
+div.tab-bar {
     margin: 30px 0 20px 0;
-    border-bottom: 3px solid #2361A2;
+    border-bottom: 3px solid #2361a2;
     padding-left: 10px;
-    &::after{
-        content: '';
+    &::after {
+        content: "";
         display: table;
         clear: both;
     }
-    >div{
+    > div {
         float: left;
         margin-left: 5px;
-        border: 1px solid #2361A2;
+        border: 1px solid #2361a2;
         margin-bottom: -1px;
         border-radius: 3px 3px 0 0;
         cursor: pointer;
@@ -48,11 +75,11 @@ div.tab-bar{
         height: 30px;
         line-height: 30px;
     }
-    .actived{
-        border: 1px solid #2361A2;
+    .actived {
+        border: 1px solid #2361a2;
         border-radius: 3px 3px 0 0;
         color: #fff;
-        background: #2361A2;
+        background: #2361a2;
         font-weight: 500;
     }
 }
