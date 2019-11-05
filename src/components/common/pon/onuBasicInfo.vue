@@ -17,7 +17,7 @@
             <div v-else class="error-msg">{{ lanMap['no_onu_info'] }}</div>
 		</div>
 		<hr>
-        <tabBar :tab="tabs" @togglePage="select_page" v-if="onu_list.data"></tabBar>
+        <tabBar :tab="tabs" @togglePage="select_page" v-model="show_page" v-if="onu_list.data"></tabBar>
         <div v-if="show_page === 'onu_info'">
             <div class="handle-btn" v-if="onu_basic_info.data">
                 <h3 class="lf">{{ lanMap['onu_mgmt'] }}</h3>
@@ -158,8 +158,7 @@ import onuWlan from './onuWlan';
             //  防止同时触发 created 和 activated
             this.isCreated = true;
             if(flag){
-                flag === 'wan' && (this.show_page = 'wanwan_connect');
-                return
+                flag === 'wan' && (this.show_page = 'wan_connect');
             }
             if(this.change_url.beta === 'test'){
                 this.$http.get('./simulation_data/onu_resource.json').then(res=>{
@@ -203,7 +202,7 @@ import onuWlan from './onuWlan';
                 this.get_resource();
             }
             if(flag){
-                flag === 'wan' && (this.show_page = 'wanwan_connect');
+                flag === 'wan' && (this.show_page = 'wan_connect');
             }
         },
 		methods:{
@@ -499,11 +498,8 @@ import onuWlan from './onuWlan';
                             this.onuid = _onu_list[0];
                             return
                         }
-                        if(this.$route.query.onu_id){
-                            this.$router.push('/onu_basic_info')
-                        }
+                        this.getData();
                         if(this.show_page === 'onu_info'){
-                            this.getData();
                             this.getOpticalData();
                         }else if(this.show_page === 'onu_alarm'){
                             this.$nextTick(()=>{
@@ -550,8 +546,8 @@ import onuWlan from './onuWlan';
 			onuid(){
                 if(this.onuid == 0) return
                 sessionStorage.setItem('oid',Number(this.onuid));
+                this.getData();
                 if(this.show_page === 'onu_info'){
-                    this.getData();
                     this.getOpticalData();
                 }else if(this.show_page === 'onu_alarm'){
                     this.$nextTick(()=>{
