@@ -128,8 +128,8 @@
 
 <script>
 import { mapState } from 'vuex'
-import multicast from '@/components/common/igmp/multicast'
-import multiVlan from '@/components/common/igmp/multiVlan'
+import multicast from './igmp/multicast'
+import multiVlan from './igmp/multiVlan'
 export default {
     name: 'igmp',
     computed: mapState(['lanMap','change_url']),

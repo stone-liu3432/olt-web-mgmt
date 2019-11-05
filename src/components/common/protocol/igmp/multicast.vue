@@ -300,7 +300,7 @@ div.multicast{
             display: inline-block;
             width: 32px;
             height: 32px;
-            background: url('../../../assets/refresh.png') no-repeat;
+            background: url('../../../../assets/refresh.png') no-repeat;
             vertical-align: middle;
             margin-left: 30px;
             cursor: pointer;
