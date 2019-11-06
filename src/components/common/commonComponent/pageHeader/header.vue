@@ -5,7 +5,7 @@
                 <!-- 标题部分 -->
                 <slot name="title"></slot>
             </h2>
-            <div class="lf">
+            <div class="lf" v-if="type === 'port' || type === 'pon'">
                 <span>{{ lanMap['port_id'] }}</span>
                 <select v-model="portid" style="margin-left: 6px;">
                     <template v-for="item in port_name.pon">
@@ -79,7 +79,7 @@ export default {
         this.portid = Number(sessionStorage.getItem("pid")) || 1;
     },
     props: {
-        //  type: pon / port
+        //  type: pon / port / none  （none表示不显示端口）
         type: {
             type: String,
             default: "pon"
