@@ -32,6 +32,7 @@ const macMgmt = () => import(/* webpackChunkName: "switch-page" */  '@/component
 // protocol
 const rstp = () => import(/* webpackChunkName: "protocol-page" */  '@/components/common/protocol/rstp')
 const igmp = () => import(/* webpackChunkName: "protocol-page" */  '@/components/common/protocol/igmp')
+const dhcp = () => import(/* webpackChunkName: "protocol-page" */  '@/components/common/protocol/dhcp')
 
 // acl/qos
 const aclMgmt = () => import(/* webpackChunkName: "acl-qos-page" */  '@/components/common/acl-QoS/aclMgmt')
@@ -214,6 +215,13 @@ export default [
     {
         path: "/rstp",
         component: rstp,
+        meta: {
+            requireAuth: true
+        }
+    },
+    {
+        path: "/dhcp",
+        component: dhcp,
         meta: {
             requireAuth: true
         }

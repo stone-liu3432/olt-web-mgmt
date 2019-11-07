@@ -494,7 +494,7 @@ var en = {
     query_src_mac: " Query Source MAC",
     vid: " Multicast VLAN",
     action: " Multicast Type",
-    program_range_tips: " Effective address range：224.0.1.0-239.255.255.255",
+    program_range_tips: " Effective address range:224.0.1.0-239.255.255.255",
     port_list_tips:
         " The routing port is only for the uplink port, 1 for GE1, and 2 for GE2...",
 
@@ -757,11 +757,33 @@ var en = {
 
     onu_wlan: "WLAN",
     encrypt: "Encryption",
-    clear_wlan_tips: "Note: Clearing the WLAN connection will only clear the configured WLAN connection on the current device.",
+    clear_wlan_tips:
+        "Note: Clearing the WLAN connection will only clear the configured WLAN connection on the current device.",
     batch_config: "Batch Configuration",
     op_vlan: "ONU Port VLAN",
     wan_count: "Configured",
     wan_count_max: "Maximum support quantity",
+    dhcp: "DHCP",
+    dhcp_admin: "DHCP Status",
+    relay_admin: "Relay Status",
+    relay_policy: "Relay Policy",
+    standard: "Standard(VLANIF)",
+    option60: "Option60",
+    option82_admin: " Option82 Status",
+    option82_policy: "Option82 Policy",
+    reserve: "Reserve ",
+    drop: "Drop",
+    replace: "Replace",
+    option82_circuit: "Sub-Option 1(Circuit ID)",
+    option82_remote: "Sub-Option 2(Remote ID)",
+    snooping_admin: "Snooping Status",
+    chaddr_check: "Client Address Check",
+    response_time: "Response Wait Time",
+    trust_portlist: "Trust Ports",
+    server_ip: "Server IP",
+    lease_time: "Lease Time(s)",
+    entry_status: "Status",
+    snooping_table: "Snooping Table",
 
     composeRange(min, max) {
         return `${min} - ${max} characters`;
