@@ -1,7 +1,8 @@
 <template>
     <div class="rstp">
-        <h2>RSTP</h2>
-        <hr>
+        <page-header type="none">
+            <div slot="title">RSTP</div>
+        </page-header>
         <div>
             <span>{{ lanMap['rstp_b_info'] }}</span>
             <a href="javascript:;" @click="open_modal" v-if="rstp.data">{{ lanMap['config'] }}</a>
@@ -478,7 +479,7 @@ div.rstp{
         margin: 10px 0;
     }
     >div{
-        margin: 30px 0 20px 10px;
+        // margin: 30px 0 20px 10px;
         >span{
             display: inline-block;
             width: 150px;

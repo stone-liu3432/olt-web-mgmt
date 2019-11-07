@@ -1,7 +1,8 @@
 <template>
     <div class="igmp">
-        <h2>IGMP</h2>
-        <hr>
+        <page-header type="none">
+            <div slot="title">IGMP</div>
+        </page-header>
         <tabBar :tab="['info','multicast_table','mvlan']" @togglePage="select_page"></tabBar>
         <div v-if="show_index === 'info'">
             <span>IGMP{{ lanMap['info'] }}</span>
@@ -393,7 +394,7 @@ input:disabled,select:disabled{
 }
 div.igmp{
     >div{
-        margin: 30px 0 20px 10px;
+        // margin: 30px 0 20px 10px;
         >span{
             font-size: 18px;
             color: #67aef7;
