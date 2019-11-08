@@ -142,3 +142,25 @@ export function parsePort(str) {
     }
     return result;
 }
+
+/* 
+*  @method 防抖函数 间隔时间内点击，只执行一次
+*  @param {Fucntion} func 需要执行防抖的回调
+*  @param {Number} delay 执行延迟时间 
+*  @param {Object} context 回调函数的this指向
+*  @param {Event} event 回调的参数，event对象
+*/
+export function debounce(func, delay, context, event) {
+    if (func.timer) {
+        clearTimeout(func.timer);
+        func.timer = setTimeout(_ => {
+            func.apply(context, event);
+            func.timer = null;
+        }, delay);
+    } else {
+        func.timer = setTimeout(_ => {
+            func.apply(context, event);
+            func.timer = null;
+        }, delay);
+    }
+}
