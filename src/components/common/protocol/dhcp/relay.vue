@@ -7,7 +7,7 @@
                 href="javascript: void(0);"
                 style="margin-left: 30px;"
                 @click="openDialog('admin')"
-            >{{ lanMap['set'] }}</a>
+            >{{ lanMap['config'] }}</a>
         </div>
         <div v-if="admin === 1">
             <div style="margin: 0 0 10px 10px;">
@@ -17,12 +17,12 @@
                     href="javascript: void(0);"
                     style="margin-left: 30px;"
                     @click="openDialog('policy')"
-                >{{ lanMap['set'] }}</a>
+                >{{ lanMap['config'] }}</a>
                 <a
                     href="javascript: void(0);"
                     style="margin-left: 30px;"
                     @click="openDialog('add')"
-                >{{ lanMap['add'] }}</a>
+                >{{ lanMap['add'] + lanMap['server_ip'] }}</a>
             </div>
             <div v-if="policy === 0">
                 <nms-table :rows="dataTable" border>
@@ -55,7 +55,6 @@
                 </nms-table>
             </div>
         </div>
-        <p v-else class="no-data-tips">{{ lanMap['no_more_data'] }}</p>
         <nms-dialog :visible.sync="visible" width="500px" :before-close="beforeClose">
             <div slot="title">{{ policies.includes(dialogType) ? lanMap['add'] : lanMap['set'] }}</div>
             <div v-if="dialogType === 'admin'" class="relay-form-item">
@@ -176,14 +175,19 @@ export default {
             server_ip: ""
         };
     },
-    mounted() {
-        this.dataTable = [
-            {
-                vlan_id: 1,
-                server_ip: "192.168.100.100"
-            }
-        ];
+    created() {
+        if (this.admin) {
+            this.getData();
+        }
     },
+    // mounted() {
+    //     this.dataTable = [
+    //         {
+    //             vlan_id: 1,
+    //             server_ip: "192.168.100.100"
+    //         }
+    //     ];
+    // },
     props: {
         globalData: {
             type: Object,
@@ -236,8 +240,31 @@ export default {
                         this.$message.success(
                             this.lanMap[flag] + this.lanMap["st_success"]
                         );
-                        this.updateData();
+                        if (
+                            this.dialogType === "option60" ||
+                            this.dialogType === "standard" ||
+                            flag === "delete"
+                        ) {
+                            this.getData();
+                        } else {
+                            this.updateData();
+                        }
                     } else {
+                        if (
+                            res.data.message.indexOf(
+                                "dhcp realy function must be enable ip route"
+                            ) > -1
+                        ) {
+                            this.$confirm(this.lanMap["dhcp_relay_tips"])
+                                .then(_ => {
+                                    this.enableRoute(
+                                        `(${res.data.code}) ${res.data.message}`
+                                    );
+                                })
+                                .catch(_ => {});
+                            this.visible && this.closeDialog();
+                            return;
+                        }
                         this.$message.error(
                             `(${res.data.code}) ${res.data.message}`
                         );
@@ -249,6 +276,8 @@ export default {
         openDialog(flag) {
             this.visible = true;
             this.dialogType = flag;
+            this.relay_admin = this.admin || 0;
+            this.relay_policy = this.policy;
             if (flag === "add") {
                 this.dialogType = this.policies[this.policy];
             }
@@ -335,29 +364,55 @@ export default {
             this.vlan_id = "";
             this.option60 = "";
             this.server_ip = "";
+        },
+        getData() {
+            this.dataTable = [];
+            if (
+                typeof this.getPolicy[this.policies[this.policy]] === "function"
+            ) {
+                const request = this.getPolicy[this.policies[this.policy]].call(
+                    this
+                );
+                request
+                    .then(res => {
+                        if (res.data.code === 1) {
+                            if (res.data.data && res.data.data.length) {
+                                this.dataTable = res.data.data;
+                            }
+                        }
+                    })
+                    .catch(err => {});
+            }
+        },
+        //  DHCP Ready 在三层路由未开启的状态下会返回错误，需提示用户是否打开 route
+        enableRoute(msg) {
+            this.$http
+                .post("/switch_route?form=admin", {
+                    method: "set",
+                    param: {
+                        status: 1
+                    }
+                })
+                .then(res => {
+                    if (res.data.code === 1) {
+                        const data = {
+                            method: "set",
+                            param: {
+                                relay_admin: 1
+                            }
+                        };
+                        this.postData("/switch_dhcp?form=relay_admin", data);
+                    } else {
+                        this.$message.error(msg);
+                    }
+                })
+                .catch(err => {});
         }
     },
     watch: {
         admin() {
-            this.dataTable = [];
             if (this.admin) {
-                if (
-                    typeof this.getPolicy[this.policies[this.policy]] ===
-                    "function"
-                ) {
-                    const request = this.getPolicy[
-                        this.policies[this.policy]
-                    ].call(this);
-                    request
-                        .then(res => {
-                            if (res.data.code === 1) {
-                                if (res.data.data && res.data.data.length) {
-                                    this.dataTable = res.data.data;
-                                }
-                            }
-                        })
-                        .catch(err => {});
-                }
+                this.getData();
             }
         }
     }

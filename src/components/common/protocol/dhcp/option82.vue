@@ -2,7 +2,7 @@
     <div class="dhcp-option82">
         <div class="option82-item">
             <span>{{ lanMap['option82_admin'] }}:</span>
-            <span>{{ admin === 0 ? lanMap['disable'] : lanMap['enable'] }}</span>
+            <span>{{ admin === 1 ? lanMap['enable'] : lanMap['disable'] }}</span>
             <a
                 href="javascript: void(0);"
                 style="margin-left: 30px;"
@@ -97,7 +97,7 @@ export default {
         openDialog(flag) {
             this.dialogType = flag;
             this.visible = true;
-            this.option82_admin = this.admin;
+            this.option82_admin = this.admin || 0;
             this.option82_policy = this.policy;
         },
         submitForm() {
