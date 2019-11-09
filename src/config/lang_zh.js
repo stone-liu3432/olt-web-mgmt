@@ -762,7 +762,8 @@ var zh = {
     lease_time: "租约时间(秒)",
     entry_status: "状态",
     snooping_table: "Snooping表项",
-
+    dhcp_relay_tips: "DHCP Relay 需要三层支持，是否开启？",
+    route_close_tips: "DHCP Relay 需要三层支持，是否关闭DHCP Relay ?",
 
     composeRange(min, max){
         return `${min} - ${max}位字符`;

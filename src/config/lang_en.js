@@ -780,10 +780,12 @@ var en = {
     chaddr_check: "Client Address Check",
     response_time: "Response Wait Time",
     trust_portlist: "Trust Ports",
-    server_ip: "Server IP",
+    server_ip: " Server IP",
     lease_time: "Lease Time(s)",
     entry_status: "Status",
     snooping_table: "Snooping Table",
+    dhcp_relay_tips: 'DHCP Relay need layer3 support, Do you want to enable it ?',
+    route_close_tips: "DHCP Relay need layer3 support, Do you want to disable it ?",
 
     composeRange(min, max) {
         return `${min} - ${max} characters`;
