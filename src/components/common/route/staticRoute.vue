@@ -216,6 +216,12 @@ export default {
                         })
                         this.getState();
                     }else{
+                        if(res.data.message.indexOf('please disable dhcp relay first') > -1){
+                            this.$confirm(this.lanMap['route_close_tips']).then(_ => {
+                                this.disableDhcpRelay(`(${res.data.code}) ${res.data.message}`);
+                            }).catch(_ => {})
+                            return;
+                        }
                         this.$message({
                             type: res.data.type,
                             text: '(' + res.data.code + ') ' + res.data.message
@@ -404,6 +410,22 @@ export default {
         openSetDef(){
             this.setDefRoute = true;
             this.gateway = this.default_route.data.gateway;
+        },
+        disableDhcpRelay(msg){
+            const data = {
+                "method":"set",
+                "param":{
+                    relay_admin: 0
+                }
+            }
+            this.$http.post('/switch_dhcp?form=relay_admin', data).then(res => {
+                if(res.data.code === 1){
+                    this.interval = false;
+                    this.changeRouteState(true);
+                }else{
+                    this.$message.error(msg);
+                }
+            }).catch(err => {})
         }
     }
 }
