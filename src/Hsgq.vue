@@ -127,7 +127,7 @@ export default {
     max-width: 1980px;
     font-size: 16px;
     overflow-y: scroll;
-    background: #e0efe7;
+    background: @bgColor;
 }
 .global-load {
     display: none;
@@ -216,7 +216,7 @@ acronym {
     float: right;
 }
 select {
-    border: 1px solid #ccc;
+    border: 1px solid @formBorderColor;
     padding-left: 10px\9\0;
 }
 .flex-box {
@@ -227,14 +227,14 @@ input[type="text"] {
     font-size: 16px;
     height: 30px;
     line-height: 30px;
-    border: 1px solid #c8cccf;
+    border: 1px solid @formBorderColor;
     border-radius: 3px;
-    color: #000;
+    color: @formColor;
     outline: 0;
     text-decoration: none;
 }
 input[type="text"]:focus {
-    border: 1px solid #1e90ff;
+    border: 1px solid @activedFormBorderColor;
     border-radius: 3px;
 }
 select {
@@ -255,17 +255,17 @@ a {
     height: 30px;
     line-height: 30px;
     text-align: center;
-    background: #666;
-    color: #fff;
+    background: @buttonBgColor;
+    color: @buttonColor;
     vertical-align: middle;
     transition: all 0.2s linear;
 }
 a:hover {
-    color: #67aef6;
+    color: @hoverButtonColor;
 }
 a:active {
-    border: 1px solid #1e90ff;
-    background: #444;
+    border: 1px solid @activedButtonBorderColor;
+    background: @activedButtonBgColor;
 }
 i {
     user-select: none;
@@ -287,7 +287,7 @@ i {
     position: fixed;
     top: 0;
     left: 0;
-    background: #666;
+    background: @modalCoverBgColor;
     opacity: 0.5;
     z-index: 999;
 }
@@ -311,7 +311,7 @@ div.cover + div {
     transform: translate(-50%, -50%);
     width: 500px;
     height: 400px;
-    background: #fff;
+    background: @modalContentBgColor;
     border-radius: 5px;
     .modal-header {
         box-sizing: border-box;
@@ -320,7 +320,7 @@ div.cover + div {
         line-height: 60px;
         font-size: 18px;
         font-weight: 600;
-        color: #67aef6;
+        color: @titleColor;
         text-indent: 10px;
         padding: 0 20px;
         border-bottom: 2px solid #ddd;
@@ -328,17 +328,17 @@ div.cover + div {
 }
 a.btn-text {
     background: transparent;
-    color: #3093f7;
+    color: @textBtnColor;
     width: auto;
     height: auto;
     line-height: initial;
     padding: 6px 6px;
     &:hover {
-        color: #77b5f3;
+        color: @hoverTextBtnColor;
     }
     &:active {
         border-color: transparent;
-        color: #3093f7;
+        color: @textBtnColor;
     }
 }
 .flexible-layout {
