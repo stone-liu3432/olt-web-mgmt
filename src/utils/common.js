@@ -148,19 +148,43 @@ export function parsePort(str) {
 *  @param {Fucntion} func 需要执行防抖的回调
 *  @param {Number} delay 执行延迟时间 
 *  @param {Object} context 回调函数的this指向
-*  @param {Event} event 回调的参数，event对象
+*  @param {Array} args 回调的参数
 */
-export function debounce(func, delay, context, event) {
+export function debounce(func, delay, context) {
     if (func.timer) {
         clearTimeout(func.timer);
         func.timer = setTimeout(_ => {
-            func.apply(context, event);
+            func.apply(context, arguments);
             func.timer = null;
         }, delay);
     } else {
         func.timer = setTimeout(_ => {
-            func.apply(context, event);
+            func.apply(context, arguments);
             func.timer = null;
         }, delay);
+    }
+}
+
+/*
+*  @method throttle 节流函数 每隔固定时间执行一次
+*  @param {Function} func 要执行节流的函数
+*  @param {Number} wait 回调执行的间隔
+*  @param {Object} context 回调内的this指向
+*  @param {Array} 回调的参数
+*/
+export function throttle(func, wait, context){
+    let last = 0, timer = null;
+    return function(){
+        let current = +new Date();
+        clearTimeout(timer);
+        if(current - last > wait){
+            func.apply(context, arguments);
+            last = current;
+        }else{
+            timer = setTimeout(_ => {
+                func.apply(context, arguments);
+                last = current;
+            }, wait)
+        }
     }
 }
