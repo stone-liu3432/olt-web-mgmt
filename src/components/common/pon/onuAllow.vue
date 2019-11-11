@@ -148,10 +148,6 @@
         <!-- <onuCard v-if="onu_allow_list.data && onu_allow_list.data.length > 0 && onu_display_style === 2" :onu-allow-list="onu_allow_list" 
             :batch-onulist="batch_onulist" :is-batch-mgmt="is_batch_mgmt" @updateData="getData"></onuCard> -->
         <p v-if="!onu_allow_list.data || onu_allow_list.data.length <= 0">{{ lanMap['no_more_data'] }}</p>
-        <confirm :tool-tips="lanMap['tips_del_onu']" @choose="result_delete" v-if="delete_confirm"></confirm>
-        <confirm :tool-tips="lanMap['tips_add_deny_onu']" @choose="result_deny" v-if="deny_confirm"></confirm>
-        <confirm :tool-tips="lanMap['confirm_reboot_onu']" @choose="result_reboot" v-if="reboot_confirm"></confirm>
-        <confirm :tool-tips="tips_authstate" @choose="result_authstate" v-if="authstate_confirm"></confirm>
     </div>
 </template>
 
@@ -171,11 +167,6 @@ import { mapState,mapMutations } from 'vuex'
                 add_macaddr: '',
                 add_onustate: 0,
                 add_onudesc: '',
-                delete_confirm: false,
-                deny_confirm: false,
-                reboot_confirm: false,
-                authstate_confirm: false,
-                post_params: {},
                 search_macaddr: '',
                 tips_authstate: '',
                 onu_display_style: 1,
@@ -293,7 +284,7 @@ import { mapState,mapMutations } from 'vuex'
                     })
                     return
                 }
-                this.post_params = {
+                const post_params = {
                     "method":"delete",
                     "param":{
                         "port_id": Number(this.portid),
@@ -301,7 +292,9 @@ import { mapState,mapMutations } from 'vuex'
                         "macaddr": node ? node.macaddr : ''
                     }
                 }
-                this.delete_confirm = true;
+                this.$confirm(this.lanMap['tips_del_onu']).then(_ => {
+                    this.result_delete(post_params);
+                }).catch(_ => {})
             },
             //  手动添加 onu
             add_onu(){
@@ -331,7 +324,7 @@ import { mapState,mapMutations } from 'vuex'
                         })
                         return
                     }
-                    var post_params = {
+                    const post_params = {
                         "method":"add",
                         "param":{
                             "port_id": Number(this.portid),
@@ -342,7 +335,7 @@ import { mapState,mapMutations } from 'vuex'
                             "onu_desc": this.add_onudesc
                         }
                     }
-                    this.$http.post('/onu_allow_list',post_params).then(res=>{
+                    this.$http.post('/onu_allow_list', post_params).then(res=>{
                         if(res.data.code === 1){
                             this.$message({
                                 type: res.data.type,
@@ -362,48 +355,27 @@ import { mapState,mapMutations } from 'vuex'
                 this.add_dialog = false;
             },
             //  onu认证/取消认证确认框
-            result_authstate(bool){
-                if(bool){
-                    this.$http.post('/onu_allow_list',this.post_params).then(res=>{
-                        if(res.data.code === 1){
-                            this.$message({
-                                type: res.data.type,
-                                text: this.lanMap['setting_ok']
-                            })
-                            this.getData();
-                        }else if(res.data.code > 1){
-                            this.$message({
-                                type: res.data.type,
-                                text: '(' + res.data.code + ') ' + res.data.message
-                            })
-                        }
-                    }).catch(err=>{
-                        // to do
-                    })
-                }
-                this.post_params = {};
-                this.authstate_confirm = false;
+            result_authstate(data){
+                this.$http.post('/onu_allow_list', data).then(res=>{
+                    if(res.data.code === 1){
+                        this.$message({
+                            type: res.data.type,
+                            text: this.lanMap['setting_ok']
+                        })
+                        this.getData();
+                    }else if(res.data.code > 1){
+                        this.$message({
+                            type: res.data.type,
+                            text: '(' + res.data.code + ') ' + res.data.message
+                        })
+                    }
+                }).catch(err=>{
+                    // to do
+                })
             },
             //  onu认证 / 取消认证
             authstate(node){
-                //  2018-7-30-14-05 认证/取消谁时，去除onu状态校验
-                // if(node.status.toLowerCase() !== 'online' || node.status.toLowerCase() !== ''){
-                //     this.$message({
-                //         type: 'error',
-                //         text: this.lanMap['tips_authstate_error']
-                //     })
-                //     return
-                // }
-                // var olist;
-                // if(!node){
-                //     olist = this.batch_onulist;
-                // }else{
-                //     olist = [node.onu_id];
-                // }
-                // olist = olist.map(item=>{
-                //     return Number(item);
-                // }).sort((a,b)=>a-b);
-                this.post_params = {
+                const post_params = {
                     "method": "set",
                     "param":{
                         "port_id": Number(this.portid),
@@ -414,8 +386,10 @@ import { mapState,mapMutations } from 'vuex'
                         "onu_desc": ''
                     }
                 }
-                this.authstate_confirm = true;
-                this.tips_authstate = node.auth_state ? this.lanMap['tips_unauth_state'] : this.lanMap['tips_auth_state']
+                const tips_authstate = node.auth_state ? this.lanMap['tips_unauth_state'] : this.lanMap['tips_auth_state'];
+                this.$confirm(tips_authstate).then(_ => {
+                    this.result_authstate(post_params);
+                }).catch(_ => {})
             },
             //  移动ONU到阻止列表
             remove_onu(node){
@@ -437,7 +411,7 @@ import { mapState,mapMutations } from 'vuex'
                     })
                     return
                 }
-                this.post_params = {
+                const post_params = {
                     "method":"reject",
                     "param":{
                         "port_id": Number(this.portid),
@@ -445,34 +419,32 @@ import { mapState,mapMutations } from 'vuex'
                         "macaddr": node ? node.macaddr : ''
                     }
                 };
-                this.deny_confirm = true;
+                this.$confirm(this.lanMap['tips_add_deny_onu']).then(_ => {
+                    this.result_deny(post_params);
+                }).catch(_ => {})
             },
             //  跳转带宽管理
             onu_bandwieth(){
                 this.$router.push('/sla_cfg?port_id='+this.portid);
             },
             //  重启模态框
-            result_reboot(bool){
-                if(bool){
-                    this.$http.post('/onumgmt?form=config',this.post_params).then(res=>{
-                        if(res.data.code === 1){
-                            this.$message({
-                                type: res.data.type,
-                                text: this.lanMap['reboot_onu'] + this.lanMap['st_success']
-                            })
-                            this.getData();
-                        }else if(res.data.code > 1){
-                            this.$message({
-                                type: res.data.type,
-                                text: '(' + res.data.code + ') ' + res.data.message
-                            })
-                        }
-                    }).catch(err=>{
-                        // to do
-                    })
-                }
-                this.post_params = {};
-                this.reboot_confirm = false;
+            result_reboot(data){
+                this.$http.post('/onumgmt?form=config', data).then(res=>{
+                    if(res.data.code === 1){
+                        this.$message({
+                            type: res.data.type,
+                            text: this.lanMap['reboot_onu'] + this.lanMap['st_success']
+                        })
+                        this.getData();
+                    }else if(res.data.code > 1){
+                        this.$message({
+                            type: res.data.type,
+                            text: '(' + res.data.code + ') ' + res.data.message
+                        })
+                    }
+                }).catch(err=>{
+                    // to do
+                })
             },
             //  重启 onu
             reboot(item){
@@ -483,8 +455,7 @@ import { mapState,mapMutations } from 'vuex'
                     })
                     return
                 }
-                this.reboot_confirm = true;
-                this.post_params = {
+                const post_params = {
                     "method":"set",
                     "param":{
                         "port_id": Number(this.portid),
@@ -493,6 +464,9 @@ import { mapState,mapMutations } from 'vuex'
                         "fec_mode": 1
                     }
                 }
+                this.$confirm(this.lanMap['confirm_reboot_onu']).then(_ => {
+                    this.result_reboot(post_params);
+                }).catch(_ => {})
             },
             //  跳转到 onu 详情页
             onu_detail(portid,onuid){
@@ -528,53 +502,48 @@ import { mapState,mapMutations } from 'vuex'
                 sessionStorage.setItem('sec_menu', 'onu_deny');
             },
             //  删除确认框
-            result_delete(bool){
-                if(bool){
-                    this.$http.post(this.post_url,this.post_params).then(res=>{
-                        if(res.data.code === 1){
-                            this.$message({
-                                type: res.data.type,
-                                text: this.lanMap['setting_ok']
-                            })
-                            this.getData();
-                        }else if(res.data.code > 1){
-                            this.$message({
-                                type: res.data.type,
-                                text: '(' + res.data.code + ') ' + res.data.message
-                            })
-                        }
-                    }).catch(err=>{
-                        // to do
-                    })
-                }
-                this.post_params = {};
-                this.delete_confirm = false;
+            result_delete(data){
+                this.$http.post(this.post_url, data).then(res=>{
+                    if(res.data.code === 1){
+                        this.$message({
+                            type: res.data.type,
+                            text: this.lanMap['setting_ok']
+                        })
+                        this.getData();
+                    }else if(res.data.code > 1){
+                        this.$message({
+                            type: res.data.type,
+                            text: '(' + res.data.code + ') ' + res.data.message
+                        })
+                    }
+                }).catch(err=>{
+                    // to do
+                })
             },
             //  加入黑名单确认框
-            result_deny(bool){
-                if(bool){
-                    this.$http.post(this.post_url,this.post_params).then(res=>{
-                        if(res.data.code === 1){
-                            this.$message({
-                                type: res.data.type,
-                                text: this.lanMap['setting_ok']
-                            })
-                            this.getData();
-                        }else if(res.data.code > 1){
-                            this.$message({
-                                type: res.data.type,
-                                text: '(' + res.data.code + ') ' + res.data.message
-                            })
-                        }
-                    }).catch(err=>{
-                        // to do
-                    })
-                }
-                this.post_params = {};
-                this.deny_confirm = false;
+            result_deny(data){
+                this.$http.post(this.post_url, data).then(res=>{
+                    if(res.data.code === 1){
+                        this.$message({
+                            type: res.data.type,
+                            text: this.lanMap['setting_ok']
+                        })
+                        this.getData();
+                    }else if(res.data.code > 1){
+                        this.$message({
+                            type: res.data.type,
+                            text: '(' + res.data.code + ') ' + res.data.message
+                        })
+                    }
+                }).catch(err=>{
+                    // to do
+                })
             },
             //  开启/关闭 批量管理状态
             show_batchmgmt(){
+                if(this.is_batch_mgmt){
+                    this.batch_onulist = [];
+                }
                 this.is_batch_mgmt = !this.is_batch_mgmt;
             },
             //  全选/反选 按钮
@@ -663,12 +632,11 @@ h2{
     margin: 0 0 0 20px;
 }
 .onu-allow{
-    margin: 20px 0;
     padding-top: 70px;
     >div:first-child{
         height: 36px;
         line-height: 36px;
-        margin-bottom: 20px;
+        margin: 20px 0;
         h2{
             float: left;
             width: 300px;
