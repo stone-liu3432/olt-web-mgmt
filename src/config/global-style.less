@@ -1,30 +1,49 @@
 /******** global ********/
+// 注：color指 字体颜色
+// 注：bgColor指 背景颜色
 
-// 页面的整体背景色/字体颜色
+// 页面的整体背景色/字体颜色/border-color
 @bgColor: #E0EFE7;
 @color: #000000;
+@borderColor: #CCCCCC;
+
+// 辅助(提示)色
+@successColor: #67c23a;
+@warningColor: #e6a23c;
+@errorColor: #f56c6c;
+@infoColor: #909399;
 
 /****** 页头菜单部分  *****/
-// 背景色
+// 页头菜单背景色
 @headerBgColor: #184777;
-// 字体颜色
+// 页头菜单字体颜色
 @headerColor: #FFFFFF;
-// 激活(选中)状态时的背景色
+// 页头菜单激活(选中)状态时的背景色
 @activedHeaderBgColor: #E0EFE7;
-// 激活(选中)状态字体颜色
+// 页头菜单激活(选中)状态字体颜色
 @activedHeaderColor: #000000;
-// 鼠标悬念时的字体颜色
+// 页头菜单鼠标悬念时的字体颜色
 @hoverHeaderColor: #cc8366;
-// 文字logo的字体颜色
+// 页头文字logo的字体颜色
 @logoColor: #FFFFFF;
-// 文字Logo的背景色
+// 页头文字Logo的背景色
 @logoBgColor: transparent;
+
+//  页面footer字体颜色/背景色
+@footerColor: #000000;
+@footerBgColor: #FFFFFF;
 
 /*****  按钮  *****/
 // button的背景色/字体颜色/鼠标悬停时的字体颜色
 @buttonBgColor: #666666;
 @buttonColor: #FFFFFF;
 @hoverButtonColor: #67AEF6;
+@activedButtonBorderColor: @hoverButtonColor;
+@activedButtonBgColor: #444444;
+// 文字按钮的字体颜色/鼠标悬停时的字体颜色
+// 文字按钮辅助变色，更清晰的区分出hover和actived状态(视觉反馈)
+@textBtnColor: #3093f7;
+@hoverTextBtnColor: #77b5f3;
 
 /*****  页面标题  *****/
 // 页面标题的字体颜色
@@ -39,19 +58,23 @@
 @activedAsideBgColor: #DED7D6;
 @activedAsideColor: #3990e5;
 // 侧边栏一级菜单激活(选中)时的左边框
-@activeAsideLeftBorderColor:  #3990e5;
+@activedAsideLeftBorderColor:  @activedAsideColor;
 // 侧边栏二级菜单激活(选中)时的背景色/字体颜色
 @activedSubAsideBgColor: #E0EFE7;
-@activedSubAsideColor: #3990e5;
+@activedSubAsideColor: @activedAsideColor;
 // 侧边栏底部footer背景色/字体颜色
 @asideFooterBgColor: #8f8f8f;
 @asideFooterColor: #afafaf;
 // 侧边栏hover时的背景色
 @hoverAsideBgColor: #F0E5D8;
 
-// 表头的背景色/字体颜色
+// 表头的背景色/字体颜色/border-color
 @tableHeaderBgColor: #2361A2;
 @tableHeaderColor: #FFFFFF;
+@tableBorderColor: #CCCCCC;
+// 斑马纹跳格的颜色
+@stripeTableBgColor: #FFFFFF;
+@hoverTableBgColor: #F5F7FA;
 
 // 提示信息的字体颜色/字体大小
 @tipsColor: #666666;
@@ -59,3 +82,18 @@
 
 // 离线状态的设备字体颜色
 @offlineColor: red;
+
+// modal 的cover层背景色/内容区的背景色
+@modalCoverBgColor: #666666;
+@modalContentBgColor: #FFFFFF;
+
+//  form元素样式
+@formBorderColor: #ccc;
+@formColor: #000000;
+@activedFormBorderColor: #1e90ff;
+
+// tabbar样式
+@activedTabbarBgColor: #2361a2;
+@activedTabbarColor: #FFFFFF;
+@tabbarBorderColor: @activedTabbarBgColor;
+@tabbarColor: #000000;
