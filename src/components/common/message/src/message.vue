@@ -149,7 +149,7 @@ div.mei-message {
     transition: opacity 0.3s, transform 0.4s;
     padding: 15px;
     background-color: #edf2fc;
-    color: #909399;
+    color: @infoColor;
     > div:first-child {
         position: absolute;
         width: 26px;
@@ -171,15 +171,15 @@ div.mei-message {
 }
 div.mei-message-success {
     background-color: #f0f9eb;
-    color: #67c23a;
+    color: @successColor;
 }
 div.mei-message-error {
     background-color: #fef0f0;
-    color: #f56c6c;
+    color: @errorColor;
 }
 div.mei-message-warning {
     background-color: #fdf6ec;
-    color: #e6a23c;
+    color: @warningColor;
 }
 .mei-message-icon {
     display: inline-block;
