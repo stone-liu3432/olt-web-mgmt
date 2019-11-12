@@ -146,7 +146,7 @@ export default {
                 // }]
             },
             show_index: "optical_module",
-            is_show_onu: true,
+            is_show_onu: false,
             timeout_tips: false,
             is_load: false
         };
