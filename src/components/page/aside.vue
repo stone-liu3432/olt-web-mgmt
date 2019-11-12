@@ -109,13 +109,12 @@ export default {
 <style scoped lang="less">
 #left-aside{
     width: 220px;;
-    height: 100%;
+    height: calc(~"100% - 70px");
     overflow: auto;
-    position: fixed;
+    position: absolute;
     left: 0;
     top: 70px;
-    background: #eee;
-    //box-shadow: 5px 0 3px #eee;
+    background: @asideBgColor;
     z-index: 99;
     user-select: none;
 }
@@ -123,16 +122,16 @@ export default {
     transition: all 0.2s ease-out;
 }
 .active{
-    border-left: 5px solid #3990e5;
-    color:#3990e5;
-    background: #dcd6d6;
+    border-left: 5px solid @activedAsideLeftBorderColor;
+    color:@activedAsideColor;
+    background: @activedAsideBgColor;
     i.icon-arrows{
         background-position: -48px -6px;
     }
 }
 .sub-menu>li>p.submenu-actived{
-    background: #E0EFE7;
-    color: #3990e5;
+    background: @activedSubAsideBgColor;
+    color: @activedSubAsideColor;
     font-weight: 500;
 }
 .menu>li>ul.hide{
@@ -152,24 +151,10 @@ export default {
     font-weight: 500;
 }
 .menu-item:hover{
-    //color:#666;
-    background: #F0E5D8;
+    background: @hoverAsideBgColor;
 } 
-.expressConfig{
-    width: 168px;
-    height: 32px;
-    line-height: 32px;
-    font-size: 14px;
-    color: #D6CDC8;
-    background: #5B677A;
-    text-align: center;
-    border-radius: 5px;
-    margin: 50px auto;
-    cursor: pointer;
-    font-weight: bold;
-}
 .menu-footer{
-    color:#8f8f8f;
+    color: @asideFooterBgColor;
     font-size: 14px;
     text-align:center;
     margin: 60px auto 100px;
@@ -181,16 +166,15 @@ export default {
 .sub-item{
     padding:10px 0 10px 40px;
     cursor: pointer;
-    background: #E8E8E8;
+    background: @subAsideBgColor;
     transition: all 0.2s linear;
     border-left: 5px solid transparent;
 }
 .sub-item:hover{
-    //color:#666;
-    background: #F0E5D8;
+    background: @hoverAsideBgColor;
 }
 .menu-footer{
-    color: #afafaf;
+    color: @asideFooterColor;
     div{
         margin: 20px 0;
     }

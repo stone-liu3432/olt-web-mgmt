@@ -1,36 +1,4 @@
 <template>
-    <!-- <div class="top-banner">
-      <div class="top-banner-logo lf" v-if="system.data">
-            <img v-if="has_logo" id="logo">
-            <a href="#" v-else>{{ system.data.vendor ? system.data.vendor.length > 16 ? system.data.vendor.substring(0,16) : system.data.vendor : "HSGQ"  }}</a>
-      </div>
-      <h1 class="lf">|</h1>
-      <div class="product-type lf" v-if="system.data">{{ system.data.product_name }}</div>
-      <div class="user-login rt">
-        <div class="change-lang lf">
-            <span>{{ lanMap['lang'] }}</span>
-            <select v-model="lang">
-                <option value="zh">简体中文</option>
-                <option value="en">English</option>
-            </select>
-        </div>
-        <div class="lf show-user">
-          <i></i>
-          <span>{{ uName }}</span>
-        </div>
-        <div class="lf log-out" @click="login_out">
-          <i></i>
-          <span>{{ lanMap['logout'] }}</span>
-        </div>
-      </div>
-      <div class="modal-dialog" v-if="false">
-          <div class="cover"></div>
-          <div class="modal-body">
-              <div class="close"></div>
-          </div>
-      </div>
-      <confirm :tool-tips="lanMap['logout'] + '?'" @choose="result" v-if="login_out_modal"></confirm>
-    </div>-->
     <div class="top-banner" v-if="system && system.data">
         <div
             class="top-banner-logo lf"
@@ -59,42 +27,32 @@
                 <li @click="user_mgmt">{{ uName }}</li>
             </ul>
         </div>
-        <confirm :tool-tips="lanMap['logout'] + '?'" @choose="result" v-if="login_out_modal"></confirm>
-        <confirm
-            :tool-tips="lanMap['save_cfg_confirm']"
-            @choose="savecfg_result"
-            v-if="savecfgConfirm"
-        ></confirm>
-        <loading class="load" v-if="isLoading"></loading>
     </div>
 </template>
 
 <script>
 import { mapState, mapMutations } from "vuex";
 const f_menu = ["status", "onu_allow", "vlan_mgmt", "advanced_setting"];
-import loading from "@/components/common/loading";
 export default {
     name: "topBanner",
-    computed: mapState([
-        "system",
-        "lanMap",
-        "language",
-        "menu",
-        "change_url",
-        "nav_menu"
-    ]),
+    computed: {
+        ...mapState([
+            "system",
+            "lanMap",
+            "language",
+            "menu",
+            "change_url",
+            "nav_menu"
+        ])
+    },
     data() {
         return {
             //lang: '',
             uName: "",
-            login_out_modal: false,
             has_logo: true,
             f_menu: f_menu,
-            savecfgConfirm: false,
-            isLoading: false
         };
     },
-    components: { loading },
     created() {
         this.uName = sessionStorage.getItem("uname");
         this.lang = this.language;
@@ -113,32 +71,32 @@ export default {
             changeFMenu: "updateAdvFMenu"
         }),
         login_out() {
-            this.login_out_modal = true;
+            this.$confirm(this.lanMap['logout'] + ' ?').then(_ => {
+                this.result();
+            }).catch(_ => {})
         },
         //  退出登录
-        result(bool) {
-            if (bool) {
-                var post_params = {
-                    method: "set",
-                    param: {
-                        name: this.uName
-                    }
-                };
-                this.$http
-                    .post("/userlogin?form=logout", post_params)
-                    .then(res => {
-                        this.$message({
-                            type: "success",
-                            text: this.lanMap["login_out"]
-                        });
-                        sessionStorage.removeItem("x-token");
-                        this.$router.push("/login");
-                    })
-                    .catch(err => {
-                        // to do
+        result() {
+            var post_params = {
+                method: "set",
+                param: {
+                    name: this.uName
+                }
+            };
+            this.$http
+                .post("/userlogin?form=logout", post_params)
+                .then(res => {
+                    this.$message({
+                        type: "success",
+                        text: this.lanMap["login_out"]
                     });
-            }
-            this.login_out_modal = false;
+                    sessionStorage.removeItem("x-token");
+                    sessionStorage.removeItem('uname');
+                    this.$router.push("/login");
+                })
+                .catch(err => {
+                    // to do
+                });
         },
         nav_click(node) {
             this.$router.push(node);
@@ -158,34 +116,33 @@ export default {
             sessionStorage.setItem("f_menu", node);
         },
         savecfg() {
-            this.savecfgConfirm = true;
+            this.$confirm(this.lanMap['save_cfg_confirm']).then(_ => {
+                this.savecfg_result();
+            }).catch(_ => {})
         },
-        savecfg_result(bool) {
-            if (bool) {
-                this.$http
-                    .get("/system_save")
-                    .then(res => {
-                        if (res.data.code === 1) {
-                            this.$message({
-                                type: res.data.type,
-                                text: this.lanMap["save_succ"]
-                            });
-                        } else if (res.data.code > 1) {
-                            this.$message({
-                                type: res.data.type,
-                                text:
-                                    "(" +
-                                    res.data.code +
-                                    ") " +
-                                    res.data.message
-                            });
-                        }
-                    })
-                    .catch(err => {
-                        // to do
-                    });
-            }
-            this.savecfgConfirm = false;
+        savecfg_result() {
+            this.$http
+                .get("/system_save")
+                .then(res => {
+                    if (res.data.code === 1) {
+                        this.$message({
+                            type: res.data.type,
+                            text: this.lanMap["save_succ"]
+                        });
+                    } else if (res.data.code > 1) {
+                        this.$message({
+                            type: res.data.type,
+                            text:
+                                "(" +
+                                res.data.code +
+                                ") " +
+                                res.data.message
+                        });
+                    }
+                })
+                .catch(err => {
+                    // to do
+                });
         },
         user_mgmt() {
             this.$router.push("user_mgmt");
@@ -210,12 +167,12 @@ export default {
     min-width: 1280px;
     max-width: 1980px;
     height: 70px;
-    position: fixed;
+    position: absolute;
     top: 0;
     left: 0;
     z-index: 999;
-    background: #184777;
-    color: #fff;
+    background: @headerBgColor;
+    color: @headerColor;
     div.top-banner-logo,
     div.top-banner-nav,
     div.top-banner-user {
@@ -233,13 +190,13 @@ export default {
             cursor: pointer;
             user-select: none;
             &:hover {
-                color: rgb(204, 131, 102);
+                color: @hoverHeaderColor;
                 transition: all 0.3s linear;
             }
         }
         li.active:hover {
-            background: #e0efe7;
-            color: #000;
+            background: @activedHeaderBgColor;
+            color: @activedHeaderColor;
             transition: none;
         }
         &::after {
@@ -270,34 +227,21 @@ div.top-banner-user {
         overflow: hidden;
         text-overflow: ellipsis;
         &:hover {
-            color: rgb(204, 131, 102);
+            color: @hoverHeaderColor;
             transition: all 0.3s linear;
         }
     }
 }
 li.active {
-    background: #e0efe7;
-    color: #000;
+    background: @activedHeaderBgColor;
+    color: @activedHeaderColor;
 }
-
-//   .top-banner h1{
-//     font-size:42px;
-//     line-height:70px;
-//   }
-//   .top-banner-logo{
-//     min-width:200px;
-//     max-width: 400px;
-//     height:70px;
-//     line-height:70px;
-//     text-align: center;
-//     padding: 0 20px;
-//   }
 .top-banner-logo a {
     border: none;
     font-size: 42px;
     font-weight: bold;
-    color: #fff;
-    background: transparent;
+    color: @logoColor;
+    background: @logoBgColor;
     padding: 0;
     width: 100%;
     height: 100%;
@@ -315,71 +259,4 @@ li.active {
         outline: none;
     }
 }
-//   .product-type{
-//     width:200px;
-//     height:70px;
-//     font-size:20px;
-//     line-height:70px;
-//     text-align: center;
-//   }
-//   div.user-login div{
-//     width:150px;
-//     text-align: center;
-//     height:70px;
-//     line-height:70px;
-//     font-size:16px;
-//     cursor:pointer;
-//   }
-//   div.user-login>div.change-lang{
-//     width: 240px;
-//     margin-right: 20px;
-//     >span{
-//         margin-right: 10px;
-//         display: inline-block;
-//         width: 80px;
-//         color: #fff;
-//         text-align: right;
-//         padding-right: 10px;
-//     }
-//     >select{
-//         vertical-align: middle;
-//         width: 120px;
-//         height: 30px;
-//         font-size: 16px;
-//         text-indent: 10px;
-//         border-radius: 5px;
-//     }
-// }
-// div.modal-body{
-//     width: 500px;
-//     height: 300px;
-//     background: #fff;
-//     position: absolute;
-//     top: 0;
-//     left: 0;
-//     right: 0;
-//     bottom: 0;
-//     margin: auto;
-//     border-radius: 10px;
-// }
-// div.log-out{
-//     vertical-align: middle;
-//     >i{
-//         display: inline-block;
-//         vertical-align: middle;
-//         width: 32px;
-//         height: 32px;
-//         background: url('../../assets/logout.png') no-repeat;
-//     }
-// }
-// div.show-user{
-//     vertical-align: middle;
-//     >i{
-//         display: inline-block;
-//         vertical-align: middle;
-//         width: 32px;
-//         height: 32px;
-//         background: url('../../assets/user.png') no-repeat;
-//     }
-// }
 </style>

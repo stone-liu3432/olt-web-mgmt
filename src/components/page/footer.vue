@@ -58,14 +58,17 @@ export default {
 
 <style lang="less" scoped>
 #footer {
-    position: fixed;
+    position: absolute;
     bottom: 0;
     left: 0;
     width: 100%;
+    min-width: 1280px;
+    max-height: 1980px;
     height: 30px;
     line-height: 30px;
     text-align: center;
-    background: #fff;
+    background: @footerBgColor;
+    color: @footerColor;
     span {
         font-size: 15px;
         cursor: pointer;
