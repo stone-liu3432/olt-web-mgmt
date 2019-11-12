@@ -764,6 +764,9 @@ var zh = {
     snooping_table: "Snooping表项",
     dhcp_relay_tips: "DHCP Relay 需要三层支持，是否开启？",
     route_close_tips: "DHCP Relay 需要三层支持，是否关闭DHCP Relay ?",
+    rogue_onu_detection: "流氓ONU检测",
+    detection: "检测",
+    rogueonu_detect_tips: "开始手动检测，检测结果将返回至告警列表中。",
 
     composeRange(min, max){
         return `${min} - ${max}位字符`;

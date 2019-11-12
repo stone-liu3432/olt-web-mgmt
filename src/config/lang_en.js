@@ -786,6 +786,9 @@ var en = {
     snooping_table: "Snooping Table",
     dhcp_relay_tips: 'DHCP Relay need layer3 support, Do you want to enable it ?',
     route_close_tips: "DHCP Relay need layer3 support, Do you want to disable it ?",
+    rogue_onu_detection: "Regue ONU Detection",
+    detection: "Detection",
+    rogueonu_detect_tips: "Manual detection starts and the test results are returned to the alarm list.",
 
     composeRange(min, max) {
         return `${min} - ${max} characters`;

@@ -20,7 +20,7 @@
                     {{ def_auth_mode[item.auth_mode] }}
                 </li>
                 <li>
-                    <a href="javascript:void(0);" @click="auth_confirm(item.port_id)">{{ lanMap['config'] }}</a>
+                    <a href="javascript:void(0);" class="btn-text" @click="auth_confirm(item.port_id)">{{ lanMap['config'] }}</a>
                 </li>
             </ul>
         </div>
@@ -36,10 +36,10 @@
                 <li>{{ port_name.pon[item.port_id].name }}</li>
                 <li>{{ item.flag === 1 ? lanMap['enable'] : lanMap['disable'] }}</li>
                 <li v-if="item.flag === 1">
-                    <a href="javascript:void(0);" @click="openP2PCfm(item)">{{ lanMap['off'] }}</a>
+                    <a href="javascript:void(0);" class="btn-text" @click="openP2PCfm(item)">{{ lanMap['off'] }}</a>
                 </li>
                 <li v-else>
-                    <a href="javascript:void(0);" @click="openP2PCfm(item)">{{ lanMap['on'] }}</a>
+                    <a href="javascript:void(0);" class="btn-text" @click="openP2PCfm(item)">{{ lanMap['on'] }}</a>
                 </li>
             </ul>
         </div>
@@ -51,6 +51,21 @@
             </div>
             <span class="tips">( {{ lanMap['pon_isolation_tips'] }} )</span>
         </h3>
+        <h3>{{ lanMap['rogue_onu_detection'] }}</h3>
+        <nms-table :rows="rogue_onu_list" border>
+            <nms-table-column prop="port_id" :label="lanMap['port_id']"></nms-table-column>
+            <nms-table-column prop="mode" :label="lanMap['mode']">
+                <template slot-scope="rows">
+                    {{ modes[rows.mode] }}
+                </template>
+            </nms-table-column>
+            <nms-table-column :label="lanMap['config']" width="260px">
+                <template slot-scope="rows">
+                    <a href="javascript: void(0);" class="btn-text" @click="setDetectMode(rows)">{{ lanMap['config'] }}</a>
+                    <a href="javascript: void(0);" class="btn-text" v-if="rows.mode === 2" @click="manualDetect(rows)">{{ lanMap['detection'] }}</a>
+                </template>
+            </nms-table-column>
+        </nms-table>
         <div class="modal-dialog" v-if="isSetAuth">
             <div class="cover"></div>
             <div class="ponmgmt-cfg">
@@ -84,12 +99,12 @@
                 <div class="close" @click="cancel_confirm"></div>
             </div>
         </div>
-        <confirm :tool-tips="p2pMsg" @choose="setP2PStatus" v-if="isSetP2P"></confirm>
     </div>
 </template>
 
 <script>
-import { mapState } from 'vuex'
+import { mapState } from 'vuex';
+import { debounce } from '@/utils/common';
 export default {
     name: 'ponSetting',
     computed: mapState(['lanMap','port_name']),
@@ -102,8 +117,6 @@ export default {
             def_auth_mode: ['mac','LOID','Loid+password','hybrid'],
             pon_authorize: {},
             isSetAuth: false,
-            isSetP2P: false,
-            p2pCache: {},
             p2pMsg: '',
             p2p: [
                 // {
@@ -122,8 +135,28 @@ export default {
             ],
             port_isolate: 0,
             _timer: false,
+            modes: ['OFF', 'Auto', 'Manual'],
+            rogue_onu_list: [],
+            detect_mode: 0
         }
     },
+    // mounted(){
+    //     this.rogue_onu_list = [
+    //         {
+    //             "port_id":1,
+    //             "mode":0
+    //         },{
+    //             "port_id":2,
+    //             "mode":1
+    //         },{
+    //             "port_id":3,
+    //             "mode":2
+    //         },{
+    //             "port_id":4,
+    //             "mode":1
+    //         }
+    //     ]
+    // },
     created(){
         //this.getData();
     },
@@ -199,13 +232,14 @@ export default {
             this.auth_type = 0;
             this.auth_mode = 0;
         },
-        setP2PStatus(bool){
-            if(bool){
-                var post_data = {
+        openP2PCfm(node){
+            const msg = this.lanMap['if_sure'] + (node.flag ? this.lanMap['off'] : this.lanMap['on']) + ' ' + this.port_name.pon[node.port_id].name + ' P2P ?';
+            this.$confirm(msg).then(_ => {
+                const post_data = {
                     "method": "set",
                     "param": {
-                        "port_id": this.p2pCache.port_id,
-                        "flag": this.p2pCache.flag ? 0 : 1
+                        "port_id": node.port_id,
+                        "flag": node.flag ? 0 : 1
                     }
                 }
                 this.$http.post('/ponmgmt?form=p2p',post_data).then(res=>{
@@ -221,19 +255,10 @@ export default {
                             text: '(' + res.data.code + ') ' + res.data.message
                         })
                     }
-                    this.p2pCache = {};
                 }).catch(err=>{
                     // to do
                 })
-            }else{
-                this.p2pCache = {};
-            }
-            this.isSetP2P = false;
-        },
-        openP2PCfm(node){
-            this.p2pMsg = this.lanMap['if_sure'] + (node.flag ? this.lanMap['off'] : this.lanMap['on']) + ' ' + this.port_name.pon[node.port_id].name + ' P2P ?';
-            this.isSetP2P = true;
-            this.p2pCache = node;
+            }).catch(_ => {})
         },
         getPortIsolation(){
             this.$http.get('/switch_isolate?form=isolate').then(res =>{
@@ -275,6 +300,72 @@ export default {
             setTimeout(_ =>{
                 this._timer = false;
             }, 1000)
+        },
+        getRogueList(){
+            this.rogue_onu_list = [];
+            this.$http.get('/ponmgmt?form=rogueonu').then(res => {
+                if(res.data.code === 1){
+                    if(res.data.data && res.data.data.length){
+                        this.rogue_onu_list = res.data.data;
+                    }
+                }
+            }).catch(err => {})
+        },
+        setDetectMode(node){
+            this.detect_mode = node.mode;
+            this.$confirm(
+                (
+                    <div class="modal-content-item">
+                        <span>{ this.lanMap['mode'] }</span>
+                        <select value={this.detect_mode} onChange={this.modeChange}>
+                            {
+                                this.modes.map((item, index) => {
+                                    return ( <option value={index}>{item}</option> )
+                                })
+                            }
+                        </select>
+                    </div>
+                ), { title: this.lanMap['set'], center: true }
+            ).then(_ => {
+                if(this.detect_mode === node.mode){
+                    return;
+                }
+                const data = {
+                    "method":"set",
+                    "param":{
+                        "port_id": node.port_id,
+                        "mode": this.detect_mode
+                    }
+                }
+                this.setMode(data);
+            }).catch(_ => {})
+        },
+        modeChange(e){
+            this.detect_mode = Number(e.target.value);
+        },
+        setMode(data){
+            this.$http.post('/ponmgmt?form=rogueonu', data).then(res => {
+                if(res.data.code === 1){
+                    if(data.param.mode === 2){
+                        this.$message.success(this.lanMap['rogueonu_detect_tips']);
+                    }else{
+                        this.$message.success(this.lanMap['setting_ok']);
+                    }
+                    this.getRogueList();
+                }else{
+                    this.$message.error(`(${res.data.code}) ${res.data.message}`);
+                }
+            }).catch(err => {})
+        },
+        manualDetect(rows){
+            const data = {
+                "method":"set",
+                "param":{
+                    "port_id": rows.port_id,
+                    "mode": 2
+                }
+            }
+            debounce(this.setMode, 1000, this, data);
         }
     }
 }
@@ -344,12 +435,12 @@ div.ponmgmt-cfg{
         margin: 0;
         height: 60px;
     }
-}
-a{
-    width: 120px;
-    padding: 0;
-    margin-left: 70px;
-    margin-top: 20px;
+    a{
+        width: 120px;
+        padding: 0;
+        margin-left: 70px;
+        margin-top: 20px;
+    }
 }
 ul{
     &:after{
@@ -382,6 +473,7 @@ ul{
     a{
         height: 26px;
         line-height: 26px;
+        padding: 0 6px;
     }
 }
 div.no-more-data{
@@ -434,6 +526,15 @@ div.switch{
     &+span.tips{
         font-size: 14px;
         color: #666;
+    }
+}
+div.modal-content-item{
+    >span:first-child{
+        display: inline-block;
+        width: 120px;
+    }
+    select{
+        width: 200px;
     }
 }
 </style>
