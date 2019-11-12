@@ -32,7 +32,7 @@ export default {
 }
 </script>
 
-<style scoped>
+<style scoped lang="less">
 div.cover+div{
     width:550px;
     height:160px;
@@ -40,7 +40,7 @@ div.cover+div{
     top:50%;
     left:50%;
     transform:translate(-50%,-50%);	
-    background: #fff;
+    background: @modalContentBgColor;
     z-index: 1000;
     padding: 20px 30px;
     overflow: hidden;
@@ -51,7 +51,7 @@ div.confirm-title{
     font-weight: blod;
     font-size: 22px;
     margin-left: 20px;
-    color: #67AEF7;
+    color: @titleColor;
 }
 div.tool-tips{
     width: 490px;
@@ -63,7 +63,7 @@ div.tool-tips{
     color: #000;
 }
 hr{
-    color: #ddd;
+    color: @borderColor;
 }
 div.tool-tips+div{
     position: absolute;
@@ -76,9 +76,9 @@ a{
     margin-left: 10px;
 }
 a:hover{
-    color: #67aef7;
+    color: @hoverButtonColor;
 }
 a:active{
-    border: 1px solid #67aef7;
+    border: 1px solid @activedButtonBorderColor;
 }
 </style>
