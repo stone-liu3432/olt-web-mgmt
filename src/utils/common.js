@@ -150,16 +150,16 @@ export function parsePort(str) {
 *  @param {Object} context 回调函数的this指向
 *  @param {Array} args 回调的参数
 */
-export function debounce(func, delay, context) {
+export function debounce(func, delay, context, ...args) {
     if (func.timer) {
         clearTimeout(func.timer);
         func.timer = setTimeout(_ => {
-            func.apply(context, arguments);
+            func.apply(context, args);
             func.timer = null;
         }, delay);
     } else {
         func.timer = setTimeout(_ => {
-            func.apply(context, arguments);
+            func.apply(context, args);
             func.timer = null;
         }, delay);
     }
