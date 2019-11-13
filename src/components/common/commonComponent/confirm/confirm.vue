@@ -1,4 +1,4 @@
-<template>
+<!-- <template>
     <div v-if="visible" class="modal-dialog">
         <div class="cover"></div>
         <div>
@@ -11,7 +11,8 @@
             </div>
         </div>
     </div>
-</template>
+     
+</template> -->
 
 <script>
 export default {
@@ -23,26 +24,48 @@ export default {
             content: "",
             title: "",
             confirmBtnText: "ok",
-            cancelBtnText: "cancel"
+            cancelBtnText: "cancel",
+            center: false
         };
     },
     methods: {
         confirm() {
-            this.visible = true;
             return new Promise((resolve, reject) => {
                 this.promiseActions = { resolve, reject };
             });
         },
-        handleAction(action) {
+        confirmHandle(){
             this.visible = false;
-            action === "confirm" && this.promiseActions.resolve();
-            action === "cancel" && this.promiseActions.reject();
+            return this.promiseActions.resolve('confirm');
+        },
+        cancelHandle(){
+            this.visible = false;
+            return this.promiseActions.reject('cancel');
         }
+    },
+    render(h){
+        if(!this.visible){
+            return '';
+        }
+        return (
+            <div class="modal-dialog">
+                <div class="cover"></div>
+                <div class={ this.center ? 'layout-center' : ''}>
+                    <div class="confirm-title">{ this.title || 'Notice' }</div>
+                    <hr />
+                    <div class="tool-tips">{ this.content ? this.content : 'Please confirm' }</div>
+                    <div class="msg-box-footer">
+                        <a href="javascript: void(0);" onClick={ this.confirmHandle }>{ this.confirmBtnText }</a>
+                        <a href="javascript: void(0);" onClick={ this.cancelHandle }>{ this.cancelBtnText }</a>
+                    </div>
+                </div>
+            </div>
+        )
     }
 };
 </script>
 
-<style scoped>
+<style scoped lang="less">
 div.cover + div {
     width: 550px;
     height: 160px;
@@ -50,7 +73,7 @@ div.cover + div {
     top: 50%;
     left: 50%;
     transform: translate(-50%, -50%);
-    background: #fff;
+    background: @modalContentBgColor;
     z-index: 1000;
     padding: 20px 30px;
     overflow: hidden;
@@ -61,7 +84,7 @@ div.confirm-title {
     font-weight: blod;
     font-size: 22px;
     margin-left: 20px;
-    color: #67aef7;
+    color: @titleColor;
 }
 div.tool-tips {
     width: 490px;
@@ -73,7 +96,7 @@ div.tool-tips {
     color: #000;
 }
 hr {
-    color: #ddd;
+    color: @borderColor;
 }
 div.tool-tips + div {
     position: absolute;
@@ -86,9 +109,18 @@ a {
     margin-left: 10px;
 }
 a:hover {
-    color: #67aef7;
+    color: @hoverButtonColor;
 }
 a:active {
-    border: 1px solid #67aef7;
+    border: 1px solid @activedButtonBorderColor;
+}
+.layout-center{
+    .msg-box-footer{
+        position: initial;
+        margin: 30px 0 0 0;
+        width: 100%;
+        display: flex;
+        justify-content: space-evenly;
+    }
 }
 </style>

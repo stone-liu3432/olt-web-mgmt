@@ -11,7 +11,8 @@ confirm.install = (content, title, options) => {
     }
     options = Object.assign(
         {
-            title : store.state.lanMap['tips'],
+            visible: true,
+            title : title || store.state.lanMap['tips'],
             content,
             confirmBtnText: store.state.lanMap["apply"],
             cancelBtnText: store.state.lanMap["cancel"]
