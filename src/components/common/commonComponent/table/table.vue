@@ -157,15 +157,15 @@ table {
     text-align: center;
 }
 .has-border {
-    border: 1px solid #ccc;
+    border: 1px solid @tableBorderColor;
     td,
     th {
-        border: 1px solid #ccc;
+        border: 1px solid @tableBorderColor;
     }
 }
 .has-stripe {
     tr:nth-child(even) {
-        background: #fff;
+        background: @stripeTableBgColor;
     }
 }
 td {
@@ -176,11 +176,11 @@ td {
 th {
     text-align: center;
     padding: 6px 12px;
-    background: #2361a2;
-    color: #fff;
+    background: @tableHeaderBgColor;
+    color: @tableHeaderColor;
     box-sizing: border-box;
 }
 tr:hover{
-    background: #F5F7FA;
+    background: @hoverTableBgColor;
 }
 </style>

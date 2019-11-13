@@ -55,8 +55,9 @@ export default {
 
 <style lang="less" scoped>
 div.tab-bar {
+    color: @tabbarColor;
     margin: 30px 0 20px 0;
-    border-bottom: 3px solid #2361a2;
+    border-bottom: 3px solid @tabbarBorderColor;
     padding-left: 10px;
     &::after {
         content: "";
@@ -66,7 +67,7 @@ div.tab-bar {
     > div {
         float: left;
         margin-left: 5px;
-        border: 1px solid #2361a2;
+        border: 1px solid @tabbarBorderColor;
         margin-bottom: -1px;
         border-radius: 3px 3px 0 0;
         cursor: pointer;
@@ -76,10 +77,10 @@ div.tab-bar {
         line-height: 30px;
     }
     .actived {
-        border: 1px solid #2361a2;
+        border: 1px solid @tabbarBorderColor;
         border-radius: 3px 3px 0 0;
-        color: #fff;
-        background: #2361a2;
+        color: @activedTabbarColor;
+        background: @activedTabbarBgColor;
         font-weight: 500;
     }
 }
