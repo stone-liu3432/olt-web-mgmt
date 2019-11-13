@@ -146,7 +146,7 @@ h2 {
     float: left;
     width: 300px;
     font-size: 24px;
-    color: #67aef6;
+    color: @titleColor;
     font-weight: 600;
 }
 .page-header {
