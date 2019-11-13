@@ -121,16 +121,16 @@ export default {
         font-size: 16px;
     }
     p.info {
-        color: #909399;
+        color: @infoColor;
     }
     p.success {
-        color: #67c23a;
+        color: @successColor;
     }
     p.warning {
-        color: #e6a23c;
+        color: @warningColor;
     }
     p.error {
-        color: #f56c6c;
+        color: @errorColor;
     }
 }
 .right {
