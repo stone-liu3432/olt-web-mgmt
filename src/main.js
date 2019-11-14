@@ -17,10 +17,12 @@ import nmsTableColumn from '@/components/common/commonComponent/table/tableColum
 import nmsDialog from '@/components/common/commonComponent/dialog/dialog';
 import loading from '@/components/common/commonComponent/loading';
 import portHeader from '@/components/common/commonComponent/pageHeader';
+import dropdown from '@/components/common/commonComponent/dropdown';
 
 Vue.use(VueMessage)
 Vue.use(portHeader);
 Vue.use(tabBar);
+Vue.use(dropdown);
 
 Vue.component('confirm', confirm);
 Vue.component('nmsTable', nmsTable);
