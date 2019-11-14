@@ -276,6 +276,7 @@ i {
     left: 0;
     top: 0;
     width: 100%;
+    min-width: 896px;
     height: 100%;
     z-index: 99999;
     overflow-y: auto;
