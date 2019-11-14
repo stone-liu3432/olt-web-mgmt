@@ -164,6 +164,7 @@ export default {
         this.getData();
         this.getP2PData();
         this.getPortIsolation();
+        this.getRogueList();
     },
     methods: {
         getData(){
