@@ -1,11 +1,11 @@
-<template>
+<!-- <template>
     <th v-show="false">
         <template>
             <slot :col="prop"></slot>
         </template>
     </th>
 </template>
-
+-->
 <script>
 export default {
     name: "nmsTableColumn",
@@ -45,6 +45,9 @@ export default {
         //  列的样式 or 类名
         this.commit('cellStyle', this.cellStyle);
         this.commit('cellClass', this.cellClass);
+    },
+    render(h){
+        return null;
     }
 };
 </script>
