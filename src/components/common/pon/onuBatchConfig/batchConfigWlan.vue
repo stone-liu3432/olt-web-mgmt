@@ -184,8 +184,8 @@ export default {
             return {
                 method: "set",
                 param: {
-                    port_id: this.wlanInfo.portid,
-                    onu_id: this.wlanInfo.onuid,
+                    port_id: this.wlanInfo.port_id,
+                    onu_id: this.wlanInfo.onu_id,
                     mode: this.wlan_mode,
                     encrypt: this.wlan_encrypt,
                     ssid: this.ssid,
