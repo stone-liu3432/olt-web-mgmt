@@ -5,7 +5,6 @@
         </div>
         <div class="btn-group-vlan">
             <a href="javascript:void(0);" @click="createVlan()">{{ lanMap['create'] }} VLAN</a>
-            <!-- <span>{{ lanMap['tips_create_vlan'] }}</span> -->
             <a href="javascript:void(0);" @click="open_batch_del">{{ lanMap['delete'] }} VLAN</a>
             <a href="javascript:void(0);" @click="createVlan(1)">{{ lanMap['batch_cfg_vlan'] }}</a>
         </div>
@@ -13,45 +12,40 @@
             <p class="lf">{{  lanMap['vlan_list'] }}</p>
             <div class="lf">
                 <input type="text" placeholder="VLAN ID" v-model.number="search_id">
-                <!-- <i class="icon-search" @click="searchVlan"></i> -->
                 <i class="icon-search"></i>
             </div>
         </div>
-        <div v-if="not_found_vlan">
-            <p>{{ lanMap['not_find_vlan'] }}</p>
-        </div>
-        <ul v-if="vlan_tab[0]">
-            <li>
-                <!-- <input type="radio" name="checkedVlan" style="visibility:hidden"> -->
-                <span v-for="(item,key) in vlan_tab[0]" :key="key">{{ lanMap[key] }}</span>
-                <span class="vlan-cfg-title">{{ lanMap['config'] }}</span>
-            </li>
-            <li v-for="(item,index) in vlan_tab" :key="index">
-                <!-- <input type="radio" v-model="vlanid" :value="item.vlan_id"> -->
-                <span>{{ item.vlan_id }}</span>
-                <span>{{ parsePortList(item.tagged_portlist) || ' - ' }}</span>
-                <span>{{ parsePortList(item.untagged_portlist) || ' - ' }}</span>
-                <span>{{ parsePortList(item.default_vlan_portlist) || ' - ' }}</span>
-                <a href="javascript:;"  @click="config_port(item)">{{ lanMap['config'] }}</a>
-                <a href="javascript:;"  @click="deleteVlan(item.vlan_id)" v-if="item.vlan_id !== 1">{{ lanMap['delete'] }}</a>
-            </li>
-            <li v-if="vlan_list.data  && is_loadmore">
-                <a href="javascript:;" @click="loadmore">{{ lanMap['loadmore'] }}</a>
-            </li>
-            <li v-if="pagination.page > 1" class="paginations">
-                <ul class="pagination rt">
-                    <li :class="pagination.index > 1 ? '' : 'disabled'" @click="changeIndex(1)" title="First">&lt;&lt;</li>
-                    <li :class="pagination.index > 1 ? '' : 'disabled'" @click="changeIndex(pagination.index-1)" title="Prev">&lt;</li>
-                    <li v-if="pagination.index>2" @click="changeIndex(pagination.index-2)">{{ pagination.index-2 }}</li>
-                    <li v-if="pagination.index>1" @click="changeIndex(pagination.index-1)">{{ pagination.index-1 }}</li>
-                    <li class="actived" @click="changeIndex(pagination.index)">{{ pagination.index }}</li>
-                    <li v-if="pagination.page-1 >= pagination.index" @click="changeIndex(pagination.index+1)">{{ pagination.index+1 }}</li>
-                    <li v-if="pagination.page-2 >= pagination.index" @click="changeIndex(pagination.index+2)">{{ pagination.index+2 }}</li>
-                    <li :class="pagination.page-1 >= pagination.index ? '' : 'disabled'" @click="changeIndex(pagination.index+1)" title="Next">&gt;</li>
-                    <li :class="pagination.page !== pagination.index ? '' : 'disabled'" @click="changeIndex(pagination.page)" title="End">&gt;&gt;</li>
-                </ul>
-            </li>
-        </ul>
+        <!-- 
+            default_vlan_portlist: "1-12"
+            tagged_portlist: ""
+            untagged_portlist: ""
+            vlan_id: 1
+        -->
+        <nms-table :rows="vlan_tab" border>
+            <nms-table-column prop="vlan_id" :label="lanMap['vlan_id']"></nms-table-column>
+            <nms-table-column prop="tagged_portlist" :label="lanMap['tagged_portlist']">
+                <template slot-scope="rows">
+                    {{ parsePortList(rows.tagged_portlist) || ' - ' }}
+                </template>
+            </nms-table-column>
+            <nms-table-column prop="untagged_portlist" :label="lanMap['untagged_portlist']">
+                <template slot-scope="rows">
+                    {{ parsePortList(rows.untagged_portlist) || ' - ' }}
+                </template>
+            </nms-table-column>
+            <nms-table-column prop="default_vlan_portlist" :label="lanMap['default_vlan_portlist']">
+                <template slot-scope="rows">
+                    {{ parsePortList(rows.default_vlan_portlist) || ' - ' }}
+                </template>
+            </nms-table-column>
+            <nms-table-column :label="lanMap['config']" width="160px">
+                <template slot-scope="rows">
+                    <a href="javascript: void(0);"  @click="config_port(rows)" class="btn-text table-btn-text">{{ lanMap['config'] }}</a>
+                    <a href="javascript: void(0);"  @click="deleteVlan(rows.vlan_id)" class="btn-text table-btn-text" v-if="rows.vlan_id !== 1">{{ lanMap['delete'] }}</a>
+                </template>
+            </nms-table-column>
+        </nms-table>
+        <nms-pagination :total="vlan_list.length" :current-page="pagination.index" @current-change="changeIndex" style="float: right;"></nms-pagination>
         <div class="modal-dialog" v-if="modalDialog">
             <div class="cover"></div>
             <div class="modal-content" :style="{ 'height': create_vlan ? '430px' : '370px' }">
@@ -85,40 +79,28 @@
                     <div class="vlan-mode">
                         <h3 class="lf">tagged:</h3>
                         <div class="vlan-port">
-                            <!-- <div>
-                                <span v-for="(item,key) in port_name.pon" :key="key" class="tagged" style="width: 12%;">
-                                    <input type="radio" :name="item.id" :id="'tagged'+item.id" @click="changeState($event)" value="0">
-                                    <label :for="'tagged'+item.id">{{ item.name }}</label>
-                                </span>
-                            </div>
-                            <div>
-                                <span v-for="(item,key) in port_name.ge" :key="key" class="tagged">
-                                    <input type="radio" :name="item.id" :id="'tagged'+item.id" @click="changeState($event)" value="0">
-                                    <label :for="'tagged'+item.id">{{ item.name }}</label>
-                                </span>
-                            </div>
-                            <div>
-                                <span v-for="(item,key) in port_name.xge" :key="key" class="tagged" v-if="port_name.xge">
-                                    <input type="radio" :name="item.id" :id="'tagged'+item.id" @click="changeState($event)" value="0">
-                                    <label :for="'tagged'+item.id">{{ item.name }}</label>
-                                </span>
-                            </div> -->
                             <div>
                                 <span v-for="(item,key) in port_name.pon" :key="key" style="width: 12%;" class="tagged">
-                                    <input type="checkbox" :value="item.id" v-model="tagged_list" :id="'tagged'+item.id" :disabled="def_list.includes(item.id)">
-                                    <label :for="'tagged'+item.id">{{ item.name }}</label>
+                                    <label :class="{ disabled: def_list.includes(item.id) }">
+                                        <input type="checkbox" :value="item.id" v-model="tagged_list" :id="'tagged'+item.id" :disabled="def_list.includes(item.id)">
+                                        {{ item.name }}
+                                    </label>
                                 </span>
                             </div>
                             <div>
                                 <span v-for="(item,key) in port_name.ge" :key="key" class="tagged">
-                                    <input type="checkbox" :value="item.id" v-model="tagged_list" :id="'tagged'+item.id" :disabled="def_list.includes(item.id)">
-                                    <label :for="'tagged'+item.id">{{ item.name }}</label>
+                                    <label :class="{ disabled: def_list.includes(item.id) }">
+                                        <input type="checkbox" :value="item.id" v-model="tagged_list" :id="'tagged'+item.id" :disabled="def_list.includes(item.id)">
+                                        {{ item.name }}
+                                    </label>
                                 </span>
                             </div>
                             <div>
                                 <span v-for="(item,key) in port_name.xge" :key="key" v-if="port_name.xge" class="tagged">
-                                    <input type="checkbox" :value="item.id" v-model="tagged_list" :id="'tagged'+item.id" :disabled="def_list.includes(item.id)">
-                                    <label :for="'tagged'+item.id">{{ item.name }}</label>
+                                    <label :class="{ disabled: def_list.includes(item.id) }">
+                                        <input type="checkbox" :value="item.id" v-model="tagged_list" :id="'tagged'+item.id" :disabled="def_list.includes(item.id)">
+                                        {{ item.name }}
+                                    </label>
                                 </span>
                             </div>
                         </div>
@@ -127,40 +109,28 @@
                     <div class="vlan-mode">
                         <h3 class="lf">untagged:</h3>
                         <div class="vlan-port">
-                            <!-- <div>
-                                <span v-for="(item,key) in port_name.pon" :key="key" class="untagged" style="width: 12%;">
-                                    <input type="radio" :name="item.id" :id="'untagged'+item.id" @click="changeState($event)" value="0">
-                                    <label :for="'untagged'+item.id">{{ item.name }}</label>
-                                </span>
-                            </div>
-                            <div>
-                                <span v-for="(item,key) in port_name.ge" :key="key" class="untagged">
-                                    <input type="radio" :name="item.id" :id="'untagged'+item.id" @click="changeState($event)" value="0">
-                                    <label :for="'untagged'+item.id">{{ item.name }}</label>
-                                </span>
-                            </div>
-                            <div>
-                                <span v-for="(item,key) in port_name.xge" :key="key" class="untagged" v-if="port_name.xge">
-                                    <input type="radio" :name="item.id" :id="'untagged'+item.id" @click="changeState($event)" value="0">
-                                    <label :for="'untagged'+item.id">{{ item.name }}</label>
-                                </span>
-                            </div> -->
                             <div>
                                 <span v-for="(item,key) in port_name.pon" :key="key" style="width: 12%;" class="untagged">
-                                    <input type="checkbox" :id="'untagged'+item.id" :value="item.id" v-model="untagged_list" :disabled="def_list.includes(item.id)">
-                                    <label :for="'untagged'+item.id">{{ item.name }}</label>
+                                    <label :class="{ disabled: def_list.includes(item.id) }">
+                                        <input type="checkbox" :id="'untagged'+item.id" :value="item.id" v-model="untagged_list" :disabled="def_list.includes(item.id)">
+                                        {{ item.name }}
+                                    </label>
                                 </span>
                             </div>
                             <div>
                                 <span v-for="(item,key) in port_name.ge" :key="key" class="untagged">
-                                    <input type="checkbox" :id="'untagged'+item.id" :value="item.id" v-model="untagged_list" :disabled="def_list.includes(item.id)">
-                                    <label :for="'untagged'+item.id">{{ item.name }}</label>
+                                    <label :class="{ disabled: def_list.includes(item.id) }">
+                                        <input type="checkbox" :id="'untagged'+item.id" :value="item.id" v-model="untagged_list" :disabled="def_list.includes(item.id)">
+                                        {{ item.name }}
+                                    </label>
                                 </span>
                             </div>
                             <div>
                                 <span v-for="(item,key) in port_name.xge" :key="key" v-if="port_name.xge" class="untagged">
-                                    <input type="checkbox" :id="'untagged'+item.id" :value="item.id" v-model="untagged_list" :disabled="def_list.includes(item.id)">
-                                    <label :for="'untagged'+item.id">{{ item.name }}</label>
+                                    <label :class="{ disabled: def_list.includes(item.id) }">
+                                        <input type="checkbox" :id="'untagged'+item.id" :value="item.id" v-model="untagged_list" :disabled="def_list.includes(item.id)">
+                                        {{ item.name }}
+                                    </label>
                                 </span>
                             </div>
                         </div>
@@ -200,42 +170,50 @@
                 <div class="close" @click="close_batch_del"></div>
             </div>
         </div>
-        <confirm :tool-tips="lanMap['delete_vlan_hit']" @choose="result" v-if="userChoose"></confirm>
     </div>
 </template>
 
 <script>
 import { mapState } from 'vuex'
-import { parsePortList } from '@/utils/common';
+import { parsePortList, parsePort } from '@/utils/common';
     export default {
         name: 'vlanMgmt',
         computed: {
-            ...mapState(['lanMap','port_name','system','change_url'])
+            ...mapState(['lanMap','port_name','system','change_url']),
+            // 分页的数据 --> 显示到页面的数据
+            vlan_tab(){
+                if(!this.search_id){
+                    this.pagination.page = Math.ceil(this.vlan_list.length / this.pagination.display);
+                    return this.vlan_list.slice(this.pagination.display * (this.pagination.index - 1), this.pagination.index * this.pagination.display);
+                }
+                const tab = [];
+                this.vlan_list.forEach(item =>{
+                    if((String(item.vlan_id)).indexOf(String(this.search_id)) !== -1){
+                        tab.push(item);
+                    }
+                })
+                this.pagination.page = Math.ceil(tab.length / this.pagination.display) || 1;
+                // 溢出处理
+                if(this.pagination.index > this.pagination.page){
+                    this.pagination.index = this.pagination.page;
+                }
+                return tab.slice(this.pagination.display * (this.pagination.index - 1), this.pagination.index * this.pagination.display);
+            }
         },
         data(){
             return {
                 // 已有的 VLAN列表
-                vlan_list: {},
-                // 分页的数据 --> 显示到页面的数据
-                vlan_tab: [],
-                // 删除VLAN确认框组件
-                userChoose: false,
+                vlan_list: [],
                 // 创建VLAN模态框的显示隐藏参数
                 create_vlan: false,
                 vlanid: 0,
                 // 查找的vlan id
                 search_id: '',
-                // 未查找到指定VLAN时的页面显示
-                not_found_vlan: false,
                 // 创建VLAN时，绑定的新创建的 VLAN ID
                 vlanid_s: '',
                 vlanid_e: '',
-                // 分页数据(懒加载)
-                count: 0,
                 //  是否提示创建VLAN成功的tips
                 batch_set_vlan: false,
-                // vlan映射
-                vlan_map: {},
                 // 分页插件数据
                 pagination: {
                     // 当前页面
@@ -248,9 +226,9 @@ import { parsePortList } from '@/utils/common';
                 // 添加/修改VLAN模态框隐藏显示
                 modalDialog: false,
                 batch_del_vlan: false,
-                is_loadmore: false,
                 tagged_list: [],
                 untagged_list: [],
+                //  以当前vlan作为端口默认vlan的端口列表
                 def_list: [],
                 lags: {}
             }
@@ -260,116 +238,30 @@ import { parsePortList } from '@/utils/common';
         },
         methods: {
             getData(){
-                // 请求url: /switch_vlan?count=0
-                var url;
-                if(this.change_url.beta === 'test'){
-                    url = this.change_url.vlancfg;
-                }else{
-                    url = this.change_url.vlancfg;
-                }
-                this.$http.get(url).then(res=>{
+                //   /switch_vlan
+                // 请求url: /vlantable
+                this.vlan_list = [];
+                this.$http.get(this.change_url.getvlan).then(res => {
                     if(res.data.code === 1){
-                        // if(!res.data.data) {
-                        //     this.is_loadmore = false;
-                        //     if(this.count === 0){
-                        //         this.vlan_list = {};
-                        //         this.vlan_tab = [];
-                        //     }
-                        //     return
-                        // }
-                        // if(res.data.data && res.data.data.length === 200){
-                        //     this.is_loadmore = true;
-                        // }
-                        // if(res.data.data && res.data.data.length !== 200){
-                        //     this.is_loadmore = false;
-                        // }
-                        // if(this.count === 0 && res.data.data){
-                        //     this.vlan_list = res.data;
-                        // }else if(res.data.data){
-                        //     var data = Object.assign([],this.vlan_list.data);
-                        //     data = data.concat(res.data.data);
-                        //     this.vlan_list = {
-                        //         code: 1,
-                        //         data: data
-                        //     }
-                        // }
-                        // if(this.vlan_list.data){
-                        //     var vlan_map = {};
-                        //     for(var key in this.vlan_list.data){
-                        //         vlan_map[this.vlan_list.data[key].vlan_id] = this.vlan_list.data[key];
-                        //     }
-                        //     this.vlan_map = vlan_map;
-                        // }
-                        // this.pagination.page = Math.ceil(this.vlan_list.data.length/this.pagination.display);
-                        // this.getPage();
-                        this.getVlan();
-                    }else{
-                        this.vlan_list = {};
-                        this.vlan_tab = [];
+                        this.$http.get(this.change_url.vlancfg).then(res=>{
+                            if(res.data.code === 1){
+                                if(res.data.data && res.data.data.length){
+                                    this.vlan_list = res.data.data;
+                                }
+                            }
+                        }).catch(err=>{
+                            // to do
+                        })
                     }
-                }).catch(err=>{
-                    // to do
-                })
-            },
-            getVlan(){
-                this.$http.get('/vlantable').then(res => {
-                    this.vlan_list = {};
-                    this.vlan_tab = [];
-                    if(res.data.code === 1){
-                        this.vlan_list = res.data;
-                        this.pagination.page = Math.ceil(this.vlan_list.data.length/this.pagination.display);
-                        this.getPage();
-                    }
-                }).catch(err =>{})
-            },
-            //  查找某一个vlan
-            searchVlan(){
-                if(!this.search_id){
-                    this.$message({
-                        type: 'error',
-                        text: this.lanMap['vlanid_range_hit']
-                    })
-                    return
-                }
-                var list = this.vlan_list.data;
-                var tab = [];
-                this.pagination.page = 0;
-                for(var i=0,len=list.length;i<len;i++){
-                    if(list[i].vlan_id == this.search_id){
-                        tab.push(list[i]);
-                        this.vlan_tab = tab;
-                        this.not_found_vlan = false;
-                        return
-                    }
-                }
-                this.not_found_vlan = true;
-                this.vlan_tab = [];
-            },
-            //  加载更多
-            loadmore(){
-                this.count += 1;
-                this.getData();
-            },
-            //  单选框点击切换选中状态
-            changeState(e){
-                if(e.target.value == 1){
-                    e.target.checked = false;
-                    e.target.value = 0;
-                }else{
-                    var input = document.getElementsByName(e.target.name);
-                    for(var i=0,len=input.length;i<len;i++){
-                        input[i].value = 0;
-                        input[i].checked = false;
-                    }
-                    e.target.checked = true;
-                    e.target.value = 1;
-                }
+                }).catch(err => {})
+                
             },
             //  创建VLAN
             createVlan(flag){
                 this.modalDialog = true;
                 this.create_vlan = true;
                 this.vlanid = 0;
+                this.def_list = [];
                 if(flag){
                     this.batch_set_vlan = true;
                 }else{
@@ -378,16 +270,42 @@ import { parsePortList } from '@/utils/common';
             },
             //  删除VLAN
             deleteVlan(vlanid){
-                this.userChoose = true;
-                this.vlanid = vlanid;
+                this.$confirm(this.lanMap['delete_vlan_hit']).then(_ => {
+                    const post_param = {
+                        "method":"destroy",
+                        "param":{
+                            vlan_id: vlanid
+                        }
+                    }
+                    this.$http.post('/switch_vlan',post_param).then(res=>{
+                        if(res.data.code === 1){
+                            this.$message({
+                                type: res.data.type,
+                                text: this.lanMap['delete'] + this.lanMap['st_success']
+                            })
+                            this.vlan_list.forEach((item,index,arr)=>{
+                                if(item.vlan_id === vlanid){
+                                    this.vlan_list.splice(index,1);
+                                }
+                            })
+                        }else if(res.data.code > 1){
+                            this.$message({
+                                type: res.data.type,
+                                text: '(' + res.data.code + ') ' + res.data.message
+                            })
+                        }
+                    }).catch(err=>{
+                        // to do
+                    })
+                }).catch(_ => {})
             },
             //  配置 VLAN 端口模态框
             config_port(data){
                 this.modalDialog = true;
                 this.vlanid = data.vlan_id;
-                this.tagged_list = this.analysis(data.tagged_portlist);
-                this.untagged_list = this.analysis(data.untagged_portlist);
-                this.def_list = this.analysis(data.default_vlan_portlist);
+                this.tagged_list = parsePort(data.tagged_portlist);
+                this.untagged_list = parsePort(data.untagged_portlist);
+                this.def_list = parsePort(data.default_vlan_portlist);
                 this.composeLags(data);
             },
             //  关闭创建/配置 VLAN 模态框
@@ -398,65 +316,9 @@ import { parsePortList } from '@/utils/common';
                 this.tagged_list = [];
                 this.untagged_list = [];
             },
-            //  模态框控件 => 删除VLAN
-            result(bool){
-                if(bool){
-                    var post_param = {
-                        "method":"destroy",
-                        "param":{
-                            "vlan_id": this.vlanid
-                        }
-                    }
-                    this.$http.post('/switch_vlan',post_param).then(res=>{
-                        if(res.data.code === 1){
-                            this.$message({
-                                type: res.data.type,
-                                text: this.lanMap['delete'] + this.lanMap['st_success']
-                            })
-                            this.vlan_list.data.forEach((item,index,arr)=>{
-                                if(item.vlan_id === this.vlanid){
-                                    arr.splice(index,1);
-                                    if(this.search_id === ''){
-                                        this.getPage();
-                                        if(this.vlan_list.data && this.vlan_list.data.length > 0)
-                                            this.pagination.page = Math.ceil(this.vlan_list.data.length/this.pagination.display);
-                                        if(this.vlan_tab.length === 0 && this.vlan_list.data.length > 0){
-                                            this.pagination.index--;
-                                            this.getPage();
-                                        }
-                                    }else{
-                                        this.vlan_tab.forEach((item,index,arr)=>{
-                                            if(item.vlan_id === this.vlanid){
-                                                arr.splice(index,1);
-                                            }
-                                        })
-                                    }
-                                }
-                            })
-                            this.vlanid = 0;
-                        }else if(res.data.code > 1){
-                            this.$message({
-                                type: res.data.type,
-                                text: '(' + res.data.code + ') ' + res.data.message
-                            })
-                        }
-                    }).catch(err=>{
-                        // to do
-                    })
-                }
-                this.userChoose = false;
-            },
             //  分页切换
             changeIndex(n){
-                if(n < 1 || n > this.pagination.page){
-                    return 
-                }
                 this.pagination.index = n;
-                this.getPage();
-            },
-            //  计算分页中当前显示页面的数据
-            getPage(){
-                this.vlan_tab = this.vlan_list.data.slice(this.pagination.display*(this.pagination.index-1),this.pagination.index*this.pagination.display);
             },
             //  配置模态框的按钮动作，根据用户选择进行操作
             handle_cfg(bool){
@@ -467,28 +329,14 @@ import { parsePortList } from '@/utils/common';
             },
             //  配置VLAN ID 的端口
             set_vlan(vid,vid_s,vid_e,create_flag){
-                // var tagged = document.querySelectorAll('span.tagged>input');
-                // var untagged = document.querySelectorAll('span.untagged>input');
                 var tag_str = '', untag_str = '', post_param, url;
-                // for(var i=0,len=tagged.length;i<len;i++){
-                //     if(tagged[i].checked){
-                //         tag_str += tagged[i].name;
-                //         tag_str += ',';
-                //     }
-                // }
-                // for(var i=0,len=untagged.length;i<len;i++){
-                //     if(untagged[i].checked){
-                //         untag_str += untagged[i].name;
-                //         untag_str += ',';
-                //     }
-                // }
                 if(vid || (!!vid_s && vid_s === vid_e)){
                     post_param = {
                         "method":"set",
                         "param":{
                             "vlan_id": vid || vid_s,
-                            "tagged_portlist": this.tagged_list.sort((a, b) => a-b).toString(),//tag_str.replace(/\,$/,''),
-                            "untagged_portlist": this.untagged_list.sort((a, b) => a-b).toString()//untag_str.replace(/\,$/,'')
+                            "tagged_portlist": this.tagged_list.sort((a, b) => a-b).toString(),
+                            "untagged_portlist": this.untagged_list.sort((a, b) => a-b).toString()
                         }
                     }
                     url = '/switch_vlan';
@@ -498,8 +346,8 @@ import { parsePortList } from '@/utils/common';
                         "param":{
                          	"vlanid_s": vid_s > vid_e ? vid_e : vid_s,
                             "vlanid_e": vid_s > vid_e ? vid_s : vid_e,
-                            "tagged_portlist": this.tagged_list.sort((a, b) => a-b).toString(),//tag_str.replace(/\,$/,''),
-                            "untagged_portlist": this.untagged_list.sort((a, b) => a-b).toString()//untag_str.replace(/\,$/,'')
+                            "tagged_portlist": this.tagged_list.sort((a, b) => a-b).toString(),
+                            "untagged_portlist": this.untagged_list.sort((a, b) => a-b).toString()
                         }
                     }
                     url = '/switch_vlanlist';
@@ -518,7 +366,6 @@ import { parsePortList } from '@/utils/common';
                                 text: this.lanMap['create_vlan_info']
                             })
                         }
-                        this.count = 0;
                         this.pagination.index = 1;
                         this.getData();
                     }else if(res.data.code > 1){
@@ -527,7 +374,6 @@ import { parsePortList } from '@/utils/common';
                             text: '(' + res.data.code + ') ' + res.data.message
                         })
                         if(res.data.type === 'warning'){
-                            this.count = 0;
                             this.pagination.index = 1;
                             this.getData();
                         }
@@ -545,21 +391,7 @@ import { parsePortList } from '@/utils/common';
                 if(bool){
                     var vid_s = Number(this.vlanid_s);
                     var vid_e = Number(this.vlanid_e);
-                    // var tagged = document.querySelectorAll('span.tagged>input');
-                    // var untagged = document.querySelectorAll('span.untagged>input');
                     var tag_str = '',untag_str = '';
-                    // for(var i=0,len=tagged.length;i<len;i++){
-                    //     if(tagged[i].checked){
-                    //         tag_str += tagged[i].name;
-                    //         tag_str += ',';
-                    //     }
-                    // }
-                    // for(var i=0,len=untagged.length;i<len;i++){
-                    //     if(untagged[i].checked){
-                    //         untag_str += untagged[i].name;
-                    //         untag_str += ',';
-                    //     }
-                    // }
                     tag_str = this.tagged_list.sort((a, b) => a-b).toString();
                     untag_str = this.untagged_list.sort((a, b) => a-b).toString();
                     if(isNaN(vid_s) || vid_s > 4094 || vid_s < 1 || isNaN(vid_e) || vid_e > 4094 || vid_e < 1) {
@@ -586,7 +418,6 @@ import { parsePortList } from '@/utils/common';
                                     type: res.data.type,
                                     text: this.lanMap['create_vlan_info']
                                 })
-                                this.count = 0;
                                 this.pagination.index = 1;
                                 this.getData();
                                 this.vlanid_s = '';
@@ -610,29 +441,6 @@ import { parsePortList } from '@/utils/common';
                     this.vlanid_e = '';
                     this.tip_flag = false;
                 }
-            },
-            //  解析后台返回的字符串
-            analysis(str){
-                if(!str) return []
-                var result = [];
-                var arr = str.split(',');
-                for(var i=0,len=arr.length;i<len;i++){
-                    var substrs = arr[i];
-                    if(substrs.indexOf('-') !== -1){
-                        var subArr = substrs.split('-');
-                        var min = Number(subArr[0]),max = Number(subArr[subArr.length - 1]);
-                        if(isNaN(min) || isNaN(max)) throw new TypeError;
-                        result.push(min);
-                        for(var j=1;j<max-min;j++){
-                            result.push(min+j);
-                        }
-                        result.push(max);
-                    }else{
-                        if(isNaN(Number(substrs))) throw new TypeError;
-                        result.push(Number(substrs));
-                    }
-                }
-                return result;
             },
             //  打开范围删除vlan模态框
             open_batch_del(){
@@ -669,7 +477,6 @@ import { parsePortList } from '@/utils/common';
                             type: res.data.type,
                             text: this.lanMap['setting_ok']
                         })
-                        this.count = 0;
                         this.pagination.index = 1;
                         this.getData();
                     }else if(res.data.code > 1){
@@ -691,7 +498,7 @@ import { parsePortList } from '@/utils/common';
                 Object.keys(data).forEach(item => {
                     if(reg.test(item)){
                         var key = item.replace(reg, '$1');
-                        this.lags[key] = this.analysis(data[item]);
+                        this.lags[key] = parsePort(data[item]);
                     }
                 })
             },
@@ -703,42 +510,10 @@ import { parsePortList } from '@/utils/common';
             }
         },
         watch: {
-            search_id(){
-                if(this.search_id === ''){
-                    this.not_found_vlan = false;
-                    this.count = 0;
-                    this.pagination.index = 1;
-                    this.getData();
-                }else{
-                    this.is_loadmore = false;
-                    var list = this.vlan_list.data;
-                    var tab = [];
-                    this.pagination.page = 0;
-                    list.forEach((item,index,arr)=>{
-                        if(('' + item.vlan_id).indexOf('' + this.search_id) !== -1){
-                            tab.push(item);
-                        }
-                    })
-                    if(tab.length > 0){
-                        this.not_found_vlan = false;
-                        this.vlan_tab = tab;
-                    }else{
-                        this.not_found_vlan = true;
-                        this.vlan_tab = [];
-                    }
-                }
+            search_id(newVal, oldVal){
+                this.pagination.index = 1;
             },
-            vlan_tab(){
-                if(this.search_id !== '' && this.vlan_tab.length === 0){
-                    this.not_found_vlan = true;
-                    return
-                }
-                if(!this.not_found_vlan && this.vlan_tab.length === 0 && this.vlan_list.data.length > 0){
-                    this.pagination.index--;
-                    this.pagination.page = Math.ceil(this.vlan_list.data.length/this.pagination.display);
-                    this.getPage();
-                }
-            },
+            //  tagged_list & untagged_list   LAG相同的，关联为同一端口(多个端口视为同一个端口), tag & untag时也必须同步
             tagged_list(newVal, oldVal){
                 var val;
                 if(newVal.length > oldVal.length){
@@ -848,6 +623,11 @@ import { parsePortList } from '@/utils/common';
 div.vlan-mgmt{
     min-width: 1020px;
     padding: 70px 0 20px 0;
+    &:after{
+        content: "";
+        display: table;
+        clear: both;
+    }
 }
 div.vlan-mgmt>div:nth-child(2){
     margin: 0 0 0 30px;
@@ -872,8 +652,8 @@ div.btn-group-vlan{
 div>h2{
     font-size: 24px;
     font-weight: 600;
-    color: #67AEF7;
-    margin: 10px 0 20px 20px;
+    color: @titleColor;
+    margin: 20px 0 20px 20px;
 }
 div.search{
     margin: 20px 0 20px 20px;
@@ -914,7 +694,7 @@ h2+div:after{
 p{
     font-size: 24px;
     font-weight: 600;
-    color:#67AEF7;
+    color: @titleColor;
 }
 div+ul{
     margin: 0 0 0 30px;
@@ -1093,5 +873,14 @@ div.cover+div.batch-delete{
     a{
         margin: 15px 0 0 100px;
     }
+}
+.table-btn-text{
+    width: auto;
+    margin: 0;
+}
+.disabled{
+    cursor: not-allowed;
+    box-shadow: none;
+    opacity: .65;
 }
 </style>
