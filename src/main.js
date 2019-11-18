@@ -18,11 +18,13 @@ import nmsDialog from '@/components/common/commonComponent/dialog/dialog';
 import loading from '@/components/common/commonComponent/loading';
 import portHeader from '@/components/common/commonComponent/pageHeader';
 import dropdown from '@/components/common/commonComponent/dropdown';
+import nmsPagination from '@/components/common/commonComponent/pagination';
 
 Vue.use(VueMessage)
 Vue.use(portHeader);
 Vue.use(tabBar);
 Vue.use(dropdown);
+Vue.use(nmsPagination);
 
 Vue.component('confirm', confirm);
 Vue.component('nmsTable', nmsTable);
