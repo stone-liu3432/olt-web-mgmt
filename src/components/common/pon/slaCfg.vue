@@ -10,28 +10,34 @@
             </select>
         </div>
         <hr>
-        <ul v-if="band_width.data && band_width.data.length > 0">
-            <li class="bg-title">
-                <span v-for="(item,key) in this.band_width.data[0]" :key="key" v-if=" key != 'port_id'">
-                    {{ lanMap[key] }}
-                </span>
-                <span>{{ lanMap['config'] }}</span>
-            </li>
-            <li v-for="(item,index) in this.band_width.data" :key="index">
-                <span>{{ 'ONU0'+item.port_id +'/'+ item.onu_id }}</span>
-                <span>{{ item.sla_type }}</span>
-                <span v-if="item.sla_type === 'type1' || item.sla_type === 'type5'">{{ item.fix }}</span>
-                <span v-else> - </span>
-                <span v-if="item.sla_type === 'type2' || item.sla_type === 'type3' || item.sla_type === 'type5'">{{ item.assure }}</span>
-                <span v-else> - </span>
-                <span v-if="item.sla_type === 'type3' || item.sla_type === 'type4' || item.sla_type === 'type5'">{{ item.max }}</span>
-                <span v-else> - </span>
-                <span>
-                    <a href="javascript:;" @click="sla_config(item.onu_id)">{{ lanMap['config'] }}</a>
-                </span>
-            </li>
-        </ul>
-        <p v-else class="nodata-bandwidth">{{ lanMap['onu_bw_fail_info'] }}</p>
+        <nms-table :rows="band_width" border>
+            <nms-table-column :label="lanMap['onu_id']">
+                <template slot-scope="rows">
+                    {{ 'ONU0'+ rows.port_id +'/'+ rows.onu_id }}
+                </template>
+            </nms-table-column>
+            <nms-table-column prop="sla_type" :label="lanMap['sla_type']"></nms-table-column>
+            <nms-table-column prop="fix" :label="lanMap['fix']">
+                <template slot-scope="rows">
+                    {{ rows.sla_type === 'type1' || rows.sla_type === 'type5' ? rows.fix : ' - ' }}
+                </template>
+            </nms-table-column>
+            <nms-table-column prop="assure" :label="lanMap['assure']">
+                <template slot-scope="rows">
+                    {{ rows.sla_type === 'type2' || rows.sla_type === 'type3' || rows.sla_type === 'type5' ? rows.assure : ' - ' }}
+                </template>
+            </nms-table-column>
+            <nms-table-column prop="max" :label="lanMap['max']">
+                <template slot-scope="rows">
+                    {{ rows.sla_type === 'type3' || rows.sla_type === 'type4' || rows.sla_type === 'type5' ? rows.max : ' - ' }}
+                </template>
+            </nms-table-column>
+            <nms-table-column :label="lanMap['config']">
+                <template slot-scope="rows">
+                    <a href="javascript:;" @click="sla_config(rows.onu_id)" class="btn-text" style="width: auto; margin-left: 0;">{{ lanMap['config'] }}</a>
+                </template>
+            </nms-table-column>
+        </nms-table>
         <div class="modal-dialog" v-if="isConfig">
             <div class="cover"></div>
             <div class="dialog" v-if="onu_detail.data">
@@ -144,7 +150,7 @@ import { mapState } from 'vuex'
         name: 'slaCfg',
         data(){
             return {
-                band_width: {},
+                band_width: [],
                 portid: 0,
                 isConfig: false,
                 post_params: {
@@ -158,18 +164,11 @@ import { mapState } from 'vuex'
             }
         },
         created(){
-            //  '/onu_bandwidth?port_id=' + (this.$route.query.port_id || 1)
             var pid = sessionStorage.getItem('pid');
             this.portid = this.$route.query.port_id || pid || 1;
             if(this.change_url.beta === 'test'){
-                var url;
-                if(this.change_url.onu_allow[this.change_url.onu_allow.length - 1] != '='){
-                    url = this.change_url.bandwidth;
-                }else{
-                    url = this.change_url.bandwidth + this.portid;
-                }
-                this.$http.get(url).then(res=>{
-                    this.band_width = res.data;
+                this.$http.get('./simulation_data/onuBandwidth.json').then(res=>{
+                    this.band_width = res.data.data;
                 }).catch(err=>{
                     // to do 
                 })
@@ -187,7 +186,7 @@ import { mapState } from 'vuex'
             sla_config(uid){
                 var url;
                 if(this.change_url.beta === 'test'){
-                    url = './onu-band-width.json';
+                    url = './simulation_data/onu-band-width.json';
                 }else{
                     url = '/onu_bandwidth?port_id='+ this.portid +'&onu_id='+ uid;
                 }
@@ -206,11 +205,12 @@ import { mapState } from 'vuex'
                 })
             },
             getData(){
+                this.band_width = [];
                  this.$http.get('/onu_bandwidth?port_id='+ this.portid).then(res=>{
                     if(res.data.code === 1){
-                        this.band_width = res.data;
-                    }else if(res.data.code >1){
-                        this.band_width = {};
+                        if(res.data.data && res.data.data.length){
+                            this.band_width = res.data.data;
+                        }
                     }
                 }).catch(err=>{
                     // to do
@@ -299,7 +299,7 @@ import { mapState } from 'vuex'
                 this.isConfig = false;
             }
         },
-        computed: mapState(['lanMap','port_name','port_info','change_url']),
+        computed: mapState(['lanMap', 'port_name', 'change_url']),
         watch: {
             portid(){
                 sessionStorage.setItem('pid',Number(this.portid));

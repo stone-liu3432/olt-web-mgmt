@@ -8,45 +8,36 @@
             </span>
             <i @click="getData"></i>
         </div>
-        <ul v-if="multicast_info.data && multicast_info.data.length > 0">
-            <li class="bg-title">
-                <span class="multi-ip">{{ lanMap['multi_ip'] }}</span>
-                <span class="vid">{{ lanMap['vid'] }}</span>
-                <span class="action">{{ lanMap['action'] }}</span>
-                <span class="port-list">{{ lanMap['host_portlist'] }}</span>
-                <span class="port-list">{{ lanMap['router_portlist'] }}</span>
-            </li>
-            <li v-for="(item,key) in multicast_tab" :key="key" class="multi-item">
-                <span class="multi-ip">{{ item.multi_ip }}</span>
-                <span class="vid">{{ item.vid }}</span>
-                <span class="action">{{ item.action ? lanMap['static'] : lanMap['dynamic'] }}</span>
-                <span class="port-list">
-                    <template v-if="item.host_portlist">
-                        {{ item.host_portlist | parsePortList }}
+        <nms-table :rows="multicast_tab" border>
+            <nms-table-column prop="multi_ip" :label="lanMap['multi_ip']"></nms-table-column>
+            <nms-table-column prop="vid" :label="lanMap['vid']"></nms-table-column>
+            <nms-table-column :label="lanMap['action']">
+                <template slot-scope="rows">
+                    {{ rows.action ? lanMap['static'] : lanMap['dynamic'] }}
+                </template>
+            </nms-table-column>
+            <nms-table-column :label="lanMap['host_portlist']">
+                <template slot-scope="rows">
+                    <template v-if="rows.host_portlist">
+                        {{ rows.host_portlist | parsePortList }}
                     </template>
                     <template v-else>
                         -
                     </template>
-                </span>
-                <span class="port-list">
-                    <template v-if="item.router_portlist">
-                        {{ item.router_portlist | parsePortList }}
+                </template>
+            </nms-table-column>
+            <nms-table-column :label="lanMap['router_portlist']">
+                <template slot-scope="rows">
+                    <template v-if="rows.router_portlist">
+                        {{ rows.router_portlist | parsePortList }}
                     </template>
                     <template v-else>
                         -
                     </template>
-                </span>
-            </li>
-        </ul>
-        <div class="tab-bar" v-if="page > 1">
-            <div @click="jump_page(page - 1)" :style="{ 'cursor' : index === page - 1 ? 'not-allowed' : 'pointer' }">></div>
-            <div v-if="index + 2 < page" @click="jump_page(index + 2)">{{ index + 3 }}</div>
-            <div v-if="index + 1 < page" @click="jump_page(index + 1)">{{ index + 2 }}</div>
-            <div @click="jump_page(index)" class="actived">{{ index + 1 }}</div>
-            <div v-if="index - 1 >= 0" @click="jump_page(index - 1)">{{ index }}</div>
-            <div v-if="index - 2 >= 0" @click="jump_page(index - 2)">{{ index - 1 }}</div>
-            <div @click="jump_page(0)" :style="{ 'cursor': this.index === 0 ? 'not-allowed' : 'pointer'}">{{ "<" }}</div>
-        </div>
+                </template>
+            </nms-table-column>
+        </nms-table>
+        <nms-pagination :total="multicast_info.length" :current-page="index" :page-size="display" @current-change="changeIndex" style="float: right;"></nms-pagination>
         <div class="modal-dialog" v-if="show_add_modal">
             <div class="cover"></div>
             <div class="add-content">
@@ -61,7 +52,7 @@
                     <div v-else>
                         <span>{{ lanMap['multi_ip'] }}</span>
                         <select v-model="del_multi_ip">
-                            <option :value="item.multi_ip" v-for="(item,index) in  static_multi" :key="index">{{ item.multi_ip }}</option>
+                            <option :value="item.multi_ip" v-for="(item,index) in static_multi" :key="index">{{ item.multi_ip }}</option>
                         </select>
                     </div>
                     <div v-if="is_add">
@@ -97,7 +88,6 @@
                 <div class="close" @click="close_add_modal"></div>
             </div>
         </div>
-        <confirm v-if="show_del_modal" @choose="result_del_multi"></confirm>
     </div>
 </template>
 
@@ -105,15 +95,22 @@
 import { mapState } from 'vuex'
 export default {
     name: 'multicast',
-    computed: mapState(['lanMap','change_url','port_name','system']),
+    computed: {
+        ...mapState(['lanMap','change_url','port_name','system']),
+        multicast_tab(){
+            const start = (this.index - 1) * this.display;
+            const end = start + this.display;
+            if(end >= this.multicast_info.length){
+                return this.multicast_info.slice(start);
+            }
+            return this.multicast_info.slice(start, end);
+        }
+    },
     data(){
         return {
-            multicast_info: {},
-            //  分页显示的数据
-            multicast_tab: [],
-            //  分页数据 * 3
-            index: 0,
-            page: 0,
+            multicast_info: [],
+            //  分页数据 
+            index: 1,
             display: 10,
             //  静态组播项参数 * 3
             portid: 1,
@@ -137,35 +134,22 @@ export default {
     },
     methods: {
         getData(){
+            this.multicast_info = [];
+            this.static_multi = [];
+            this.index = 1;
             this.$http.get(this.change_url.get_multicast).then(res=>{
                 if(res.data.code === 1){
-                    this.multicast_info = res.data;
-                    if(this.multicast_info.data && this.multicast_info.data.length > 0){
-                        this.page = Math.ceil(this.multicast_info.data.length/this.display);
-                        this.multicast_tab = this.multicast_info.data.slice(0,this.display);
-                        this.index = 0;
-                        this.static_multi = this.multicast_info.data.filter(item=>{
-                            return item.action === 1;
-                        })
-                    }else{
-                        this.static_multi = [];
+                    if(res.data.data && res.data.data.length ){
+                        this.multicast_info = res.data.data;
+                        this.static_multi = this.multicast_info.filter(item => item.action === 1)
                     }
-                }else{
-                    this.multicast_info = {};
-                    this.static_multi = [];
                 }
             }).catch(err=>{
                 // to do
             })
         },
         //  分页跳转
-        jump_page(index){
-            if(index === this.index || index < 0 || index >= this.page) return
-            if(index*this.display - this.multicast_info.data.length > 10 || index === 0){
-                this.multicast_tab = this.multicast_info.data.slice(index*this.display,this.display);
-            }else{
-                this.multicast_tab = this.multicast_info.data.slice(index*this.display);
-            }
+        changeIndex(index){
             this.index = index;
         },
         //  打开添加窗口
@@ -282,14 +266,10 @@ select{
     font-size: 16px;
 }
 div.multicast{
-    .bg-title{
-        background: #2361a2;
-        color: #fff
-    }
     >div:first-child{
         span:first-child{
             font-size: 18px;
-            color: #67aef7;
+            color: @titleColor;
             display: inline-block;
             width: 200px;
         }
@@ -304,77 +284,6 @@ div.multicast{
             vertical-align: middle;
             margin-left: 30px;
             cursor: pointer;
-        }
-    }
-    div+ul{
-        margin: 20px 0 0 0;
-        width: 100%;
-        box-sizing: border-box;
-        li{
-            padding: 2px 0;
-            word-wrap: break-word;
-            word-break: keep-all;
-            font-size: 0;
-            border: 1px solid #ccc;
-            border-bottom: none;
-            &:last-child{
-                border-bottom: 1px solid #ccc;
-            }
-            span{
-                box-sizing: border-box;
-                vertical-align: middle;
-                display: inline-block;
-                font-size: 16px;
-                padding: 5px;
-                text-align: center;
-            }
-            .multi-ip{
-                width: 14.6%;
-            }
-            .vid{
-                width: 11.6%;
-            }
-            .action{
-                width: 11.6%;
-            }
-            .port-list{
-                width: 30.8%;
-            }
-            a{
-                margin: 0;
-                height: 26px;
-                line-height: 26px;
-                box-sizing: border-box;
-            }
-        }
-    }
-    div.tab-bar{
-        margin-top: 8px;
-        div{
-            float: right;
-            cursor: pointer;
-            width: 30px;
-            height: 30px;
-            line-height: 30px;
-            text-align: center;
-            border: 1px solid #ccc;
-            border-left: none;
-            font-weight: 500;
-            &:last-child{
-                border-radius: 5px 0 0 5px;
-                border-left: 1px solid #ccc;
-            }
-            &:first-child{
-                border-radius: 0 5px 5px 0;
-            }
-        }
-        div.actived{
-            color: #67aef7;
-        }
-        &:after{
-            content: '';
-            display: table;
-            clear: both;
         }
     }
     div.add-content{

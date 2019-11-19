@@ -198,7 +198,6 @@
                 <div class="close" @click="flush_mac_close_dialog"></div>
             </div>
         </div>
-        <confirm :tool-tips="lanMap['tips_del_mac']" @choose="result" v-if="userChoose"></confirm>
     </div>
 </template>
 
@@ -267,17 +266,12 @@ import loading from '@/components/common/loading'
                 choose_port: false,
                 choose_vlan: false,
                 //  初始化参数 --> 首次进入页面时的初始数据
-                flag: 1,
                 mac_type: 3,
                 port_id: 1,
                 vlan_id: 0,
                 vlan_id_e: 0,
                 macaddr: '',
                 macmask: '',
-                //  用户确认框
-                userChoose: false,
-                //  将要删除的mac地址数据
-                delete_mac_data: {},
                 //  用户输入的mac地址和mac掩码格式检查
                 check_mac: /^([0-9abcdefABCDEF]{2}\:){5}[0-9abcdefABCDEF]{2}$/,
                 select_all: false,
@@ -360,43 +354,39 @@ import loading from '@/components/common/loading'
             },
             //  删除mac地址处理函数
             delete_mac(data){
-                //  打开模态框
-                this.userChoose = true;
-                //  将要删除的节点的数据缓存
-                this.delete_mac_data = data;
+                this.$confirm(this.lanMap['tips_del_mac']).then(_ => {
+                    this.result(data);
+                }).catch(_ => {})
             },
             //  删除mac地址表
-            result(bool){
-                if(bool){
-                    var post_params = {
-                        "method":"delete",
-                        "param":{
-                            "mac_type": this.delete_mac_data.mac_type,
-                            "macaddr": this.delete_mac_data.macaddr,
-                            "vlan_id": this.delete_mac_data.vlan_id,
-                            "port_id": this.delete_mac_data.port_id
-                        }
+            result(data){
+                const post_params = {
+                    "method":"delete",
+                    "param":{
+                        "mac_type": data.mac_type,
+                        "macaddr": data.macaddr,
+                        "vlan_id": data.vlan_id,
+                        "port_id": data.port_id
                     }
-                    this.$http.post('/switch_mac?form=table',post_params).then(res=>{
-                        if(res.data.code === 1){
-                            this.$message({
-                                type: res.data.type,
-                                text: this.lanMap['delete'] + this.lanMap['st_success']
-                            })
-                            this.count = 0;
-                            this.pagination.index = 1;
-                            this.getData();
-                        }else if(res.data.code > 1){
-                            this.$message({
-                                type: res.data.type,
-                                text: '(' + res.data.code + ') ' + res.data.message
-                            })
-                        }
-                    }).catch(err=>{
-                        // to do
-                    })
                 }
-                this.userChoose = false;
+                this.$http.post('/switch_mac?form=table',post_params).then(res=>{
+                    if(res.data.code === 1){
+                        this.$message({
+                            type: res.data.type,
+                            text: this.lanMap['delete'] + this.lanMap['st_success']
+                        })
+                        this.count = 0;
+                        this.pagination.index = 1;
+                        this.getData();
+                    }else if(res.data.code > 1){
+                        this.$message({
+                            type: res.data.type,
+                            text: '(' + res.data.code + ') ' + res.data.message
+                        })
+                    }
+                }).catch(err=>{
+                    // to do
+                })
             },
             //  老化时间  编辑框  打开隐藏
             change_macage(){

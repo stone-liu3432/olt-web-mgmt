@@ -191,8 +191,6 @@
                 <div class="close" @click="close_cfg_pro_desc"></div>
             </div>
         </div>
-        <confirm v-if="is_del_mvlan" @choose="result_delmvlan"></confirm>
-        <confirm v-if="is_del_program" @choose="del_single_program"></confirm>
     </div>
 </template>
 
@@ -217,11 +215,9 @@ export default {
             router_portlist: '',
             mc_unknown_policy: 0,
             is_cfg_mv: false,
-            is_del_mvlan: false,
             is_create_mvlan: false,
             is_set_mvdesc: false,
             is_set_program_desc: false,
-            is_del_program: false,
             program_item: {},
             create_mvlan: '',
             reg_ip:  /^((25[0-5]|2[0-4]\d|((1\d{2})|([1-9]?\d)))\.){3}(25[0-5]|2[0-4]\d|((1\d{2})|([1-9]?\d)|\d))$/
@@ -528,11 +524,12 @@ export default {
         },
         //  删除MVLAN
         open_delmvlan(){
-            this.is_del_mvlan = true;
+            this.$confirm().then(_ => {
+                this.result_delmvlan();
+            }).catch(_ => {})
         },
         //  删除MVLAN选择结果
         result_delmvlan(bool){
-            if(bool){
                 var post_param = {
                     "method":"destroy",
                     "param":{
@@ -556,8 +553,6 @@ export default {
                 }).catch(err=>{
                     // to do
                 })
-            }
-            this.is_del_mvlan = false;
         },
         //  创建 mvlan
         open_create_mvlan(flag){
@@ -696,39 +691,36 @@ export default {
         },
         //  单个节目库删除处理函数
         open_del_single_program(node){
-            this.is_del_program = true;
-            this.program_item = node;
+            this.$confirm().then(_ => {
+                this.del_single_program(node);
+            }).catch(_ => {})
         },
-        del_single_program(bool){
-            if(bool){
-                var post_param = {
-                    "method":"delete",
-                    "param":{
-                        "mvlan": this.mvlan,
-                        "program_s": this.program_item.program_s,
-                        "program_e": this.program_item.program_e,
-                        "program_desc": this.program_item.program_desc
-                    }
+        del_single_program(data){
+            const post_param = {
+                "method":"delete",
+                "param":{
+                    "mvlan": this.mvlan,
+                    "program_s": data.program_s,
+                    "program_e": data.program_e,
+                    "program_desc": data.program_desc
                 }
-                this.$http.post('/switch_igmp?form=program',post_param).then(res=>{
-                    if(res.data.code === 1){
-                        this.$message({
-                            type: res.data.type,
-                            text: this.lanMap['delete'] + this.lanMap['st_success']
-                        })
-                        this.get_program();
-                    }else if(res.data.code > 1){
-                        this.$message({
-                            type: res.data.type,
-                            text: '(' + res.data.code + ') ' + res.data.message
-                        })
-                    }
-                }).catch(err=>{
-                    // to do
-                })
             }
-            this.is_del_program = false;
-            this.program_item = {};
+            this.$http.post('/switch_igmp?form=program', post_param).then(res=>{
+                if(res.data.code === 1){
+                    this.$message({
+                        type: res.data.type,
+                        text: this.lanMap['delete'] + this.lanMap['st_success']
+                    })
+                    this.get_program();
+                }else if(res.data.code > 1){
+                    this.$message({
+                        type: res.data.type,
+                        text: '(' + res.data.code + ') ' + res.data.message
+                    })
+                }
+            }).catch(err=>{
+                // to do
+            })
         }
     },
     watch: {
@@ -793,7 +785,7 @@ div.multi-vlan{
     >div:first-child{
         span:first-child{
             font-size: 18px;
-            color: #67aef7;
+            color: @titleColor;
             display: inline-block;
             width: 200px;
         }
@@ -806,7 +798,7 @@ div.multi-vlan-content{
     div{
         height: 36px;
         line-height: 36px;
-        border: 1px solid #ccc;
+        border: 1px solid @borderColor;
         border-bottom: none;
         overflow: hidden;
         &:first-child{
@@ -831,7 +823,7 @@ div.multi-vlan-content{
     }
     div.program{
         height: auto;
-        border-bottom: 1px solid #ccc;
+        border-bottom: 1px solid @borderColor;
         &:after{
             content: '';
             display: table;
@@ -853,7 +845,7 @@ div.multi-vlan-content{
                 height: 28px;
                 overflow: hidden;
                 width: 100%;
-                border-bottom: 1px solid #ddd;
+                border-bottom: 1px solid @borderColor;
                 &:last-child{
                     border: none;
                 }
@@ -866,7 +858,7 @@ div.multi-vlan-content{
                     width: 43%;
                     &:first-child{
                         width: 32%;
-                        border-left: 1px solid #ddd;
+                        border-left: 1px solid @borderColor;
                         text-indent: 6px;
                     }
                 }
@@ -920,7 +912,7 @@ div.multi-vlan-set{
     textarea{
         width: 280px;
         height: 100px;
-        border-color: #ccc;
+        border-color: @borderColor;
         line-height: 24px;
         padding: 0 6px;
         font-size: 16px;
@@ -950,7 +942,7 @@ div.create-mvlan-modal{
     textarea{
         width: 240px;
         height: 100px;
-        border-color: #ccc;
+        border-color: @borderColor;
         line-height: 24px;
         padding: 0 6px;
         font-size: 16px;
@@ -1009,7 +1001,7 @@ div.set-program-desc{
         textarea{
             width: 378px;
             height: 100px;
-            border-color: #ccc;
+            border-color: @borderColor;
             border-radius: 5px;
             line-height: 24px;
             padding: 0 6px;

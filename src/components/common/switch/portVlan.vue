@@ -24,9 +24,9 @@
 
 <script>
 import { mapState } from 'vuex'
-import pvSet from '@/components/common/portVlan/pvSet'
-import pvTranslate from '@/components/common/portVlan/pvTranslate'
-import pvQinq from '@/components/common/portVlan/pvQinq'
+import pvSet from "./portVlan/pvSet";
+import pvTranslate from './portVlan/pvTranslate';
+import pvQinq from './portVlan/pvQinq';
 export default {
     name: 'portVlan',
     computed: mapState(['lanMap','port_name']),

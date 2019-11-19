@@ -95,10 +95,6 @@
                 <div class="close" @click="onu_cfg_info(false)"></div>
             </div>
         </div>
-        <confirm :tool-tips="lanMap['confirm_reboot_onu'] + '?'" @choose="reboot_onu" v-if="reboot_onu_confirm"></confirm>
-        <confirm :tool-tips="lanMap['confirm_deresgester'] + '?'" @choose="un_auth_onu" v-if="un_auth_confirm"></confirm>
-        <confirm :tool-tips="lanMap['confirm_change_fecmode'] + '?'" @choose="set_fec_mode" v-if="set_fec_confirm"></confirm>
-        <confirm v-if="upgrade_confirm" @choose="upgrade_result"></confirm>
     </div>
 </template>
 
@@ -121,17 +117,11 @@ import onuAlarm from './onuAlarm';
                 onu_fec_mode: {},
 				portid: 0,
                 onuid: 0,
-                //  确认模态框 *3
-                reboot_onu_confirm: false,
-                un_auth_confirm: false,
-                set_fec_confirm: false,
                 optical_diagnose: {},
                 //  ONU配置name和description
                 onu_cfg_name: false,
                 onu_name: '',
                 onu_desc: '',
-                //  升级确认框
-                upgrade_confirm: false,
                 show_page: 'onu_info',
                 isCreated: false,
                 wlan: 0
@@ -266,67 +256,64 @@ import onuAlarm from './onuAlarm';
                 return result.filter(item=>!!item)
             },
             open_reboot_onu(){
-                this.reboot_onu_confirm = true;
+                this.$confirm(this.lanMap['confirm_reboot_onu'] + '?').then(_ => {
+                    this.reboot_onu();
+                }).catch(_ => {})
             },
             //  重启ONU
-            reboot_onu(bool){
-                if(bool){
-                    var post_param = {
-                        "method":"set",
-                        "param":{
-                            "port_id": this.portid,
-                            "onu_id": this.onuid,
-                            "flags": 1,
-                            "fec_mode": this.onu_fec_mode.data.fec_mode ? 0 : 1,
-                            "onu_name": '',
-                            "onu_desc": ''
-                        }
+            reboot_onu(){
+                var post_param = {
+                    "method":"set",
+                    "param":{
+                        "port_id": this.portid,
+                        "onu_id": this.onuid,
+                        "flags": 1,
+                        "fec_mode": this.onu_fec_mode.data.fec_mode ? 0 : 1,
+                        "onu_name": '',
+                        "onu_desc": ''
                     }
-                    this.post_data(post_param);
                 }
-                this.reboot_onu_confirm = false;
+                this.post_data(post_param);
             },
             open_un_auth_onu(){
-                this.un_auth_confirm = true;
+                this.$confirm(this.lanMap['confirm_deresgester'] + '?').then(_ => {
+                    this.un_auth_onu();
+                }).catch(_ => {})
             },
             //  解注册 ONU
-            un_auth_onu(bool){
-                if(bool){
-                    var post_param = {
-                        "method":"set",
-                        "param":{
-                            "port_id": this.portid,
-                            "onu_id": this.onuid,
-                            "flags": 2,
-                            "fec_mode": this.onu_fec_mode.data.fec_mode ? 0 : 1,
-                            "onu_name": '',
-                            "onu_desc": ''
-                        }
+            un_auth_onu(){
+                var post_param = {
+                    "method":"set",
+                    "param":{
+                        "port_id": this.portid,
+                        "onu_id": this.onuid,
+                        "flags": 2,
+                        "fec_mode": this.onu_fec_mode.data.fec_mode ? 0 : 1,
+                        "onu_name": '',
+                        "onu_desc": ''
                     }
-                    this.post_data(post_param);
                 }
-                this.un_auth_confirm = false;
+                this.post_data(post_param);
             },
             open_set_fec_mode(){
-                this.set_fec_confirm = true;
+                this.$confirm(this.lanMap['confirm_change_fecmode'] + '?').then(_ => {
+                    this.set_fec_mode();
+                }).catch(_ => {})
             },
             //  fec_mode
-            set_fec_mode(bool){
-                if(bool){
-                    var post_param = {
-                        "method":"set",
-                        "param":{
-                            "port_id": this.portid,
-                            "onu_id": this.onuid,
-                            "flags": 4,
-                            "fec_mode": this.onu_fec_mode.data.fec_mode ? 0 : 1,
-                            "onu_name": "",
-                            "onu_desc": ""
-                        }
+            set_fec_mode(){
+                var post_param = {
+                    "method":"set",
+                    "param":{
+                        "port_id": this.portid,
+                        "onu_id": this.onuid,
+                        "flags": 4,
+                        "fec_mode": this.onu_fec_mode.data.fec_mode ? 0 : 1,
+                        "onu_name": "",
+                        "onu_desc": ""
                     }
-                    this.post_data(post_param);
                 }
-                this.set_fec_confirm = false;
+                this.post_data(post_param);
             },
             post_data(data){
                 this.$http.post('/onumgmt?form=config',data).then(res=>{
@@ -405,31 +392,30 @@ import onuAlarm from './onuAlarm';
                 //     })
                 //     return
                 // }
-                this.upgrade_confirm = true;
+                this.$confirm().then(_ => {
+                    this.upgrade_result();
+                }).catch(_ => {})
             },
-            upgrade_result(bool){
-                if(bool){
-                    var formData = new FormData();
-                    var file = document.getElementById('onu-upgrade-file1');
-                    var files = file.files[0];
-                    formData.append('file',files);
-                    this.$http.post('/onu_upload', formData,{
-                        headers: {'Content-Type': 'multipart/form-data'},
-                        timeout: 0
-                    }).then(res=>{
-                        if(res.data.code === 1){
-                            this.start_upgrade_onu();
-                        }else if(res.data.code > 1){
-                            this.$message({
-                                type: res.data.type,
-                                text: '(' + res.data.code + ') ' + res.data.message
-                            })
-                        }
-                    }).catch(error=>{
-                        // to do
-                    });
-                }
-                this.upgrade_confirm = false;
+            upgrade_result(){
+                var formData = new FormData();
+                var file = document.getElementById('onu-upgrade-file1');
+                var files = file.files[0];
+                formData.append('file',files);
+                this.$http.post('/onu_upload', formData,{
+                    headers: {'Content-Type': 'multipart/form-data'},
+                    timeout: 0
+                }).then(res=>{
+                    if(res.data.code === 1){
+                        this.start_upgrade_onu();
+                    }else if(res.data.code > 1){
+                        this.$message({
+                            type: res.data.type,
+                            text: '(' + res.data.code + ') ' + res.data.message
+                        })
+                    }
+                }).catch(error=>{
+                    // to do
+                });
             },
             //  文件上传成功，开始进行升级
             start_upgrade_onu(){

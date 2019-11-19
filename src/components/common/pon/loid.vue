@@ -9,27 +9,24 @@
         </div>
         <hr>
         <div>
-            <a href="javascript:void(0);" @click="openModal">{{ lanMap['add'] }}</a>
+            <a href="javascript:void(0);" style="margin-left: 10px;" @click="openModal">{{ lanMap['add'] }}</a>
             <a href="javascript:void(0);" @click="refreshData">{{ lanMap['refresh'] }}</a>
         </div>
-        <div class="loid-list">
-            <div :class="[ loid.data ? '' : 'no-more-data' ]">
-                <span>ID</span>
-                <span>{{ lanMap['used'] }}</span>
-                <span>LOID</span>
-                <span>{{ lanMap['password'] }}</span>
-                <span>{{ lanMap['config'] }}</span>
-            </div>
-            <div v-for="(item, index) in loid.data" :key="index" v-if="loid.data">
-                <span>{{ index + 1 }}</span>
-                <span>{{ item.used ? item.mac : 'False' }}</span>
-                <span>{{ item.loid }}</span>
-                <span>{{ item.password }}</span>
-                <span class="small-btn" @click="deleteLoid(item)">{{ lanMap['delete'] }}</span>
-            </div>
-            <p v-if="!loid.data">{{ lanMap['no_more_data'] }}</p>
-        </div>
-        <confirm @choose="submitDel" v-if="delModal"></confirm>
+        <nms-table :rows="loid" border>
+            <nms-table-column label="ID" :formatter="formatterId"></nms-table-column>
+            <nms-table-column prop="used" :label="lanMap['used']">
+                <template slot-scope="rows">
+                    {{ rows.used ? rows.mac : 'False' }}
+                </template>
+            </nms-table-column>
+            <nms-table-column prop="loid" label="LOID"></nms-table-column>
+            <nms-table-column prop="password" :label="lanMap['password']"></nms-table-column>
+            <nms-table-column :label="lanMap['config']">
+                <template slot-scope="rows">
+                    <a href="javascript: void(0);" @click="deleteLoid(rows)" class="btn-text">{{ lanMap['delete'] }}</a>
+                </template>
+            </nms-table-column>
+        </nms-table>
         <div class="modal-dilog" v-if="addModal">
             <div class="cover"></div>
             <div>
@@ -64,15 +61,15 @@
 
 <script>
 import { mapState } from "vuex";
+import { debounce } from '@/utils/common';
 export default {
     name: "loid",
     computed: mapState(["lanMap", "port_name"]),
     data() {
         return {
-            loid: {},
+            loid: [],
             port_id: 1,
             post_data: {},
-            delModal: false,
             addModal: false,
             add_port: 1,
             add_loid: '',
@@ -87,8 +84,7 @@ export default {
     },
     methods: {
         deleteLoid(item){
-            this.delModal = true;
-            this.post_data = {
+            const post_data = {
                 "method": "delete",
                 "param": {
                     "port_id": this.port_id,
@@ -96,39 +92,39 @@ export default {
                     "password": item.password
                 }
             }
+            this.$confirm().then(_ => {
+                this.submitDel(post_data)
+            }).catch(_ => {})
         },
         getData(){
+            this.loid = [];
             this.$http.get('/ponmgmt?form=loidlist&port_id=' + this.port_id).then(res =>{
                 if(res.data.code === 1){
-                    this.loid = res.data;
-                }else{
-                    this.loid = {};
+                    if(res.data.data && res.data.data.length){
+                        this.loid = res.data.data;
+                    }
                 }
             }).catch(err =>{
 
             })
         },
-        submitDel(bool){
-            if(bool){
-                this.$http.post('/ponmgmt?form=loidlist', this.post_data).then(res =>{
-                    if(res.data.code === 1){
-                        this.$message({
-                            type: 'success',
-                            text: this.lanMap['delete'] + this.lanMap['st_success']
-                        })
-                        this.getData();
-                    }else{
-                        this.$message({
-                            type: res.data.type,
-                            text: '(' + res.data.code + ') ' + res.data.message
-                        })
-                    }
-                }).catch(err =>{
+        submitDel(data){
+            this.$http.post('/ponmgmt?form=loidlist', data).then(res =>{
+                if(res.data.code === 1){
+                    this.$message({
+                        type: 'success',
+                        text: this.lanMap['delete'] + this.lanMap['st_success']
+                    })
+                    this.getData();
+                }else{
+                    this.$message({
+                        type: res.data.type,
+                        text: '(' + res.data.code + ') ' + res.data.message
+                    })
+                }
+            }).catch(err =>{
 
-                })
-            }
-            this.delModal = false;
-            this.post_data = {};
+            })
         },
         openModal(){
             this.addModal = true;
@@ -179,7 +175,10 @@ export default {
             this.closeModal();
         },
         refreshData(){
-            this.$parent.reload();
+            debounce(this.getData, 1000, this);
+        },
+        formatterId(row, colIndex, col, rowIndex){
+            return ++rowIndex;
         }
     },
     watch: {
@@ -209,6 +208,9 @@ div.loid-mgmt {
 hr {
     margin: 20px 0;
 }
+a + a{
+    margin-left: 30px;
+}
 select {
     width: 160px;
     height: 30px;
@@ -216,41 +218,6 @@ select {
     border-radius: 3px;
     text-indent: 10px;
     margin-left: 6px;
-}
-div.loid-list{
-    margin: 10px 0 0 0;
-    >div{
-        font-size: 0;
-        text-align: center;
-        >span{
-            font-size: 16px;
-            height: 28px;
-            line-height: 28px;
-            display: inline-block;
-            width: 19.8%;
-            border: 1px solid #ddd;
-            border-right: none;
-            border-bottom: none;
-            vertical-align: middle;
-            &:last-child{
-                border-right: 1px solid #ddd;
-            }
-        }
-        &:last-child{
-            >span{
-                border-bottom: 1px solid #ddd;
-            }
-        }
-    }
-    div.no-more-data{
-        >span{
-            border-bottom: 1px solid #ddd;
-        }
-        &+p{
-            color: red;
-            margin: 6px 0 0 10px;
-        }
-    }
 }
 .small-btn{
     user-select: none;

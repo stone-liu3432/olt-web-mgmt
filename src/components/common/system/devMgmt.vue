@@ -2,14 +2,19 @@
     <div>
         <div class="dev-mgmt restore-cfg">
             <div>{{ lanMap["restore_config"] }}</div>
-            <hr>
+            <hr />
             <div>
-                <p>
-                    {{ lanMap['res_cfg_info'] }}
-                </p>
+                <p>{{ lanMap['res_cfg_info'] }}</p>
                 <div>
-                    <form> 
-                        <input type="file" name="file1" size="80" class="hide" id="file" @change="changeFile()"/>
+                    <form>
+                        <input
+                            type="file"
+                            name="file1"
+                            size="80"
+                            class="hide"
+                            id="file"
+                            @change="changeFile()"
+                        />
                         <span class="updateFile" id="fileName">{{ lanMap['file_click'] }}</span>
                         <a href="javascript:;" @click="restore_cfg">{{ lanMap["restore_config"] }}</a>
                     </form>
@@ -18,23 +23,19 @@
         </div>
         <div class="dev-mgmt">
             <div>{{ lanMap["reboot"] }}</div>
-            <hr>
+            <hr />
             <div>
-                <p>
-                    {{ lanMap['reboot_olt'] }}
-                </p>
+                <p>{{ lanMap['reboot_olt'] }}</p>
                 <div>
-                    <a href="javascript:;" @click="reboot()">{{ lanMap["reboot"] }}</a>
+                    <a href="javascript:;" @click="reboot">{{ lanMap["reboot"] }}</a>
                 </div>
             </div>
         </div>
         <div class="dev-mgmt">
             <div>{{ lanMap["backup_config"] }}</div>
-            <hr>
+            <hr />
             <div>
-                <p>
-                    {{ lanMap['bkup_cfg_info'] }}
-                </p>
+                <p>{{ lanMap['bkup_cfg_info'] }}</p>
                 <div>
                     <a href="javascript:;" @click="backup_cfg">{{ lanMap["backup_config"] }}</a>
                 </div>
@@ -42,11 +43,9 @@
         </div>
         <div class="dev-mgmt">
             <div>{{ lanMap["default_config"] }}</div>
-            <hr>
+            <hr />
             <div>
-                <p>
-                    {{ lanMap['def_cfg_info'] }}
-                </p>
+                <p>{{ lanMap['def_cfg_info'] }}</p>
                 <div>
                     <a href="javascript:;" @click="default_cfg">{{ lanMap["default_config"] }}</a>
                 </div>
@@ -54,11 +53,9 @@
         </div>
         <div class="dev-mgmt">
             <div>{{ lanMap["save_config"] }}</div>
-            <hr>
+            <hr />
             <div>
-                <p>
-                    {{ lanMap['save_cfg_info'] }}
-                </p>
+                <p>{{ lanMap['save_cfg_info'] }}</p>
                 <div>
                     <a href="javascript:;" @click="save_cfg">{{ lanMap["save_config"] }}</a>
                 </div>
@@ -66,22 +63,17 @@
         </div>
         <div class="dev-mgmt">
             <div>{{ lanMap['view_cfg'] }}</div>
-            <hr>
+            <hr />
             <div>
-                <p>
-                    {{ lanMap['view_cfg_tips'] }}
-                </p>
+                <p>{{ lanMap['view_cfg_tips'] }}</p>
                 <div>
-                    <a href="javascript:void(0);" @click="open_view_confirm">{{ lanMap['view_cfg'] }}</a>
+                    <a
+                        href="javascript:void(0);"
+                        @click="open_view_confirm"
+                    >{{ lanMap['view_cfg'] }}</a>
                 </div>
             </div>
         </div>
-        <confirm v-if="viewChoose" @choose="view_result"></confirm>
-        <confirm :tool-tips="lanMap['def_cfg_hit']" @choose="result" v-if="userChoose"></confirm>
-        <confirm :tool-tips="lanMap['reboot_olt_hit']" @choose="reboot_result" v-if="rebootChoose"></confirm>
-        <confirm :tool-tips="lanMap['restore_succ_reboot'] + '?'" @choose="reboot_result" v-if="restoreChoose"></confirm>
-        <confirm :tool-tips="lanMap['save_cfg_confirm']" @choose="saveCfg_result" v-if="saveChoose"></confirm>
-        <loading class="load" v-if="isLoading"></loading>
         <div class="modal-dialog" v-if="isProgress">
             <div class="cover"></div>
             <div class="load-body">
@@ -97,275 +89,298 @@
 </template>
 
 <script>
-import { mapState } from 'vuex'
-import loading from '@/components/common/loading'
+import { mapState } from "vuex";
+import loading from "@/components/common/loading";
 export default {
-    name: 'devMgmt',
-    computed: mapState(['lanMap']),
+    name: "devMgmt",
+    computed: mapState(["lanMap"]),
     components: { loading },
-    data(){
+    data() {
         return {
-            userChoose: false,
-            rebootChoose: false,
-            restoreChoose: false,
-            saveChoose: false,
-            isLoading: false,
             isProgress: false,
-            viewChoose: false,
             width: 0,
             timer1: null,
             timer2: null,
-            timeout: null,
-        }
+            timeout: null
+        };
     },
-    created(){
-
-    },
-    methods:{
+    created() {},
+    methods: {
         //  选择上传文件
-        changeFile(){
-            var file = document.getElementById('file');
-            var fileName = document.getElementById('fileName');
+        changeFile() {
+            var file = document.getElementById("file");
+            var fileName = document.getElementById("fileName");
             var files = file.files[0];
-            if(!files) {
-                fileName.innerText = this.lanMap['file_click'];
-                return
+            if (!files) {
+                fileName.innerText = this.lanMap["file_click"];
+                return;
             }
-            fileName.innerText = file.value.substring(file.value.lastIndexOf('\\')+1);
+            fileName.innerText = file.value.substring(
+                file.value.lastIndexOf("\\") + 1
+            );
         },
         //  重启OLT
-        reboot(){
-            this.rebootChoose = true;
+        reboot(flag) {
+            let tips = this.lanMap["reboot_olt_hit"];
+            if (flag === 1) {
+                tips = this.lanMap["restore_succ_reboot"] + " ?";
+            }
+            this.$confirm(tips)
+                .then(_ => {
+                    this.reboot_result();
+                })
+                .catch(_ => {});
         },
-        reboot_req(){
-            this.$http.get('/system_start',{timeout: 3000}).then(res=>{
-                if(res.data.code === 1){
-                    this.isLoading = false;
-                    sessionStorage.clear();
-                    this.$router.push('/login');
-                }
-            }).catch(err=>{
-                this.reboot_req();
-            })
+        reboot_req() {
+            this.$http
+                .get("/system_start", { timeout: 3000 })
+                .then(res => {
+                    if (res.data.code === 1) {
+                        this.isLoading && this.isLoading.close();
+                        sessionStorage.clear();
+                        this.$router.push("/login");
+                    }
+                })
+                .catch(err => {
+                    this.reboot_req();
+                });
         },
-        reboot_result(bool){
-            if(bool){
-                this.$http.get('/system_reboot').then(res=>{
-                    // to do
-                }).catch(err=>{
+        reboot_result() {
+            this.$http
+                .get("/system_reboot")
+                .then(res => {
                     // to do
                 })
-                this.isLoading = true;
-                this.reboot_req();
-            }
-            this.rebootChoose = false;
-            this.restoreChoose = false;
-            if(this.timeout) clearTimeout(this.timeout);
+                .catch(err => {
+                    // to do
+                });
+            this.isLoading = this.$loading();
+            this.reboot_req();
+            if (this.timeout) clearTimeout(this.timeout);
         },
         //  恢复出厂设置模态框
-        result(bool){
-            if(bool){
-                this.$http.get('/system_def_config').then(res=>{
+        result() {
+            this.$http
+                .get("/system_def_config")
+                .then(res => {
                     //  成功恢复出厂设置时重启设备
-                    if(res.data.code === 1){
+                    if (res.data.code === 1) {
                         this.$message({
                             type: res.data.type,
-                            text: this.lanMap['def_cfg_succ']
-                        })
-                        this.rebootChoose = true;
-                        this.timeout = setTimeout(()=>{
-                            this.reboot_result(true);
-                        },10000)
-                    }else{
+                            text: this.lanMap["def_cfg_succ"]
+                        });
+                        this.reboot();
+                        this.timeout = setTimeout(() => {
+                            this.reboot_result();
+                        }, 10000);
+                    } else {
                         this.$message({
                             type: res.data.type,
-                            text: this.lanMap['default_config_fail']
-                        })
+                            text: this.lanMap["default_config_fail"]
+                        });
                     }
-                }).catch(err=>{
-                    // to do
                 })
-            }
-            this.userChoose = false;
+                .catch(err => {
+                    // to do
+                });
         },
         //  恢复出厂设置
-        default_cfg(){
-            this.userChoose = true;
+        default_cfg() {
+            this.$confirm(this.lanMap["def_cfg_hit"])
+                .then(_ => {
+                    this.result();
+                })
+                .catch(_ => {});
         },
         //  备份配置
-        backup_cfg(){
-            this.$http.get('/system_backup').then(res=>{
-                if(res.data.code === 1){
-                    try{
-                        var a = document.createElement('a');
-                        a.href = '/' + res.data.data.filename;
-                        //a.download = res.data.data.filename;
-                        a.setAttribute('download', res.data.data.filename);
-                        a.style.display = 'none';
-                        document.body.appendChild(a);
-                        a.click();
-                        document.body.removeChild(a);
-                    }catch(e){
-                        //this.backup_cfg();
-                        console.log(e);
-                    }
-                }else if(res.data.code > 1){
-                    this.$message({
-                        type: res.data.type,
-                        text: this.lanMap['st_fail']
-                    })
-                }
-            }).catch(err=>{
-                // to do
-            })
-        },
-        //  导入配置        --> 暂未支持，后续添加
-        restore_cfg(){
-            // this.$message({
-            //     type: 'info',
-            //     text: this.lanMap['no_support']
-            // })
-            // return
-            var formData = new FormData();
-            var file = document.getElementById('file');
-            var files = file.files[0];
-            var fileName = document.getElementById('fileName');
-            //var reg = /\.txt$/;
-            if(!files) {
-                fileName.innerText = this.lanMap['file_click'];
-                this.$message({
-                    type: 'error',
-                    text: this.lanMap['file_not_select']
-                })
-                return
-            }
-            // if(!reg.test(fileName.innerText)){
-            //     this.$message({
-            //         type: 'error',
-            //         text: this.lanMap['restore_file_nr']
-            //     })
-            //     return
-            // }
-            formData.append('file',files);
-            this.isProgress = true;
-            document.body.addEventListener('keydown',this.preventRefresh,false);
-            document.body.addEventListener('contextmenu',this.preventMouse,false);
-            this.$http.post('/system_restore', formData,{
-                headers: {'Content-Type': 'multipart/form-data'},
-                timeout: 0
-            }).then(res=>{
-                document.body.removeEventListener('keydown',this.preventRefresh);
-                document.body.removeEventListener('contextmenu',this.preventMouse);
-                    if(res.data.code === 1){
-                    this.width = 400;
-                    clearInterval(this.timer2);
-                    this.isProgress = false;
-                    this.$message({
-                        type: res.data.type,
-                        text: this.lanMap['restore_config_succ']
-                    })
-                    this.restoreChoose = true;
-                    this.width = 0;
-                }else if(res.data.code >1){
-                    this.$message({
-                        type: res.data.type,
-                        text: this.lanMap['restore_config_fail']
-                    })
-                    clearInterval(this.timer2);
-                    this.isProgress = false;
-                    this.width = 0;
-                }
-            }).catch(err=>{
-                // to do
-            });
-        },
-        //  固件或系统升级期间，禁用F5刷新浏览器
-        preventRefresh(e){
-            e.preventDefault();
-            e.stopPropagation();
-            if(e.keyCode === 116){
-                return false
-            }
-        },
-        //  阻止鼠标右键刷新
-        preventMouse(e){
-            e.returnValue = false
-        },
-        save_cfg(){
-            this.saveChoose = true;
-        },
-        //  配置保存
-        saveCfg_result(bool){
-            if(bool){
-                this.$http.get('/system_save').then(res=>{
-                    if(res.data.code === 1){
-                        this.$message({
-                            type: res.data.type,
-                            text: this.lanMap['save_succ']
-                        })
-                    }else if(res.data.code > 1){
-                        this.$message({
-                            type: res.data.type,
-                            text: '(' + res.data.code + ') ' + res.data.message
-                        })
-                    }
-                }).catch(err=>{
-                    // to do
-                })
-            }
-            this.saveChoose = false;
-        },
-        open_view_confirm(){
-            this.viewChoose = true;
-        },
-        view_result(bool){
-            if(bool){
-                this.$http.get('/system_running_config').then(res=>{
-                    if(res.data.code === 1){
-                        try{
-                            var a = document.createElement('a');
-                            a.href = '/' + 'oltconfigtmp.txt';
-                            //a.download = 'oltconfigtmp.txt';
-                            a.setAttribute('download', 'oltconfigtmp.txt');
-                            a.style.display = 'none';
+        backup_cfg() {
+            this.$http
+                .get("/system_backup")
+                .then(res => {
+                    if (res.data.code === 1) {
+                        try {
+                            var a = document.createElement("a");
+                            a.href = "/" + res.data.data.filename;
+                            //a.download = res.data.data.filename;
+                            a.setAttribute("download", res.data.data.filename);
+                            a.style.display = "none";
                             document.body.appendChild(a);
                             a.click();
                             document.body.removeChild(a);
-                        }catch(e){
-                            //this.view_result(true);
+                        } catch (e) {
+                            //this.backup_cfg();
+                            console.log(e);
                         }
-                    }else if(res.data.code > 1){
+                    } else if (res.data.code > 1) {
                         this.$message({
                             type: res.data.type,
-                            text: '(' + res.data.code + ') ' + res.data.message
-                        })
+                            text: this.lanMap["st_fail"]
+                        });
                     }
-                }).catch(err=>{
-                    // to do
                 })
+                .catch(err => {
+                    // to do
+                });
+        },
+        //  导入配置    
+        restore_cfg() {
+            var formData = new FormData();
+            var file = document.getElementById("file");
+            var files = file.files[0];
+            var fileName = document.getElementById("fileName");
+            if (!files) {
+                fileName.innerText = this.lanMap["file_click"];
+                this.$message({
+                    type: "error",
+                    text: this.lanMap["file_not_select"]
+                });
+                return;
             }
-            this.viewChoose = false;
+            formData.append("file", files);
+            this.isProgress = true;
+            document.body.addEventListener(
+                "keydown",
+                this.preventRefresh,
+                false
+            );
+            document.body.addEventListener(
+                "contextmenu",
+                this.preventMouse,
+                false
+            );
+            this.$http
+                .post("/system_restore", formData, {
+                    headers: { "Content-Type": "multipart/form-data" },
+                    timeout: 0
+                })
+                .then(res => {
+                    document.body.removeEventListener(
+                        "keydown",
+                        this.preventRefresh
+                    );
+                    document.body.removeEventListener(
+                        "contextmenu",
+                        this.preventMouse
+                    );
+                    if (res.data.code === 1) {
+                        this.width = 400;
+                        clearInterval(this.timer2);
+                        this.isProgress = false;
+                        this.$message({
+                            type: res.data.type,
+                            text: this.lanMap["restore_config_succ"]
+                        });
+                        this.width = 0;
+                        this.reboot(1);
+                    } else if (res.data.code > 1) {
+                        this.$message({
+                            type: res.data.type,
+                            text: this.lanMap["restore_config_fail"]
+                        });
+                        clearInterval(this.timer2);
+                        this.isProgress = false;
+                        this.width = 0;
+                    }
+                })
+                .catch(err => {
+                    // to do
+                });
+        },
+        //  固件或系统升级期间，禁用F5刷新浏览器
+        preventRefresh(e) {
+            e.preventDefault();
+            e.stopPropagation();
+            if (e.keyCode === 116) {
+                return false;
+            }
+        },
+        //  阻止鼠标右键刷新
+        preventMouse(e) {
+            e.returnValue = false;
+        },
+        save_cfg() {
+            this.$confirm(this.lanMap["save_cfg_confirm"])
+                .then(_ => {
+                    this.saveCfg_result();
+                })
+                .catch(_ => {});
+        },
+        //  配置保存
+        saveCfg_result() {
+            this.$http
+                .get("/system_save")
+                .then(res => {
+                    if (res.data.code === 1) {
+                        this.$message({
+                            type: res.data.type,
+                            text: this.lanMap["save_succ"]
+                        });
+                    } else if (res.data.code > 1) {
+                        this.$message({
+                            type: res.data.type,
+                            text: "(" + res.data.code + ") " + res.data.message
+                        });
+                    }
+                })
+                .catch(err => {
+                    // to do
+                });
+        },
+        open_view_confirm() {
+            this.$confirm()
+                .then(_ => {
+                    this.view_result();
+                })
+                .catch(_ => {});
+        },
+        view_result() {
+            this.$http
+                .get("/system_running_config")
+                .then(res => {
+                    if (res.data.code === 1) {
+                        try {
+                            var a = document.createElement("a");
+                            a.href = "/" + "oltconfigtmp.txt";
+                            //a.download = 'oltconfigtmp.txt';
+                            a.setAttribute("download", "oltconfigtmp.txt");
+                            a.style.display = "none";
+                            document.body.appendChild(a);
+                            a.click();
+                            document.body.removeChild(a);
+                        } catch (e) {
+                            //this.view_result(true);
+                        }
+                    } else if (res.data.code > 1) {
+                        this.$message({
+                            type: res.data.type,
+                            text: "(" + res.data.code + ") " + res.data.message
+                        });
+                    }
+                })
+                .catch(err => {
+                    // to do
+                });
         }
     },
     watch: {
-        isProgress(){
-            if(this.isProgress){
-                this.timer2 = setInterval(()=>{
-                    this.width += parseInt(Math.random()*10);
-                    (this.width > 380) && (this.width = 380);
-                },1000)
+        isProgress() {
+            if (this.isProgress) {
+                this.timer2 = setInterval(() => {
+                    this.width += parseInt(Math.random() * 10);
+                    this.width > 380 && (this.width = 380);
+                }, 1000);
             }
         }
     },
-    beforeDestroy(){
-        if(this.timer1) clearInterval(this.timer1);
-        if(this.timer2) clearInterval(this.timer2);
+    beforeDestroy() {
+        if (this.timer1) clearInterval(this.timer1);
+        if (this.timer2) clearInterval(this.timer2);
     }
-}
+};
 </script>
 
 <style scoped lang="less">
-.dev-mgmt{
+.dev-mgmt {
     float: left;
     width: 49%;
     border: 1px solid #aaa;
@@ -374,32 +389,32 @@ export default {
     margin-left: 0.8%;
     height: 175px;
 }
-div.restore-cfg{
+div.restore-cfg {
     width: 99%;
-    a{
+    a {
         margin-left: 330px;
     }
-    >div{
-        >div{
+    > div {
+        > div {
             text-align: left;
         }
     }
 }
-.dev-mgmt>div{
+.dev-mgmt > div {
     padding: 10px 20px;
-    >div{
+    > div {
         text-align: center;
     }
 }
-.dev-mgmt>div:first-child{
+.dev-mgmt > div:first-child {
     font-size: 18px;
     font-weight: 600;
-    color: #3487DA;
+    color: #3487da;
 }
-form{
+form {
     position: relative;
 }
-.updateFile{
+.updateFile {
     position: absolute;
     left: 0;
     top: 0;
@@ -415,7 +430,7 @@ form{
     border-radius: 5px;
     background: #eee;
 }
-.hide{
+.hide {
     height: 40px;
     position: absolute;
     left: 0;
@@ -424,25 +439,25 @@ form{
     opacity: 0;
     cursor: pointer;
 }
-a{
+a {
     width: 200px;
     height: 36px;
     line-height: 36px;
     padding: 0;
 }
-input{
+input {
     font-size: 16px;
 }
-input[type='file']{
+input[type="file"] {
     width: 300px;
 }
-p{
+p {
     color: #666;
     height: 38px;
     margin: 0 0 10px 0;
     font-size: 14px;
 }
-div.load{
+div.load {
     position: fixed;
     width: 100%;
     height: 100%;
@@ -452,18 +467,18 @@ div.load{
     background: #000;
     opacity: 0.9;
 }
-div.load-body{
+div.load-body {
     width: 500px;
     height: 300px;
     background: #666;
-    >h3{
+    > h3 {
         font-size: 18px;
         text-align: center;
         color: #fff;
         font-weight: 600;
         margin-top: 30px;
     }
-    >div.progress{
+    > div.progress {
         width: 404px;
         height: 22px;
         margin: 30px auto;
@@ -473,21 +488,21 @@ div.load-body{
         padding: 4px;
     }
 }
-div.progress{
-    >div.progress-content{
+div.progress {
+    > div.progress-content {
         width: 404px;
         height: 22px;
         background: #666;
         border-radius: 11px;
     }
-    >div.progress-cover{
+    > div.progress-cover {
         position: absolute;
         left: 6px;
         top: 6px;
         height: 18px;
         border-radius: 11px;
         background: #ddd;
-        &+div{
+        & + div {
             margin: 15px;
             text-align: center;
             color: #fff;

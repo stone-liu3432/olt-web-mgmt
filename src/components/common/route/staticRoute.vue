@@ -1,11 +1,15 @@
 <template>
     <div>
-        <h3>{{ lanMap['route_cfg'] }}</h3>
-        <div v-if="default_route.data">
-            <span>{{ lanMap['def_route'] }}</span>
+        <page-header type="none">
+            <template slot="title">
+                {{ lanMap['route_cfg'] }}
+            </template>
+        </page-header>
+        <div v-if="default_route.data" style="margin: 20px 0;">
+            <span>{{ lanMap['def_route'] }}:</span>
             <span>{{ defRoute }}</span>
-            <a href="javascript:void(0);" @click="openSetDef">{{ lanMap['config'] }}</a>
-            <a href="javascript:void(0);" @click="openDelCfm" v-if="default_route.data.gateway !== '0.0.0.0'">{{ lanMap['delete'] }}</a>
+            <a href="javascript:void(0);" @click="openSetDef" style="margin-left: 30px;">{{ lanMap['config'] }}</a>
+            <a href="javascript:void(0);" @click="openDelCfm" v-if="default_route.data.gateway !== '0.0.0.0'" style="margin-left: 30px;">{{ lanMap['delete'] }}</a>
         </div>
         <hr>
         <div class="route-state">
@@ -20,36 +24,36 @@
             <a href="javascript:void(0);" @click="openSetModal('add')">{{ lanMap['add'] }}</a>
             <a href="javascript:void(0);" @click="getData">{{ lanMap['refresh'] }}</a>
         </h3>
-        <div v-if="status && static_router.data">
-            <ul class="static-route-item bg-title">
-                <li>{{ lanMap['dst_ipaddr'] }}/{{ lanMap['mask'] }}</li>
-                <!-- <li>{{ lanMap['ipmask'] }}</li> -->
-                <li>{{ lanMap['next_hop'] }}</li>
-                <li>{{ lanMap['interface'] }}</li>
-                <li>{{ lanMap['protocol'] }}</li>
-                <li>{{ lanMap['preference'] }}</li>
-                <li>{{ lanMap['status'] }}</li>
-                <li>{{ lanMap['config'] }}</li>
-            </ul>
-            <!-- protocol目前只有static(0)和direct(1)两种协议 -->
-            <!-- status有reachable(1)和unreachable(2)两种状态 -->
-            <!-- interface 100代表VlanIf100 -->
-            <div class="static-route">
-                <ul v-for="(item,key) in static_router.data" :key="key" class="static-route-item">
-                    <li>{{ item.ipaddress }}/{{ item.mask_num }}</li>
-                    <!-- <li>{{ item.mask }}</li> -->
-                    <li>{{ item.gateway }}</li>
-                    <li>{{ item.interface ? 'Vlanif' + item.interface : ' * ' }}</li>
-                    <!-- dynamic 预留 -->
-                    <li>{{ item.protocol === 'to do' ?  'to do' : item.protocol === 1 ? 'Direct' : 'Static' }}</li>
-                    <li>{{ item.preference }}</li>
-                    <li>{{ item.status === 1 ? 'Reachale' : 'Unreachale' }}</li>
-                    <li>
-                        <!-- <i class="icon-config" @click="openSetModal('set', item)"></i> -->
-                        <i class="icon-delete" v-if="item.protocol !== 1" @click="openDeleteModal(item)"></i>
-                    </li>
-                </ul>
-            </div>
+        <div v-if="status">
+            <nms-table :rows="static_router" border>
+                <nms-table-column :label="`${lanMap['dst_ipaddr']}/${ lanMap['mask']}`">
+                    <template slot-scope="rows">
+                        {{ `${rows.ipaddress}/${rows.mask_num}` }}
+                    </template>
+                </nms-table-column>
+                <nms-table-column prop="gateway" :label="lanMap['next_hop']"></nms-table-column>
+                <nms-table-column :label="lanMap['interface']">
+                    <template slot-scope="rows">
+                        {{ rows.interface ? `Vlanif${rows.interface}` : ' * ' }}
+                    </template>
+                </nms-table-column>
+                <nms-table-column prop="protocol" :label="lanMap['protocol']">
+                    <template slot-scope="rows">
+                        {{ protocols[rows.protocol] }}
+                    </template>
+                </nms-table-column>
+                <nms-table-column prop="preference" :label="lanMap['preference']"></nms-table-column>
+                <nms-table-column prop="status" :label="lanMap['status']">
+                    <template slot-scope="rows">
+                        {{ rows.status === 1 ? 'Reachale' : 'Unreachale' }}
+                    </template>
+                </nms-table-column>
+                <nms-table-column :label="lanMap['config']">
+                    <template slot-scope="rows">
+                        <a href="javascript: void(0);" class="btn-text" @click="openDeleteModal(rows)" v-if="rows.protocol !== 1">{{ lanMap['delete'] }}</a>
+                    </template>
+                </nms-table-column>
+            </nms-table>
         </div>
         <div class="modal-dialog" v-if="!!setModal">
             <div class="cover"></div>
@@ -110,11 +114,6 @@
                 <div class="close" @click="closeModal"></div>
             </div>
         </div>
-        <confirm v-if="delModal" @choose="deleteStaticRouter"></confirm>
-        <confirm v-if="offRouteModal" @choose="changeRouteState"
-            :tool-tips="lanMap['static_route_tips']">
-        </confirm>
-        <confirm v-if="delDefRoute" @choose="delDef"></confirm>
     </div>
 </template>
 
@@ -134,13 +133,10 @@ export default {
     data(){
         return {
             status: false,
+            protocols: ['Static', 'Direct'],
             interval: false,
-            static_router: {},
-            cache_router: {},
+            static_router: [],
             setModal: '',
-            delModal: false,
-            offRouteModal: false,
-            delDefRoute: false,
             ipaddr: '',
             ipmask: '',
             gateway: '',
@@ -158,21 +154,19 @@ export default {
     created(){
         this.getDefRoute();
         this.getState();
+        this.getData();
     },
     methods: {
         getState(){
+            this.status = false;
             this.$http.get('/switch_route?form=admin_status').then(res =>{
                 if(res.data.code === 1){
                     if(res.data.data){
                         this.status = !!res.data.data.status;
-                    }else{
-                        this.status = false;
                     }
                     if(this.status){
                         this.getData();
                     }
-                }else{
-                    this.status = false;
                 }
             }).catch(err =>{
 
@@ -185,23 +179,23 @@ export default {
                 }else{
                     this.default_route = {};
                 }
-            }).catch(err =>{
-
-            })
+            }).catch(err =>{})
         },
         offRoute(){
             if(this.status){
-                this.offRouteModal = true;
+                this.$confirm(this.lanMap['static_route_tips']).then(_ => {
+                    this.changeRouteState();
+                }).catch(_ => {})
             }else{
-                this.changeRouteState(true);
+                this.changeRouteState();
             }
         },
-        changeRouteState(bool){
-            if(bool && !this.interval){
+        changeRouteState(){
+            if(!this.interval){
                 this.interval = true;
                 setTimeout(() =>{
                     this.interval = false;
-                },1000)
+                }, 1000)
                 var post_data = {
                     "method": "set",
                     "param": {
@@ -231,18 +225,16 @@ export default {
 
                 })
             }
-            this.offRouteModal = false;
         },
         getData(){
+            this.static_router = [];
             this.$http.get(this.change_url.get_static_router).then(res =>{
                 if(res.data.code === 1){
-                    this.static_router = res.data;
-                }else{
-                    this.static_router = {};
+                    if(res.data.data && res.data.data.length){
+                        this.static_router = res.data.data;
+                    }
                 }
-            }).catch(err =>{
-
-            })
+            }).catch(err =>{})
         },
         openSetModal(str, node){
             this.setModal = str;
@@ -250,7 +242,6 @@ export default {
                 this.ipaddr = node.ipaddress;
                 this.ipmask = node.mask;
                 this.gateway = node.gateway;
-                this.cache_router = node;
             }
         },
         setStitacRouter(){
@@ -302,78 +293,67 @@ export default {
             this.closeModal();
         },
         openDeleteModal(node){
-            this.ipaddr = node.ipaddress;
-            this.ipmask = node.mask;
-            this.gateway = node.gateway;
-            this.delModal = true;
+            this.$confirm().then(_ => {
+                this.deleteStaticRouter(node);
+            }).catch(_ => {})
         },
-        deleteStaticRouter(bool){
-            if(bool){
-                var post_data = {
-                    "method": "delete",
-                    "param": {
-                        "ipaddress": this.ipaddr,
-                        "mask": this.ipmask,
-                        "gateway": this.gateway
-                    }
+        deleteStaticRouter(data){
+            const post_data = {
+                "method": "delete",
+                "param": {
+                    "ipaddress": data.ipaddr,
+                    "mask": data.ipmask,
+                    "gateway": data.gateway
                 }
-                this.$http.post('/switch_route?form=static_route', post_data).then(res =>{
-                    if(res.data.code === 1){
-                        this.$message({
-                            type: res.data.type,
-                            text: this.lanMap['delete'] + this.lanMap['st_success']
-                        })
-                        this.getData();
-                    }else{
-                        this.$message({
-                            type: res.data.type,
-                            text: '(' + res.data.code + ') ' + res.data.message
-                        })
-                    }
-                }).catch(err =>{
-
-                })
             }
-            this.closeModal();
+            this.$http.post('/switch_route?form=static_route', post_data).then(res =>{
+                if(res.data.code === 1){
+                    this.$message({
+                        type: res.data.type,
+                        text: this.lanMap['delete'] + this.lanMap['st_success']
+                    })
+                    this.getData();
+                }else{
+                    this.$message({
+                        type: res.data.type,
+                        text: '(' + res.data.code + ') ' + res.data.message
+                    })
+                }
+            }).catch(err =>{})
         },
         closeModal(){
-            this.delModal = false;
             this.setModal = '';
-            this.cache_router = {};
             this.ipaddr = '';
             this.ipmask = '';
             this.gateway = '';
             this.setDefRoute = false;
         },
         openDelCfm(){
-            this.delDefRoute = true;
+            this.$confirm().then(_ => {
+                this.delDef();
+            }).catch(_ => {})
         },
-        delDef(bool){
-            if(bool){
-                var post_data = {
-                    "method": "delete",
-                    "param": {
-                        "gateway": '0.0.0.0'
-                    }
+        delDef(){
+            var post_data = {
+                "method": "delete",
+                "param": {
+                    "gateway": '0.0.0.0'
                 }
-                this.$http.post('/switch_route?form=route_default', post_data).then(res =>{
-                    if(res.data.code === 1){
-                        this.$message({
-                            type: res.data.type,
-                            text: this.lanMap['setting_ok']
-                        })
-                        this.getDefRoute();
-                    }else{
-                        this.$message({
-                            type: res.data.type,
-                            text: '(' + res.data.code + ') ' + res.data.message
-                        })
-                    }
-                }).catch(err =>{
-
-                })
             }
-            this.delDefRoute = false;
+            this.$http.post('/switch_route?form=route_default', post_data).then(res =>{
+                if(res.data.code === 1){
+                    this.$message({
+                        type: res.data.type,
+                        text: this.lanMap['setting_ok']
+                    })
+                    this.getDefRoute();
+                }else{
+                    this.$message({
+                        type: res.data.type,
+                        text: '(' + res.data.code + ') ' + res.data.message
+                    })
+                }
+            }).catch(err =>{})
         },
         setDef(){
             if(!this.ip_reg.test(this.gateway)){
@@ -435,7 +415,7 @@ export default {
 h3{
     font-size: 24px;
     font-weight: 600;
-    color: #67AEF7;
+    color: @titleColor;
     margin: 10px 0 20px 0;
     >a{
         font-size: 16px;
@@ -501,67 +481,6 @@ div.switch{
         font-size: 15px;
         color: #333;
         margin-left: 30px;
-    }
-}
-.bg-title > li{
-    background: #2361A2;
-    color: #fff;
-}
-ul.static-route-item{
-    &::after{
-        content: '';
-        display: table;
-        clear: both;
-    }
-    >li{
-        float: left;
-        height: 30px;
-        line-height: 30px;
-        width: 12.3%;
-        text-align: center;
-        border: 1px solid #ddd;
-        border-bottom: none;
-        border-right: none;
-        &:first-child{
-            width: 24%;
-        }
-        &:last-child{
-            border-right: 1px solid #ddd;
-        }
-    }
-    &:last-child{
-        >li{
-            border-bottom: 1px solid #ddd;
-        }
-    }
-    &:nth-of-type(even){
-        >li{
-            background: #CAECDA;
-        }
-    }
-    i{
-        display: inline-block;
-        width: 24px;
-        height: 24px;
-        vertical-align: middle;
-        line-height: 24px;
-        cursor: pointer;
-    }
-    i.icon-config{
-        background-image: url('../../../assets/config.png');
-        background-position: 0px 0px;
-        background-repeat: no-repeat;
-        &:hover{
-            background-image: url('../../../assets/config-hover.png');
-        }
-    }
-    i.icon-delete{
-        background-image: url('../../../assets/delete.png');
-        background-position: -4px -4px;
-        background-repeat: no-repeat;
-        &:hover{
-            background-image: url('../../../assets/delete-hover.png');
-        }
     }
 }
 .cover+div{

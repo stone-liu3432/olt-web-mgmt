@@ -378,7 +378,7 @@ a{
 }
 h2{
     font-size: 24px;
-    color: #67AEF7;
+    color: @titleColor;
     font-weight: 600;
     margin: 10px 0;
 }
@@ -394,10 +394,9 @@ input:disabled,select:disabled{
 }
 div.igmp{
     >div{
-        // margin: 30px 0 20px 10px;
         >span{
             font-size: 18px;
-            color: #67aef7;
+            color: @titleColor;
             display: inline-block;
             width: 200px;
             a{
@@ -411,10 +410,10 @@ div+ul{
     li{
         height: 30px;
         line-height: 30px;
-        border: 1px solid #ccc;
+        border: 1px solid @borderColor;
         border-top: none;
         &:first-child{
-            border-top: 1px solid #ccc;
+            border-top: 1px solid @borderColor;
         }
         >span{
             padding-left: 20px;
@@ -422,7 +421,7 @@ div+ul{
         >span:first-child{
             display: inline-block;
             width: 220px;
-            border-right: 1px solid #ccc;
+            border-right: 1px solid @borderColor;
         }
     }
 }
@@ -444,35 +443,6 @@ div.igmp-group-modal{
             margin-left: 100px;
             margin-top: 20px;
         }
-    }
-}
-div.portvlan-tab{
-    margin-top: 30px !important;
-    border-bottom: 3px solid #67aef7;
-    padding-left: 10px;
-    &::after{
-        content: '';
-        display: table;
-        clear: both;
-    }
-    >div{
-        float: left;
-        margin-left: 5px;
-        border: 1px solid #67aef7;
-        margin-bottom: -1px;
-        border-radius: 3px 3px 0 0;
-        cursor: pointer;
-        padding: 0 30px;
-        text-align: center;
-        height: 30px;
-        line-height: 30px;
-    }
-    .actived{
-        border: 1px solid #67aef7;
-        border-radius: 3px 3px 0 0;
-        color: #fff;
-        background: #67aef7;
-        font-weight: 500;
     }
 }
 </style>

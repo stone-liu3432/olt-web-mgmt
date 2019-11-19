@@ -125,7 +125,6 @@
                 <div class="close" @click="closeModal()"></div>
             </div>
         </div>
-        <confirm v-if="del_confirm" @choose="isDelete"></confirm>
     </div>
 </template>
 
@@ -142,7 +141,6 @@ import axios from 'axios'
                 interface_data: [],
                 // 控制模态框隐藏显示
                 modalDialog: false,
-                del_confirm: false,
                 // 模态框所需要的所有数据
                 interface_map: {},
                 // 模态框内下拉框绑定
@@ -282,16 +280,11 @@ import axios from 'axios'
                 }
             },
             deleteInbound(vlan_id){
-                this.del_confirm = true;
-                this.vlan = vlan_id;
-            },
-            //  删除按钮
-            isDelete(bool){
-                if(bool){
+                this.$confirm(this.lanMap['if_sure'] + this.lanMap['delete'] + ' ?').then(_ => {
                     var post_params = {
                         "method":"delete",
                         "param":{
-                            "vlan_id": this.vlan
+                            vlan_id
                         }
                     }
                     // 请求url: /system?form=inbound
@@ -311,8 +304,7 @@ import axios from 'axios'
                     }).catch(err=>{
                         // to do 
                     })
-                }
-                this.del_confirm = false;
+                }).catch(_ => {})
             },
             //  确认按钮
             isApply(){
