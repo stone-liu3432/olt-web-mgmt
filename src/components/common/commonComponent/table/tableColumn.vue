@@ -34,7 +34,7 @@ export default {
     mounted() {
         //  标志位，防止slot中有同名("label")的props
         this.__IS_HEAD__ = true;
-        this.commit('formatter', this.formatter)
+        this.commit('formatters', this.formatter)
         //  作用域插槽
         this.commit('scopedSlots', this.$scopedSlots.default)
         //  普通插槽
