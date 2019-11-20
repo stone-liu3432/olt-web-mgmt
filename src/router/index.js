@@ -9,11 +9,12 @@ Vue.use(Router);
 
 //  文件切割 
 //  main
-const main = () => import(/* webpackChunkName: "main-page" */  '@/components/page/main')
-const contentArea = () => import(/* webpackChunkName: "main-page" */  '@/components/page/content')
-const status = () => import(/* webpackChunkName: "main-page" */  '@/components/common/system/status')
-const onuAllow = () => import(/* webpackChunkName: "main-page" */  '@/components/common/pon/onuAllow')
-const vlanMgmt = () => import(/* webpackChunkName: "main-page" */  '@/components/common/switch/vlanMgmt')
+const main = () => import(/* webpackChunkName: "main-page" */  '@/components/page/main');
+const contentArea = () => import(/* webpackChunkName: "main-page" */  '@/components/page/content');
+const status = () => import(/* webpackChunkName: "main-page" */  '@/components/common/system/status');
+const onuAllow = () => import(/* webpackChunkName: "main-page" */  '@/components/common/pon/onuAllow');
+const vlanMgmt = () => import(/* webpackChunkName: "main-page" */  '@/components/common/switch/vlanMgmt');
+const topo = () => import(/* webpackChunkName: "main-page" */ '@/components/page/topo');
 
 const router = new Router({
 	routes: [
@@ -53,6 +54,12 @@ const router = new Router({
 						requireAuth: true
 					},
 					component: status
+				},{
+					path: '/topo',
+					meta: {
+						requireAuth: true
+					},
+					component: topo
 				},
 				{
 					path: '/onu_allow',
@@ -108,7 +115,7 @@ router.beforeEach((to, from, next)=>{
 	}
 });
 
-const f_menu = ['main', 'status', 'onu_allow', 'vlan_mgmt', 'advanced_setting']
+const f_menu = ['main', 'status', 'topo', 'onu_allow', 'vlan_mgmt', 'advanced_setting']
 
 router.afterEach((to, from)=>{
 	store.commit("updateLoad", false);
