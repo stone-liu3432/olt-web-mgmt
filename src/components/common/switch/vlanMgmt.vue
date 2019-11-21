@@ -622,7 +622,7 @@ import { parsePortList, parsePort } from '@/utils/common';
 <style scoped lang="less">
 div.vlan-mgmt{
     min-width: 1020px;
-    padding: 70px 0 20px 0;
+    padding: 70px 0 30px 0;
     &:after{
         content: "";
         display: table;
