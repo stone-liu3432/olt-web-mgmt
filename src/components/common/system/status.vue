@@ -132,7 +132,7 @@ export default {
 
 <style lang="less" scoped>
 #home {
-    padding-top: 70px;
+    padding: 70px 0 30px 0;
     width: 1280px;
     margin: 0 auto;
 }

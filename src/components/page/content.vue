@@ -29,7 +29,7 @@ export default {
 
 <style lang="less" scoped>
 #content{
-    padding: 70px 0 0 0;
+    padding: 70px 0 30px 0;
     &::after{
         content: '';
         display: table;

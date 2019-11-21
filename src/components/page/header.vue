@@ -16,7 +16,7 @@
                     v-for="(item,index) in f_menu"
                     :key="index"
                     @click="nav_click(item)"
-                    :class="{ 'active' : item === nav_menu }"
+                    :class="[{ 'active' : item === nav_menu }, { 'advanced-setting': item === 'advanced_setting' }]"
                 >{{ lanMap[item] }}</li>
             </ul>
         </div>
@@ -32,7 +32,7 @@
 
 <script>
 import { mapState, mapMutations } from "vuex";
-const f_menu = ["status", "onu_allow", "vlan_mgmt", "advanced_setting"];
+const f_menu = ["status", "topo", "onu_allow", "vlan_mgmt", "advanced_setting"];
 export default {
     name: "topBanner",
     computed: {
@@ -217,7 +217,10 @@ div.top-banner-logo {
 div.top-banner-nav {
     width: 60%;
     li {
-        width: 20%;
+        width: 18%;
+    }
+    .advanced-setting{
+        padding: 0 20px;
     }
 }
 div.top-banner-user {

@@ -301,10 +301,6 @@ export default {
 </script>
 
 <style lang="less">
-#main-content {
-    //height:100%;
-    padding-bottom: 30px;
-}
 div.tips-body {
     width: 500px;
     height: 300px;
