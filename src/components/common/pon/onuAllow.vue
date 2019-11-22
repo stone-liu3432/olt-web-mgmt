@@ -628,11 +628,12 @@ import { mapState,mapMutations } from 'vuex'
 h2{
 	font-size: 24px;
 	font-weight: 600;
-    color: 	#67AEF7;
+    color: 	@titleColor;
     margin: 0 0 0 20px;
 }
 .onu-allow{
     padding-top: 70px;
+    padding-bottom: 30px;
     >div:first-child{
         height: 36px;
         line-height: 36px;
@@ -650,53 +651,11 @@ h2{
 hr+div{
     margin: 30px 0 0 10px;
 }
-ul{
-    border:1px solid #ddd;
-    margin: 20px 0 0 20px;
-    min-width: 1020px;
-    overflow: hidden;
-    >li:first-child{
-        background: #2361a2;
-        color: #fff;
-    }
-}
-ul>li{
-    font-size: 0;
-    height: 36px;
-    line-height: 36px;
-    border-bottom: 1px solid #ddd;
-    vertical-align: middle;
-}
-ul>li:last-child{
-    border-bottom: none;
-}
 span{
     display: inline-block;
     width: 16%;
     text-align: center;
     font-size: 16px;
-}
-li.onulist-item>span.onu-name-ellipsis{
-    padding: 0 20px;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    white-space: nowrap;
-    box-sizing: border-box;
-}
-li.onulist-item>span{
-    display: inline-block;
-    width: 16%;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    &:first-child{
-        width: 3%;
-    }
-    >label{
-        display: inline-block;
-        width: 100%;
-        height: 100%;
-        cursor: pointer;
-    }
 }
 input{
     margin-left:20px;
@@ -737,30 +696,6 @@ i{
     height: 32px;
     vertical-align: middle;
 }
-i.onu-detail{
-    background: url('../../../assets/detail-normals.png') no-repeat 1px 1px;
-}
-i.onu-detail:hover{
-    background: url('../../../assets/detail-hovers.png') no-repeat 1px 1px;
-}
-i.onu-delete{
-    background: url('../../../assets/delete-normal.png') no-repeat;
-}
-i.onu-delete:hover{
-    background: url('../../../assets/delete-hover.png') no-repeat;
-}
-i.onu-remove{
-    background: url('../../../assets/remove-normal.png') no-repeat;
-}
-i.onu-remove:hover{
-    background: url('../../../assets/remove-hover.png') no-repeat;
-}
-i.reset-onu{
-    background: url('../../../assets/reset-normal.png') no-repeat 2px 2px;
-}
-i.reset-onu:hover{
-    background: url('../../../assets/reset-hover.png') no-repeat 2px 2px;
-}
 div.modal-content{
     width: 600px;
     height: 300px;
@@ -789,7 +724,7 @@ span.tips{
     font-size: 14px;
     margin-left:10px;
     width: auto;
-    color: #aaa;
+    color: @tipsColor;
 }
 div.modal-btn{
     margin: 15px;
@@ -889,7 +824,7 @@ div.search-onu{
 }
 h3{
     font-weight: 600;
-    color: #67aef7;
+    color: @titleColor;
 }
 div.batch-onu{
     h3+div{
@@ -903,18 +838,18 @@ div.batch-onu{
 }
 table{
     width: calc(~"100% - 20px");
-    border: 1px solid #ddd;
+    border: 1px solid @borderColor;
     margin: 16px 10px 0 10px;
     td{
         padding: 6px;
         box-sizing: border-box;
         text-align: center;
         word-break: break-all;
-        border-color: #ddd;
+        border-color: @borderColor;
     }
     thead{
-        background: #2361a2;
-        color: #fff;
+        background: @tableHeaderBgColor;
+        color: @tableHeaderColor;
     }
     tbody{
         tr{
