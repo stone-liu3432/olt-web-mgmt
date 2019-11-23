@@ -789,6 +789,7 @@ var en = {
     rogue_onu_detection: "Regue ONU Detection",
     detection: "Detection",
     rogueonu_detect_tips: "Manual detection starts and the test results are returned to the alarm list.",
+    topo: "TOPO",
 
     composeRange(min, max) {
         return `${min} - ${max} characters`;
