@@ -767,6 +767,7 @@ var zh = {
     rogue_onu_detection: "流氓ONU检测",
     detection: "检测",
     rogueonu_detect_tips: "开始手动检测，检测结果将返回至告警列表中。",
+    topo: "TOPO图",
 
     composeRange(min, max){
         return `${min} - ${max}位字符`;
