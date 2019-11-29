@@ -19,12 +19,14 @@ import loading from '@/components/common/commonComponent/loading';
 import portHeader from '@/components/common/commonComponent/pageHeader';
 import dropdown from '@/components/common/commonComponent/dropdown';
 import nmsPagination from '@/components/common/commonComponent/pagination';
+import popover from '@/components/common/commonComponent/popover';
 
 Vue.use(VueMessage)
 Vue.use(portHeader);
 Vue.use(tabBar);
 Vue.use(dropdown);
 Vue.use(nmsPagination);
+Vue.use(popover);
 
 Vue.component('confirm', confirm);
 Vue.component('nmsTable', nmsTable);
