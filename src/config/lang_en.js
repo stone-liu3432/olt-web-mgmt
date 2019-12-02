@@ -790,6 +790,9 @@ var en = {
     detection: "Detection",
     rogueonu_detect_tips: "Manual detection starts and the test results are returned to the alarm list.",
     topo: "TOPO",
+    no_result: "No Result",
+    refreshOrReset: "Refresh / Reset",
+    saveAsImage: "Save As Image",
 
     composeRange(min, max) {
         return `${min} - ${max} characters`;
