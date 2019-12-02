@@ -94,11 +94,57 @@
                 </template>
             </template>
         </nms-popover>
+        <div class="topo-toolbar">
+            <span @click="refreshImage">{{ lanMap['refreshOrReset'] }}</span>
+            <span @click="saveAsImage">{{ lanMap['saveAsImage'] }}</span>
+            <input type="text" placeholder="mac / name" v-model="findStr" />
+            <span style="width: 80px;">
+                <template v-if="!find">{{ lanMap['no_result'] }}</template>
+                <template v-else>
+                    <span>{{ index + 1 }}</span>
+                    /
+                    <span>{{ nodes.length }}</span>
+                </template>
+            </span>
+            <span style="padding: 6px 0;" @click="changeNode('next')">
+                <svg
+                    viewBox="0 0 1024 1024"
+                    xmlns="http://www.w3.org/2000/svg"
+                    width="16"
+                    height="16"
+                    :fill="find ? '#000' : '#aaa'"
+                >
+                    <path
+                        d="M512 849.691045c-8.142447 0-15.950274-3.234671-21.707394-8.991792l-255.82655-255.82655c-11.988032-11.989055-11.988032-31.425733 0-43.414789 11.989055-11.990079 31.426757-11.990079 43.415812 0l234.118132 234.118132 234.119155-234.118132c11.988032-11.990079 31.426757-11.990079 43.414789 0 11.989055 11.989055 11.989055 31.425733 0 43.414789l-255.82655 255.82655C527.950274 846.456375 520.141424 849.691045 512 849.691045z"
+                    />
+                    <path
+                        d="M512 849.691045c-16.954137 0-30.699186-13.745049-30.699186-30.699186l0-613.983719c0-16.954137 13.745049-30.699186 30.699186-30.699186s30.699186 13.745049 30.699186 30.699186l0 613.983719C542.699186 835.945997 528.954137 849.691045 512 849.691045z"
+                    />
+                </svg>
+            </span>
+            <span style="padding: 6px 0;" @click="changeNode('prev')">
+                <svg
+                    viewBox="0 0 1024 1024"
+                    xmlns="http://www.w3.org/2000/svg"
+                    width="16"
+                    height="16"
+                    :fill="find ? '#000' : '#aaa'"
+                >
+                    <path
+                        d="M512 174.30895499c8.142447 0 15.950274 3.234671 21.707394 8.99179201l255.82655 255.82655c11.988032 11.989055 11.988032 31.425733 0 43.414789-11.989055 11.990079-31.426757 11.990079-43.415812 1e-8l-234.118132-234.118132-234.11915501 234.11813199c-11.988032 11.990079-31.426757 11.990079-43.41478899 0-11.989055-11.989055-11.989055-31.425733 0-43.414789l255.82655-255.82655C496.049726 177.543625 503.85857601 174.308955 512 174.30895499z"
+                    />
+                    <path
+                        d="M512 174.30895499c16.954137 0 30.699186 13.745049 30.699186 30.69918601l0 613.983719c0 16.954137-13.745049 30.699186-30.699186 30.699186s-30.699186-13.745049-30.699186-30.699186l0-613.983719C481.300814 188.054003 495.045863 174.308955 512 174.30895499z"
+                    />
+                </svg>
+            </span>
+            <span @click="findNode">{{ lanMap['find'] }}</span>
+        </div>
     </div>
 </template>
 
 <script>
-import { throttle } from "@/utils/common";
+import { throttle, debounce } from "@/utils/common";
 import { mapState, mapMutations } from "vuex";
 import "../../../static/jtopo-0.4.8-min";
 export default {
@@ -129,7 +175,12 @@ export default {
             // "pon", "onu"  -> popover要显示的设备类型
             devType: "",
             placement: "",
-            popoverData: {}
+            popoverData: {},
+            findStr: "",
+            findFlag: false,
+            // 搜索结果
+            nodes: [],
+            index: 0
         };
     },
     computed: {
@@ -167,6 +218,14 @@ export default {
                 this.popoverData.onu_name ||
                 `ONU${this.popoverData.port_id}/${this.popoverData.onu_id}`
             );
+        },
+        find() {
+            if (!this.findStr) {
+                this.findFlag = false;
+                this.index = 0;
+                this.nodes = [];
+            }
+            return this.findFlag && !!this.findStr;
         }
     },
     created() {
@@ -279,12 +338,14 @@ export default {
                     this.allOnuScene = null;
                 }
                 this.allOnuScene = new JTopo.Scene(this.stage);
+                this.allOnuScene.translate = false;
             } else {
                 if (this.singlePonScene) {
                     this.singlePonScene.clear();
                     this.singlePonScene = null;
                 }
                 this.singlePonScene = new JTopo.Scene(this.stage);
+                this.singlePonScene.translate = false;
             }
         },
         createNode(label, data, scene, flag = false) {
@@ -443,6 +504,9 @@ export default {
             if (this.pageType !== flag) {
                 this.pageType = flag;
             }
+            this.index = 0;
+            this.nodes = [];
+            this.findStr = "";
             this.draw();
             if (flag === "all") {
                 this.allOnuScene && (this.allOnuScene.visible = true);
@@ -548,7 +612,7 @@ export default {
             const {
                 left,
                 right,
-                top: _top,
+                top,
                 bottom,
                 width,
                 height: _height
@@ -559,9 +623,8 @@ export default {
             const scrollHeight = this.$root.$el.scrollTop;
             // 顶部菜单高度
             const topMenuHeight = 70;
-            //  16为文本高度
-            const height = _height + 16,
-                top = _top + topMenuHeight;
+            //  12为文本高度
+            const height = _height + 12;
             // 页面可视区域宽高
             const clientWidth = this.width,
                 clientHeight = this.clientHeight;
@@ -573,14 +636,11 @@ export default {
                 offset_y = 0;
             if (type === "popover") {
                 let placement;
-                if (
-                    top - scrollHeight - popheight >
-                    baseGutter + topMenuHeight
-                ) {
-                    offset_y = top - popheight - baseGutter - scrollHeight;
+                if (top - scrollHeight > popheight) {
+                    offset_y = top - popheight - baseGutter;
                     placement = "top";
                 } else {
-                    offset_y = top + height - scrollHeight;
+                    offset_y = top + height + baseGutter;
                     placement = "bottom";
                 }
                 offset_x = left - (popwidth - width) / 2;
@@ -597,11 +657,12 @@ export default {
             if (type === "contextmenu") {
                 this.placement = "";
                 const { clientX, clientY } = e;
-                (offset_x = clientX), (offset_y = clientY);
+                (offset_x = clientX),
+                    (offset_y = clientY + scrollHeight - topMenuHeight);
                 if (offset_x + popwidth > clientWidth) {
                     offset_x = offset_x - popwidth;
                 }
-                if (offset_y + popheight > clientHeight) {
+                if (offset_y + popheight > clientHeight + scrollHeight) {
                     offset_y = offset_y - popheight;
                 }
             }
@@ -721,6 +782,80 @@ export default {
                     }
                 })
                 .catch(err => {});
+        },
+        refreshImage() {
+            this.findStr = "";
+            this.index = 0;
+            this.nodes = [];
+            this.$root.$el.scrollTo(0, 0);
+            debounce(this.draw, 1000, this);
+        },
+        saveAsImage() {
+            this.stage.saveImageInfo();
+        },
+        findNode() {
+            this.findFlag = true;
+            const scene =
+                this.pageType === "all"
+                    ? this.allOnuScene
+                    : this.singlePonScene;
+            this.nodes = scene.childs.filter(item => {
+                let flag = false;
+                if (item.data) {
+                    if (typeof item.data.onu_name === "string") {
+                        if (item.data.onu_name.indexOf(this.findFlag) > -1) {
+                            flag = true;
+                        }
+                    }
+                    if (typeof item.data.macaddr === "string") {
+                        if (item.data.macaddr.indexOf(this.findStr) > -1) {
+                            flag = true;
+                        }
+                    }
+                }
+                return item instanceof JTopo.Node && flag;
+            });
+            this.jumpToNode();
+        },
+        jumpToNode() {
+            if (this.nodes.length) {
+                const node = this.nodes[this.index];
+                node.selected = true;
+                const { top } = node.getBound();
+                const scrollTop = top - this.clientHeight / 2;
+                this.$root.$el.scrollTo(0, scrollTop);
+                this.nodeFlash(node, 10);
+            }
+        },
+        changeNode(flag) {
+            const len = this.nodes.length;
+            if (len === 0 || len === 1) return;
+            if (flag === "prev") {
+                this.index--;
+                if (this.index < 0) {
+                    this.index = len - 1;
+                }
+            } else {
+                this.index++;
+                if (this.index >= len) {
+                    this.index = 0;
+                }
+            }
+            this.jumpToNode();
+        },
+        nodeFlash(node, n) {
+            if (n === 0) {
+                node.visible = true;
+                node.alarm = null;
+                return;
+            }
+            node.visible = !node.visible;
+            node.visible
+                ? (node.alarm = node.data.macaddr)
+                : (node.alarm = null);
+            setTimeout(_ => {
+                this.nodeFlash(node, n - 1);
+            }, 300);
         }
     }
 };
@@ -731,14 +866,13 @@ export default {
     width: 100%;
     height: 100%;
     margin-top: 70px;
+    position: relative;
 }
 .device-info {
     > div {
         display: table;
         width: 100%;
         span {
-            // vertical-align: middle;
-            // float: left;
             display: table-cell;
             width: 40%;
             padding: 6px 0;
@@ -755,6 +889,34 @@ export default {
             display: table;
             clear: both;
         }
+    }
+}
+.topo-toolbar {
+    position: fixed;
+    top: 70px;
+    right: 15px;
+    background: #ddd;
+    padding: 6px 12px;
+    user-select: none;
+    border-radius: 3px;
+    border-bottom: 1px solid #ccc;
+    > span {
+        display: inline-block;
+        padding: 0 12px;
+        cursor: pointer;
+        vertical-align: middle;
+        &:hover {
+            color: @hoverButtonColor;
+        }
+    }
+    svg {
+        vertical-align: middle;
+    }
+    input {
+        vertical-align: middle;
+    }
+    input + span:hover {
+        color: @color;
     }
 }
 </style>

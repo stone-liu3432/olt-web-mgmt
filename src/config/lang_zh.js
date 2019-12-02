@@ -768,6 +768,9 @@ var zh = {
     detection: "检测",
     rogueonu_detect_tips: "开始手动检测，检测结果将返回至告警列表中。",
     topo: "TOPO图",
+    no_result: "无结果",
+    refreshOrReset: "刷新/复位",
+    saveAsImage: "保存为图片",
 
     composeRange(min, max){
         return `${min} - ${max}位字符`;
