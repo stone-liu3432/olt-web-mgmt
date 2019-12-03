@@ -8,8 +8,23 @@
             <nms-table-column prop="status" :label="lanMap['status']">
                 <template slot-scope="rows">{{ rows.status ? lanMap['online'] : lanMap['offline'] }}</template>
             </nms-table-column>
-            <nms-table-column prop="count" :label="lanMap['wan_count']"></nms-table-column>
-            <nms-table-column prop="wanmax" :label="lanMap['wan_count_max']"></nms-table-column>
+            <nms-table-column :label="lanMap['wan_count']">
+                <template slot-scope="rows">{{ `${rows.count}/${rows.wanmax}` }}</template>
+            </nms-table-column>
+            <nms-table-column :label="lanMap['vlan_id']">
+                <template slot-scope="rows">{{ rows.wan0 ? (rows.wan0.vlan_id || '-') : '-' }}</template>
+            </nms-table-column>
+            <nms-table-column :label="lanMap['ipmode']">
+                <template
+                    slot-scope="rows"
+                >{{ rows.wan0 ? (ipmodes[rows.wan0.ipmode] || '-') : '-' }}</template>
+            </nms-table-column>
+            <nms-table-column :label="lanMap['ctype']">
+                <template slot-scope="rows">{{ rows.wan0 ? (ctypes[rows.wan0.ctype] || '-') : '-' }}</template>
+            </nms-table-column>
+            <nms-table-column :label="lanMap['desc']">
+                <template slot-scope="rows">{{ rows.wan0 ? (rows.wan0.desc || '-') : '-' }}</template>
+            </nms-table-column>
             <nms-table-column :label="lanMap['config']">
                 <template slot-scope="rows">
                     <a
@@ -17,16 +32,6 @@
                         class="btn-text"
                         @click="openDialog(rows)"
                     >{{ lanMap['detail'] }}</a>
-                    <!-- <nms-dropdown :offset-y="30" @command="command">
-                        {{ lanMap['config'] }}
-                        <template slot="dropdown">
-                            <nms-dropdown-item :command="composeData('add', rows)">1</nms-dropdown-item>
-                            <nms-dropdown-item
-                                :command="composeData('detail', rows)"
-                                :disabled="rows.count === 0"
-                            >3</nms-dropdown-item>
-                        </template>
-                    </nms-dropdown> -->
                 </template>
             </nms-table-column>
         </nms-table>
@@ -56,7 +61,14 @@ export default {
         return {
             wanList: [],
             visible: false,
-            portData: {}
+            portData: {},
+            ipmodes: ["Static IP", "DHCP", "PPPoE", "Bridge"],
+            ctypes: {
+                0x1: "TR069",
+                0x2: "INTERNET",
+                0x4: "Other",
+                0x8: "VOICE"
+            }
         };
     },
     created() {
@@ -69,13 +81,20 @@ export default {
     //         return {
     //             port_id: 1,
     //             onu_id: index + 1,
+    //             onu_name: "sadfas",
     //             macaddr: "38:3a:21:20:10:11",
     //             status: 1,
     //             count: 0,
     //             wanmax: 2,
     //             lanports: 4,
     //             wlan: 2,
-    //             voip: 2
+    //             voip: 2,
+    //             wan0: {
+    //                 vlan_id: 100,
+    //                 ipmode: 1,
+    //                 ctype: 2,
+    //                 desc: "123"
+    //             }
     //         };
     //     });
     // },
