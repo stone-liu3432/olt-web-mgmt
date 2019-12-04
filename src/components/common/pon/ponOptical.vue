@@ -2,7 +2,7 @@
     <div class="pon-optical">
         <div class="pon-optical-title">
             <h2>{{ lanMap['pon_optical'] }}</h2>
-            <div>
+            <div v-if="show_index !== 'optical_module'">
                 <span>{{ lanMap['port_id'] }}</span>
                 <select v-model.number="portid">
                     <option
@@ -179,29 +179,24 @@ export default {
         },
         //  获取所有ONU的光模块诊断信息
         get_all_optical() {
-            if (this.show_index === "onu_optical_diagnose") {
-                this.all_onu_optical = {};
-                this.timeout_tips = false;
-                this.is_load = true;
-                this.$http
-                    .get("/ponmgmt?form=optical_onu", {
-                        params: { port_id: this.portid }
-                    })
-                    .then(res => {
-                        this.is_load = false;
-                        if (res.data.code === 1) {
-                            this.all_onu_optical = res.data;
-                        }
-                    })
-                    .catch(err => {
-                        // to do
-                        this.timeout_tips = true;
-                        this.is_load = false;
-                    });
-            }
-            if (this.show_index === "optical_module") {
-                this.get_optical_info();
-            }
+            this.all_onu_optical = {};
+            this.timeout_tips = false;
+            this.is_load = true;
+            this.$http
+                .get("/ponmgmt?form=optical_onu", {
+                    params: { port_id: this.portid }
+                })
+                .then(res => {
+                    this.is_load = false;
+                    if (res.data.code === 1) {
+                        this.all_onu_optical = res.data;
+                    }
+                })
+                .catch(err => {
+                    // to do
+                    this.timeout_tips = true;
+                    this.is_load = false;
+                });
         },
         //  分页切换
         select_page(page) {
@@ -300,6 +295,8 @@ export default {
             sessionStorage.setItem("pid", Number(this.portid));
             if (this.show_index === "pon_optical") {
                 this.get_resource();
+            }else if(this.show_index === 'onu_optical_diagnose'){
+                this.get_all_optical();
             }
         },
         onuid() {
