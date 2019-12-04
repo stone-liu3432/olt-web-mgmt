@@ -229,23 +229,24 @@ export default {
         }
     },
     created() {
-        if (process.env.NODE_ENV == "development") {
-            this.getPon()
-                .then(res => {
-                    this.ponList = Object.freeze(res.data.data);
-                    import("../../../simulation_data/onuAllowFilter")
-                        .then(data => {
-                            const list = data.default;
-                            this.onuList = Object.freeze(list);
-                            this.$nextTick(_ => {
-                                this.draw();
-                            });
-                        })
-                        .catch(err => {});
-                })
-                .catch(err => {});
-            return;
-        }
+        // 测试数据，测试数据量大小时的表现
+        // if (process.env.NODE_ENV == "development") {
+        //     this.getPon()
+        //         .then(res => {
+        //             this.ponList = Object.freeze(res.data.data);
+        //             import("../../../simulation_data/onuAllowFilter")
+        //                 .then(data => {
+        //                     const list = data.default;
+        //                     this.onuList = Object.freeze(list);
+        //                     this.$nextTick(_ => {
+        //                         this.draw();
+        //                     });
+        //                 })
+        //                 .catch(err => {});
+        //         })
+        //         .catch(err => {});
+        //     return;
+        // }
         this.getData();
     },
     mounted() {
@@ -297,8 +298,8 @@ export default {
             Promise.all([this.getPon(), this.getOnu()])
                 .then(vals => {
                     const [ponlist, onulist] = vals;
-                    this.ponList = Object.freeze(ponlist.data.data);
-                    this.onuList = Object.freeze(onulist.data.data);
+                    this.ponList = Object.freeze(ponlist.data.data) || [];
+                    this.onuList = Object.freeze(onulist.data.data) || [];
                     this.$nextTick(_ => {
                         this.draw();
                     });
@@ -803,18 +804,29 @@ export default {
                 let flag = false;
                 if (item.data) {
                     if (typeof item.data.onu_name === "string") {
-                        if (item.data.onu_name.indexOf(this.findFlag) > -1) {
+                        if (
+                            item.data.onu_name
+                                .toLowerCase()
+                                .indexOf(this.findFlag.toLowerCase()) > -1
+                        ) {
                             flag = true;
                         }
                     }
                     if (typeof item.data.macaddr === "string") {
-                        if (item.data.macaddr.indexOf(this.findStr) > -1) {
+                        if (
+                            item.data.macaddr
+                                .toLowerCase()
+                                .indexOf(this.findStr.toLowerCase()) > -1
+                        ) {
                             flag = true;
                         }
                     }
                 }
                 return item instanceof JTopo.Node && flag;
             });
+            if (!this.nodes.length) {
+                this.findFlag = false;
+            }
             this.jumpToNode();
         },
         jumpToNode() {
