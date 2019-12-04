@@ -10,7 +10,9 @@
             <template v-if="Object.keys(frpc).length">
                 <div v-for="(item, key) in frpc">
                     <span>{{ key !== 'local_ip' ? key.replace(/_/, ' ') : "Local IP" }}:</span>
-                    <span>{{ (key === 'type' ? item ? 'https' : 'http' : item) || '' }}</span>
+                    <span
+                        :style="{ 'text-transform': key === 'custom_domains' ? 'none' : '' }"
+                    >{{ (key === 'type' ? item ? 'https' : 'http' : item) || '' }}</span>
                 </div>
             </template>
         </div>
@@ -165,7 +167,7 @@
                     v-model="frpcForm.appname"
                     :style="{ 'border-color': (frpcForm.appname === '' || validAppname ) ? '' : 'red' }"
                 />
-                <span>{{ lanMap.composeRange(4, 32) }}</span>
+                <span>{{ lanMap.composeRange(1, 32) }}</span>
             </div>
             <div class="frpc-form-item">
                 <span>Type</span>
@@ -177,29 +179,29 @@
             <div class="frpc-form-item">
                 <span>Local IP</span>
                 <input
+                    disabled
                     type="text"
                     v-model="frpcForm.local_ip"
                     :style="{ 'border-color': (frpcForm.local_ip === '' || validIp('local_ip')) ? '' : 'red' }"
                 />
-                <span>ex. 127.0.0.1</span>
             </div>
             <div class="frpc-form-item">
                 <span>Local Port</span>
                 <input
+                    disabled
                     type="text"
                     v-model.number="frpcForm.local_port"
                     :style="{ 'border-color': (frpcForm.local_port === '' || validPort('local_port')) ? '' : 'red' }"
                 />
-                <span>Range: 1 - 65535</span>
             </div>
             <div class="frpc-form-item">
                 <span>Remote Port</span>
                 <input
                     type="text"
                     v-model.number="frpcForm.remote_port"
-                    :style="{ 'border-color': (frpcForm.remote_port === '' || validPort('remote_port')) ? '' : 'red' }"
+                    :style="{ 'border-color': (frpcForm.remote_port === '' || frpcForm.remote_port === 0 || validPort('remote_port')) ? '' : 'red' }"
                 />
-                <span>Range: 1 - 65535</span>
+                <span>Range: 0 - 65535</span>
             </div>
             <div class="frpc-form-item">
                 <span>Custom Domains</span>
@@ -226,7 +228,7 @@ export default {
     computed: {
         ...mapState(["lanMap"]),
         validAppname() {
-            const reg = /^[a-zA-Z]\w{3,31}$/;
+            const reg = /^[a-zA-Z]\w{0,31}$/;
             return reg.test(this.frpcForm.appname);
         },
         validDomains() {
@@ -594,7 +596,7 @@ export default {
                 this.$message.error(`${this.lanMap["param_error"]}: Appname`);
                 return;
             }
-            if (!this.validPort("remote_port")) {
+            if (!this.validPort("remote_port") && this.frpcForm.remote_port) {
                 this.$message.error(
                     `${this.lanMap["param_error"]}: Remote Port`
                 );
@@ -613,7 +615,7 @@ export default {
                     server_port: this.frpcForm.server_port,
                     appname: this.frpcForm.appname,
                     type: this.frpcForm.type,
-                    remote_port: this.frpcForm.remote_port,
+                    remote_port: this.frpcForm.remote_port || 0,
                     custom_domains: this.frpcForm.custom_domains
                 }
             };
@@ -628,6 +630,7 @@ export default {
                             `(${res.data.code}) ${res.data.message}`
                         );
                     }
+                    this.closeModal();
                 })
                 .catch(err => {});
         },
@@ -828,6 +831,9 @@ div.add-ssh {
         a {
             float: right;
         }
+        & + div {
+            margin-top: 10px;
+        }
         &:after {
             content: "";
             display: table;
@@ -836,14 +842,20 @@ div.add-ssh {
     }
     div {
         line-height: 30px;
-        margin: 0 20px;
+        margin: 0 10px;
+        border: 1px solid @borderColor;
         span {
             display: inline-block;
             vertical-align: middle;
             text-transform: capitalize;
+            padding-left: 12px;
             &:first-child {
                 width: 150px;
+                border-right: 1px solid @borderColor;
             }
+        }
+        & + div {
+            border-top: none;
         }
     }
 }
