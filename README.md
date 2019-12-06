@@ -11,6 +11,7 @@
 - [message](#message组件)
 - [notify](#notify组件)
 - [confirm](#confirm组件)
+- [popover](#popover组件)
 
 ## table组件
 
@@ -88,3 +89,12 @@
 |confirmBtnText|确认按钮文字|string|--|ok|
 |cancenBtnText|取消按钮文字|string|--|cancel|
 - 提供服务方式调用，vm.$confirm(options)
+
+## popover组件
+### options选项
+|参数|说明|类型|可选值|默认值|
+|:---|:---|:---|:---|:---|
+|position|popover出现的位置|object|--|{x: 0, y: 0}|
+|visible|控制popover显示隐藏|boolean|true, false|false|
+|width|popover的宽度|string|--|150px|
+|placement|控制小箭头的显示方位，默认不显示|string|"top","top-start","top-end","bottom","bottom-start","bottom-end","left","left-start","left-end","right","right-start","right-end"|''|
