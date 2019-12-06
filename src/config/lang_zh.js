@@ -771,6 +771,8 @@ var zh = {
     no_result: "无结果",
     refreshOrReset: "刷新/复位",
     saveAsImage: "保存为图片",
+    p2p_flag: "P2P状态",
+    rogue_mode: "流氓ONU检测",
 
     composeRange(min, max){
         return `${min} - ${max}位字符`;

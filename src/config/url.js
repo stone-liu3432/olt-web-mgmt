@@ -39,7 +39,8 @@ var change_url = {
         get_packetfilter: './simulation_data/packfilter.json',
         get_qos: './simulation_data/qos.json',
         get_static_router: './simulation_data/staticRouter.json',
-        get_arp: './simulation_data/arp.json'
+        get_arp: './simulation_data/arp.json',
+        pon_setting: './simulation_data/ponSetting.json'
     },
     betaUrl: {
         menu: "/board?info=menu",
@@ -81,7 +82,8 @@ var change_url = {
         get_packetfilter: '/switch_pkfilter',
         get_qos: '/switch_qos?form=qos',
         get_static_router: '/switch_route?form=route_table',
-        get_arp: '/switch_route?form=arp_table'
+        get_arp: '/switch_route?form=arp_table',
+        pon_setting: '/ponmgmt?form=setting'
     }
 }
 

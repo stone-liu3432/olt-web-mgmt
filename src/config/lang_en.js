@@ -793,6 +793,8 @@ var en = {
     no_result: "No Result",
     refreshOrReset: "Refresh / Reset",
     saveAsImage: "Save As Image",
+    p2p_flag: "P2P Status",
+    rogue_mode: "Rogue ONU",
 
     composeRange(min, max) {
         return `${min} - ${max} characters`;
