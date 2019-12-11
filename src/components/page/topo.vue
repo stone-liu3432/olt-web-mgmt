@@ -528,8 +528,8 @@ export default {
             container.textPosition = "Top_Center";
             container.fontColor = "0, 0, 0";
             // 相临container背景色区分
-            container.fillColor =
-                index % 2 === 1 ? "224, 239, 231" : "198, 219, 209";
+            container.fillColor = "224, 239, 231";
+            //     index % 2 === 1 ? "224, 239, 231" : "198, 219, 209";
             container.borderColor = "204, 204, 204";
             container.borderWidth = 1;
             container.width = this.onuContainerWidth;
@@ -807,7 +807,7 @@ export default {
                         if (
                             item.data.onu_name
                                 .toLowerCase()
-                                .indexOf(this.findFlag.toLowerCase()) > -1
+                                .indexOf(this.findStr.toLowerCase()) > -1
                         ) {
                             flag = true;
                         }
