@@ -199,9 +199,9 @@ export default {
                     const data = {
                         method: "clear",
                         param: {
-                            port_id: node.portid,
-                            onu_id: node.onuid,
-                            mode: node.wlan_mode,
+                            port_id: node.port_id,
+                            onu_id: node.onu_id,
+                            mode: 1,
                             ssid: "",
                             password: ""
                         }
