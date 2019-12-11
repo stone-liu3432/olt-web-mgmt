@@ -3,13 +3,13 @@
         <div class="login-banner">
             <div class="lf"></div>
             <h1 class="lf" style="fontSize:36px;"></h1>
-            <div class="rt change-lang">
+            <!-- <div class="rt change-lang">
                 <span>{{ lanMap['lang'] }}</span>
                 <select v-model="lang">
                     <option value="zh">简体中文</option>
                     <option value="en">English</option>
                 </select>
-            </div>
+            </div>-->
         </div>
         <div class="login-body">
             <h2>{{ lanMap['login_user'] }}</h2>
@@ -35,6 +35,19 @@
                         @keyup.enter="userLogin"
                     />
                     <i :class="[ visible ? 'visible' : 'invisible']" @click="changeVisible"></i>
+                </div>
+                <div>
+                    <span>{{ lanMap['lang'] }}</span>
+                    <div>
+                        <label>
+                            <input type="radio" v-model="lang" value="zh" />
+                            简体中文
+                        </label>
+                        <label>
+                            <input type="radio" v-model="lang" value="en" />
+                            English
+                        </label>
+                    </div>
                 </div>
                 <div class="login-tips">
                     <h4
@@ -177,6 +190,7 @@ export default {
         },
         lang() {
             this.set_language(this.lang);
+            sessionStorage.setItem("def_lang", this.lang);
             const data = {
                 method: "set",
                 param: {
@@ -212,9 +226,9 @@ div.login-body {
     position: absolute;
     top: 50%;
     left: 50%;
-    transform: translate(-50%, -50%);
+    transform: translate(-50%, -70%);
     width: 700px;
-    height: 360px;
+    height: 400px;
     padding: 35px 15px 15px 15px;
     background: #fff;
     border-radius: 8px;
@@ -266,10 +280,18 @@ div.login-body a {
 div.login-body a:active {
     background: rgb(13, 113, 146);
 }
-form div {
-    line-height: 50px;
+form > div {
+    line-height: 40px;
     width: 450px;
     margin: 15px auto;
+    > div {
+        display: inline-block;
+        width: 300px;
+        text-align: left;
+        label + label {
+            margin-left: 20px;
+        }
+    }
 }
 div.user-pwd {
     position: relative;
@@ -277,7 +299,7 @@ div.user-pwd {
 form span {
     display: inline-block;
     width: 100px;
-    height: 30px;
+    height: 40px;
 }
 form i {
     display: inline-block;
@@ -294,7 +316,8 @@ i.invisible {
 i.visible {
     background: url("../../assets/visible.png") no-repeat;
 }
-input {
+input[type="text"],
+input[type="password"] {
     width: 300px;
     height: 40px;
     text-indent: 10px;
