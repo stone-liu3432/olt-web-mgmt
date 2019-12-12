@@ -35,9 +35,13 @@ export default {
                 .get(this.change_url.get_lang)
                 .then(res => {
                     if (res.data.code === 1) {
-                        this.set_language(res.data.data.lang);
+                        const lang = res.data.data.lang || "en";
+                        this.set_language(lang.replace(/[\r\n\s]/g, ""));
                         //  缓存用户选择的语言类型，防止用户手动刷新数据消失
-                        sessionStorage.setItem("def_lang", res.data.data.lang);
+                        sessionStorage.setItem(
+                            "def_lang",
+                            lang.replace(/[\r\n\s]/g, "")
+                        );
                     } else {
                         this.set_language("en");
                         sessionStorage.setItem("def_lang", "en");
@@ -96,14 +100,16 @@ export default {
             );
         }
     },
-    computed: mapState([
-        "port_info",
-        "system",
-        "isLoading",
-        "language",
-        "change_url",
-        "lanMap"
-    ]),
+    computed: {
+        ...mapState([
+            "port_info",
+            "system",
+            "isLoading",
+            "language",
+            "change_url",
+            "lanMap"
+        ])
+    },
     watch: {
         language() {
             this.add_lanMap(this.lang[this.language]);
@@ -348,7 +354,7 @@ a.btn-text {
 .flex-evenly {
     justify-content: space-evenly;
 }
-td a.btn-text{
+td a.btn-text {
     padding: 0 6px;
 }
 </style>
