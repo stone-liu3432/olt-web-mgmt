@@ -2,15 +2,15 @@
     <div class="pon-setting">
         <h2>{{ lanMap['pon_setting'] }}</h2>
         <hr />
-        <h3>
+        <!-- <h3>
             {{ lanMap['port_isolation'] }}
             <div class="switch" @click="setPortIsolate">
                 <input type="checkbox" v-model="port_isolate" />
                 <span :class="{ 'checked' : port_isolate }"></span>
             </div>
             <span class="tips">( {{ lanMap['pon_isolation_tips'] }} )</span>
-        </h3>
-        <h3>{{ lanMap['pon_setting'] }}</h3>
+        </h3>-->
+        <!-- <h3>{{ lanMap['pon_setting'] }}</h3> -->
         <nms-table :rows="ponSetting" border>
             <nms-table-column :label="lanMap['port_id']">
                 <template slot-scope="rows">{{ rows.port_id | getPortName }}</template>
@@ -136,7 +136,7 @@ export default {
     },
     activated() {
         this.getData();
-        this.getPortIsolation();
+        // this.getPortIsolation();
     },
     methods: {
         getData() {
