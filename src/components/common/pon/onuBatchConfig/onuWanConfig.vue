@@ -7,12 +7,12 @@
                 style="margin-left: 60px; height: 28px; line-height: 28px;"
                 @click="openDialog(null, 'add')"
             >{{ lanMap['add'] }}</a>
-            <a
+            <!-- <a
                 href="javascript: void(0);"
                 style="margin-left: 30px; height: 28px; line-height: 28px;"
                 @click="confirm_clear"
                 v-if="wanInfo.length"
-            >{{ lanMap['delete_all'] }}</a>
+            >{{ lanMap['delete_all'] }}</a> -->
             <a
                 href="javascript: void(0);"
                 style="margin-left: 30px; height: 28px; line-height: 28px;"
@@ -260,21 +260,23 @@
                                 <span>{{ lanMap['portmap'] }}</span>
                                 <div>
                                     <template v-for="i in geports">
-                                        <label>
+                                        <label :class="{'disabled': portMaps.includes(i) }">
                                             <input
                                                 type="checkbox"
                                                 :value="i"
                                                 v-model="formData.portmap"
+                                                :disabled="portMaps.includes(i)"
                                             />
                                             LAN{{ i }}
                                         </label>
                                     </template>
                                     <template v-for="(i, index) in [5, 10].slice(0, wlan)">
-                                        <label>
+                                        <label :class="{'disabled': portMaps.includes(i) }">
                                             <input
                                                 type="checkbox"
                                                 :value="i"
                                                 v-model="formData.portmap"
+                                                :disabled="portMaps.includes(i)"
                                             />
                                             WLAN{{ index + 1 }}
                                         </label>
@@ -383,7 +385,8 @@ export default {
     //             password: "123",
     //             requestdns: 0,
     //             pridns: "8.8.8.8",
-    //             secdns: "4.4.4.4"
+    //             secdns: "4.4.4.4",
+    //             portmap: [1]
     //         };
     //     });
     // },
@@ -473,6 +476,17 @@ export default {
                 this.formData.vlan_id < 1 ||
                 this.formData.vlan_id > 4094
             );
+        },
+        portMaps() {
+            const maps = [];
+            if (this.wanInfo.length) {
+                this.wanInfo.forEach(item => {
+                    if (item.portmap && item.portmap.length) {
+                        maps.push(...item.portmap);
+                    }
+                });
+            }
+            return [...new Set(maps)];
         }
     },
     created() {
@@ -596,7 +610,10 @@ export default {
                     reqdns: this.formData.reqdns,
                     pridns: this.formData.pridns,
                     secdns: this.formData.secdns,
-                    portmap: this.formData.portmap.sort((a, b) => a - b)
+                    portmap:
+                        this.formData.ctype !== 8
+                            ? this.formData.portmap.sort((a, b) => a - b)
+                            : null
                 }
             };
             this.submit(data);
@@ -635,7 +652,10 @@ export default {
                     reqdns: this.formData.reqdns,
                     pridns: this.formData.pridns,
                     secdns: this.formData.secdns,
-                    portmap: this.formData.portmap.sort((a, b) => a - b)
+                    portmap:
+                        this.formData.ctype !== 8
+                            ? this.formData.portmap.sort((a, b) => a - b)
+                            : null
                 }
             };
             this.submit(data);
@@ -674,7 +694,10 @@ export default {
                     password: this.formData.password,
                     tagmode: this.formData.tagmode,
                     vlan_id: this.formData.vlan_id,
-                    portmap: this.formData.portmap.sort((a, b) => a - b)
+                    portmap:
+                        this.formData.ctype !== 8
+                            ? this.formData.portmap.sort((a, b) => a - b)
+                            : null
                 }
             };
             this.submit(data);
@@ -692,7 +715,10 @@ export default {
                     igmpproxy: this.formData.igmpproxy,
                     tagmode: this.formData.tagmode,
                     vlan_id: this.formData.vlan_id,
-                    portmap: this.formData.portmap.sort((a, b) => a - b)
+                    portmap:
+                        this.formData.ctype !== 8
+                            ? this.formData.portmap.sort((a, b) => a - b)
+                            : null
                 }
             };
             this.submit(data);
@@ -739,7 +765,7 @@ export default {
                     }`
                 });
             }
-            if (!this.formData.portmap.length) {
+            if (!this.formData.portmap.length && this.formData.ctype !== 8) {
                 return this.$message({
                     type: "error",
                     text: `${this.lanMap["required"]}: ${
@@ -873,10 +899,13 @@ export default {
             }
         },
         disableCtype(item, index) {
-            return !(index === 2 || (index === 8 && this.voip));
+            if (this.geports === 1) {
+                return index !== 2;
+            }
+            return index === 8 && !this.voip;
         },
-        refreshData(){
-            debounce(this.getData, 1000, this)
+        refreshData() {
+            debounce(this.getData, 1000, this);
         }
     },
     watch: {
@@ -912,10 +941,14 @@ h3 {
 select {
     width: 197px;
 }
+label.disabled,
 input:disabled,
 select:disabled,
 a.disabled {
     cursor: not-allowed;
+}
+label.disabled {
+    color: #aaa;
 }
 a.disabled {
     &:hover {
