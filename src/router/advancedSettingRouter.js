@@ -1,49 +1,163 @@
-//  文件切割 
+//  文件切割
 //  system page
-const runStatus = () => import(/* webpackChunkName: "system-page" */  '@/components/common/system/runStatus')
-const devMgmt = () => import(/* webpackChunkName: "system-page" */  '@/components/common/system/devMgmt')
-const diagonose = () => import(/* webpackChunkName: "system-page" */  '@/components/common/system/diagonose')
-const remoteMgmt = () => import(/* webpackChunkName: "system-page" */  '@/components/common/system/remoteMgmt')
-const upgrade = () => import(/* webpackChunkName: "system-page" */  '@/components/common/system/upgrade')
-const timeMgmt = () => import(/* webpackChunkName: "system-page" */  '@/components/common/system/timeMgmt')
-const service = () => import(/* webpackChunkName: "system-page" */  '@/components/common/system/service')
-const alarm = () => import(/* webpackChunkName: "system-page" */  '@/components/common/system/alarm')
-const userMgmt = () => import(/* webpackChunkName: "system-page" */  '@/components/common/system/userMgmt')
+const runStatus = () =>
+    import(
+        /* webpackChunkName: "system-page" */ "@/components/common/system/runStatus"
+    );
+const devMgmt = () =>
+    import(
+        /* webpackChunkName: "system-page" */ "@/components/common/system/devMgmt"
+    );
+const diagonose = () =>
+    import(
+        /* webpackChunkName: "system-page" */ "@/components/common/system/diagonose"
+    );
+const remoteMgmt = () =>
+    import(
+        /* webpackChunkName: "system-page" */ "@/components/common/system/remoteMgmt"
+    );
+const upgrade = () =>
+    import(
+        /* webpackChunkName: "system-page" */ "@/components/common/system/upgrade"
+    );
+const timeMgmt = () =>
+    import(
+        /* webpackChunkName: "system-page" */ "@/components/common/system/timeMgmt"
+    );
+const service = () =>
+    import(
+        /* webpackChunkName: "system-page" */ "@/components/common/system/service"
+    );
+const alarm = () =>
+    import(
+        /* webpackChunkName: "system-page" */ "@/components/common/system/alarm"
+    );
+const userMgmt = () =>
+    import(
+        /* webpackChunkName: "system-page" */ "@/components/common/system/userMgmt"
+    );
+
 // pon
 //const onuAllow = () => import(/* webpackChunkName: "ponmgmt-page" */  '@/components/common/pon/onuAllow')
-const onuDeny = () => import(/* webpackChunkName: "ponmgmt-page" */  '@/components/common/pon/onuDeny')
-const slaCfg = () => import(/* webpackChunkName: "ponmgmt-page" */  '@/components/common/pon/slaCfg')
-const ponSetting = () => import(/* webpackChunkName: "ponmgmt-page" */  '@/components/common/pon/ponSetting')
-const onuBasicInfo = () => import(/* webpackChunkName: "ponmgmt-page" */  '@/components/common/pon/onuBasicInfo')
-const onuPortCfg = () => import(/* webpackChunkName: "ponmgmt-page" */  '@/components/common/pon/onuPortCfg')
-const onuBatchUpgrade = () => import(/* webpackChunkName: "ponmgmt-page" */  '@/components/common/pon/onuBatchUpgrade')
-const onuMulticast = () => import(/* webpackChunkName: "ponmgmt-page" */  '@/components/common/pon/onuMulticast')
-const ponOptical = () => import(/* webpackChunkName: "ponmgmt-page" */  '@/components/common/pon/ponOptical')
-const loid = () => import(/* webpackChunkName: "ponmgmt-page" */  '@/components/common/pon/loid')
-const onuPerf = () => import(/* webpackChunkName: "ponmgmt-page" */  '@/components/common/pon/onuPerf')
-const batchConfig = () => import(/* webpackChunkName: "ponmgmt-page" */ '@/components/common/pon/batchConfig')
+const onuDeny = () =>
+    import(
+        /* webpackChunkName: "ponmgmt-page" */ "@/components/common/pon/onuDeny"
+    );
+const slaCfg = () =>
+    import(
+        /* webpackChunkName: "ponmgmt-page" */ "@/components/common/pon/slaCfg"
+    );
+const ponSetting = () =>
+    import(
+        /* webpackChunkName: "ponmgmt-page" */ "@/components/common/pon/ponSetting"
+    );
+const onuBasicInfo = () =>
+    import(
+        /* webpackChunkName: "ponmgmt-page" */ "@/components/common/pon/onuBasicInfo"
+    );
+const onuPortCfg = () =>
+    import(
+        /* webpackChunkName: "ponmgmt-page" */ "@/components/common/pon/onuPortCfg"
+    );
+const onuBatchUpgrade = () =>
+    import(
+        /* webpackChunkName: "ponmgmt-page" */ "@/components/common/pon/onuBatchUpgrade"
+    );
+const onuMulticast = () =>
+    import(
+        /* webpackChunkName: "ponmgmt-page" */ "@/components/common/pon/onuMulticast"
+    );
+const ponOptical = () =>
+    import(
+        /* webpackChunkName: "ponmgmt-page" */ "@/components/common/pon/ponOptical"
+    );
+const loid = () =>
+    import(
+        /* webpackChunkName: "ponmgmt-page" */ "@/components/common/pon/loid"
+    );
+const onuPerf = () =>
+    import(
+        /* webpackChunkName: "ponmgmt-page" */ "@/components/common/pon/onuPerf"
+    );
+const batchConfig = () =>
+    import(
+        /* webpackChunkName: "ponmgmt-page" */ "@/components/common/pon/batchConfig"
+    );
+
 // switch
-const portInfo = () => import(/* webpackChunkName: "switch-page" */  '@/components/common/switch/portInfo')
-const perfInfo = () => import(/* webpackChunkName: "switch-page" */  '@/components/common/switch/perfInfo')
-const portCfg = () => import(/* webpackChunkName: "switch-page" */  '@/components/common/switch/portCfg')
-const portVlan = () => import(/* webpackChunkName: "switch-page" */  '@/components/common/switch/portVlan')
-const loopDetect = () => import(/* webpackChunkName: "switch-page" */  '@/components/common/switch/loopDetect')
-const macMgmt = () => import(/* webpackChunkName: "switch-page" */  '@/components/common/switch/macMgmt')
+const portInfo = () =>
+    import(
+        /* webpackChunkName: "switch-page" */ "@/components/common/switch/portInfo"
+    );
+const perfInfo = () =>
+    import(
+        /* webpackChunkName: "switch-page" */ "@/components/common/switch/perfInfo"
+    );
+const portCfg = () =>
+    import(
+        /* webpackChunkName: "switch-page" */ "@/components/common/switch/portCfg"
+    );
+const portVlan = () =>
+    import(
+        /* webpackChunkName: "switch-page" */ "@/components/common/switch/portVlan"
+    );
+const loopDetect = () =>
+    import(
+        /* webpackChunkName: "switch-page" */ "@/components/common/switch/loopDetect"
+    );
+const macMgmt = () =>
+    import(
+        /* webpackChunkName: "switch-page" */ "@/components/common/switch/macMgmt"
+    );
+const portIsolation = () =>
+    import(
+        /* webpackChunkName: "switch-page" */ "@/components/common/switch/portIsolation"
+    );
 // protocol
-const rstp = () => import(/* webpackChunkName: "protocol-page" */  '@/components/common/protocol/rstp')
-const igmp = () => import(/* webpackChunkName: "protocol-page" */  '@/components/common/protocol/igmp')
-const dhcp = () => import(/* webpackChunkName: "protocol-page" */  '@/components/common/protocol/dhcp')
+const rstp = () =>
+    import(
+        /* webpackChunkName: "protocol-page" */ "@/components/common/protocol/rstp"
+    );
+const igmp = () =>
+    import(
+        /* webpackChunkName: "protocol-page" */ "@/components/common/protocol/igmp"
+    );
+const dhcp = () =>
+    import(
+        /* webpackChunkName: "protocol-page" */ "@/components/common/protocol/dhcp"
+    );
 
 // acl/qos
-const aclMgmt = () => import(/* webpackChunkName: "acl-qos-page" */  '@/components/common/acl-QoS/aclMgmt')
-const timeRange = () => import(/* webpackChunkName: "acl-qos-page" */  '@/components/common/acl-QoS/timeRange')
-const qos = () => import(/* webpackChunkName: "acl-qos-page" */  '@/components/common/acl-QoS/qos')
-const packetFilter = () => import(/* webpackChunkName: "acl-qos-page" */  '@/components/common/acl-QoS/packetFilter')
+const aclMgmt = () =>
+    import(
+        /* webpackChunkName: "acl-qos-page" */ "@/components/common/acl-QoS/aclMgmt"
+    );
+const timeRange = () =>
+    import(
+        /* webpackChunkName: "acl-qos-page" */ "@/components/common/acl-QoS/timeRange"
+    );
+const qos = () =>
+    import(
+        /* webpackChunkName: "acl-qos-page" */ "@/components/common/acl-QoS/qos"
+    );
+const packetFilter = () =>
+    import(
+        /* webpackChunkName: "acl-qos-page" */ "@/components/common/acl-QoS/packetFilter"
+    );
 
 // router
-const staticRoute = () => import(/* webpackChunkName: "acl-qos-page" */  '@/components/common/route/staticRoute')
-const arp = () => import(/* webpackChunkName: "acl-qos-page" */  '@/components/common/route/arp')
-const linkAggregation = () => import(/* webpackChunkName: "switch-page" */ '@/components/common/switch/linkAggregation')
+const staticRoute = () =>
+    import(
+        /* webpackChunkName: "acl-qos-page" */ "@/components/common/route/staticRoute"
+    );
+const arp = () =>
+    import(
+        /* webpackChunkName: "acl-qos-page" */ "@/components/common/route/arp"
+    );
+const linkAggregation = () =>
+    import(
+        /* webpackChunkName: "switch-page" */ "@/components/common/switch/linkAggregation"
+    );
 
 export default [
     {
@@ -120,7 +234,7 @@ export default [
         }
     },
     {
-        path: '/loid_mgmt',
+        path: "/loid_mgmt",
         component: loid,
         meta: {
             requireAuth: true,
@@ -168,7 +282,7 @@ export default [
         }
     },
     {
-        path: '/batch_config',
+        path: "/batch_config",
         component: batchConfig,
         meta: {
             requireAuth: true
@@ -302,17 +416,26 @@ export default [
         meta: {
             requireAuth: true
         }
-    },{
-        path: '/loop_detect',
+    },
+    {
+        path: "/loop_detect",
         component: loopDetect,
         meta: {
             requireAuth: true
         }
-    },{
-        path: '/link_aggregation',
+    },
+    {
+        path: "/link_aggregation",
         component: linkAggregation,
         meta: {
             requireAuth: true
         }
+    },
+    {
+        path: "/port_isolation",
+        component: portIsolation,
+        meta: {
+            requireAuth: true
+        }
     }
-]
+];
