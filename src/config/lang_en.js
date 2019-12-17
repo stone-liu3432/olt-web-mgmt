@@ -799,7 +799,7 @@ var en = {
     port: " Port",
     pon_isolate_portlist: "PON Isolate Port Member",
     uplink_isolate_portlist: "Uplink Isolate Port Member",
-    uplink: "Up Link",
+    uplink: "Uplink",
 
     composeRange(min, max) {
         return `${min} - ${max} characters`;
