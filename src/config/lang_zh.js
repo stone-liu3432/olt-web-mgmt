@@ -199,8 +199,6 @@ var zh = {
     stormctrl_tips: "全为0时表示关闭风暴控制",
 
     mirror: "端口镜像",
-    src_port: "源端口",
-    dst_port: "目的端口",
     choose: "请选择",
 
     age: "老化时间",
@@ -729,7 +727,7 @@ var zh = {
     tx_discard_frame: "发送丢弃帧",
     tx_error_frame: "发送错误帧",
 
-    clear: '清除',
+    clear: "清除",
     mtype: "校准",
     ex_cali: "外部校准",
     in_cali: "内部校准",
@@ -773,8 +771,12 @@ var zh = {
     saveAsImage: "保存为图片",
     p2p_flag: "P2P状态",
     rogue_mode: "流氓ONU检测",
+    port: "端口",
+    pon_isolate_portlist: "PON隔离端口成员",
+    uplink_isolate_portlist: "上联隔离端口成员",
+    uplink: "上联",
 
-    composeRange(min, max){
+    composeRange(min, max) {
         return `${min} - ${max}位字符`;
     }
 };

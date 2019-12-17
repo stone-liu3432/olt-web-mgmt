@@ -202,8 +202,6 @@ var en = {
     stormctrl_tips: "All 0 means to turn off storm control",
 
     mirror: " Mirror",
-    src_port: " Source Port",
-    dst_port: " Destination Port",
     choose: " Select",
 
     age: " Age Time",
@@ -784,17 +782,24 @@ var en = {
     lease_time: "Lease Time(s)",
     entry_status: "Status",
     snooping_table: "Snooping Table",
-    dhcp_relay_tips: 'DHCP Relay need layer3 support, Do you want to enable it ?',
-    route_close_tips: "DHCP Relay need layer3 support, Do you want to disable it ?",
+    dhcp_relay_tips:
+        "DHCP Relay need layer3 support, Do you want to enable it ?",
+    route_close_tips:
+        "DHCP Relay need layer3 support, Do you want to disable it ?",
     rogue_onu_detection: "Regue ONU Detection",
     detection: "Detection",
-    rogueonu_detect_tips: "Manual detection starts and the test results are returned to the alarm list.",
+    rogueonu_detect_tips:
+        "Manual detection starts and the test results are returned to the alarm list.",
     topo: "TOPO",
     no_result: "No Result",
     refreshOrReset: "Refresh / Reset",
     saveAsImage: "Save As Image",
     p2p_flag: "P2P Status",
     rogue_mode: "Rogue ONU",
+    port: " Port",
+    pon_isolate_portlist: "PON Isolate Port Member",
+    uplink_isolate_portlist: "Uplink Isolate Port Member",
+    uplink: "Up Link",
 
     composeRange(min, max) {
         return `${min} - ${max} characters`;
