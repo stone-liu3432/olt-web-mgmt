@@ -114,10 +114,10 @@ export default {
     created() {
         this.getData();
     },
-    mounted() {
-        this.isolate_pon = "1-3";
-        this.isolate_ge = "4-7,11";
-    },
+    // mounted() {
+    //     this.isolate_pon = "1-3";
+    //     this.isolate_ge = "4-7,11";
+    // },
     methods: {
         getData() {
             this.isolate_pon = "";
@@ -175,7 +175,10 @@ export default {
                 (this.dialogType === "add" &&
                     this.portlist.length === isolatePortlist.length)
             ) {
-                return this.$message.error(this.lanMap["modify_tips"]);
+                return this.$message({
+                    type: "error",
+                    text: this.lanMap["modify_tips"]
+                });
             }
             const list = (this.dialogType === "add"
                 ? this.portlist.filter(item => !isolatePortlist.includes(item))
@@ -204,16 +207,18 @@ export default {
                 .post(url, data)
                 .then(res => {
                     if (res.data.code === 1) {
-                        this.$message.success(
-                            `${this.lanMap[this.dialogType]}${
+                        this.$message({
+                            type: "success",
+                            text: `${this.lanMap[this.dialogType]}${
                                 this.lanMap["st_success"]
                             }`
-                        );
+                        });
                         this.getData();
                     } else {
-                        this.$message.error(
-                            `(${res.data.code}) ${res.data.message}`
-                        );
+                        this.$message({
+                            type: "error",
+                            text: `(${res.data.code}) ${res.data.message}`
+                        });
                     }
                 })
                 .catch(err => {});

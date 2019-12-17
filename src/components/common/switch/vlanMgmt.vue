@@ -5,7 +5,6 @@
         </div>
         <div class="btn-group-vlan">
             <a href="javascript:void(0);" @click="createVlan()">{{ lanMap['create'] }} VLAN</a>
-            <!-- <span>{{ lanMap['tips_create_vlan'] }}</span> -->
             <a href="javascript:void(0);" @click="open_batch_del">{{ lanMap['delete'] }} VLAN</a>
             <a href="javascript:void(0);" @click="createVlan(1)">{{ lanMap['batch_cfg_vlan'] }}</a>
         </div>
@@ -13,7 +12,6 @@
             <p class="lf">{{  lanMap['vlan_list'] }}</p>
             <div class="lf">
                 <input type="text" placeholder="VLAN ID" v-model.number="search_id">
-                <!-- <i class="icon-search" @click="searchVlan"></i> -->
                 <i class="icon-search"></i>
             </div>
         </div>
@@ -22,12 +20,10 @@
         </div>
         <ul v-if="vlan_tab[0]">
             <li>
-                <!-- <input type="radio" name="checkedVlan" style="visibility:hidden"> -->
                 <span v-for="(item,key) in vlan_tab[0]" :key="key">{{ lanMap[key] }}</span>
                 <span class="vlan-cfg-title">{{ lanMap['config'] }}</span>
             </li>
             <li v-for="(item,index) in vlan_tab" :key="index">
-                <!-- <input type="radio" v-model="vlanid" :value="item.vlan_id"> -->
                 <span>{{ item.vlan_id }}</span>
                 <span>{{ parsePortList(item.tagged_portlist) || ' - ' }}</span>
                 <span>{{ parsePortList(item.untagged_portlist) || ' - ' }}</span>
@@ -85,24 +81,6 @@
                     <div class="vlan-mode">
                         <h3 class="lf">tagged:</h3>
                         <div class="vlan-port">
-                            <!-- <div>
-                                <span v-for="(item,key) in port_name.pon" :key="key" class="tagged" style="width: 12%;">
-                                    <input type="radio" :name="item.id" :id="'tagged'+item.id" @click="changeState($event)" value="0">
-                                    <label :for="'tagged'+item.id">{{ item.name }}</label>
-                                </span>
-                            </div>
-                            <div>
-                                <span v-for="(item,key) in port_name.ge" :key="key" class="tagged">
-                                    <input type="radio" :name="item.id" :id="'tagged'+item.id" @click="changeState($event)" value="0">
-                                    <label :for="'tagged'+item.id">{{ item.name }}</label>
-                                </span>
-                            </div>
-                            <div>
-                                <span v-for="(item,key) in port_name.xge" :key="key" class="tagged" v-if="port_name.xge">
-                                    <input type="radio" :name="item.id" :id="'tagged'+item.id" @click="changeState($event)" value="0">
-                                    <label :for="'tagged'+item.id">{{ item.name }}</label>
-                                </span>
-                            </div> -->
                             <div>
                                 <span v-for="(item,key) in port_name.pon" :key="key" style="width: 12%;" class="tagged">
                                     <input type="checkbox" :value="item.id" v-model="tagged_list" :id="'tagged'+item.id" :disabled="def_list.includes(item.id)">
@@ -127,24 +105,6 @@
                     <div class="vlan-mode">
                         <h3 class="lf">untagged:</h3>
                         <div class="vlan-port">
-                            <!-- <div>
-                                <span v-for="(item,key) in port_name.pon" :key="key" class="untagged" style="width: 12%;">
-                                    <input type="radio" :name="item.id" :id="'untagged'+item.id" @click="changeState($event)" value="0">
-                                    <label :for="'untagged'+item.id">{{ item.name }}</label>
-                                </span>
-                            </div>
-                            <div>
-                                <span v-for="(item,key) in port_name.ge" :key="key" class="untagged">
-                                    <input type="radio" :name="item.id" :id="'untagged'+item.id" @click="changeState($event)" value="0">
-                                    <label :for="'untagged'+item.id">{{ item.name }}</label>
-                                </span>
-                            </div>
-                            <div>
-                                <span v-for="(item,key) in port_name.xge" :key="key" class="untagged" v-if="port_name.xge">
-                                    <input type="radio" :name="item.id" :id="'untagged'+item.id" @click="changeState($event)" value="0">
-                                    <label :for="'untagged'+item.id">{{ item.name }}</label>
-                                </span>
-                            </div> -->
                             <div>
                                 <span v-for="(item,key) in port_name.pon" :key="key" style="width: 12%;" class="untagged">
                                     <input type="checkbox" :id="'untagged'+item.id" :value="item.id" v-model="untagged_list" :disabled="def_list.includes(item.id)">
@@ -269,39 +229,6 @@ import { parsePortList } from '@/utils/common';
                 }
                 this.$http.get(url).then(res=>{
                     if(res.data.code === 1){
-                        // if(!res.data.data) {
-                        //     this.is_loadmore = false;
-                        //     if(this.count === 0){
-                        //         this.vlan_list = {};
-                        //         this.vlan_tab = [];
-                        //     }
-                        //     return
-                        // }
-                        // if(res.data.data && res.data.data.length === 200){
-                        //     this.is_loadmore = true;
-                        // }
-                        // if(res.data.data && res.data.data.length !== 200){
-                        //     this.is_loadmore = false;
-                        // }
-                        // if(this.count === 0 && res.data.data){
-                        //     this.vlan_list = res.data;
-                        // }else if(res.data.data){
-                        //     var data = Object.assign([],this.vlan_list.data);
-                        //     data = data.concat(res.data.data);
-                        //     this.vlan_list = {
-                        //         code: 1,
-                        //         data: data
-                        //     }
-                        // }
-                        // if(this.vlan_list.data){
-                        //     var vlan_map = {};
-                        //     for(var key in this.vlan_list.data){
-                        //         vlan_map[this.vlan_list.data[key].vlan_id] = this.vlan_list.data[key];
-                        //     }
-                        //     this.vlan_map = vlan_map;
-                        // }
-                        // this.pagination.page = Math.ceil(this.vlan_list.data.length/this.pagination.display);
-                        // this.getPage();
                         this.getVlan();
                     }else{
                         this.vlan_list = {};
@@ -467,28 +394,14 @@ import { parsePortList } from '@/utils/common';
             },
             //  配置VLAN ID 的端口
             set_vlan(vid,vid_s,vid_e,create_flag){
-                // var tagged = document.querySelectorAll('span.tagged>input');
-                // var untagged = document.querySelectorAll('span.untagged>input');
                 var tag_str = '', untag_str = '', post_param, url;
-                // for(var i=0,len=tagged.length;i<len;i++){
-                //     if(tagged[i].checked){
-                //         tag_str += tagged[i].name;
-                //         tag_str += ',';
-                //     }
-                // }
-                // for(var i=0,len=untagged.length;i<len;i++){
-                //     if(untagged[i].checked){
-                //         untag_str += untagged[i].name;
-                //         untag_str += ',';
-                //     }
-                // }
                 if(vid || (!!vid_s && vid_s === vid_e)){
                     post_param = {
                         "method":"set",
                         "param":{
                             "vlan_id": vid || vid_s,
-                            "tagged_portlist": this.tagged_list.sort((a, b) => a-b).toString(),//tag_str.replace(/\,$/,''),
-                            "untagged_portlist": this.untagged_list.sort((a, b) => a-b).toString()//untag_str.replace(/\,$/,'')
+                            "tagged_portlist": this.tagged_list.sort((a, b) => a-b).toString(),
+                            "untagged_portlist": this.untagged_list.sort((a, b) => a-b).toString()
                         }
                     }
                     url = '/switch_vlan';
@@ -498,8 +411,8 @@ import { parsePortList } from '@/utils/common';
                         "param":{
                          	"vlanid_s": vid_s > vid_e ? vid_e : vid_s,
                             "vlanid_e": vid_s > vid_e ? vid_s : vid_e,
-                            "tagged_portlist": this.tagged_list.sort((a, b) => a-b).toString(),//tag_str.replace(/\,$/,''),
-                            "untagged_portlist": this.untagged_list.sort((a, b) => a-b).toString()//untag_str.replace(/\,$/,'')
+                            "tagged_portlist": this.tagged_list.sort((a, b) => a-b).toString(),
+                            "untagged_portlist": this.untagged_list.sort((a, b) => a-b).toString()
                         }
                     }
                     url = '/switch_vlanlist';
@@ -545,21 +458,7 @@ import { parsePortList } from '@/utils/common';
                 if(bool){
                     var vid_s = Number(this.vlanid_s);
                     var vid_e = Number(this.vlanid_e);
-                    // var tagged = document.querySelectorAll('span.tagged>input');
-                    // var untagged = document.querySelectorAll('span.untagged>input');
                     var tag_str = '',untag_str = '';
-                    // for(var i=0,len=tagged.length;i<len;i++){
-                    //     if(tagged[i].checked){
-                    //         tag_str += tagged[i].name;
-                    //         tag_str += ',';
-                    //     }
-                    // }
-                    // for(var i=0,len=untagged.length;i<len;i++){
-                    //     if(untagged[i].checked){
-                    //         untag_str += untagged[i].name;
-                    //         untag_str += ',';
-                    //     }
-                    // }
                     tag_str = this.tagged_list.sort((a, b) => a-b).toString();
                     untag_str = this.untagged_list.sort((a, b) => a-b).toString();
                     if(isNaN(vid_s) || vid_s > 4094 || vid_s < 1 || isNaN(vid_e) || vid_e > 4094 || vid_e < 1) {
