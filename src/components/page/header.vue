@@ -1,40 +1,8 @@
 <template>
-    <!-- <div class="top-banner">
-      <div class="top-banner-logo lf" v-if="system.data">
-            <img v-if="has_logo" id="logo">
-            <a href="#" v-else>{{ system.data.vendor ? system.data.vendor.length > 16 ? system.data.vendor.substring(0,16) : system.data.vendor : "HSGQ"  }}</a>
-      </div>
-      <h1 class="lf">|</h1>
-      <div class="product-type lf" v-if="system.data">{{ system.data.product_name }}</div>
-      <div class="user-login rt">
-        <div class="change-lang lf">
-            <span>{{ lanMap['lang'] }}</span>
-            <select v-model="lang">
-                <option value="zh">简体中文</option>
-                <option value="en">English</option>
-            </select>
-        </div>
-        <div class="lf show-user">
-          <i></i>
-          <span>{{ uName }}</span>
-        </div>
-        <div class="lf log-out" @click="login_out">
-          <i></i>
-          <span>{{ lanMap['logout'] }}</span>
-        </div>
-      </div>
-      <div class="modal-dialog" v-if="false">
-          <div class="cover"></div>
-          <div class="modal-body">
-              <div class="close"></div>
-          </div>
-      </div>
-      <confirm :tool-tips="lanMap['logout'] + '?'" @choose="result" v-if="login_out_modal"></confirm>
-    </div>-->
     <div class="top-banner" v-if="system && system.data">
         <div
             class="top-banner-logo lf"
-            :style="{ 'font-size': system.data.vendor.length > 12 ? '28px' : '32px' }"
+            :style="{ 'font-size': system.data.vendor.length > 12 ? '28px' : '' }"
         >
             <img v-if="has_logo" ref="logo-image" @error="isNoLogo" />
             <a
@@ -223,10 +191,6 @@ export default {
         line-height: 70px;
         text-align: center;
     }
-    div.top-banner-logo {
-        font-size: 32px;
-        font-weight: 600;
-    }
     ul {
         li {
             float: left;
@@ -256,6 +220,7 @@ export default {
 }
 div.top-banner-logo {
     width: 20%;
+    font-size: 0;
 }
 div.top-banner-nav {
     width: 60%;
@@ -279,19 +244,6 @@ li.active {
     background: #e0efe7;
     color: #000;
 }
-
-//   .top-banner h1{
-//     font-size:42px;
-//     line-height:70px;
-//   }
-//   .top-banner-logo{
-//     min-width:200px;
-//     max-width: 400px;
-//     height:70px;
-//     line-height:70px;
-//     text-align: center;
-//     padding: 0 20px;
-//   }
 .top-banner-logo a {
     border: none;
     font-size: 42px;
@@ -300,6 +252,8 @@ li.active {
     background: transparent;
     padding: 0;
     width: 100%;
+    height: 100%;
+    line-height: 70px;
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
@@ -312,71 +266,4 @@ li.active {
         outline: none;
     }
 }
-//   .product-type{
-//     width:200px;
-//     height:70px;
-//     font-size:20px;
-//     line-height:70px;
-//     text-align: center;
-//   }
-//   div.user-login div{
-//     width:150px;
-//     text-align: center;
-//     height:70px;
-//     line-height:70px;
-//     font-size:16px;
-//     cursor:pointer;
-//   }
-//   div.user-login>div.change-lang{
-//     width: 240px;
-//     margin-right: 20px;
-//     >span{
-//         margin-right: 10px;
-//         display: inline-block;
-//         width: 80px;
-//         color: #fff;
-//         text-align: right;
-//         padding-right: 10px;
-//     }
-//     >select{
-//         vertical-align: middle;
-//         width: 120px;
-//         height: 30px;
-//         font-size: 16px;
-//         text-indent: 10px;
-//         border-radius: 5px;
-//     }
-// }
-// div.modal-body{
-//     width: 500px;
-//     height: 300px;
-//     background: #fff;
-//     position: absolute;
-//     top: 0;
-//     left: 0;
-//     right: 0;
-//     bottom: 0;
-//     margin: auto;
-//     border-radius: 10px;
-// }
-// div.log-out{
-//     vertical-align: middle;
-//     >i{
-//         display: inline-block;
-//         vertical-align: middle;
-//         width: 32px;
-//         height: 32px;
-//         background: url('../../assets/logout.png') no-repeat;
-//     }
-// }
-// div.show-user{
-//     vertical-align: middle;
-//     >i{
-//         display: inline-block;
-//         vertical-align: middle;
-//         width: 32px;
-//         height: 32px;
-//         background: url('../../assets/user.png') no-repeat;
-//     }
-// }
 </style>

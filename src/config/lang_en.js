@@ -43,7 +43,7 @@ var en = {
     modify: " Modify ",
     find: " Find",
     apply: " Apply",
-    set: ' Set ',
+    set: " Set ",
     commit: "Commit",
     cancel: " Cancel",
     config: " Setting ",
@@ -136,8 +136,7 @@ var en = {
     mins: " Min",
     secs: " Sec",
 
-    search_by_macaddr:
-        " Type mac address, support partial match",
+    search_by_macaddr: " Type mac address, support partial match",
     onu_id: " ONU ID",
     onu_name: " Name",
     onu_desc: " Description",
@@ -200,7 +199,7 @@ var en = {
     broadcast: " Broadcast",
     multicast: " Multicast",
     unicast: " Unicast",
-    stormctrl_tips: 'All 0 means to turn off storm control',
+    stormctrl_tips: "All 0 means to turn off storm control",
 
     mirror: " Mirror",
     src_port: " Source Port",
@@ -668,20 +667,25 @@ var en = {
     onu_status: "ONU Status",
     ld_port_id: "Loopback Port",
     ld_onu_id: "Loopback ONU",
-    loop_detect: ' Loop Detection ',
-    pon_loop_detect: 'PON Loop Detection ',
-    ge_loop_detect: ' Uplink Loop Detection ',
-    ld_info: ' Loop Detection Information ',
-    loopback : 'Loopback',
-    port_status: ' Port Status ',
-    port_isolation: ' Port Isolation ',
-    pon_isolation_tips: 'Set PON port isolation only',
+    loop_detect: " Loop Detection ",
+    pon_loop_detect: "PON Loop Detection ",
+    ge_loop_detect: " Uplink Loop Detection ",
+    ld_info: " Loop Detection Information ",
+    loopback: "Loopback",
+    port_status: " Port Status ",
+    port_isolation: " Port Isolation ",
+    pon_isolation_tips: "Set PON port isolation only",
 
-    link_aggregation:'Link Aggregation',
-    psc: 'Port Selection Criteria',
-    member_portlist: ' Port Members',
-    link_aggregation_tips: 'Link aggregation group member ports will take effect after configuration',
-    trunk_id: ' Trunk ID '
+    link_aggregation: "Link Aggregation",
+    psc: "Port Selection Criteria",
+    member_portlist: " Port Members",
+    link_aggregation_tips:
+        "Link aggregation group member ports will take effect after configuration",
+    trunk_id: " Trunk ID ",
+    port: " Port",
+    pon_isolate_portlist: "PON Isolate Port Member",
+    uplink_isolate_portlist: "Uplink Isolate Port Member",
+    uplink: "Uplink"
 };
 
 export default en;
