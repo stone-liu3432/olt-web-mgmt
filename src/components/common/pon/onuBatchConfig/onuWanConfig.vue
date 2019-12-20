@@ -12,7 +12,7 @@
                 style="margin-left: 30px; height: 28px; line-height: 28px;"
                 @click="confirm_clear"
                 v-if="wanInfo.length"
-            >{{ lanMap['delete_all'] }}</a> -->
+            >{{ lanMap['delete_all'] }}</a>-->
             <a
                 href="javascript: void(0);"
                 style="margin-left: 30px; height: 28px; line-height: 28px;"
@@ -255,7 +255,10 @@
                                 </div>
                             </div>
                         </template>
-                        <div class="onu-wan-form wan-form-portmap" v-if="formData.ctype !== 8">
+                        <div
+                            class="onu-wan-form wan-form-portmap"
+                            v-if="formData.ctype !== 8 && formData.ctype !== 1"
+                        >
                             <div>
                                 <span>{{ lanMap['portmap'] }}</span>
                                 <div>
@@ -765,7 +768,11 @@ export default {
                     }`
                 });
             }
-            if (!this.formData.portmap.length && this.formData.ctype !== 8) {
+            if (
+                !this.formData.portmap.length &&
+                this.formData.ctype !== 8 &&
+                this.formData.ctype !== 1
+            ) {
                 return this.$message({
                     type: "error",
                     text: `${this.lanMap["required"]}: ${
