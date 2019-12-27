@@ -685,7 +685,8 @@ var en = {
     port: " Port",
     pon_isolate_portlist: "PON Isolate Port Member",
     uplink_isolate_portlist: "Uplink Isolate Port Member",
-    uplink: "Uplink"
+    uplink: "Uplink",
+    sn: "SN"
 };
 
 export default en;

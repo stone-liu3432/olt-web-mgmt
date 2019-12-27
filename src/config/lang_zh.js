@@ -664,7 +664,8 @@ var zh = {
     port: "端口",
     pon_isolate_portlist: "PON隔离端口成员",
     uplink_isolate_portlist: "上联隔离端口成员",
-    uplink: "上联"
+    uplink: "上联",
+    sn: "SN"
 };
 
 export default zh;
