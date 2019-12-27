@@ -775,6 +775,7 @@ var zh = {
     pon_isolate_portlist: "PON隔离端口成员",
     uplink_isolate_portlist: "上联隔离端口成员",
     uplink: "上联",
+    sn: "SN",
 
     composeRange(min, max) {
         return `${min} - ${max}位字符`;
