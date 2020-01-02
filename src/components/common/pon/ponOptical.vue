@@ -58,7 +58,7 @@
         <!-- 所有ONU的光模块诊断信息 -->
         <ul
             class="onu-optical"
-            v-if="show_index === 'onu_optical_diagnose' && all_onu_optical.data && all_onu_optical.data.length > 0 && onu_list.data && onu_list.data.length > 0"
+            v-if="show_index === 'onu_optical_diagnose' && all_onu_optical.data && all_onu_optical.data.length > 0"
         >
             <li class="bg-title">
                 <span>{{ lanMap['onu_id'] }}</span>
@@ -295,7 +295,7 @@ export default {
             sessionStorage.setItem("pid", Number(this.portid));
             if (this.show_index === "pon_optical") {
                 this.get_resource();
-            }else if(this.show_index === 'onu_optical_diagnose'){
+            } else if (this.show_index === "onu_optical_diagnose") {
                 this.get_all_optical();
             }
         },
