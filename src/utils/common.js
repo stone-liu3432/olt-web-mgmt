@@ -55,7 +55,7 @@ export function replaceDBCS(str) {
 
 //  IP地址检查
 export function testIPAddr(str) {
-    var reg = /^((25[0-5]|2[0-4]\d|((1\d{2})|([1-9]?\d)))\.){3}(25[0-5]|2[0-4]\d|((1\d{2})|([1-9]?\d)))$/;
+    var reg = /^((25[0-5]|2[0-4]\d|1?\d?\d)\.){3}(25[0-5]|2[0-4]\d|1?\d?\d)$/;
     return reg.test(str) && str !== "0.0.0.0" && str !== "255.255.255.255";
 }
 
@@ -94,7 +94,7 @@ export function parsePortList(str) {
     }
     return result.reduce((initVal, val) => {
         if (initVal) {
-            return `${initVal},${ getPortName(val) }`;
+            return `${initVal},${getPortName(val)}`;
         }
         return getPortName(val);
     }, "");
@@ -143,13 +143,13 @@ export function parsePort(str) {
     return result;
 }
 
-/* 
-*  @method 防抖函数 间隔时间内点击，只执行一次
-*  @param {Fucntion} func 需要执行防抖的回调
-*  @param {Number} delay 执行延迟时间 
-*  @param {Object} context 回调函数的this指向
-*  @param {Array} args 回调的参数
-*/
+/*
+ *  @method 防抖函数 间隔时间内点击，只执行一次
+ *  @param {Fucntion} func 需要执行防抖的回调
+ *  @param {Number} delay 执行延迟时间
+ *  @param {Object} context 回调函数的this指向
+ *  @param {Array} args 回调的参数
+ */
 export function debounce(func, delay, context, ...args) {
     if (func.timer) {
         clearTimeout(func.timer);
@@ -166,25 +166,30 @@ export function debounce(func, delay, context, ...args) {
 }
 
 /*
-*  @method throttle 节流函数 每隔固定时间执行一次
-*  @param {Function} func 要执行节流的函数
-*  @param {Number} wait 回调执行的间隔
-*  @param {Object} context 回调内的this指向
-*  @param {Array} 回调的参数
-*/
-export function throttle(func, wait, context){
-    let last = 0, timer = null;
-    return function(){
+ *  @method throttle 节流函数 每隔固定时间执行一次
+ *  @param {Function} func 要执行节流的函数
+ *  @param {Number} wait 回调执行的间隔
+ *  @param {Object} context 回调内的this指向
+ *  @param {Array} 回调的参数
+ */
+export function throttle(func, wait, context) {
+    let last = 0,
+        timer = null;
+    return function() {
         let current = +new Date();
         clearTimeout(timer);
-        if(current - last > wait){
+        if (current - last > wait) {
             func.apply(context, arguments);
             last = current;
-        }else{
+        } else {
             timer = setTimeout(_ => {
                 func.apply(context, arguments);
                 last = current;
-            }, wait)
+            }, wait);
         }
-    }
+    };
+}
+
+export function isDef(val) {
+    return val !== null && val !== undefined;
 }
