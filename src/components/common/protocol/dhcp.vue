@@ -21,6 +21,11 @@
                 :global-data="dhcpInfo"
                 @update-data="getData"
             ></dhcp-snooping>
+            <dhcp-server
+                v-if="tab === 'DHCP Server'"
+                :global-data="dhcpInfo"
+                @update-data="getData"
+            ></dhcp-server>
         </div>
         <nms-dialog :visible.sync="visible" width="500px" :title="lanMap['set']">
             <div class="global-dhcp-form-item">
@@ -43,6 +48,7 @@ import { mapState } from "vuex";
 import dhcpRelay from "./dhcp/relay";
 import dhcpOption82 from "./dhcp/option82";
 import dhcpSnooping from "./dhcp/snooping";
+import dhcpServer from "./dhcp/server";
 export default {
     name: "dhcp",
     computed: {
@@ -51,10 +57,15 @@ export default {
             return this.dhcpInfo.dhcp_admin;
         }
     },
-    components: { dhcpRelay, dhcpOption82, dhcpSnooping },
+    components: { dhcpRelay, dhcpOption82, dhcpSnooping, dhcpServer },
     data() {
         return {
-            tabs: ["DHCP Relay", "DHCP Option82", "DHCP Snooping"],
+            tabs: [
+                "DHCP Relay",
+                "DHCP Option82",
+                "DHCP Snooping",
+                "DHCP Server"
+            ],
             tab: "DHCP Relay",
             dhcpInfo: {},
             dhcp_admin: 0,
@@ -76,7 +87,16 @@ export default {
     //         snooping_admin: 1,
     //         chaddr_check: 1,
     //         response_time: 60,
-    //         trust_portlist: "5-9"
+    //         trust_portlist: "5-9",
+    //         server_admin: 1,
+    //         ipaddress_s: "192.168.99.20",
+    //         ipaddress_e: "192.168.99.200",
+    //         ipmask: "255.255.255.0",
+    //         interface: 88,
+    //         pridns: "192.168.99.1",
+    //         secdns: "192.168.99.10",
+    //         gateway: "192.168.99.1",
+    //         lease_time: 86400
     //     };
     // },
     methods: {
@@ -136,12 +156,12 @@ export default {
         margin-left: 30px;
     }
 }
-.global-dhcp-form-item{
-    >span{
+.global-dhcp-form-item {
+    > span {
         display: inline-block;
         width: 150px;
     }
-    select{
+    select {
         width: 200px;
     }
 }
