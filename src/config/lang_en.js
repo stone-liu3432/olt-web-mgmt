@@ -801,6 +801,11 @@ var en = {
     uplink_isolate_portlist: "Uplink Isolate Port Member",
     uplink: "Uplink",
     sn: "SN",
+    ipaddress_s: "Starting IP Address",
+    ipaddress_e: "End IP Address",
+    open: " open ",
+    close: " close ",
+    none_inbound_tips: "No interface available, go to create?",
 
     composeRange(min, max) {
         return `${min} - ${max} characters`;

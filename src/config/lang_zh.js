@@ -776,6 +776,11 @@ var zh = {
     uplink_isolate_portlist: "上联隔离端口成员",
     uplink: "上联",
     sn: "SN",
+    ipaddress_s: "起始IP地址",
+    ipaddress_e: "结束IP地址",
+    open: "打开",
+    close: "关闭",
+    none_inbound_tips: "没有可用的interface，是否前往创建？",
 
     composeRange(min, max) {
         return `${min} - ${max}位字符`;
