@@ -16,9 +16,9 @@ const autoSync = filename => {
     let filePath = "\\\\192.168.5.28\\HSGQ File Server\\鸿升研发\\WEB版本";
     // latest文件夹只存放最新一次的编译版本
     // backup存放所有的历史版本
-    let files = fs.readdirSync(path.join(filePath, "latest"));
+    let files = fs.readdirSync(path.join(filePath, "epon-latest"));
     files.forEach(filename => {
-        var filedir = path.join(filePath, "latest", filename);
+        var filedir = path.join(filePath, "epon-latest", filename);
         const stats = fs.statSync(filedir);
         const isFile = stats.isFile();
         console.log(filename);
@@ -28,7 +28,7 @@ const autoSync = filename => {
         }
     });
     let data = fs.readFileSync(filename);
-    const paths = ["latest", "backup"];
+    const paths = ["epon-latest", "epon-backup"];
     paths.forEach(item => {
         fs.writeFile(
             path.join(
