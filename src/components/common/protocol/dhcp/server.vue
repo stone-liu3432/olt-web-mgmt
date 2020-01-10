@@ -1,7 +1,7 @@
 <template>
     <div>
         <div class="dhcp-server-item">
-            <span>DHCP Server Status:</span>
+            <span>{{ lanMap['server_admin'] }}</span>
             <span>{{ status ? lanMap['enable'] : lanMap['disable'] }}</span>
             <a href="javascript: void(0);" @click="chagneState">{{ buttonText }}</a>
             <a href="javascript: void(0);" @click="openDialog" v-if="status">{{ lanMap['config'] }}</a>
@@ -305,7 +305,7 @@ export default {
                         ipmask: data.ipmask,
                         interface: data.interface,
                         pridns: data.pridns,
-                        secdns: data.secdns,
+                        secdns: data.secdns === "" ? "0.0.0.0" : data.secdns,
                         gateway: data.gateway,
                         lease_time: data.lease_time
                     }
