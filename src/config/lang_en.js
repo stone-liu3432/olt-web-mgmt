@@ -806,6 +806,7 @@ var en = {
     open: " open ",
     close: " close ",
     none_inbound_tips: "No interface available, go to create?",
+    server_admin: "Server Status",
 
     composeRange(min, max) {
         return `${min} - ${max} characters`;

@@ -781,6 +781,7 @@ var zh = {
     open: "打开",
     close: "关闭",
     none_inbound_tips: "没有可用的interface，是否前往创建？",
+    server_admin: "Server状态",
 
     composeRange(min, max) {
         return `${min} - ${max}位字符`;
