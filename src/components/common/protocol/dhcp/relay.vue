@@ -205,7 +205,7 @@ export default {
         },
         composeData(data, method) {
             let _data = this.postPolicy[this.policies[this.policy]];
-            if (!this.policies.includes(this.dialogType)) {
+            if (this.dialogType && !this.policies.includes(this.dialogType)) {
                 _data = this.postPolicy[this.dialogType];
             }
             const { keys } = _data;
