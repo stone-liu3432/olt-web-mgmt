@@ -4,9 +4,21 @@
             <span>{{ lanMap['server_admin'] }}</span>
             <span>{{ status ? lanMap['enable'] : lanMap['disable'] }}</span>
             <a href="javascript: void(0);" @click="chagneState">{{ buttonText }}</a>
-            <a href="javascript: void(0);" @click="openDialog" v-if="status">{{ lanMap['config'] }}</a>
+            <a
+                href="javascript: void(0);"
+                @click="openDialog('global')"
+                v-if="status"
+            >{{ lanMap['config'] }}</a>
         </div>
         <template v-if="status">
+            <div class="dhcp-server-item">
+                <span>{{ lanMap['interface'] }}:</span>
+                <span>{{ getInterface(globalData.interface) }}</span>
+                <a
+                    href="javascript: void(0);"
+                    @click="openDialog('interface')"
+                >{{ lanMap['config'] }}</a>
+            </div>
             <div class="dhcp-server-item">
                 <span>{{ lanMap['ipaddress_s'] }}:</span>
                 <span>{{ globalData.ipaddress_s }}</span>
@@ -18,10 +30,6 @@
             <div class="dhcp-server-item">
                 <span>{{ lanMap['ipmask'] }}:</span>
                 <span>{{ globalData.ipmask }}</span>
-            </div>
-            <div class="dhcp-server-item">
-                <span>{{ lanMap['interface'] }}:</span>
-                <span>{{ getInterface(globalData.interface) }}</span>
             </div>
             <div class="dhcp-server-item">
                 <span>{{ lanMap['pridns'] }}:</span>
@@ -43,63 +51,66 @@
         <nms-dialog :visible.sync="dialogVisible" width="550px">
             <template slot="title">{{ lanMap['config'] }}</template>
             <div class="dhcp-server-form">
-                <div>
-                    <span>{{ lanMap['ipaddress_s'] }}</span>
-                    <input
-                        type="text"
-                        v-model="formData.ipaddress_s"
-                        :style="validate('ipaddress_s')"
-                    />
-                    <span>ex. 127.0.0.1</span>
-                </div>
-                <div>
-                    <span>{{ lanMap['ipaddress_e'] }}</span>
-                    <input
-                        type="text"
-                        v-model="formData.ipaddress_e"
-                        :style="validate('ipaddress_e')"
-                    />
-                    <span>ex. 127.0.0.1</span>
-                </div>
-                <div>
-                    <span>{{ lanMap['ipmask'] }}</span>
-                    <input type="text" v-model="formData.ipmask" :style="validate('ipmask')" />
-                    <span>ex. 255.255.255.0</span>
-                </div>
-                <div>
-                    <span>{{ lanMap['interface'] }}</span>
-                    <select v-model.number="formData.interface">
-                        <template v-for="item in inbound">
-                            <option :value="item.vlan_id">{{ item.interface }}</option>
-                        </template>
-                    </select>
-                </div>
-                <div>
-                    <span>{{ lanMap['pridns'] }}</span>
-                    <input type="text" v-model="formData.pridns" :style="validate('pridns')" />
-                    <span>ex. 127.0.0.1</span>
-                </div>
-                <div>
-                    <span>{{ lanMap['secdns'] }}</span>
-                    <input type="text" v-model="formData.secdns" :style="validate('secdns')" />
-                    <span>ex. 127.0.0.1</span>
-                </div>
-                <div>
-                    <span>{{ lanMap['gateway'] }}</span>
-                    <input type="text" v-model="formData.gateway" :style="validate('gateway')" />
-                    <span>ex. 127.0.0.1</span>
-                </div>
-                <div>
-                    <span>{{ lanMap['lease_time'] }}</span>
-                    <input
-                        type="text"
-                        v-model.number="formData.lease_time"
-                        :style="validate('lease_time')"
-                    />
-                    <span>Range: 60-864000</span>
-                </div>
+                <template v-if="dialogType === 'interface'">
+                    <div>
+                        <span>{{ lanMap['interface'] }}</span>
+                        <select v-model.number="formData.interface">
+                            <template v-for="item in inbound">
+                                <option :value="item.vlan_id">{{ item.interface }}</option>
+                            </template>
+                        </select>
+                    </div>
+                </template>
+                <template v-else>
+                    <div>
+                        <span>{{ lanMap['ipaddress_s'] }}</span>
+                        <input
+                            type="text"
+                            v-model="formData.ipaddress_s"
+                            :style="validate('ipaddress_s')"
+                        />
+                        <span>ex. 127.0.0.1</span>
+                    </div>
+                    <div>
+                        <span>{{ lanMap['ipaddress_e'] }}</span>
+                        <input
+                            type="text"
+                            v-model="formData.ipaddress_e"
+                            :style="validate('ipaddress_e')"
+                        />
+                        <span>ex. 127.0.0.1</span>
+                    </div>
+                    <div>
+                        <span>{{ lanMap['ipmask'] }}</span>
+                        <input type="text" v-model="formData.ipmask" :style="validate('ipmask')" />
+                        <span>ex. 255.255.255.0</span>
+                    </div>
+                    <div>
+                        <span>{{ lanMap['pridns'] }}</span>
+                        <input type="text" v-model="formData.pridns" :style="validate('pridns')" />
+                        <span>ex. 127.0.0.1</span>
+                    </div>
+                    <div>
+                        <span>{{ lanMap['secdns'] }}</span>
+                        <input type="text" v-model="formData.secdns" :style="validate('secdns')" />
+                        <span>ex. 127.0.0.1</span>
+                    </div>
+                    <div>
+                        <span>{{ lanMap['gateway'] }}</span>
+                        <input type="text" v-model="formData.gateway" :style="validate('gateway')" />
+                        <span>ex. 127.0.0.1</span>
+                    </div>
+                    <div>
+                        <span>{{ lanMap['lease_time'] }}</span>
+                        <input
+                            type="text"
+                            v-model.number="formData.lease_time"
+                            :style="validate('lease_time')"
+                        />
+                        <span>Range: 60-864000</span>
+                    </div>
+                </template>
             </div>
-
             <div slot="footer">
                 <a href="javascript: void(0);" @click="submitForm">{{ lanMap['apply'] }}</a>
                 <a href="javascript: void(0);" @click="closeDialog">{{ lanMap['cancel'] }}</a>
@@ -140,7 +151,8 @@ export default {
                 gateway: "",
                 lease_time: ""
             },
-            dialogVisible: false
+            dialogVisible: false,
+            dialogType: ""
         };
     },
     created() {
@@ -160,7 +172,7 @@ export default {
                 })
                 .catch(err => {});
         },
-        openDialog() {
+        openDialog(flag) {
             if (!this.inbound.length) {
                 this.$confirm("none_inbound_tips")
                     .then(_ => {
@@ -169,6 +181,7 @@ export default {
                     .catch(_ => {});
             } else {
                 this.dialogVisible = true;
+                this.dialogType = flag;
                 Object.keys(this.formData).forEach(key => {
                     if (isDef(this.globalData[key])) {
                         this.formData[key] = this.globalData[key] || "";
@@ -273,44 +286,59 @@ export default {
             this.closeDialog();
         },
         composeData(data) {
-            const flags = {
-                ipaddress_s: 0x01,
-                ipaddress_e: 0x01,
-                ipmask: 0x02,
-                interface: 0x04,
-                pridns: 0x08,
-                secdns: 0x08,
-                gateway: 0x10,
-                lease_time: 0x20
-            };
-            const flag = Object.keys(flags).reduce((prev, key) => {
-                if (data[key] !== this.globalData[key]) {
-                    if ((prev & flags[key]) !== flags[key]) {
-                        prev |= flags[key];
-                    }
+            if (this.dialogType === "interface") {
+                if (data["interface"] === this.globalData["interface"]) {
+                    return;
                 }
-                return prev;
-            }, 0);
-            if (flag === 0) {
-                return;
+                return {
+                    url: "/switch_dhcp?form=server_cfg",
+                    data: {
+                        method: "set",
+                        param: {
+                            flags: 0x04,
+                            interface: data.interface
+                        }
+                    }
+                };
+            } else {
+                const flags = {
+                    ipaddress_s: 0x01,
+                    ipaddress_e: 0x01,
+                    ipmask: 0x02,
+                    pridns: 0x08,
+                    secdns: 0x08,
+                    gateway: 0x10,
+                    lease_time: 0x20
+                };
+                const flag = Object.keys(flags).reduce((prev, key) => {
+                    if (data[key] !== this.globalData[key]) {
+                        if ((prev & flags[key]) !== flags[key]) {
+                            prev |= flags[key];
+                        }
+                    }
+                    return prev;
+                }, 0);
+                if (flag === 0) {
+                    return;
+                }
+                return {
+                    url: "/switch_dhcp?form=server_cfg",
+                    data: {
+                        method: "set",
+                        param: {
+                            flags: flag,
+                            ipaddress_s: data.ipaddress_s,
+                            ipaddress_e: data.ipaddress_e,
+                            ipmask: data.ipmask,
+                            pridns: data.pridns,
+                            secdns:
+                                data.secdns === "" ? "0.0.0.0" : data.secdns,
+                            gateway: data.gateway,
+                            lease_time: data.lease_time
+                        }
+                    }
+                };
             }
-            return {
-                url: "/switch_dhcp?form=server_cfg",
-                data: {
-                    method: "set",
-                    param: {
-                        flags: flag,
-                        ipaddress_s: data.ipaddress_s,
-                        ipaddress_e: data.ipaddress_e,
-                        ipmask: data.ipmask,
-                        interface: data.interface,
-                        pridns: data.pridns,
-                        secdns: data.secdns === "" ? "0.0.0.0" : data.secdns,
-                        gateway: data.gateway,
-                        lease_time: data.lease_time
-                    }
-                }
-            };
         }
     }
 };
@@ -326,7 +354,7 @@ export default {
         line-height: 30px;
     }
     span + span {
-        width: auto;
+        width: 200px;
     }
     a {
         margin-left: 30px;
