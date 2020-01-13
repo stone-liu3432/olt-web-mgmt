@@ -4,7 +4,11 @@
             <span slot="title">ARP</span>
             <div slot="action">
                 <a href="javascript:void(0);" @click="refreshTable">{{ lanMap['refresh'] }}</a>
-                <a href="javascript:void(0);" @click="openDelModal" style="margin-left: 30px;">{{ lanMap['delete_all'] }}</a>
+                <a
+                    href="javascript:void(0);"
+                    @click="openDelModal"
+                    style="margin-left: 30px;"
+                >{{ lanMap['delete_all'] }}</a>
             </div>
         </page-header>
         <nms-table :rows="show_arp" border>
@@ -109,16 +113,16 @@ export default {
 };
 </script>
 
-<style lang="less">
-h3 {
-    font-size: 24px;
-    font-weight: 600;
-    color: @titleColor;
-    margin: 10px 0 20px 0;
-    > a {
-        font-size: 16px;
-        margin-left: 30px;
-        font-weight: 400;
-    }
-}
+<style lang="less" scoped>
+// h3 {
+//     font-size: 24px;
+//     font-weight: 600;
+//     color: @titleColor;
+//     margin: 10px 0 20px 0;
+//     > a {
+//         font-size: 16px;
+//         margin-left: 30px;
+//         font-weight: 400;
+//     }
+// }
 </style>
