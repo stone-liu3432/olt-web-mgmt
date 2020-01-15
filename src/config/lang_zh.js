@@ -18,7 +18,7 @@ var zh = {
     pon_mgmt: "PON管理",
     onu_allow: "ONU列表",
     onu_deny: "ONU阻止列表",
-    sla_cfg: "带宽配置",
+    sla_cfg: "上行带宽配置",
     pon_setting: "PON设置",
     onu_mgmt: "ONU管理",
     onu_basic_info: "ONU基本信息",

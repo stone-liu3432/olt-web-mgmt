@@ -18,7 +18,7 @@ var en = {
     pon_mgmt: " PON Port",
     onu_allow: " ONU Table",
     onu_deny: " ONU Deny List",
-    sla_cfg: " Bandwidth",
+    sla_cfg: " Upstream Bandwidth",
     pon_setting: " PON Setting",
     onu_mgmt: " ONU Device",
     onu_basic_info: " ONU Basic Info",
