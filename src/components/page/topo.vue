@@ -745,7 +745,7 @@ export default {
                                 const post_params = {
                                     method: "set",
                                     param: {
-                                        port_id: data.portid,
+                                        port_id: data.port_id,
                                         onu_id: data.onu_id,
                                         flags: 1,
                                         fec_mode: 1
