@@ -61,7 +61,7 @@
                 href="javascript: void(0);"
                 v-if="disabled"
                 style="margin-left: 30px;"
-                @click="disabled = false;"
+                @click="close_ping"
             >{{ lanMap['cancel'] }}</a>
         </div>
         <div class="diagonose-item">
@@ -145,7 +145,7 @@ export default {
             }
             this.disabled = true;
             this.result = "Starting ping...";
-            const interval = setInterval(() => {
+            this.interval = setInterval(() => {
                 this.result += ".";
             }, 1000);
             var post_params = {
@@ -171,10 +171,10 @@ export default {
                         this.disabled = false;
                         this.result = "The device is ready!";
                     }
-                    clearInterval(interval);
+                    clearInterval(this.interval);
                 })
                 .catch(err => {
-                    clearInterval(interval);
+                    clearInterval(this.interval);
                     this.disabled = false;
                     this.result = "Network connection error!";
                 });
@@ -211,7 +211,14 @@ export default {
                         this.disabled = false;
                     });
             }
+        },
+        close_ping() {
+            this.disabled = false;
+            clearInterval(this.interval);
         }
+    },
+    beforeDestroy() {
+        this.interval && clearInterval(this.interval);
     }
 };
 </script>
