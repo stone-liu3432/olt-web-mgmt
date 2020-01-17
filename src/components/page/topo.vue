@@ -789,12 +789,13 @@ export default {
             this.index = 0;
             this.nodes = [];
             this.$root.$el.scrollTo(0, 0);
-            debounce(this.draw, 1000, this);
+            debounce(this.getData, 1000, this);
         },
         saveAsImage() {
             this.stage.saveImageInfo();
         },
         findNode() {
+            if (this.findStr === "") return;
             this.findFlag = true;
             const scene =
                 this.pageType === "all"
