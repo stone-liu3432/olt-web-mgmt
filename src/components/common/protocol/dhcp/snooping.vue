@@ -150,8 +150,8 @@ export default {
             required: true
         }
     },
-    created(){
-        if(this.admin){
+    created() {
+        if (this.admin) {
             this.getData();
         }
     },
@@ -277,9 +277,7 @@ export default {
                 time() {
                     if (!this.validTime) {
                         this.$message.error(
-                            `${this.lanMap["param_error"]}: ${
-                                this.lanMap["response_time"]
-                            }`
+                            `${this.lanMap["param_error"]}: ${this.lanMap["response_time"]}`
                         );
                         return;
                     }
@@ -340,7 +338,7 @@ export default {
             };
             return actions[this.dialogMethod].call(this);
         },
-        refreshData(){
+        refreshData() {
             debounce(this.getData, 1000, this, null);
         }
     },
@@ -378,7 +376,7 @@ export default {
     font-size: 18px;
     font-weight: 600;
     color: #67aef6;
-    a{
+    a {
         font-weight: normal;
     }
 }

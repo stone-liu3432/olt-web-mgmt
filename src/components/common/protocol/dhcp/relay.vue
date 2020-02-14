@@ -299,17 +299,13 @@ export default {
                 standard() {
                     if (!this.validVlan) {
                         this.$message.error(
-                            `${this.lanMap["param_error"]}: ${
-                                this.lanMap["vlan_id"]
-                            }`
+                            `${this.lanMap["param_error"]}: ${this.lanMap["vlan_id"]}`
                         );
                         return;
                     }
                     if (!this.validServer) {
                         this.$message.error(
-                            `${this.lanMap["param_error"]}: ${
-                                this.lanMap["server_ip"]
-                            }`
+                            `${this.lanMap["param_error"]}: ${this.lanMap["server_ip"]}`
                         );
                         return;
                     }
@@ -321,17 +317,13 @@ export default {
                 option60() {
                     if (!this.validOption60) {
                         this.$message.error(
-                            `${this.lanMap["param_error"]}: ${
-                                this.lanMap["option60"]
-                            }`
+                            `${this.lanMap["param_error"]}: ${this.lanMap["option60"]}`
                         );
                         return;
                     }
                     if (!this.validServer) {
                         this.$message.error(
-                            `${this.lanMap["param_error"]}: ${
-                                this.lanMap["server_ip"]
-                            }`
+                            `${this.lanMap["param_error"]}: ${this.lanMap["server_ip"]}`
                         );
                         return;
                     }
