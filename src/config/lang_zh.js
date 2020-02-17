@@ -136,7 +136,7 @@ var zh = {
     mins: "分",
     secs: "秒",
 
-    search_by_macaddr: "输入mac地址查找ONU,支持部分匹配查找",
+    search_by_macaddr: "输入MAC地址或名称搜索ONU，支持部分匹配和正则表达式",
     onu_id: " ONU ID",
     onu_name: "名称",
     onu_desc: "描述信息",

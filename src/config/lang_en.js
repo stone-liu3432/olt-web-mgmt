@@ -136,7 +136,8 @@ var en = {
     mins: " Min",
     secs: " Sec",
 
-    search_by_macaddr: " Type mac address, support partial match",
+    search_by_macaddr:
+        " Enter the MAC address or Name to search for ONU. Supports partial matching and Regular Expressions.",
     onu_id: " ONU ID",
     onu_name: " Name",
     onu_desc: " Description",
