@@ -37,7 +37,6 @@
                 <tr>
                     <td colspan="3">
                         <span>{{ lanMap['member_portlist'] }}:</span>
-                        <!-- <span>{{ parsePortList(item.member_portlist) }}</span> -->
                         <span>{{ item.member_portlist | analysis(system.data.ponports, system.data.geports) }}</span>
                     </td>
                 </tr>
@@ -125,7 +124,7 @@
 
 <script>
 import { mapState, mapMutations } from "vuex";
-import { parsePortList } from "@/utils/common";
+import { parsePort } from "@/utils/common";
 export default {
     name: "linkAggregation",
     computed: {
@@ -181,9 +180,6 @@ export default {
                 })
                 .catch(err => {});
         },
-        parsePortList(str) {
-            return parsePortList(str);
-        },
         openDialog(data, flag) {
             this.dialogFlag = flag;
             this.dialogVisible = true;
@@ -194,7 +190,7 @@ export default {
                     this.formData.psc = data.psc;
                 }
                 if (flag === "delete" || flag === "set") {
-                    this.formData.member_portlist = this.analysis(
+                    this.formData.member_portlist = parsePort(
                         data.member_portlist
                     );
                     this.cachePortlist = Object.assign(
@@ -210,29 +206,6 @@ export default {
             this.formData.psc = 1;
             this.formData.member_portlist = [];
             this.cachePortlist = [];
-        },
-        analysis(str) {
-            if (!str) return "";
-            var result = [];
-            var arr = str.split(",");
-            for (var i = 0, len = arr.length; i < len; i++) {
-                var substrs = arr[i];
-                if (substrs.indexOf("-") !== -1) {
-                    var subArr = substrs.split("-");
-                    var min = Number(subArr[0]),
-                        max = Number(subArr[subArr.length - 1]);
-                    if (isNaN(min) || isNaN(max)) throw new TypeError();
-                    result.push(min);
-                    for (var j = 1; j < max - min; j++) {
-                        result.push(min + j);
-                    }
-                    result.push(max);
-                } else {
-                    if (isNaN(Number(substrs))) throw new TypeError();
-                    result.push(Number(substrs));
-                }
-            }
-            return result;
         },
         submitForm() {
             let url,
@@ -273,12 +246,12 @@ export default {
                         .sort((a, b) => a - b)
                         .toString();
                 }
-                if(this.dialogFlag === 'create'){
-                    if(!this.formData.member_portlist.length){
+                if (this.dialogFlag === "create") {
+                    if (!this.formData.member_portlist.length) {
                         return this.$message({
-                            type: 'error',
-                            text: `${this.lanMap['param_error']}: ${this.lanMap['member_portlist']}`
-                        })
+                            type: "error",
+                            text: `${this.lanMap["param_error"]}: ${this.lanMap["member_portlist"]}`
+                        });
                     }
                 }
             }
@@ -296,7 +269,10 @@ export default {
                 if (!this.formData.member_portlist.length) {
                     return this.$message({
                         type: "warning",
-                        text: this.lanMap["param_error"] + ': ' + this.lanMap['member_portlist']
+                        text:
+                            this.lanMap["param_error"] +
+                            ": " +
+                            this.lanMap["member_portlist"]
                     });
                 }
             }
