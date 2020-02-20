@@ -1,50 +1,52 @@
 <template>
     <div class="running-status">
         <h1>{{ lanMap['running_status'] }}</h1>
-        <div class="system-info" v-if="this.system.data">
-            <h2>{{ lanMap['sys_info'] }}</h2>
-            <div
-                v-for="(item,key) of this.system.data"
-                :key="key"
-                class="system-info-detail"
-                v-if="key !== 'bl_ver' && key !== 'vendor'"
-            >
-                <span>{{ lanMap[key] }}</span>
-                <span>{{ item }}</span>
-            </div>
-        </div>
-        <div class="cpu-info" v-if="this.cpuInfo.data">
-            <h2>{{ lanMap['hw_status'] }}</h2>
-            <div>
-                <div>
-                    <p>{{ lanMap['cpu_usage'] }}</p>
-                    <canvas width="200" height="200" id="cpu-detail"></canvas>
-                </div>
-                <div>
-                    <P>{{ lanMap['memory_usage'] }}</P>
-                    <canvas width="200" height="200" id="memory-detail"></canvas>
+        <div>
+            <div class="system-info" v-if="this.system.data">
+                <h2>{{ lanMap['sys_info'] }}</h2>
+                <div
+                    v-for="(item,key) of this.system.data"
+                    :key="key"
+                    class="system-info-detail"
+                    v-if="key !== 'bl_ver' && key !== 'vendor'"
+                >
+                    <span>{{ lanMap[key] }}</span>
+                    <span>{{ item }}</span>
                 </div>
             </div>
-            <div class="container" v-if="this.timer.data">
-                <h2>{{ lanMap['sys_run_time'] }}</h2>
-                <div class="time-info">
-                    <span>{{ lanMap['current_time'] + ' :' }}</span>
-                    <span>
-                        {{
-                        now_time.year + '-' + now_time.month + '-' + now_time.day + ' ' +
-                        now_time.hour + ':' + (now_time.min < 10 ? '0' + now_time.min : now_time.min ) + ':' +
-                        (now_time.sec < 10 ? '0' + now_time.sec : now_time.sec)
-                        }}
-                    </span>
+            <div class="cpu-info" v-if="this.cpuInfo.data">
+                <h2>{{ lanMap['hw_status'] }}</h2>
+                <div>
+                    <div>
+                        <p>{{ lanMap['cpu_usage'] }}</p>
+                        <canvas width="200" height="200" id="cpu-detail"></canvas>
+                    </div>
+                    <div>
+                        <P>{{ lanMap['memory_usage'] }}</P>
+                        <canvas width="200" height="200" id="memory-detail"></canvas>
+                    </div>
                 </div>
-                <div class="time-info">
-                    <span>{{ lanMap['run_time']+' :' }}</span>
-                    <span>
-                        {{ run_time.day + " " + lanMap['days'] }}
-                        {{ run_time.hour + " " + lanMap['hours'] }}
-                        {{ (run_time.min < 10 ? '0' + run_time.min : run_time.min) + " " + lanMap['mins'] }}
-                        {{ (run_time.sec < 10 ? '0' + run_time.sec : run_time.sec) + " " + lanMap['secs'] }}
-                    </span>
+                <div class="container" v-if="this.timer.data">
+                    <h2>{{ lanMap['sys_run_time'] }}</h2>
+                    <div class="time-info">
+                        <span>{{ lanMap['current_time'] + ' :' }}</span>
+                        <span>
+                            {{
+                            now_time.year + '-' + now_time.month + '-' + now_time.day + ' ' +
+                            now_time.hour + ':' + (now_time.min < 10 ? '0' + now_time.min : now_time.min ) + ':' +
+                            (now_time.sec < 10 ? '0' + now_time.sec : now_time.sec)
+                            }}
+                        </span>
+                    </div>
+                    <div class="time-info">
+                        <span>{{ lanMap['run_time']+' :' }}</span>
+                        <span>
+                            {{ run_time.day + " " + lanMap['days'] }}
+                            {{ run_time.hour + " " + lanMap['hours'] }}
+                            {{ (run_time.min < 10 ? '0' + run_time.min : run_time.min) + " " + lanMap['mins'] }}
+                            {{ (run_time.sec < 10 ? '0' + run_time.sec : run_time.sec) + " " + lanMap['secs'] }}
+                        </span>
+                    </div>
                 </div>
             </div>
         </div>
@@ -363,42 +365,10 @@ h1 {
     text-align: right;
     margin-right: 20px;
 }
-.pon-detail {
-    width: 12%;
-    min-width: 125px;
-    text-align: center;
-    padding: 20px 0;
-    float: left;
-    position: relative;
-    cursor: pointer;
-}
-div.pon-detail > div.pon-modal {
-    display: none;
-    width: 100%;
-    height: auto;
-    padding: 10px 0;
-    position: absolute;
-    z-index: 9;
-    left: 0;
-    background: #eee;
-    border: 1px solid #ccc;
-}
-div.pon-detail:hover div.pon-modal {
-    display: block;
-}
-div.pon-modal > span {
-    font-size: 14px;
-    color: #3390e6;
-    display: inline-block;
-    padding: 0 5px;
-}
 .container > h2 {
     height: 30px;
     line-height: 30px;
     border-bottom: 1px solid #ddd;
-}
-.pon-detail > p {
-    padding: 5px 0;
 }
 p.tips {
     margin-bottom: 10px;
@@ -406,22 +376,6 @@ p.tips {
 h2 {
     color: #67aef7;
     font-weight: 500;
-}
-.pon-detail > div {
-    width: 64px;
-    height: 64px;
-    padding: 5px;
-    margin: 10px auto;
-    border-radius: 5px;
-}
-.bg-online {
-    border: 2px solid #29bdfa;
-}
-.bg-offline {
-    border: 2px solid #a4a9a9;
-}
-.bg-disabled {
-    border: 2px solid #a4a9a9;
 }
 .system-info {
     width: 500px;
