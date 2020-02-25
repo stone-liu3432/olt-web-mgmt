@@ -8,7 +8,7 @@ var zh = {
     restore_config: "导入配置",
     reboot: "重启",
     diagonose: "诊断工具",
-    remote_mgmt: "远程管理",
+    remote_mgmt: "网络接口",
     outbound: "带外接口",
     inbound: "带内接口",
     upgrade: "升级管理",

@@ -8,7 +8,7 @@ var en = {
     restore_config: " Restore Config",
     reboot: " Reboot",
     diagonose: " Diagnose",
-    remote_mgmt: " Remote",
+    remote_mgmt: " Network Interface",
     outbound: " Outbound Interface",
     inbound: " Inbound Interface",
     upgrade: " Upgrade",
