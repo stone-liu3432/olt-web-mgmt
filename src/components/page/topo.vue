@@ -423,6 +423,7 @@ export default {
                 this.drawSinglePon(this.ponNode.data, this.ponNode);
             }
         },
+        // 计算node位置
         deployNode(node, type, count, data, index) {
             this.bindEvent(node, type, data);
             const { width, height } = node.getBound();
@@ -552,7 +553,9 @@ export default {
 
             // pon下的onu列表
             onulist.forEach((node, idx) => {
-                const title = `ONU${node.port_id}/${node.onu_id}`;
+                const title = `ONU${
+                    node.port_id < 10 ? "0" + node.port_id : node.port_id
+                }/${node.onu_id < 10 ? "0" + node.onu_id : node.onu_id}`;
                 const onu = this.createNode(title, node, this.allOnuScene);
                 onu.$parentNode = parentNode;
                 this.deployNode(onu, "onu", onuCount, node, idx);
@@ -567,7 +570,9 @@ export default {
             const baseWidth = parentNode.getBound().width * 2;
             if (onulist.length) {
                 onulist.forEach((item, index) => {
-                    const title = `ONU${item.port_id}/${item.onu_id}`;
+                    const title = `ONU${
+                        item.port_id < 10 ? "0" + item.port_id : item.port_id
+                    }/${item.onu_id < 10 ? "0" + item.onu_id : item.onu_id}`;
                     const onu = this.createNode(
                         title,
                         item,
@@ -754,9 +759,7 @@ export default {
                                 this.postData(
                                     url,
                                     post_params,
-                                    `${this.lanMap["reboot_onu"]}${
-                                        this.lanMap["st_success"]
-                                    }`
+                                    `${this.lanMap["reboot_onu"]}${this.lanMap["st_success"]}`
                                 );
                             })
                             .catch(_ => {});
