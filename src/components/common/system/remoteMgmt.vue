@@ -613,7 +613,7 @@ export default {
         },
         openSetDialog() {
             this.dialogVisible = true;
-            this.gateway = this.def_route;
+            this.gateway = this.default_route.gateway;
         },
         validateIp(val) {
             const reg = /^((25[0-5]|2[0-4]\d|1?\d?\d)\.){3}(25[0-5]|2[0-4]\d|1?\d?\d)$/;
@@ -640,10 +640,10 @@ export default {
                 .post("/switch_route?form=route_default", post_data)
                 .then(res => {
                     if (res.data.code === 1) {
-                        this.$message(this.lanMap["setting_ok"]);
+                        this.$message.success(this.lanMap["setting_ok"]);
                         this.getDefRoute();
                     } else {
-                        this.$message(
+                        this.$message.error(
                             "(" + res.data.code + ") " + res.data.message
                         );
                     }
