@@ -6,7 +6,7 @@
         <div class="remote-mgmt">
             <h3>
                 <span>{{ lanMap['def_route'] }}:</span>
-                <span>{{ def_route }}</span>
+                <span style="color: #333; font-weight: normal;">{{ def_route }}</span>
                 <a href="javascript:void(0);" @click="openSetDialog">{{ lanMap['config'] }}</a>
                 <a
                     href="javascript:void(0);"
@@ -664,7 +664,7 @@ select {
 hr {
     margin: 20px 0;
     & + h2 {
-        font-size: 24px;
+        font-size: 20px;
         margin: 20px 10px;
         font-weight: bold;
         color: #67aef7;
@@ -676,18 +676,17 @@ hr {
 }
 .remote-content {
     border: 1px solid #ddd;
-    padding: 10px;
-    margin: 20px 0 0 10px;
+    margin: 20px 10px 0 10px;
 }
 .remote-content > div,
 p {
     border-bottom: 1px solid #ddd;
-    height: 50px;
-    line-height: 50px;
+    line-height: 40px;
     padding-left: 10px;
 }
 p {
     height: 50px;
+    line-height: 50px;
     > a {
         float: right;
         margin: 10px 30px 0 0;
@@ -706,8 +705,8 @@ p > span {
     display: inline-block;
     vertical-align: top;
     width: 15%;
-    height: 50px;
-    line-height: 50px;
+    height: 40px;
+    line-height: 40px;
     padding-left: 10px;
 }
 .colspace {
@@ -767,18 +766,13 @@ p > span {
 .modal-item {
     padding: 0 20px;
     height: 40px;
-    //border-top: 1px solid #ddd;
 }
-// .modal-item.modal-header{
-//     //border-bottom: 1px solid #ddd;
-// }
 .modal-item > span {
     display: inline-block;
     width: 180px;
     line-height: 40px;
     text-align: right;
     padding-right: 50px;
-    //border-right: 1px solid #ccc;
     &.outbound-title {
         border: none;
         padding: 0 0 0 10px;
@@ -845,7 +839,7 @@ h3 {
     font-size: 18px;
     font-weight: 600;
     span + span {
-        margin-right: 30px;
+        margin: 0 30px 0 20px;
     }
 }
 div.default-route-set {
