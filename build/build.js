@@ -21,7 +21,6 @@ const autoSync = filename => {
         var filedir = path.join(filePath, "epon-latest", filename);
         const stats = fs.statSync(filedir);
         const isFile = stats.isFile();
-        console.log(filename);
         if (isFile && filename.indexOf("dist") === 0) {
             fs.unlinkSync(filedir);
             console.log(`删除 ${chalk.green(filedir)} 成功 ！\n`);
@@ -89,14 +88,32 @@ const autoArchiver = () => {
     });
     // 通过管道方法将输出流存档到文件
     archive.pipe(output);
-    // 从流中附加文件
-    let index = path.resolve(__dirname, "../dist/index.html");
-    archive.append(fs.createReadStream(index), { name: "index.html" });
-    // 从子目录追加文件并将其命名为“新子dir”在存档中
-    archive.directory(path.resolve(__dirname, "../dist/static"), "static");
+    // 追加文件
+    appendFileAndDirectory(archive, [
+        filename.slice(filename.lastIndexOf("\\") + 1)
+    ]);
+
     // 完成归档
     archive.finalize();
 };
+
+function appendFileAndDirectory(archive, excludes = []) {
+    const filepath = path.join(__dirname, "../dist");
+    const files = fs.readdirSync(filepath);
+    files.forEach(file => {
+        const filedir = path.join(filepath, file);
+        const stats = fs.statSync(filedir);
+        if (stats.isFile()) {
+            if (excludes.includes(file) || file.indexOf("dist") === 0) {
+                return;
+            }
+            archive.append(fs.createReadStream(filedir), { name: file });
+        }
+        if (stats.isDirectory()) {
+            archive.directory(filedir, file);
+        }
+    });
+}
 
 function timeStramp() {
     var now = new Date();
