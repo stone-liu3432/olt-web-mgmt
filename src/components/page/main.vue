@@ -2,7 +2,7 @@
     <div id="main-content">
         <topBanner></topBanner>
         <router-view v-if="isRouterAlive"></router-view>
-        <bottom-footer></bottom-footer>
+        <bottom-footer ref="main-footer"></bottom-footer>
     </div>
 </template>
 
@@ -143,6 +143,7 @@ export default {
                 })();
                 if (!os.isPc) {
                     document.body.style.height = window.innerHeight + "px";
+                    this.$refs["main-footer"].$el.style.position = "fixed";
                 }
             }
         });
