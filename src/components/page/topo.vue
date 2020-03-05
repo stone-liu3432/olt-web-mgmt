@@ -443,7 +443,7 @@ export default {
                 },
                 onu(data) {
                     if (this.pageType !== "all") {
-                        let baseWidth = width * 2;
+                        let baseWidth = width * 2.4;
                         const count = Math.floor(this.width / baseWidth);
                         baseWidth = Math.floor(this.width / count);
                         const x =
@@ -553,9 +553,9 @@ export default {
 
             // pon下的onu列表
             onulist.forEach((node, idx) => {
-                const title = `ONU${
-                    node.port_id < 10 ? "0" + node.port_id : node.port_id
-                }/${node.onu_id < 10 ? "0" + node.onu_id : node.onu_id}`;
+                const title = `ONU${node.port_id}/${
+                    node.onu_id < 10 ? "0" + node.onu_id : node.onu_id
+                }`;
                 const onu = this.createNode(title, node, this.allOnuScene);
                 onu.$parentNode = parentNode;
                 this.deployNode(onu, "onu", onuCount, node, idx);
@@ -570,9 +570,9 @@ export default {
             const baseWidth = parentNode.getBound().width * 2;
             if (onulist.length) {
                 onulist.forEach((item, index) => {
-                    const title = `ONU${
-                        item.port_id < 10 ? "0" + item.port_id : item.port_id
-                    }/${item.onu_id < 10 ? "0" + item.onu_id : item.onu_id}`;
+                    const title = `ONU${item.port_id}/${
+                        item.onu_id < 10 ? "0" + item.onu_id : item.onu_id
+                    }`;
                     const onu = this.createNode(
                         title,
                         item,
