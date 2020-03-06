@@ -127,7 +127,13 @@ export default {
             }
             this.$confirm(tips)
                 .then(_ => {
-                    this.reboot_result();
+                    this.$http
+                        .get("/system_reboot")
+                        .then(res => {})
+                        .catch(err => {});
+                    this.isLoading = this.$loading();
+                    this.reboot_req();
+                    if (this.timeout) clearTimeout(this.timeout);
                 })
                 .catch(_ => {});
         },
@@ -145,50 +151,31 @@ export default {
                     this.reboot_req();
                 });
         },
-        reboot_result() {
-            this.$http
-                .get("/system_reboot")
-                .then(res => {
-                    // to do
-                })
-                .catch(err => {
-                    // to do
-                });
-            this.isLoading = this.$loading();
-            this.reboot_req();
-            if (this.timeout) clearTimeout(this.timeout);
-        },
-        //  恢复出厂设置模态框
-        result() {
-            this.$http
-                .get("/system_def_config")
-                .then(res => {
-                    //  成功恢复出厂设置时重启设备
-                    if (res.data.code === 1) {
-                        this.$message({
-                            type: res.data.type,
-                            text: this.lanMap["def_cfg_succ"]
-                        });
-                        this.reboot();
-                        this.timeout = setTimeout(() => {
-                            this.reboot_result();
-                        }, 10000);
-                    } else {
-                        this.$message({
-                            type: res.data.type,
-                            text: this.lanMap["default_config_fail"]
-                        });
-                    }
-                })
-                .catch(err => {
-                    // to do
-                });
-        },
         //  恢复出厂设置
         default_cfg() {
             this.$confirm(this.lanMap["def_cfg_hit"])
                 .then(_ => {
-                    this.result();
+                    this.$http
+                        .get("/system_def_config")
+                        .then(res => {
+                            //  成功恢复出厂设置时重启设备
+                            if (res.data.code === 1) {
+                                this.$message({
+                                    type: res.data.type,
+                                    text: this.lanMap["def_cfg_succ"]
+                                });
+                                this.reboot();
+                                this.timeout = setTimeout(() => {
+                                    this.reboot_result();
+                                }, 10000);
+                            } else {
+                                this.$message({
+                                    type: res.data.type,
+                                    text: this.lanMap["default_config_fail"]
+                                });
+                            }
+                        })
+                        .catch(err => {});
                 })
                 .catch(_ => {});
         },
@@ -222,7 +209,7 @@ export default {
                     // to do
                 });
         },
-        //  导入配置    
+        //  导入配置
         restore_cfg() {
             var formData = new FormData();
             var file = document.getElementById("file");
@@ -301,65 +288,62 @@ export default {
         save_cfg() {
             this.$confirm(this.lanMap["save_cfg_confirm"])
                 .then(_ => {
-                    this.saveCfg_result();
+                    this.$http
+                        .get("/system_save")
+                        .then(res => {
+                            if (res.data.code === 1) {
+                                this.$message({
+                                    type: res.data.type,
+                                    text: this.lanMap["save_succ"]
+                                });
+                            } else if (res.data.code > 1) {
+                                this.$message({
+                                    type: res.data.type,
+                                    text:
+                                        "(" +
+                                        res.data.code +
+                                        ") " +
+                                        res.data.message
+                                });
+                            }
+                        })
+                        .catch(err => {});
                 })
                 .catch(_ => {});
-        },
-        //  配置保存
-        saveCfg_result() {
-            this.$http
-                .get("/system_save")
-                .then(res => {
-                    if (res.data.code === 1) {
-                        this.$message({
-                            type: res.data.type,
-                            text: this.lanMap["save_succ"]
-                        });
-                    } else if (res.data.code > 1) {
-                        this.$message({
-                            type: res.data.type,
-                            text: "(" + res.data.code + ") " + res.data.message
-                        });
-                    }
-                })
-                .catch(err => {
-                    // to do
-                });
         },
         open_view_confirm() {
             this.$confirm()
                 .then(_ => {
-                    this.view_result();
+                    this.$http
+                        .get("/system_running_config")
+                        .then(res => {
+                            if (res.data.code === 1) {
+                                try {
+                                    var a = document.createElement("a");
+                                    a.href = "/" + "oltconfigtmp.txt";
+                                    a.setAttribute(
+                                        "download",
+                                        "oltconfigtmp.txt"
+                                    );
+                                    a.style.display = "none";
+                                    document.body.appendChild(a);
+                                    a.click();
+                                    document.body.removeChild(a);
+                                } catch (e) {}
+                            } else {
+                                this.$message({
+                                    type: res.data.type,
+                                    text:
+                                        "(" +
+                                        res.data.code +
+                                        ") " +
+                                        res.data.message
+                                });
+                            }
+                        })
+                        .catch(err => {});
                 })
                 .catch(_ => {});
-        },
-        view_result() {
-            this.$http
-                .get("/system_running_config")
-                .then(res => {
-                    if (res.data.code === 1) {
-                        try {
-                            var a = document.createElement("a");
-                            a.href = "/" + "oltconfigtmp.txt";
-                            //a.download = 'oltconfigtmp.txt';
-                            a.setAttribute("download", "oltconfigtmp.txt");
-                            a.style.display = "none";
-                            document.body.appendChild(a);
-                            a.click();
-                            document.body.removeChild(a);
-                        } catch (e) {
-                            //this.view_result(true);
-                        }
-                    } else if (res.data.code > 1) {
-                        this.$message({
-                            type: res.data.type,
-                            text: "(" + res.data.code + ") " + res.data.message
-                        });
-                    }
-                })
-                .catch(err => {
-                    // to do
-                });
         }
     },
     watch: {
