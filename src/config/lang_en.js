@@ -808,6 +808,10 @@ var en = {
     close: " close ",
     none_inbound_tips: "No interface available, go to create?",
     server_admin: "Server Status",
+    size: "Size",
+    open_rt_alarm: "Open real-time alarm",
+    close_rt_alarm: "Turn off real-time alerts",
+    shortcut: "Shortcut",
 
     composeRange(min, max) {
         return `${min} - ${max} characters`;

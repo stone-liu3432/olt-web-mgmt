@@ -782,6 +782,10 @@ var zh = {
     close: "关闭",
     none_inbound_tips: "没有可用的interface，是否前往创建？",
     server_admin: "Server状态",
+    size: "Size",
+    open_rt_alarm: "打开实时告警",
+    close_rt_alarm: "关闭实时告警",
+    shortcut: "快捷访问",
 
     composeRange(min, max) {
         return `${min} - ${max}位字符`;
