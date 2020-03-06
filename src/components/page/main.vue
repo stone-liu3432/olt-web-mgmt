@@ -11,52 +11,6 @@ import { mapState, mapMutations, mapActions } from "vuex";
 import topBanner from "@/components/page/header";
 import contentArea from "@/components/page/content";
 import bottomFooter from "@/components/page/footer";
-import { wsUrl } from "@/config/url.js";
-const LEVEL = ["error", "warning", "warning", "info"];
-const TYPE_MAP = { 1: "alarm", 2: "message" };
-const MESSAGE_ACTION_MAP = { 1: "register", 2: "timeout", 3: "heartbeats" };
-const messageActions = {
-    //  server推送，登录超时
-    timeout() {
-        this.$message.error(this.lanMap["login_timeout"]);
-        sessionStorage.removeItem("x-token");
-        sessionStorage.removeItem("uname");
-        this.$router.replace("/login");
-    },
-    //  接收到服务器返回的register消息直接忽略，不作任何处理
-    register() {},
-    //  接收到server发送的pong包时的动作
-    heartbeats() {
-        this.resetHeartBeat();
-    }
-};
-const typeActions = {
-    alarm(data) {
-        const { content, level, alarm_id } = data;
-        content &&
-            this.$notify({
-                message: content,
-                position: "top-right",
-                type: LEVEL[level] || "info"
-            });
-        //  设备重启告警
-        if (alarm_id === 0x1001) {
-            this.$message({
-                type: "warning",
-                text: content,
-                duration: 60000
-            });
-            sessionStorage.removeItem("x-token");
-            sessionStorage.removeItem("uname");
-            this.$router.replace("/login");
-        }
-    },
-    message(data) {
-        //  action:  1-resgister，2-timeout，3-heartbeats
-        const { action } = data;
-        action && messageActions[MESSAGE_ACTION_MAP[action]].call(this);
-    }
-};
 export default {
     name: "mainContent",
     components: {
@@ -66,17 +20,12 @@ export default {
     },
     data() {
         return {
-            modal: false,
             count: 0,
             max_time: 300,
             time: 0,
             interval: null,
             uName: "",
-            isRouterAlive: true,
-            ws: null,
-            ws_limit: 0,
-            timeout: 0,
-            heartbeat: 30000
+            isRouterAlive: true
         };
     },
     created() {
@@ -92,7 +41,6 @@ export default {
         }
     },
     mounted() {
-        this.initSocket();
         this.time = this.max_time;
         // this.interval = setInterval(()=>{
         //     this.time--;
@@ -158,9 +106,6 @@ export default {
         document.body.removeEventListener("mousemove", this.user_timeout);
         document.body.removeEventListener("mousedown", this.user_timeout);
         document.body.removeEventListener("keydown", this.user_timeout);
-
-        this.ws && (this.ws.onclose = e => {});
-        this.closeWs();
     },
     methods: {
         ...mapMutations({
@@ -207,11 +152,8 @@ export default {
                         };
                     }
                     this.portName(portName);
-                    //this.reload();
                 })
-                .catch(err => {
-                    // to do
-                });
+                .catch(err => {});
         },
         // 根据port_id 分配端口名
         get_portName(arr, prefix) {
@@ -228,73 +170,6 @@ export default {
                 obj[arr[i].port_id].data = arr[i];
             }
             return obj;
-        },
-        initSocket() {
-            if ("WebSocket" in window) {
-                let ws = new WebSocket(wsUrl);
-                ws.onopen = e => {
-                    if (ws.readyState === 1) {
-                        this.sendRegisterMsg();
-                        //  心跳检测
-                        this.startHeartBeat();
-                    }
-                };
-                ws.onmessage = e => {
-                    //  type: 1-alarm 2-message
-                    const { type, ...data } = JSON.parse(e.data);
-                    type && typeActions[TYPE_MAP[type]].call(this, data);
-                };
-                ws.onclose = e => {
-                    if (e.code !== 0x3e8) {
-                        if (this.ws_limit >= 3) {
-                            this.$message.error(this.lanMap["conn_error"]);
-                            sessionStorage.removeItem("x-token");
-                            sessionStorage.removeItem("uname");
-                            this.$router.replace("/login");
-                        } else {
-                            this.ws_limit++;
-                            this.initSocket();
-                        }
-                    }
-                };
-                ws.onerror = e => {};
-                this.ws = ws;
-            }
-        },
-        closeWs(code = 0x3e8) {
-            if (this.ws) {
-                this.ws.close(code);
-                this.ws = null;
-            }
-        },
-        startHeartBeat() {
-            this.timeout = setTimeout(_ => {
-                this.ws &&
-                    this.ws.send(
-                        JSON.stringify({
-                            type: 2,
-                            action: 3
-                        })
-                    );
-            }, this.heartbeat);
-        },
-        resetHeartBeat() {
-            clearTimeout(this.timeout);
-            this.startHeartBeat();
-        },
-        sendRegisterMsg() {
-            const xtoken = sessionStorage.getItem("x-token"),
-                username = sessionStorage.getItem("uname");
-            xtoken &&
-                username &&
-                this.ws.send(
-                    JSON.stringify({
-                        type: 2, // message
-                        action: 1, // register
-                        xtoken,
-                        username
-                    })
-                );
         }
     },
     computed: mapState(["port_info", "system", "change_url", "lanMap"])
