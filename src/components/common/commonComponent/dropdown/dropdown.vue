@@ -19,7 +19,11 @@
                 />
             </svg>
         </div>
-        <div class="nms-dropdown-menu" :style="{ width: menuWidth, left, top, height }" ref="dropdown-menu">
+        <div
+            class="nms-dropdown-menu"
+            :style="{ width: menuWidth, left, top, height }"
+            ref="dropdown-menu"
+        >
             <slot name="dropdown"></slot>
         </div>
     </div>
@@ -50,7 +54,7 @@ export default {
             p_width = p_rect.width;
         this.menu_width = `${p_width}px`;
         this.left = `-${Math.floor((p_width - c_width) / 2)}px`;
-        this.dropHeight = this.$refs['dropdown-menu'].scrollHeight;
+        this.dropHeight = this.$refs["dropdown-menu"].scrollHeight;
     },
     props: {
         width: {
@@ -69,7 +73,7 @@ export default {
             if (bottom + this.dropHeight + this.offsetY >= clientHeight) {
                 this.top = `-${this.dropHeight}px`;
             }
-            this.height = `${ this.dropHeight }px`;
+            this.height = `${this.dropHeight}px`;
         },
         mouseleave(e) {
             this.height = "";
@@ -84,8 +88,8 @@ export default {
     position: relative;
     cursor: pointer;
 }
-.nms-dropdown-selfdefine{
-    padding: 3px 0;
+.nms-dropdown-selfdefine {
+    box-sizing: border-box;
 }
 .nms-dropdown-menu {
     background: #ffffff;
@@ -100,11 +104,11 @@ export default {
     overflow: hidden;
     transition: height 0.1s ease-in;
     z-index: 1;
-    >div{
-        &:first-child{
+    > div {
+        &:first-child {
             margin-top: 6px;
         }
-        &:last-child{
+        &:last-child {
             margin-bottom: 6px;
         }
     }

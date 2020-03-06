@@ -1,19 +1,22 @@
 <template>
-    <div @click="dropdownClick" :class="['nms-dropdown-item', { 'disabled': disabled }, { 'divided': divided }]">
+    <div
+        @click="dropdownClick"
+        :class="['nms-dropdown-item', { 'disabled': disabled }, { 'divided': divided }]"
+    >
         <slot></slot>
     </div>
 </template>
 
 <script>
 export default {
-    name: 'nmsDropdown',
-    data(){
-        return {}
+    name: "nmsDropdown",
+    data() {
+        return {};
     },
     props: {
         command: {
             type: [String, Object],
-            default: ''
+            default: ""
         },
         disabled: {
             type: Boolean,
@@ -25,29 +28,33 @@ export default {
         }
     },
     methods: {
-        dropdownClick(){
-            this.$parent.$emit('command', this.command);
+        dropdownClick() {
+            if (this.disabled) return;
+            this.$parent.height = "0px";
+            this.$parent.$emit("command", this.command);
         }
     }
-}
+};
 </script>
 
 <style lang="less" scoped>
-.nms-dropdown-item{
+.nms-dropdown-item {
+    line-height: 27px;
+    font-size: 14px;
     padding: 6px 0 6px 12px;
     text-align: left;
-    &:hover{
+    &:hover {
         color: #67aef6;
     }
 }
-.disabled{
+.disabled {
     cursor: not-allowed;
     color: #aaa;
-    &:hover{
+    &:hover {
         color: #aaa;
     }
 }
-.divided{
+.divided {
     border-top: 1px solid #ddd;
     margin-top: 6px;
     padding-top: 12px;
