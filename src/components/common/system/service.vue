@@ -619,6 +619,7 @@ export default {
                     custom_domains: this.frpcForm.custom_domains
                 }
             };
+            const loading = this.$loading();
             this.$http
                 .post("/system_service?form=frpc", post_param)
                 .then(res => {
@@ -631,8 +632,11 @@ export default {
                     }
                     this.getFrpc();
                     this.closeModal();
+                    loading.close();
                 })
-                .catch(err => {});
+                .catch(err => {
+                    loading.close();
+                });
         },
         closeModal() {
             this.beforeClose(_ => {
