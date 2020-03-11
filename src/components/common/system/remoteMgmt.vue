@@ -206,9 +206,9 @@ export default {
             ipmask: "",
             test_ipmask: false,
             //  IP验证正则
-            reg_ip: /^(([1-9]|[1-9]\d|1\d\d|2[0-4]\d|25[0-5])\.){1}((\d|[1-9]\d|1\d\d|2[0-4]\d|25[0-5])\.){2}([1-9]|[1-9]\d|1\d\d|2[0-4]\d|25[0-4]){1}$/,
+            reg_ip: /^((25[0-5]|2[0-4]\d|1?\d?\d)(\.(?!$)|$)){4}/,
             //  IP掩码验证正则
-            reg_ipmask: /^(([1-9]|[1-9]\d|1\d\d|2[0-4]\d|25[0-5])\.){1}((\d|[1-9]\d|1\d\d|2[0-4]\d|25[0-5])\.){2}(\d|[1-9]\d|1\d\d|2[0-4]\d|25[0-5]){1}$/,
+            reg_ipmask: /^((25[0-5]|2[0-4]\d|1?\d?\d)(\.(?!$)|$)){4}/,
             vlan: " - ",
             default_route: {},
             dialogVisible: false,
@@ -216,37 +216,7 @@ export default {
         };
     },
     created() {
-        this.$http
-            .get(this.change_url.outbound)
-            .then(res => {
-                this.outbound = res.data;
-                if (res.data.code == 1) {
-                    this.interface_data.push(res.data.data);
-                    this.ipaddr = res.data.data.ipaddr;
-                    this.ipmask = res.data.data.ipmask;
-                }
-                this.$http
-                    .get(this.change_url.inbound)
-                    .then(res => {
-                        if (res.data.code == 1) {
-                            this.inbound = res.data;
-                            if (res.data.data) {
-                                this.interface_data = this.interface_data.concat(
-                                    res.data.data
-                                );
-                            }
-                        } else {
-                            this.inbound = {};
-                        }
-                    })
-                    .catch(err => {
-                        // to do
-                    });
-            })
-            .catch(err => {
-                // to do
-            });
-        this.getDefRoute();
+        this.getData();
     },
     methods: {
         getData() {
@@ -274,13 +244,10 @@ export default {
                                 this.inbound = {};
                             }
                         })
-                        .catch(err => {
-                            // to do
-                        });
+                        .catch(err => {});
                 })
-                .catch(err => {
-                    // to do
-                });
+                .catch(err => {});
+            this.getDefRoute();
         },
         closeModal() {
             this.modalDialog = false;
@@ -356,9 +323,7 @@ export default {
                             });
                         }
                     })
-                    .catch(err => {
-                        // to do
-                    });
+                    .catch(err => {});
                 this.modalDialog = false;
             }
         },
@@ -394,9 +359,7 @@ export default {
                                 });
                             }
                         })
-                        .catch(err => {
-                            // to do
-                        });
+                        .catch(err => {});
                 })
                 .catch(_ => {});
         },
@@ -451,7 +414,7 @@ export default {
                         this.getData();
                     })
                     .catch(err => {
-                        axios
+                        this.$http
                             .get("http://" + this.ipaddr + "/system_start")
                             .then(res => {
                                 window.location.href = "http://" + this.ipaddr;
