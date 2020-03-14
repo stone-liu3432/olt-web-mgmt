@@ -194,7 +194,7 @@ export default {
             };
         },
         clearWlan(node) {
-            this.$confirm()
+            this.$confirm(this.lanMap["if_sure"])
                 .then(_ => {
                     const data = {
                         method: "clear",

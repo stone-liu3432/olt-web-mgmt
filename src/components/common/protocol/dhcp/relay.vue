@@ -196,7 +196,7 @@ export default {
     },
     methods: {
         deleteRelay(node) {
-            this.$confirm()
+            this.$confirm(this.lanMap["if_sure"])
                 .then(_ => {
                     const { url, data } = this.composeData(node, "delete");
                     this.postData(url, data, "delete");

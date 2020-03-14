@@ -219,7 +219,7 @@ export default {
             this.visible = false;
         },
         clearSnoopingTable() {
-            this.$confirm()
+            this.$confirm(this.lanMap["if_sure"])
                 .then(_ => {
                     const data = {
                         method: "set",

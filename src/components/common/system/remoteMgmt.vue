@@ -548,7 +548,7 @@ export default {
                 .catch(err => {});
         },
         delDefRoute() {
-            this.$confirm()
+            this.$confirm(this.lanMap["if_sure"])
                 .then(_ => {
                     const post_data = {
                         method: "delete",

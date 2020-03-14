@@ -4,26 +4,36 @@
             <h2>{{ lanMap['loid_mgmt'] }}</h2>
             <span>{{ lanMap['port_id'] }}</span>
             <select v-model="port_id">
-                <option v-for="(item,key) in port_name.pon" :key="key" :value="item.id">{{ item.name }}</option>
+                <option
+                    v-for="(item,key) in port_name.pon"
+                    :key="key"
+                    :value="item.id"
+                >{{ item.name }}</option>
             </select>
         </div>
-        <hr>
+        <hr />
         <div>
-            <a href="javascript:void(0);" style="margin-left: 10px;" @click="openModal">{{ lanMap['add'] }}</a>
+            <a
+                href="javascript:void(0);"
+                style="margin-left: 10px;"
+                @click="openModal"
+            >{{ lanMap['add'] }}</a>
             <a href="javascript:void(0);" @click="refreshData">{{ lanMap['refresh'] }}</a>
         </div>
         <nms-table :rows="loid" border>
             <nms-table-column label="ID" :formatter="formatterId"></nms-table-column>
             <nms-table-column prop="used" :label="lanMap['used']">
-                <template slot-scope="rows">
-                    {{ rows.used ? rows.mac : 'False' }}
-                </template>
+                <template slot-scope="rows">{{ rows.used ? rows.mac : 'False' }}</template>
             </nms-table-column>
             <nms-table-column prop="loid" label="LOID"></nms-table-column>
             <nms-table-column prop="password" :label="lanMap['password']"></nms-table-column>
             <nms-table-column :label="lanMap['config']">
                 <template slot-scope="rows">
-                    <a href="javascript: void(0);" @click="deleteLoid(rows)" class="btn-text">{{ lanMap['delete'] }}</a>
+                    <a
+                        href="javascript: void(0);"
+                        @click="deleteLoid(rows)"
+                        class="btn-text"
+                    >{{ lanMap['delete'] }}</a>
                 </template>
             </nms-table-column>
         </nms-table>
@@ -34,19 +44,29 @@
                 <div class="modal-item">
                     <span>port id</span>
                     <select v-model="add_port">
-                        <option v-for="(item,key) in port_name.pon" :key="key" :value="item.id">{{ item.name }}</option>
+                        <option
+                            v-for="(item,key) in port_name.pon"
+                            :key="key"
+                            :value="item.id"
+                        >{{ item.name }}</option>
                     </select>
                 </div>
                 <div class="modal-item">
                     <span>LOID</span>
-                    <input type="text" v-model="add_loid"
-                        :style="{ 'border-color': add_loid !== '' && !reg_loid.test(add_loid) ? 'red' : '' }">
+                    <input
+                        type="text"
+                        v-model="add_loid"
+                        :style="{ 'border-color': add_loid !== '' && !reg_loid.test(add_loid) ? 'red' : '' }"
+                    />
                     <span>Range: 1-24 characters</span>
                 </div>
                 <div class="modal-item">
                     <span>{{ lanMap['password'] }}</span>
-                    <input type="text" v-model="add_pass"
-                        :style="{ 'border-color': add_pass !== '' && !reg_pass.test(add_pass) ? 'red' : '' }">
+                    <input
+                        type="text"
+                        v-model="add_pass"
+                        :style="{ 'border-color': add_pass !== '' && !reg_pass.test(add_pass) ? 'red' : '' }"
+                    />
                     <span>Range: 0-12 characters</span>
                 </div>
                 <div>
@@ -61,7 +81,7 @@
 
 <script>
 import { mapState } from "vuex";
-import { debounce } from '@/utils/common';
+import { debounce } from "@/utils/common";
 export default {
     name: "loid",
     computed: mapState(["lanMap", "port_name"]),
@@ -72,118 +92,130 @@ export default {
             post_data: {},
             addModal: false,
             add_port: 1,
-            add_loid: '',
-            add_pass: '',
+            add_loid: "",
+            add_pass: "",
             reg_loid: /^\w{1,24}$/,
             reg_pass: /^\w{1,12}$/
-        }
+        };
     },
-    created(){
-        this.port_id = sessionStorage.getItem('pid') || 1;
+    created() {
+        this.port_id = sessionStorage.getItem("pid") || 1;
         this.getData();
     },
     methods: {
-        deleteLoid(item){
+        deleteLoid(item) {
             const post_data = {
-                "method": "delete",
-                "param": {
-                    "port_id": this.port_id,
-                    "loid": item.loid,
-                    "password": item.password
+                method: "delete",
+                param: {
+                    port_id: this.port_id,
+                    loid: item.loid,
+                    password: item.password
                 }
-            }
-            this.$confirm().then(_ => {
-                this.submitDel(post_data)
-            }).catch(_ => {})
+            };
+            this.$confirm(this.lanMap["if_sure"])
+                .then(_ => {
+                    this.submitDel(post_data);
+                })
+                .catch(_ => {});
         },
-        getData(){
+        getData() {
             this.loid = [];
-            this.$http.get('/ponmgmt?form=loidlist&port_id=' + this.port_id).then(res =>{
-                if(res.data.code === 1){
-                    if(res.data.data && res.data.data.length){
-                        this.loid = res.data.data;
+            this.$http
+                .get("/ponmgmt?form=loidlist&port_id=" + this.port_id)
+                .then(res => {
+                    if (res.data.code === 1) {
+                        if (res.data.data && res.data.data.length) {
+                            this.loid = res.data.data;
+                        }
                     }
-                }
-            }).catch(err =>{
-
-            })
+                })
+                .catch(err => {});
         },
-        submitDel(data){
-            this.$http.post('/ponmgmt?form=loidlist', data).then(res =>{
-                if(res.data.code === 1){
-                    this.$message({
-                        type: 'success',
-                        text: this.lanMap['delete'] + this.lanMap['st_success']
-                    })
-                    this.getData();
-                }else{
-                    this.$message({
-                        type: res.data.type,
-                        text: '(' + res.data.code + ') ' + res.data.message
-                    })
-                }
-            }).catch(err =>{
-
-            })
+        submitDel(data) {
+            this.$http
+                .post("/ponmgmt?form=loidlist", data)
+                .then(res => {
+                    if (res.data.code === 1) {
+                        this.$message({
+                            type: "success",
+                            text:
+                                this.lanMap["delete"] +
+                                this.lanMap["st_success"]
+                        });
+                        this.getData();
+                    } else {
+                        this.$message({
+                            type: res.data.type,
+                            text: "(" + res.data.code + ") " + res.data.message
+                        });
+                    }
+                })
+                .catch(err => {});
         },
-        openModal(){
+        openModal() {
             this.addModal = true;
         },
-        closeModal(){
+        closeModal() {
             this.addModal = false;
             this.add_port = 1;
-            this.add_loid = '';
-            this.add_pass = '';
+            this.add_loid = "";
+            this.add_pass = "";
         },
-        submitAdd(){
-            if(!this.reg_loid.test(this.add_loid)){
+        submitAdd() {
+            if (!this.reg_loid.test(this.add_loid)) {
                 this.$message({
-                    type: 'error',
-                    text: this.lanMap['param_error'] + ': LOID'
-                })
-                return
+                    type: "error",
+                    text: this.lanMap["param_error"] + ": LOID"
+                });
+                return;
             }
-            if(this.add_pass !== '' && !this.reg_pass.test(this.add_pass)){
+            if (this.add_pass !== "" && !this.reg_pass.test(this.add_pass)) {
                 this.$message({
-                    type: 'error',
-                    text: this.lanMap['param_error'] + ': ' + this.lanMap['password']
-                })
-                return
+                    type: "error",
+                    text:
+                        this.lanMap["param_error"] +
+                        ": " +
+                        this.lanMap["password"]
+                });
+                return;
             }
             var post_data = {
-                "method": "add",
-                "param": {
-                    "port_id": this.add_port,
-                    "loid": this.add_loid,
-                    "password": this.add_pass
+                method: "add",
+                param: {
+                    port_id: this.add_port,
+                    loid: this.add_loid,
+                    password: this.add_pass
                 }
-            }
-            this.$http.post('/ponmgmt?form=loidlist', post_data).then(res =>{
-                if(res.data.code === 1){
-                    this.$message({
-                        type: 'success',
-                        text: this.lanMap['add'] + this.lanMap['st_success']
-                    })
-                    this.getData();
-                }else{
-                    this.$message({
-                        type: res.data.type,
-                        text: '(' + res.data.code + ') ' + res.data.message
-                    })
-                }
-            }).catch(err =>{})
+            };
+            this.$http
+                .post("/ponmgmt?form=loidlist", post_data)
+                .then(res => {
+                    if (res.data.code === 1) {
+                        this.$message({
+                            type: "success",
+                            text: this.lanMap["add"] + this.lanMap["st_success"]
+                        });
+                        this.getData();
+                    } else {
+                        this.$message({
+                            type: res.data.type,
+                            text: "(" + res.data.code + ") " + res.data.message
+                        });
+                    }
+                })
+                .catch(err => {});
             this.closeModal();
         },
-        refreshData(){
+        refreshData() {
             debounce(this.getData, 1000, this);
         },
-        formatterId(row, colIndex, col, rowIndex){
+        formatterId(row, colIndex, col, rowIndex) {
             return ++rowIndex;
         }
     },
     watch: {
-        port_id(){
-            sessionStorage.setItem('pid', this.port_id);
+        port_id() {
+            sessionStorage.setItem("pid", this.port_id);
             this.getData();
         }
     }
@@ -208,7 +240,7 @@ div.loid-mgmt {
 hr {
     margin: 20px 0;
 }
-a + a{
+a + a {
     margin-left: 30px;
 }
 select {
@@ -219,42 +251,42 @@ select {
     text-indent: 10px;
     margin-left: 6px;
 }
-.small-btn{
+.small-btn {
     user-select: none;
     color: #67aef6;
-    transition: all .2s linear;
+    transition: all 0.2s linear;
     cursor: pointer;
-    &:hover{
-        color: #007ACC;
+    &:hover {
+        color: #007acc;
     }
-    &:active{
+    &:active {
         color: #67aef6;
     }
 }
-div.cover+div{
+div.cover + div {
     height: 250px;
-    >div{
-        >span{
-            &:first-child{
+    > div {
+        > span {
+            &:first-child {
                 display: inline-block;
                 width: 120px;
                 text-align: center;
             }
         }
-        a{
+        a {
             margin: 8px 0 0 105px;
         }
-        select{
+        select {
             margin: 0;
             width: 197px;
         }
-        input+span{
+        input + span {
             color: #666;
             font-size: 14px;
             margin: 0 0 0 6px;
         }
     }
-    .modal-item{
+    .modal-item {
         height: 30px;
         line-height: 30px;
         margin: 10px 0;

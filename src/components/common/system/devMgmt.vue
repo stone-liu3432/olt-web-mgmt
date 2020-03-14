@@ -312,7 +312,7 @@ export default {
                 .catch(_ => {});
         },
         open_view_confirm() {
-            this.$confirm()
+            this.$confirm(this.lanMap["if_sure"])
                 .then(_ => {
                     this.$http
                         .get("/system_running_config")

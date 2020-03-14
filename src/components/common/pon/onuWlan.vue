@@ -141,7 +141,7 @@ export default {
         },
         submitWlan() {
             if (this.validData()) {
-                this.$confirm()
+                this.$confirm(this.lanMap["if_sure"])
                     .then(_ => {
                         const data = this.composeData();
                         this.postData(data);
@@ -215,7 +215,7 @@ export default {
                 .catch(err => {});
         },
         clearWlan() {
-            this.$confirm()
+            this.$confirm(this.lanMap["if_sure"])
                 .then(_ => {
                     const data = {
                         method: "clear",
@@ -267,7 +267,7 @@ div.wlan-row {
 a {
     margin: 20px 0 0 10px;
 }
-span.tips{
+span.tips {
     padding: 0 0 0 6px;
     color: #666;
     font-size: 14px;

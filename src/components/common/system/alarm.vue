@@ -51,7 +51,7 @@ export default {
                 });
         },
         downloadAlarm() {
-            this.$confirm()
+            this.$confirm(this.lanMap["if_sure"])
                 .then(_ => {
                     this.$http
                         .get("/alarm?form=download")

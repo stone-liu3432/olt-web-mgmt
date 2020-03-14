@@ -246,7 +246,7 @@ export default {
                 });
         },
         viewCurrentConfig() {
-            this.$confirm()
+            this.$confirm(this.lanMap["if_sure"])
                 .then(_ => {
                     this.$http
                         .get("/system_running_config")

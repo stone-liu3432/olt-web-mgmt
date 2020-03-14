@@ -173,7 +173,7 @@
                 <span>Type</span>
                 <select v-model.number="frpcForm.type">
                     <option value="0">http</option>
-                    <option value="1">https</option>
+                    <!-- <option value="1">https</option> -->
                 </select>
             </div>
             <div class="frpc-form-item">
@@ -325,7 +325,7 @@ export default {
                 });
         },
         open_del_sshkey(node) {
-            this.$confirm()
+            this.$confirm(this.lanMap["if_sure"])
                 .then(_ => {
                     var post_param = {
                         method: "delete",

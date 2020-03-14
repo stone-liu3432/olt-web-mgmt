@@ -340,7 +340,7 @@ export default {
             this.closeModal();
         },
         openDeleteModal(node) {
-            this.$confirm()
+            this.$confirm(this.lanMap["if_sure"])
                 .then(_ => {
                     this.deleteStaticRouter(node);
                 })
@@ -383,7 +383,7 @@ export default {
             this.setDefRoute = false;
         },
         // openDelCfm() {
-        //     this.$confirm()
+        //     this.$confirm(this.lanMap['if_sure'])
         //         .then(_ => {
         //             this.delDef();
         //         })

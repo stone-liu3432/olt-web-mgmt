@@ -75,7 +75,7 @@ export default {
             this.index = index;
         },
         openDelModal() {
-            this.$confirm()
+            this.$confirm(this.lanMap["if_sure"])
                 .then(_ => {
                     this.destroyARP();
                 })

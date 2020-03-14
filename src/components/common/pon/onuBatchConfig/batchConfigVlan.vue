@@ -124,7 +124,7 @@ export default {
                 .catch(err => {});
         },
         clearData(row) {
-            this.$confirm()
+            this.$confirm(this.lanMap["if_sure"])
                 .then(_ => {
                     const data = {
                         method: "clear",
@@ -140,12 +140,10 @@ export default {
                         .then(res => {
                             if (res.data.code === 1) {
                                 this.$message.success(
-                                    `${this.lanMap["clear"]}${
-                                        this.lanMap["st_success"]
-                                    }`
+                                    `${this.lanMap["clear"]}${this.lanMap["st_success"]}`
                                 );
                                 this.getData(row.port_id);
-                            }else{
+                            } else {
                                 this.$message.error(res.data.message);
                             }
                         })
@@ -171,11 +169,11 @@ export default {
             this.$http
                 .post("/ponmgmt?form=profvlan", data)
                 .then(res => {
-                    if(res.data.code === 1){
-                        this.$message.success(this.lanMap['setting_ok']);
+                    if (res.data.code === 1) {
+                        this.$message.success(this.lanMap["setting_ok"]);
                         this.getData(this.portid);
-                    }else{
-                        this.$message.error(res.data.message)
+                    } else {
+                        this.$message.error(res.data.message);
                     }
                     this.closeDialog();
                 })

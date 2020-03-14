@@ -4,9 +4,7 @@
         <hr />
         <nms-table :rows="perf_list" border>
             <nms-table-column prop="port_id" :label="lanMap['port_id']" min-width="80px">
-                <template slot-scope="{ port_id }">
-                    {{ port_id | getPortName }}
-                </template>
+                <template slot-scope="{ port_id }">{{ port_id | getPortName }}</template>
             </nms-table-column>
             <nms-table-column prop="rx_octets" :label="lanMap['rx_octets']"></nms-table-column>
             <nms-table-column prop="rx_frame" :label="lanMap['rx_frame']"></nms-table-column>
@@ -81,7 +79,7 @@ export default {
                 });
         },
         clearPerf(portid) {
-            this.$confirm()
+            this.$confirm(this.lanMap["if_sure"])
                 .then(_ => {
                     this.$http
                         .get("/switch_port?form=nostatistic", {
