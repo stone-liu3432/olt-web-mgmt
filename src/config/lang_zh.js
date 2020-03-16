@@ -786,6 +786,7 @@ var zh = {
     open_rt_alarm: "打开实时告警",
     close_rt_alarm: "关闭实时告警",
     shortcut: "快捷访问",
+    supplier_info: "供应商信息",
 
     composeRange(min, max) {
         return `${min} - ${max}位字符`;

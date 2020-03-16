@@ -812,6 +812,7 @@ var en = {
     open_rt_alarm: "Open real-time alarm",
     close_rt_alarm: "Turn off real-time alerts",
     shortcut: "Shortcut",
+    supplier_info: "Supplier Information",
 
     composeRange(min, max) {
         return `${min} - ${max} characters`;
