@@ -68,6 +68,10 @@
                 <span>{{ lanMap['company_phone'] }}</span>
                 <span>{{ company_phone }}</span>
             </div>
+            <div v-if="supplier_info">
+                <span>{{ lanMap['supplier_info'] }}</span>
+                <span>{{ supplier_info }}</span>
+            </div>
         </div>
     </div>
 </template>
@@ -101,7 +105,8 @@ export default {
             company_name: "",
             company_addr: "",
             company_email: "",
-            company_phone: ""
+            company_phone: "",
+            supplier_info: ""
         };
     },
     computed: {
@@ -118,7 +123,8 @@ export default {
                 !!this.company_name ||
                 !!this.company_addr ||
                 !!this.company_email ||
-                !!this.company_phone
+                !!this.company_phone ||
+                !!this.supplier_info
             );
         }
     },
@@ -308,6 +314,7 @@ export default {
             this.company_addr = "";
             this.company_email = "";
             this.company_phone = "";
+            this.supplier_info = "";
             this.$http
                 .get("/board?info=setting_board")
                 .then(res => {
@@ -317,6 +324,7 @@ export default {
                         this.company_addr = data.addr || "";
                         this.company_email = data.email || "";
                         this.company_phone = data.phone || "";
+                        this.supplier_info = data.supplier_info || "";
                     }
                 })
                 .catch(err => {

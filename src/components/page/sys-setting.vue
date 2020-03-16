@@ -26,8 +26,6 @@
             </form>
         </div>
         <div class="sys-set-item">
-            <!-- <h3>{{ lanMap['product_name'] }}</h3>
-            <input type="text" maxlength="16" v-model="product_name" placeholder="max length: 16 character">-->
             <h1>{{ lanMap['company_info'] }}</h1>
             <h3>{{ lanMap['company_name'] }}</h3>
             <input type="text" v-model="company_name" maxlength="128" />
@@ -38,6 +36,8 @@
             <input type="text" v-model="company_email" maxlength="32" />
             <h3>{{ lanMap['company_phone'] }}</h3>
             <input type="text" v-model="company_phone" maxlength="32" />
+            <h3>{{ lanMap['supplier_info'] }}</h3>
+            <input type="text" maxlength="128" v-model="supplier_info" />
         </div>
         <div class="sys-set-item">
             <a href="javascript:void(0);" @click="commit_info">{{ lanMap['commit'] }}</a>
@@ -57,11 +57,11 @@ export default {
         return {
             lang: "zh",
             isloading: false,
-            product_name: "",
             company_name: "",
             company_addr: "",
             company_email: "",
-            company_phone: ""
+            company_phone: "",
+            supplier_info: ""
         };
     },
     created() {
@@ -146,19 +146,13 @@ export default {
                 });
         },
         commit_info() {
-            // if(!this.company_name && !this.company_addr && !this.company_email && !this.company_phone){
-            //     this.$message({
-            //         type: 'warning',
-            //         text: this.lanMap['modify_tips']
-            //     })
-            //     return
-            // }
             var post_data = {
                 param: {
                     name: this.company_name,
                     addr: this.company_addr,
                     email: this.company_email,
-                    phone: this.company_phone
+                    phone: this.company_phone,
+                    supplier_info: this.supplier_info
                 }
             };
             this.$http
