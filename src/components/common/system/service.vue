@@ -147,9 +147,9 @@
                 <input
                     type="text"
                     v-model="frpcForm.server_addr"
-                    :style="{ 'border-color': (frpcForm.server_addr === '' || validIp('server_addr')) ? '' : 'red' }"
+                    :style="{ 'border-color': (frpcForm.server_addr.length < 129) ? '' : 'red' }"
                 />
-                <span>ex. 127.0.0.1</span>
+                <span>IP/ Domain name</span>
             </div>
             <div class="frpc-form-item">
                 <span>Server Port</span>
@@ -580,7 +580,7 @@ export default {
             return val >= 1 && val <= 65535;
         },
         submitForm() {
-            if (!this.validIp("server_addr")) {
+            if (this.frpcForm.server_addr.length > 128) {
                 this.$message.error(
                     `${this.lanMap["param_error"]}: Server Addr`
                 );
