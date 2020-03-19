@@ -779,7 +779,7 @@ var en = {
     chaddr_check: "Client Address Check",
     response_time: "Response Wait Time",
     trust_portlist: "Trust Ports",
-    server_ip: " Server IP",
+    server_ip: " Server Address",
     lease_time: "Lease Time(s)",
     entry_status: "Status",
     snooping_table: "Snooping Table",
