@@ -2,7 +2,7 @@
     <div>
         <div class="service-title">{{ lanMap['service'] }}</div>
         <hr />
-        <div class="frpc">
+        <div class="frpc" v-if="showFRPC">
             <h4>
                 FRPC
                 <a href="javascript: void(0);" @click="openDialog">{{ lanMap['config'] }}</a>
@@ -226,7 +226,7 @@ import { replaceDBCS, testIPAddr } from "@/utils/common";
 export default {
     name: "service",
     computed: {
-        ...mapState(["lanMap"]),
+        ...mapState(["lanMap", "system"]),
         validAppname() {
             const reg = /^[a-zA-Z]\w{0,31}$/;
             return reg.test(this.frpcForm.appname);
@@ -234,6 +234,9 @@ export default {
         validDomains() {
             const reg = /^.{0,64}$/;
             return reg.test(this.frpcForm.custom_domains);
+        },
+        showFRPC() {
+            return this.system.data.size > 16;
         }
     },
     data() {
@@ -280,7 +283,7 @@ export default {
         this.get_trap();
         this.get_ssh();
         this.get_community();
-        this.getFrpc();
+        this.showFRPC && this.getFrpc();
     },
     methods: {
         get_ssh() {
