@@ -1,8 +1,8 @@
 <template>
     <div>
         <div class="service-title">{{ lanMap['service'] }}</div>
-        <hr />
         <div class="frpc" v-if="showFRPC">
+            <hr />
             <h4>
                 FRPC
                 <a href="javascript: void(0);" @click="openDialog">{{ lanMap['config'] }}</a>
