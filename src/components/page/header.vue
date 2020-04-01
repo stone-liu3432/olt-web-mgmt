@@ -68,12 +68,7 @@ const messageActions = {
 const typeActions = {
     alarm(data) {
         const { content, level, alarm_id } = data;
-        content &&
-            this.$notify({
-                message: content,
-                position: "top-right",
-                type: LEVEL[level] || "info"
-            });
+        this.msgs.push(data);
         //  设备重启告警
         if (alarm_id === 0x1001) {
             this.$message({
@@ -81,6 +76,7 @@ const typeActions = {
                 text: content,
                 duration: 60000
             });
+            this.msgs = [];
             sessionStorage.removeItem("x-token");
             sessionStorage.removeItem("uname");
             this.$router.replace("/login");
@@ -120,7 +116,9 @@ export default {
             ws_limit: 0,
             timeout: 0,
             heartbeat: 30000,
-            socketState: true
+            socketState: true,
+            msgs: [],
+            msgQueue: []
         };
     },
     created() {
@@ -406,6 +404,25 @@ export default {
             this.$nextTick(_ => {
                 this.$refs["logo-image"].src = "../../logo.png";
             });
+        },
+        msgs() {
+            if (this.msgs.length) {
+                if (this.msgQueue.length > 5) {
+                    const notify = this.msgQueue.shift();
+                    notify.close(notify.id);
+                }
+                this.$nextTick(_ => {
+                    const { content, level, alarm_id } = this.msgs.shift();
+                    content &&
+                        this.msgQueue.push(
+                            this.$notify({
+                                message: content,
+                                position: "bottom-right",
+                                type: LEVEL[level] || "info"
+                            })
+                        );
+                });
+            }
         }
     }
 };
