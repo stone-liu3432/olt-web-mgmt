@@ -28,25 +28,40 @@ export default {
         },
         cellClass: {
             type: [Function, String]
+        },
+        type: {
+            type: String,
+            validator: val => ["expand", "selection", "index"].includes(val)
+        },
+        index: {
+            type: [Number, Function],
+            default: 1
         }
     },
-    inject: ['commit'],
+    inject: ["commit"],
     mounted() {
-        //  标志位，防止slot中有同名("label")的props
-        this.__IS_HEAD__ = true;
-        this.commit('formatters', this.formatter)
-        //  作用域插槽
-        this.commit('scopedSlots', this.$scopedSlots.default)
-        //  普通插槽
-        this.commit('slots', this.$slots.default)
-
-        this.commit('attrs', this.$attrs);
-        this.commit('headerStyle', this.$attrs);
-        //  列的样式 or 类名
-        this.commit('cellStyle', this.cellStyle);
-        this.commit('cellClass', this.cellClass);
+        this.columnConfig = {
+            label: this.label,
+            prop: this.prop,
+            formatters: this.formatter,
+            scopedSlots: this.$scopedSlots.default,
+            slots: this.$slots.default,
+            attrs: this.$attrs,
+            headerStyle: this.$attrs,
+            cellStyle: this.cellStyle,
+            cellClass: this.cellClass,
+            type: this.type,
+            index: this.index,
+            expand: this.$slots.default || this.$scopedSlots.default
+        };
+        Object.keys(this.columnConfig).forEach(key => {
+            this.$watch(key, val => {
+                this.columnConfig[key] = val;
+            });
+        });
+        this.commit(this.columnConfig);
     },
-    render(h){
+    render(h) {
         return null;
     }
 };
