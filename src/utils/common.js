@@ -193,3 +193,13 @@ export function throttle(func, wait, context) {
 export function isDef(val) {
     return val !== null && val !== undefined;
 }
+
+export function removeItem(arr, item) {
+    const result = [];
+    for (let i = 0, l = arr.length; i < l; i++) {
+        if (arr[i] === item) {
+            result.push(arr.splice(i, 1));
+        }
+    }
+    return result;
+}
