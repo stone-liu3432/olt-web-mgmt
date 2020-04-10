@@ -37,8 +37,7 @@ export default {
             menu_width: "",
             left: "",
             top: "",
-            height: "",
-            dropHeight: 0
+            height: ""
         };
     },
     computed: {
@@ -54,7 +53,6 @@ export default {
             p_width = p_rect.width;
         this.menu_width = `${p_width}px`;
         this.left = `-${Math.floor((p_width - c_width) / 2)}px`;
-        this.dropHeight = this.$refs["dropdown-menu"].scrollHeight;
     },
     props: {
         width: {
@@ -69,11 +67,12 @@ export default {
         mouseenter(e) {
             const { bottom, height } = this.$el.getBoundingClientRect();
             const { clientHeight } = document.documentElement;
+            const dropHeight = this.$refs["dropdown-menu"].scrollHeight;
             // 触发dropdown的元素离底部的高度 + dropdown高度 + 偏移量，超出屏幕显示范围时，在触发元素上方显示dropdown
-            if (bottom + this.dropHeight + this.offsetY >= clientHeight) {
-                this.top = `-${this.dropHeight}px`;
+            if (bottom + dropHeight + this.offsetY >= clientHeight) {
+                this.top = `-${dropHeight}px`;
             }
-            this.height = `${this.dropHeight}px`;
+            this.height = `${dropHeight}px`;
         },
         mouseleave(e) {
             this.height = "";
