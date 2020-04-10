@@ -158,7 +158,10 @@ const linkAggregation = () =>
     import(
         /* webpackChunkName: "switch-page" */ "@/components/common/switch/linkAggregation"
     );
-
+const mstp = () =>
+    import(
+        /* webpackChunkName: "protocol-page" */ "@/components/common/protocol/mstp"
+    );
 export default [
     {
         path: "/advanced_setting",
@@ -434,6 +437,13 @@ export default [
     {
         path: "/port_isolation",
         component: portIsolation,
+        meta: {
+            requireAuth: true
+        }
+    },
+    {
+        path: "/mstp",
+        component: mstp,
         meta: {
             requireAuth: true
         }
