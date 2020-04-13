@@ -50,6 +50,7 @@ export default {
             headerStyle: this.$attrs,
             cellStyle: this.cellStyle,
             cellClass: this.cellClass,
+            header: this.$slots.header,
             type: this.type,
             index: this.index,
             expand: this.$slots.default || this.$scopedSlots.default

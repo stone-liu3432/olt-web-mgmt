@@ -280,7 +280,8 @@ export default {
                 this.columns.map(item => {
                     return item.type ? null : (
                         <th style={item.headerStyle}>
-                            {item.label === undefined ? "" : item.label}
+                            {item.header ||
+                                (item.label === undefined ? "" : item.label)}
                         </th>
                     );
                 })
