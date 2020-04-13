@@ -788,6 +788,7 @@ var zh = {
     shortcut: "快捷访问",
     supplier_info: "供应商信息",
     mstp_status: "MSTP状态",
+    mstp_region: "MST域",
     regional_name: "域名",
     revision_level: "修订版本",
     format_selector: "格式选择器",
@@ -814,7 +815,7 @@ var zh = {
     port_priority: "端口优先级",
     mcheck: "端口状态迁移",
     loop_detect_guard: "端口环路保护",
-    msti_vlanlist: "VLAN实例映射表",
+    msti_vlanlist: "VLAN映射表",
     mstp: "MSTP",
     cist: "CIST",
     instance: "实例",
@@ -829,6 +830,7 @@ var zh = {
     admin_p2p: "配置P2P",
     oper_p2p: "运行P2P",
     bpdu_guard: "BPDU保护",
+    reset: "重置",
 
     composeRange(min, max) {
         return `${min} - ${max}位字符`;
