@@ -500,6 +500,7 @@ var zh = {
     loading: "加载数据中，请稍候...",
     multicast_table: "组播表项",
     static_table: "静态表项",
+    dynamic_table: "动态表项",
     tagged_portlist: "Tagged",
     untagged_portlist: "Untagged",
     onu_optical_tips: "你需要手动刷新来获取光功率数据",

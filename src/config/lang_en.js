@@ -517,6 +517,7 @@ var en = {
     loading: "Loading data, please wait ...",
     multicast_table: "Multicast Table",
     static_table: " Static Table",
+    dynamic_table: "Dynamic Table",
     tagged_portlist: "Tagged",
     untagged_portlist: "Untagged",
     onu_optical_tips:
