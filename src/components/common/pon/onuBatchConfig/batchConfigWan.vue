@@ -2,7 +2,9 @@
     <div>
         <nms-table :rows="wanList" border>
             <nms-table-column :label="lanMap['onu_id']">
-                <template slot-scope="rows">{{ `ONU${rows.port_id}/${rows.onu_id}` }}</template>
+                <template
+                    slot-scope="rows"
+                >{{ rows.onu_name || `ONU${rows.port_id}/${rows.onu_id}` }}</template>
             </nms-table-column>
             <nms-table-column prop="macaddr" :label="lanMap['macaddr']"></nms-table-column>
             <nms-table-column prop="status" :label="lanMap['status']">
