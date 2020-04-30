@@ -236,7 +236,7 @@ export default {
             return reg.test(this.frpcForm.custom_domains);
         },
         showFRPC() {
-            return this.system.data.size > 16;
+            return this.system.data.size > 16 && this.supportFrpc;
         }
     },
     data() {
@@ -276,14 +276,15 @@ export default {
                 remote_port: "",
                 custom_domains: ""
             },
-            visible: false
+            visible: false,
+            supportFrpc: false
         };
     },
     created() {
         this.get_trap();
         this.get_ssh();
         this.get_community();
-        this.showFRPC && this.getFrpc();
+        this.getFrpcSupportState();
     },
     methods: {
         get_ssh() {
@@ -663,6 +664,21 @@ export default {
             if (typeof done === "function") {
                 done();
             }
+        },
+        getFrpcSupportState() {
+            this.$http
+                .get("/system_service?form=remote_support")
+                .then(res => {
+                    if (res.data.code === 1) {
+                        if (res.data.data) {
+                            this.supportFrpc = !!res.data.data.frpc;
+                            if (this.supportFrpc) {
+                                this.getFrpc();
+                            }
+                        }
+                    }
+                })
+                .catch(err => {});
         }
     }
 };
