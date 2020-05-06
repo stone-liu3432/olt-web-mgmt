@@ -20,14 +20,17 @@
             </nms-table-column>
             <nms-table-column prop="auth_mode" :label="lanMap['auth_mode']">
                 <template slot-scope="rows">
-                    <div class="pon-setting-table-content">{{ def_auth_mode[rows.auth_mode] }}</div>
-                    <div>
-                        <a
-                            href="javascript:void(0);"
-                            class="btn-text"
-                            @click="auth_confirm(rows.port_id)"
-                        >{{ lanMap['config'] }}</a>
-                    </div>
+                    <template v-if="custom.pon_authmode">
+                        <div class="pon-setting-table-content">{{ def_auth_mode[rows.auth_mode] }}</div>
+                        <div>
+                            <a
+                                href="javascript:void(0);"
+                                class="btn-text"
+                                @click="auth_confirm(rows.port_id)"
+                            >{{ lanMap['config'] }}</a>
+                        </div>
+                    </template>
+                    <template v-else>{{ def_auth_mode[rows.auth_mode] }}</template>
                 </template>
             </nms-table-column>
             <nms-table-column prop="p2p_flag" :label="lanMap['p2p_flag']">
@@ -111,7 +114,7 @@ import { mapState } from "vuex";
 import { debounce } from "@/utils/common";
 export default {
     name: "ponSetting",
-    computed: mapState(["lanMap", "port_name", "change_url"]),
+    computed: mapState(["lanMap", "port_name", "change_url", "custom"]),
     data() {
         return {
             port_id: 0,
