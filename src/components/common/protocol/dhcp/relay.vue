@@ -393,7 +393,11 @@ export default {
                                 relay_admin: 1
                             }
                         };
-                        this.postData("/switch_dhcp?form=relay_admin", data);
+                        this.postData(
+                            "/switch_dhcp?form=relay_admin",
+                            data,
+                            "set"
+                        );
                     } else {
                         this.$message.error(msg);
                     }
