@@ -37,5 +37,8 @@ export default {
     },
     updateTimeRange(state, data) {
         state.time_range = data;
+    },
+    updateCustom(state, data) {
+        state.custom = data;
     }
 };

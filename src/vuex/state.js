@@ -35,5 +35,7 @@ export default {
     //  高级设置二级菜单
     adv_menu: "running_status",
     //  time range
-    time_range: {}
+    time_range: {},
+    // custom function
+    custom: {}
 };

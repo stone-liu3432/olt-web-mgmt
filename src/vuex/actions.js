@@ -25,6 +25,7 @@ const analysis = str => {
 
 export default {
     updateSystem({ commit, state }) {
+        commit("updateSysData", {});
         Vue.prototype.$http
             .get(state.change_url.system)
             .then(res => {
@@ -32,11 +33,10 @@ export default {
                     commit("updateSysData", res.data);
                 }
             })
-            .catch(err => {
-                commit("updateSysData", {});
-            });
+            .catch(err => {});
     },
     updateMenu({ commit, state }) {
+        commit("updateMenu", {});
         Vue.prototype.$http
             .get(state.change_url.menu)
             .then(res => {
@@ -44,13 +44,12 @@ export default {
                     commit("updateMenu", res.data);
                 }
             })
-            .catch(err => {
-                commit("updateMenu", {});
-            });
+            .catch(err => {});
     },
     // 获取 PON下存在的 onu
     updatePortUsedResource({ commit, state }, port_id) {
-        let baseURL = '';
+        commit("updateOnuList", {});
+        let baseURL = "";
         if (process.env.NODE_ENV === "development") {
             //  开发模式
             baseURL = "http://192.168.5.58:8281/onu_allow_list";
@@ -64,7 +63,6 @@ export default {
                 if (res.data.code === 1) {
                     let onu_list = analysis(res.data.data.resource);
                     if (!onu_list) {
-                        commit("updateOnuList", {});
                         return;
                     }
                     let obj = {
@@ -72,12 +70,25 @@ export default {
                         data: onu_list
                     };
                     commit("updateOnuList", obj);
-                } else {
-                    commit("updateOnuList", {});
                 }
             })
-            .catch(err => {
-                commit("updateOnuList", {});
-            });
+            .catch(err => {});
+    },
+    updateCustom({ commit }) {
+        commit("updateCustom", {});
+        const baseUrl =
+            process.env.NODE_ENV === "production"
+                ? "/system_custom"
+                : "@/../simulation_data/custom.json";
+        Vue.prototype.$http
+            .get(baseUrl)
+            .then(res => {
+                if (res.data.code === 1) {
+                    if (res.data.data) {
+                        commit("updateCustom", res.data.data);
+                    }
+                }
+            })
+            .catch(err => {});
     }
 };

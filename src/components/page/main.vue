@@ -32,6 +32,7 @@ export default {
         //根组件创建之前，初始化vuex部分数据
         this.getSystem();
         this.getMenu();
+        this.getCustom();
         this.uName = sessionStorage.getItem("uname");
         this.getData();
         var f_menu = sessionStorage.getItem("first_menu");
@@ -115,7 +116,8 @@ export default {
         }),
         ...mapActions({
             getSystem: "updateSystem",
-            getMenu: "updateMenu"
+            getMenu: "updateMenu",
+            getCustom: "updateCustom"
         }),
         reload() {
             this.isRouterAlive = false;
