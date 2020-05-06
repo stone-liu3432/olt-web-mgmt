@@ -860,6 +860,8 @@ var en = {
     reset: " Reset ",
     bridge_time: " Bridge Time",
     root_time: "Root Time",
+    primary: "Primary DNS",
+    secondary: "Secondary DNS",
 
     composeRange(min, max) {
         return `${min} - ${max} characters`;

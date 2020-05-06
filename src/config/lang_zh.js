@@ -834,6 +834,8 @@ var zh = {
     reset: "重置",
     bridge_time: " 本桥时间",
     root_time: "根桥时间",
+    primary: "主DNS",
+    secondary: "备用DNS",
 
     composeRange(min, max) {
         return `${min} - ${max}位字符`;
