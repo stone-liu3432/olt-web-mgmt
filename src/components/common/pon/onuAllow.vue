@@ -14,7 +14,7 @@
         <hr />
         <div>
             <a href="javascript:void(0);" @click="reload">{{ lanMap['refresh'] }}</a>
-            <a href="javascript:void(0);" @click="add_onu">{{ lanMap['add'] }}</a>
+            <a href="javascript:void(0);" @click="add_onu" v-if="custom.addonu">{{ lanMap['add'] }}</a>
             <a href="javascript:void(0);" @click="onu_bandwieth">{{ lanMap['sla_cfg'] }}</a>
             <a href="javascript:void(0);" @click="onu_deny">{{ lanMap['onu_deny'] }}</a>
             <a
@@ -221,7 +221,7 @@ export default {
         };
     },
     computed: {
-        ...mapState(["lanMap", "port_name", "menu", "change_url"]),
+        ...mapState(["lanMap", "port_name", "menu", "change_url", "custom"]),
         testMacaddr() {
             var reg = /^([0-9abcdefABCDEF]{2}\:){5}[0-9abcdefABCDEF]{2}$/;
             if (!reg.test(this.add_macaddr)) {
