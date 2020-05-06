@@ -17,6 +17,23 @@
             </h3>
         </div>
         <hr />
+        <div class="dns-mgmt">
+            <h3>DNS:</h3>
+            <div>
+                <div>
+                    <span>{{ lanMap['primary'] }}:</span>
+                    <span>{{ dnsData.primary || ' - ' }}</span>
+                </div>
+                <div>
+                    <span>{{ lanMap['secondary'] }}:</span>
+                    <span>{{ dnsData.secondary || ' - ' }}</span>
+                </div>
+            </div>
+            <div>
+                <a href="javascript:void(0);" @click="configDns">{{ lanMap['config'] }}</a>
+            </div>
+        </div>
+        <hr />
         <div class="remote-content" v-if="outbound.data">
             <p>
                 <span>{{ lanMap['outbound'] }}</span>
@@ -172,6 +189,31 @@
                 <a href="javascript:void(0);" @click="dialogVisible = false;">{{ lanMap['cancel'] }}</a>
             </div>
         </nms-dialog>
+        <nms-dialog :visible.sync="dnsVisible" width="500px">
+            <template slot="title">{{ lanMap['config'] }} DNS</template>
+            <div class="default-route-set">
+                <span>{{ lanMap['primary'] }}</span>
+                <input
+                    type="text"
+                    v-model="primary"
+                    :style="{ 'border-color': validateIp(primary) ? '' : 'red'}"
+                />
+                <span class="tips">ex: 127.0.0.1</span>
+            </div>
+            <div class="default-route-set" style="margin-top: 12px;">
+                <span>{{ lanMap['secondary'] }}</span>
+                <input
+                    type="text"
+                    v-model="secondary"
+                    :style="{ 'border-color': validateIp(secondary) ? '' : 'red'}"
+                />
+                <span class="tips">ex: 127.0.0.1</span>
+            </div>
+            <div slot="footer">
+                <a href="javascript:void(0);" @click="submitDns">{{ lanMap['apply'] }}</a>
+                <a href="javascript:void(0);" @click="dnsVisible = false;">{{ lanMap['cancel'] }}</a>
+            </div>
+        </nms-dialog>
     </div>
 </template>
 
@@ -212,7 +254,11 @@ export default {
             vlan: " - ",
             default_route: {},
             dialogVisible: false,
-            gateway: ""
+            gateway: "",
+            dnsData: {},
+            dnsVisible: false,
+            primary: "",
+            secondary: ""
         };
     },
     created() {
@@ -248,6 +294,7 @@ export default {
                 })
                 .catch(err => {});
             this.getDefRoute();
+            this.getDns();
         },
         closeModal() {
             this.modalDialog = false;
@@ -579,7 +626,7 @@ export default {
             this.gateway = this.default_route.gateway;
         },
         validateIp(val) {
-            const reg = /^((25[0-5]|2[0-4]\d|1?\d?\d)\.){3}(25[0-5]|2[0-4]\d|1?\d?\d)$/;
+            const reg = /^((25[0-5]|2[0-4]\d|1?\d?\d)(\.(?!$)|$)){4}/;
             return reg.test(val);
         },
         submitForm() {
@@ -611,6 +658,69 @@ export default {
                         );
                     }
                     this.dialogVisible = false;
+                })
+                .catch(err => {});
+        },
+        getDns() {
+            this.dnsData = {};
+            this.$http
+                .get("/system?form=dns")
+                .then(res => {
+                    if (res.data.code === 1) {
+                        if (res.data.data) {
+                            this.dnsData = res.data.data;
+                        }
+                    }
+                })
+                .catch(err => {});
+        },
+        configDns() {
+            this.dnsVisible = true;
+            this.primary = this.dnsData.primary || "";
+            this.secondary = this.dnsData.secondary || "";
+        },
+        submitDns() {
+            if (
+                (!this.primary &&
+                    !this.dnsData.primary &&
+                    !this.secondary &&
+                    !this.dnsData.secondary) ||
+                (this.primary === this.dnsData.primary &&
+                    this.secondary === this.dnsData.secondary)
+            ) {
+                this.$message.info(this.lanMap["modify_tips"]);
+                return;
+            }
+            if (this.primary !== "" && !this.validateIp(this.primary)) {
+                this.$message.error(
+                    `${this.lanMap["param_error"]}: ${this.lanMap["primary"]}`
+                );
+                return;
+            }
+            if (this.secondary !== "" && !this.validateIp(this.secondary)) {
+                this.$message.error(
+                    `${this.lanMap["param_error"]}: ${this.lanMap["secondary"]}`
+                );
+                return;
+            }
+            const post_params = {
+                method: "set",
+                param: {
+                    primary: this.primary,
+                    secondary: this.secondary
+                }
+            };
+            this.$http
+                .post("/system?form=dns", post_params)
+                .then(res => {
+                    if (res.data.code === 1) {
+                        this.$message.success(this.lanMap["setting_ok"]);
+                        this.getDns();
+                    } else {
+                        this.$message.error(
+                            `(${res.data.code}) ${res.data.code}`
+                        );
+                    }
                 })
                 .catch(err => {});
         }
@@ -804,6 +914,9 @@ h3 {
     span + span {
         margin: 0 30px 0 20px;
     }
+    > a {
+        font-weight: normal;
+    }
 }
 div.default-route-set {
     span.tips {
@@ -814,6 +927,26 @@ div.default-route-set {
     span:first-child {
         display: inline-block;
         width: 120px;
+    }
+}
+div.dns-mgmt {
+    margin: 20px 10px;
+    h3,
+    > div {
+        float: left;
+        line-height: 72px;
+    }
+    > h3 + div {
+        margin: 0 30px 0 20px;
+        line-height: 24px;
+        > div {
+            margin: 12px 0;
+        }
+    }
+    &:after {
+        content: "";
+        display: table;
+        clear: both;
     }
 }
 </style>
