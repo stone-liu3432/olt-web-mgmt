@@ -20,7 +20,7 @@
             </nms-table-column>
             <nms-table-column prop="auth_mode" :label="lanMap['auth_mode']">
                 <template slot-scope="rows">
-                    <template v-if="custom.pon_authmode">
+                    <template v-if="!custom.pon_authmode">
                         <div class="pon-setting-table-content">{{ def_auth_mode[rows.auth_mode] }}</div>
                         <div>
                             <a
