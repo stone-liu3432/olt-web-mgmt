@@ -195,8 +195,8 @@
                 <span>{{ lanMap['primary'] }}</span>
                 <input
                     type="text"
-                    v-model="primary"
-                    :style="{ 'border-color': validateIp(primary) ? '' : 'red'}"
+                    v-model.trim="primary"
+                    :style="{ 'border-color': (primary === '' || validateIp(primary)) ? '' : 'red'}"
                 />
                 <span class="tips">ex: 127.0.0.1</span>
             </div>
@@ -204,8 +204,8 @@
                 <span>{{ lanMap['secondary'] }}</span>
                 <input
                     type="text"
-                    v-model="secondary"
-                    :style="{ 'border-color': validateIp(secondary) ? '' : 'red'}"
+                    v-model.trim="secondary"
+                    :style="{ 'border-color': (secondary === '' || validateIp(secondary)) ? '' : 'red'}"
                 />
                 <span class="tips">ex: 127.0.0.1</span>
             </div>
@@ -716,6 +716,7 @@ export default {
                     if (res.data.code === 1) {
                         this.$message.success(this.lanMap["setting_ok"]);
                         this.getDns();
+                        this.dnsVisible = false;
                     } else {
                         this.$message.error(
                             `(${res.data.code}) ${res.data.code}`
