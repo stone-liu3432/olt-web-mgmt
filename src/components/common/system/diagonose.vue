@@ -8,11 +8,7 @@
         <div class="diagonose-item">
             <span>{{ lanMap['dest_ping_ip'] }}</span>
             <span>
-                <input
-                    type="text"
-                    v-model="ipaddr"
-                    :style="{ 'border-color': ipaddr !== '' && !reg_ip.test(ipaddr) ? 'red' : '' }"
-                />
+                <input type="text" v-model="ipaddr" />
                 <span>ex: 127.0.0.1</span>
             </span>
         </div>
@@ -122,7 +118,14 @@ export default {
     },
     methods: {
         ping_start() {
-            if (!this.reg_ip.test(this.ipaddr)) {
+            // if (!this.reg_ip.test(this.ipaddr)) {
+            //     this.$message({
+            //         type: "error",
+            //         text: this.lanMap["ipaddr_error"]
+            //     });
+            //     return;
+            // }
+            if (!this.ipaddr || this.ipaddr.indexOf(".") < 0) {
                 this.$message({
                     type: "error",
                     text: this.lanMap["ipaddr_error"]
