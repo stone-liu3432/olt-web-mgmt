@@ -107,6 +107,8 @@
             </div>
         </div>
         <onuAlarm v-if="show_page === 'onu_alarm'" :port-data="{ portid, onuid }" ref="onuAlarm"></onuAlarm>
+        <onu-wan-config v-if="show_page === 'wan_connect'" :port-data="onuWanInfo" ref="onuWan"></onu-wan-config>
+        <onu-wlan v-if="show_page === 'onu_wlan'" :port-data="{ portid, onuid }" ref="onuWlan"></onu-wlan>
         <div class="modal-dialog" v-if="onu_cfg_name">
             <div class="cover"></div>
             <div class="onu-desc">
@@ -145,6 +147,8 @@
 <script>
 import { mapState, mapMutations } from "vuex";
 import onuAlarm from "./onuAlarm";
+import onuWanConfig from "./onuBatchConfig/onuWanConfig";
+import onuWlan from "./onuWlan";
 export default {
     name: "onuBasicInfo",
     computed: {
@@ -156,11 +160,41 @@ export default {
             "onu_list"
         ]),
         tabs() {
+            // return ["onu_info", "onu_alarm", "wan_connect", "onu_wlan"];
             let list = ["onu_info", "onu_alarm"];
+            if (this.onu_basic_info.data && this.onu_basic_info.data.fw_ver) {
+                let fw_ver = this.onu_basic_info.data.fw_ver,
+                    dev_type = this.onu_basic_info.data.dev_type,
+                    reg_fw = /^4853/,
+                    reg_type = /sfu/gi;
+                if (reg_fw.test(fw_ver) && !reg_type.test(dev_type)) {
+                    list.push("wan_connect");
+                    if (this.onu_basic_info.data.wlan) {
+                        list.push("onu_wlan");
+                    }
+                }
+            }
             return list;
+        },
+        onuWanInfo() {
+            if (this.wanList.length) {
+                const row = this.wanList.filter(
+                    item => item.onu_id === this.onuid
+                )[0];
+                if (row) {
+                    return {
+                        portid: row.port_id,
+                        onuid: row.onu_id,
+                        geports: row.lanports,
+                        wlan: row.wlan,
+                        voip: row.voip
+                    };
+                }
+            }
+            return {};
         }
     },
-    components: { onuAlarm },
+    components: { onuAlarm, onuWanConfig, onuWlan },
     data() {
         return {
             onu_basic_info: {},
@@ -174,7 +208,8 @@ export default {
             onu_desc: "",
             show_page: "onu_info",
             isCreated: false,
-            wlan: 0
+            wlan: 0,
+            wanList: []
         };
     },
     created() {
@@ -239,6 +274,19 @@ export default {
         ...mapMutations({
             addonu_list: "updateOnuList"
         }),
+        getWanInfo(port_id) {
+            this.wanList = [];
+            this.$http
+                .get("/onumgmt", { params: { form: "wantab", port_id } })
+                .then(res => {
+                    if (res.data.code === 1) {
+                        if (res.data.data && res.data.data.length) {
+                            this.wanList = res.data.data;
+                        }
+                    }
+                })
+                .catch(err => {});
+        },
         //  打开onu描述信息模态框
         open_onu_desc() {
             this.onu_name =
@@ -427,9 +475,7 @@ export default {
                         this.onu_basic_info = {};
                     }
                 })
-                .catch(err => {
-                    // to do
-                });
+                .catch(err => {});
             this.$http
                 .get(
                     "/onumgmt?form=config&port_id=" +
@@ -444,9 +490,7 @@ export default {
                         this.onu_fec_mode = {};
                     }
                 })
-                .catch(err => {
-                    // to do
-                });
+                .catch(err => {});
         },
         getOpticalData() {
             this.$http
@@ -556,6 +600,7 @@ export default {
                 });
         },
         get_resource() {
+            this.getWanInfo(this.portid);
             this.$http
                 .get("/onu_allow_list?form=resource&port_id=" + this.portid)
                 .then(res => {
@@ -581,6 +626,7 @@ export default {
                             this.onuid = _onu_list[0];
                             return;
                         }
+                        this.show_page = "onu_info";
                         this.getData();
                         if (this.show_page === "onu_info") {
                             this.getOpticalData();
@@ -595,9 +641,7 @@ export default {
                         this.onuid = 0;
                     }
                 })
-                .catch(err => {
-                    // to do
-                });
+                .catch(err => {});
         },
         clearFile() {
             if (document) {
@@ -622,12 +666,21 @@ export default {
         onuid() {
             if (this.onuid == 0) return;
             sessionStorage.setItem("oid", Number(this.onuid));
+            this.show_page = "onu_info";
             this.getData();
             if (this.show_page === "onu_info") {
                 this.getOpticalData();
             } else if (this.show_page === "onu_alarm") {
                 this.$nextTick(() => {
                     this.$refs.onuAlarm.getData();
+                });
+            } else if (this.show_page === "wan_connect") {
+                this.$nextTick(_ => {
+                    this.$refs.onuWan.getData();
+                });
+            } else if (this.show_page === "onu_wlan") {
+                this.$nextTick(_ => {
+                    this.$refs.onuWlan.getData();
                 });
             }
             this.clearFile();
