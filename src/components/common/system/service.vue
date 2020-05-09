@@ -11,7 +11,7 @@
                 <div v-for="(item, key) in frpc">
                     <span>{{ key !== 'local_ip' ? key.replace(/_/, ' ') : "Local IP" }}:</span>
                     <span
-                        :style="{ 'text-transform': key === 'custom_domains' ? 'none' : '' }"
+                        style="text-transform: none;"
                     >{{ (key === 'type' ? item ? 'https' : 'http' : item) || '' }}</span>
                 </div>
             </template>
