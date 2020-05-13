@@ -14,7 +14,7 @@
         <hr />
         <div>
             <a href="javascript:void(0);" @click="reload">{{ lanMap['refresh'] }}</a>
-            <a href="javascript:void(0);" @click="add_onu" v-if="!custom.addonu">{{ lanMap['add'] }}</a>
+            <a href="javascript:void(0);" @click="add_onu" v-if="custom.addonu">{{ lanMap['add'] }}</a>
             <a href="javascript:void(0);" @click="onu_bandwieth">{{ lanMap['sla_cfg'] }}</a>
             <a href="javascript:void(0);" @click="onu_deny">{{ lanMap['onu_deny'] }}</a>
             <a
