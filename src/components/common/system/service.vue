@@ -226,7 +226,7 @@ import { replaceDBCS, testIPAddr } from "@/utils/common";
 export default {
     name: "service",
     computed: {
-        ...mapState(["lanMap", "system"]),
+        ...mapState(["lanMap", "system", "custom"]),
         validAppname() {
             const reg = /^[a-zA-Z]\w{0,31}$/;
             return reg.test(this.frpcForm.appname);
@@ -236,7 +236,7 @@ export default {
             return reg.test(this.frpcForm.custom_domains);
         },
         showFRPC() {
-            return this.system.data.size > 16 && this.supportFrpc;
+            return this.system.data.size > 16 && this.custom.frpc;
         }
     },
     data() {
@@ -284,7 +284,7 @@ export default {
         this.get_trap();
         this.get_ssh();
         this.get_community();
-        this.getFrpcSupportState();
+        this.showFRPC && this.getFrpc();
     },
     methods: {
         get_ssh() {
@@ -664,21 +664,6 @@ export default {
             if (typeof done === "function") {
                 done();
             }
-        },
-        getFrpcSupportState() {
-            this.$http
-                .get("/system_service?form=remote_support")
-                .then(res => {
-                    if (res.data.code === 1) {
-                        if (res.data.data) {
-                            this.supportFrpc = !!res.data.data.frpc;
-                            if (this.supportFrpc) {
-                                this.getFrpc();
-                            }
-                        }
-                    }
-                })
-                .catch(err => {});
         }
     }
 };
