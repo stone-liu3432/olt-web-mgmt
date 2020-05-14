@@ -161,6 +161,17 @@
                 <span>Range: 1 - 65535</span>
             </div>
             <div class="frpc-form-item">
+                <span>Token</span>
+                <textarea
+                    type="text"
+                    v-model.trim="frpcForm.token"
+                    spellcheck="false"
+                    rows="5"
+                    :style="{ 'border-color': frpcForm.token && frpcForm.token.length <= 128 ? '' : 'red' }"
+                />
+                <span>{{ lanMap.composeRange(0, 128) }}</span>
+            </div>
+            <div class="frpc-form-item">
                 <span>Appname</span>
                 <input
                     type="text"
@@ -212,6 +223,15 @@
                 />
                 <span>ex. www.test.com</span>
             </div>
+            <div class="frpc-form-item">
+                <span>Sub Domains</span>
+                <input
+                    type="text"
+                    v-model.trim="frpcForm.subdomain"
+                    :style="{ 'border-color': frpcForm.subdomain && frpcForm.subdomain.length <= 64   ? '' : 'red' }"
+                />
+                <span>{{ lanMap.composeRange(0, 64) }}</span>
+            </div>
             <div slot="footer">
                 <a href="javascript: void(0);" @click="submitForm">{{ lanMap['apply'] }}</a>
                 <a href="javascript: void(0);" @click="closeModal">{{ lanMap['cancel'] }}</a>
@@ -259,22 +279,26 @@ export default {
             frpc: {
                 // server_addr: "1.1.1.1",
                 // server_port: 7000,
+                // token: "sagsahfgjfgdjghjghddghd",
                 // appname: "web",
                 // type: 0,
                 // local_ip: "127.0.0.1",
                 // local_port: 80,
                 // remote_port: 8080,
-                // custom_domains: "www.test.com"
+                // custom_domains: "www.test.com",
+                // subdomain: "asdfasdf"
             },
             frpcForm: {
                 server_addr: "",
                 server_port: "",
+                token: "",
                 appname: "",
                 type: 0,
                 local_ip: "",
                 local_port: "",
                 remote_port: "",
-                custom_domains: ""
+                custom_domains: "",
+                subdomain: ""
             },
             visible: false,
             supportFrpc: false
@@ -596,6 +620,10 @@ export default {
                 );
                 return;
             }
+            if (this.frpcForm.token.length > 128) {
+                this.$message.error(`${this.lanMap["param_error"]}: Token`);
+                return;
+            }
             if (!this.validAppname) {
                 this.$message.error(`${this.lanMap["param_error"]}: Appname`);
                 return;
@@ -612,15 +640,22 @@ export default {
                 );
                 return;
             }
+            if (this.frpcForm.subdomain.length > 64) {
+                this.$message.error(
+                    `${this.lanMap["param_error"]}: Sub Domains`
+                );
+            }
             const post_param = {
                 method: "set",
                 param: {
                     server_addr: this.frpcForm.server_addr,
                     server_port: this.frpcForm.server_port,
+                    token: this.frpcForm.token,
                     appname: this.frpcForm.appname,
                     type: this.frpcForm.type,
                     remote_port: this.frpcForm.remote_port || 0,
-                    custom_domains: this.frpcForm.custom_domains
+                    custom_domains: this.frpcForm.custom_domains,
+                    subdomain: this.frpcForm.subdomain
                 }
             };
             const loading = this.$loading();
@@ -877,7 +912,22 @@ div.add-ssh {
     select {
         width: 197px;
     }
-    input + span {
+    textarea {
+        width: 197px;
+        border: 1px solid @borderColor;
+        outline: none;
+        resize: none;
+        padding: 3px 10px;
+        box-sizing: border-box;
+        vertical-align: top;
+        font-size: 16px;
+        border-radius: 3px;
+        &:focus {
+            border-color: @activedFormBorderColor;
+        }
+    }
+    input + span,
+    textarea + span {
         font-size: 14px;
         color: #666;
         width: auto;
