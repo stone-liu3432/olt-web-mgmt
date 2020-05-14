@@ -27,7 +27,7 @@
                             :style="{ 'width': item.length === 1 ? '100%' : '' }"
                         >
                             <span>{{ key === 'mstid' ? lanMap['instance'] : lanMap[key] }}:</span>
-                            <span>{{ key === 'root_port_name' ? (item[key] || 'None') : info[key] }}</span>
+                            <span>{{ getPortName(key) }}</span>
                         </div>
                     </template>
                 </div>
@@ -60,6 +60,7 @@
 
 <script>
 import { mapState } from "vuex";
+import { getPortName } from "@/utils/common";
 export default {
     name: "mstiDetail",
     computed: {
@@ -102,6 +103,11 @@ export default {
         },
         setMstiInfo(type) {
             this.$emit("set-msti-info", type, this.info);
+        },
+        getPortName(key) {
+            return key === "root_port_name"
+                ? getPortName(this.info[key]) || "None"
+                : this.info[key];
         }
     }
 };
