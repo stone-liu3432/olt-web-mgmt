@@ -59,16 +59,8 @@
                 </h3>
                 <div class="swich-basic-config">
                     <ul>
-                        <li
-                            v-for="(item,key) in swich_port_info.data"
-                            :key="key"
-                            class="swich-item"
-                            v-if="key !== 'port_id'"
-                        >
-                            <span
-                                v-if="key !== 'port_id' && key !== 'link_aggregation'"
-                            >{{ lanMap[key] }}</span>
-                            <!-- <span v-if="key === 'port_id'">{{ item }}</span> -->
+                        <li v-for="key in PORT_INFO_MAP" :key="key" class="swich-item">
+                            <span>{{ lanMap[key] }}</span>
                             <select
                                 v-if="key === 'admin_status' || key === 'auto_neg' || key === 'flow_ctrl'"
                                 v-model.number="port_data[key]"
@@ -121,7 +113,7 @@
                                 v-model.number="port_data.mtu"
                                 :style="{ 'border-color' : port_data.mtu && (port_data.mtu < 128 || port_data.mtu > 2000 || isNaN(port_data.mtu)) ? 'red' : '' }"
                             />
-                            <span v-if="key === 'media'">{{ lanMap[item] }}</span>
+                            <span v-if="key === 'media'">{{ lanMap[swich_port_info.data[key]] }}</span>
                             <input
                                 type="text"
                                 v-if="key === 'erate'"
@@ -142,6 +134,13 @@
                                 v-model.number="port_data.pvid"
                                 :style="{ 'border-color' : port_data.pvid && (port_data.pvid < 1 || port_data.pvid > 4094 || isNaN(port_data.pvid)) ? 'red' : '' }"
                             />
+                            <textarea
+                                v-if="key === 'port_desc'"
+                                rows="5"
+                                spellcheck="false"
+                                v-model="port_data.port_desc"
+                                :style="{ 'border-color': port_data.port_desc && port_data.port_desc.length > 64 ? 'red' : '' }"
+                            ></textarea>
                         </li>
                     </ul>
                     <div class="btn-submit">
@@ -261,13 +260,35 @@
 import { mapState } from "vuex";
 export default {
     name: "vlanCfg",
-    computed: mapState([
-        "lanMap",
-        "port_info",
-        "port_name",
-        "change_url",
-        "system"
-    ]),
+    computed: {
+        ...mapState([
+            "lanMap",
+            "port_info",
+            "port_name",
+            "change_url",
+            "system"
+        ]),
+        PORT_INFO_MAP() {
+            return [
+                "admin_status",
+                "link_status",
+                "auto_neg",
+                "speed",
+                "duplex",
+                "flow_ctrl",
+                "mtu",
+                "media",
+                "erate",
+                "irate",
+                "pvid",
+                "port_desc"
+            ].filter(item =>
+                this.swich_port_info.data.port_id < this.system.data.ponports
+                    ? item !== "irate" && item !== "erate"
+                    : true
+            );
+        }
+    },
     data() {
         return {
             vlan_data: {},
@@ -294,7 +315,8 @@ export default {
                 mtu: 0,
                 erate: 0,
                 irate: 0,
-                pvid: 0
+                pvid: 0,
+                port_desc: ""
             },
             //  风暴控制更改统计项
             storm_flags: 0,
@@ -425,6 +447,9 @@ export default {
             }
             if (original.pvid != this.port_data.pvid) {
                 this.flags += 1024;
+            }
+            if (original.port_desc !== this.port_data.port_desc) {
+                this.flags += 2048;
             }
             this.userChoose = true;
             if (original.link_aggregation) {
@@ -636,6 +661,13 @@ export default {
                     });
                     return;
                 }
+                if (this.port_data.port_desc.length > 64) {
+                    this.userChoose = false;
+                    this.$message.error(
+                        `${this.lanMap["param_error"]}: ${this.lanMap["port_desc"]}`
+                    );
+                    return;
+                }
                 var post_params = {
                     method: "set",
                     param: {
@@ -649,7 +681,8 @@ export default {
                         mtu: Number(this.port_data.mtu),
                         erate: Number(this.port_data.erate),
                         irate: Number(this.port_data.irate),
-                        pvid: Number(this.port_data.pvid)
+                        pvid: Number(this.port_data.pvid),
+                        port_desc: this.port_data.port_desc
                     }
                 };
                 this.$http
@@ -971,9 +1004,23 @@ a.delete-mirror {
     width: 72px;
 }
 li.swich-item {
-    height: 32px;
+    // height: 32px;
     line-height: 32px;
     vertical-align: middle;
+    textarea {
+        width: 160px;
+        border-radius: 3px;
+        resize: none;
+        padding: 3px 6px;
+        box-sizing: border-box;
+        height: 100px;
+        margin-top: 3px;
+        border-color: @borderColor;
+        outline: none;
+        &:focus {
+            border-color: @activedFormBorderColor;
+        }
+    }
 }
 li.swich-item select {
     width: 140px;
