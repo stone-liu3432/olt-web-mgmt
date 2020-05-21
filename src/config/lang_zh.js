@@ -836,6 +836,8 @@ var zh = {
     root_time: "根桥时间",
     primary: "主DNS",
     secondary: "备用DNS",
+    port_desc: "端口描述",
+    log: "日志",
 
     composeRange(min, max) {
         return `${min} - ${max}位字符`;

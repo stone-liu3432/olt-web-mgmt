@@ -862,6 +862,8 @@ var en = {
     root_time: "Root Time",
     primary: "Primary DNS",
     secondary: "Secondary DNS",
+    port_desc: "Description",
+    log: " Log ",
 
     composeRange(min, max) {
         return `${min} - ${max} characters`;
