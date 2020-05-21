@@ -167,7 +167,7 @@
                     v-model.trim="frpcForm.token"
                     spellcheck="false"
                     rows="5"
-                    :style="{ 'border-color': frpcForm.token && frpcForm.token.length <= 128 ? '' : 'red' }"
+                    :style="{ 'border-color': (frpcForm.token !== undefined && frpcForm.token !== null) && frpcForm.token.length <= 128 ? '' : 'red' }"
                 />
                 <span>{{ lanMap.composeRange(0, 128) }}</span>
             </div>
@@ -228,7 +228,7 @@
                 <input
                     type="text"
                     v-model.trim="frpcForm.subdomain"
-                    :style="{ 'border-color': frpcForm.subdomain && frpcForm.subdomain.length <= 64   ? '' : 'red' }"
+                    :style="{ 'border-color': (frpcForm.subdomain !== undefined && frpcForm.subdomain !== null) && frpcForm.subdomain.length <= 64   ? '' : 'red' }"
                 />
                 <span>{{ lanMap.composeRange(0, 64) }}</span>
             </div>
@@ -248,7 +248,7 @@ export default {
     computed: {
         ...mapState(["lanMap", "system", "custom"]),
         validAppname() {
-            const reg = /^[a-zA-Z]\w{0,31}$/;
+            const reg = /^\w{4,32}$/;
             return reg.test(this.frpcForm.appname);
         },
         validDomains() {
