@@ -284,7 +284,9 @@ export default {
                 "port_desc"
             ].filter(item =>
                 this.swich_port_info.data.port_id < this.system.data.ponports
-                    ? item !== "irate" && item !== "erate"
+                    ? item !== "irate" &&
+                      item !== "erate" &&
+                      item !== "flow_ctrl"
                     : true
             );
         }
