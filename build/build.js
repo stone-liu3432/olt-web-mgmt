@@ -13,7 +13,7 @@ const config = require("../config");
 const webpackConfig = require("./webpack.prod.conf");
 
 const autoSync = filename => {
-    let filePath = "\\\\192.168.5.28\\HSGQ File Server\\鸿升研发\\WEB版本";
+    let filePath = "\\\\192.168.5.28\\鸿升研发\\WEB版本";
     // latest文件夹只存放最新一次的编译版本
     // backup存放所有的历史版本
     let files = fs.readdirSync(path.join(filePath, "epon-latest"));
