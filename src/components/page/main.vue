@@ -96,6 +96,11 @@ export default {
                 }
             }
         });
+        // 阻止firefox拖拽时打开新页面
+        document.body.addEventListener("drop", e => {
+            e.preventDefault();
+            e.stopPropagation();
+        });
     },
     beforeDestroy() {
         sessionStorage.removeItem("pid");
