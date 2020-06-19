@@ -47,11 +47,13 @@
                             :key="key"
                             v-if=" key != 'port_id' && onu_basic_info.data"
                         >
-                            <td>{{ lanMap[key] || key }}</td>
+                            <td
+                                style="text-transform: capitalize;"
+                            >{{ lanMap[key] || key.replace(/_/, ' ') }}</td>
                             <td>{{ item }}</td>
                         </tr>
                         <tr v-if="onu_fec_mode.data && onu_basic_info.data">
-                            <td>fec mode</td>
+                            <td style="text-transform: capitalize;">fec mode</td>
                             <td>{{ onu_fec_mode.data.fec_mode ? lanMap['enable'] : lanMap['disable'] }}</td>
                         </tr>
                     </table>
