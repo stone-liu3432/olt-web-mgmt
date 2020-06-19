@@ -838,6 +838,7 @@ var zh = {
     secondary: "备用DNS",
     port_desc: "端口描述",
     log: "日志",
+    unSaveInfo: "当前页面存在未保存的信息，是否保存 ?",
 
     composeRange(min, max) {
         return `${min} - ${max}位字符`;

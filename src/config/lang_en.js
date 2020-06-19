@@ -864,6 +864,8 @@ var en = {
     secondary: "Secondary DNS",
     port_desc: "Description",
     log: " Log ",
+    unSaveInfo:
+        "There is unsaved information on the current page, do you want to save it ?",
 
     composeRange(min, max) {
         return `${min} - ${max} characters`;
