@@ -20,13 +20,14 @@
             <a
                 href="javascript:void(0);"
                 @click="show_batchmgmt"
-                v-if="!is_batch_mgmt"
+                v-if="!isBatchMgmt"
             >{{ lanMap['batch_mgmt_onu'] }}</a>
             <a
                 href="javascript:void(0);"
                 @click="show_batchmgmt"
                 v-else
             >{{ lanMap['exit_batch_onu'] }}</a>
+            <a href="javascript: void(0);" v-if="isDraggable" @click="saveDrag">{{ lanMap['save'] }}</a>
             <div class="rt tool-tips">
                 <i class="icon-tips"></i>
                 <div>
@@ -82,7 +83,7 @@
                 <div class="close" @click="closeModal"></div>
             </div>
         </div>
-        <div class="search-onu" v-if="!is_batch_mgmt">
+        <div class="search-onu" v-if="!isBatchMgmt">
             <h3 class="lf">{{ lanMap['find'] }} ONU</h3>
             <div class="lf">
                 <input type="text" v-model="search_str" />
@@ -93,106 +94,79 @@
         <div v-else class="search-onu batch-onu">
             <h3 class="lf">{{ lanMap['batch_mgmt_onu'] }}</h3>
             <div class="lf">
-                <div class="lf">
-                    <label for="select-all-onu" onselectstart="return false;">
-                        <input
-                            type="checkbox"
-                            id="select-all-onu"
-                            @click="change_select_status"
-                            v-model="selectall_state"
-                        />
-                        <span v-if="!select_all">{{ lanMap['select_all'] }}</span>
-                        <span v-else>{{ lanMap['clear_all'] }}</span>
-                    </label>
-                </div>
-                <a href="javascript:void(0);" @click="delete_onu()">{{ lanMap['delete'] }}</a>
-                <a href="javascript:void(0);" @click="remove_onu()">{{ lanMap['add_to_deny'] }}</a>
+                <a
+                    href="javascript:void(0);"
+                    style="margin-left: 30px;"
+                    @click="delete_onu()"
+                >{{ lanMap['delete'] }}</a>
+                <a
+                    href="javascript:void(0);"
+                    style="margin-left: 30px;"
+                    @click="remove_onu()"
+                >{{ lanMap['add_to_deny'] }}</a>
             </div>
         </div>
-        <!-- table -->
-        <table v-if="onulist.length>0 && onu_display_style === 1" border="1">
-            <thead>
-                <tr>
-                    <td v-if="is_batch_mgmt"></td>
-                    <td>{{ lanMap['onu_id'] }}</td>
-                    <td>{{ lanMap['macaddr'] }}</td>
-                    <td style="width: 80px;">{{ lanMap['status'] }}</td>
-                    <td style="width: 100px;">{{ lanMap['auth_state'] }}</td>
-                    <td>{{ lanMap['register_time'] }}</td>
-                    <td>{{ lanMap['last_down_time'] }}</td>
-                    <td>{{ lanMap['last_down_reason'] }}</td>
-                    <td style="width: 160px;">{{ lanMap['config'] }}</td>
-                </tr>
-            </thead>
-            <tbody>
-                <tr
-                    v-for="(item,index) in onulist"
-                    :key="index"
-                    :style="{ 'color' : item.status.toLowerCase() !== 'online' ? 'red' : '' }"
-                >
-                    <td v-if="is_batch_mgmt">
-                        <label :for="'ONU0'+item.port_id +'/'+ item.onu_id">
-                            <input
-                                type="checkbox"
-                                :value="item.onu_id"
-                                v-model="batch_onulist"
-                                :id="'ONU0'+item.port_id +'/'+ item.onu_id"
-                            />
-                        </label>
-                    </td>
-                    <td>{{ item.onu_name || 'ONU0'+item.port_id +'/'+ item.onu_id }}</td>
-                    <td>{{ item.macaddr }}</td>
-                    <td>{{ item.status }}</td>
-                    <td>
-                        <span>{{ item.auth_state ? 'true' : 'false' }}</span>
-                        <i
-                            :class="[item.auth_state ? 'verified-actived' : 'unverified']"
-                            @click="authstate(item)"
-                        ></i>
-                    </td>
-                    <td>{{ item.register_time }}</td>
-                    <td>{{ item.last_down_time }}</td>
-                    <td>{{ item.last_down_reason }}</td>
-                    <td>
-                        <div
-                            class="onu-table-dropdown-menu"
-                            @mouseover="mouseoverCb"
-                            @mouseout="mouseoutCb"
-                        >
-                            <span>{{ lanMap['config'] }}</span>
-                            <svg
-                                t="1570759962108"
-                                style="vertical-align: middle;"
-                                viewBox="0 0 1024 1024"
-                                version="1.1"
-                                xmlns="http://www.w3.org/2000/svg"
-                                p-id="6745"
-                                width="16"
-                                height="16"
-                            >
-                                <path
-                                    d="M824.001 335.037c-9.083-9.083-24.049-9.083-33.132 0l-278.991 279.094-279.094-279.09399999c-9.083-9.083-24.049-9.083-33.132-1e-8-9.083 9.083-9.083 24.049 0 33.13200001l292.92499999 292.92499999c0.723 1.032 1.548 2.064 2.47700002 2.993 4.645 4.645 10.734 6.915 16.82399999 6.812 6.09 0.103 12.179-2.168 16.824-6.812 0.929-0.929 1.755-1.961 2.477-2.993l292.822-292.925c9.083-9.083 9.083-24.049 0-33.132z"
-                                    p-id="6746"
-                                    fill="#2c2c2c"
-                                />
-                            </svg>
-                            <div :style="dropdownPosition">
-                                <div
-                                    @click="onu_detail(item.port_id,item.onu_id)"
-                                >{{ lanMap['detail'] }}</div>
-                                <div
-                                    @click="onu_port_config(item.port_id, item.onu_id)"
-                                >{{ lanMap['onu_port_cfg'] }}</div>
-                                <div @click="delete_onu(item)">{{ lanMap['del_onu'] }}</div>
-                                <div @click="remove_onu(item)">{{ lanMap['add_to_deny'] }}</div>
-                                <div @click="reboot(item)">{{ lanMap['reboot_onu'] }}</div>
-                            </div>
+        <nms-table
+            :rows="onulist"
+            border
+            draggable
+            ref="ont-allow-table"
+            :rowStyle="setRowStyle"
+            @selection-change="selecttionChange"
+            @draggable="draggable"
+            @sort-change="sortChange"
+        >
+            <nms-table-column :type="isBatchMgmt"></nms-table-column>
+            <nms-table-column :label="lanMap['onu_id']" prop="onu_id">
+                <template
+                    slot-scope="row"
+                >{{ row.onu_name || 'ONU0'+ row.port_id +'/'+ row.onu_id }}</template>
+            </nms-table-column>
+            <nms-table-column :label="lanMap['macaddr']" prop="macaddr"></nms-table-column>
+            <nms-table-column
+                :label="lanMap['status']"
+                prop="status"
+                width="100px"
+                sortable
+                :sort-method="sortMethod"
+            ></nms-table-column>
+            <nms-table-column :label="lanMap['auth_state']" prop="auth_state" width="100px">
+                <template slot-scope="row">
+                    <span>{{ row.auth_state ? 'true' : 'false' }}</span>
+                    <i
+                        :class="[row.auth_state ? 'verified-actived' : 'unverified']"
+                        @click="authstate(row)"
+                    ></i>
+                </template>
+            </nms-table-column>
+            <nms-table-column :label="lanMap['register_time']" prop="register_time"></nms-table-column>
+            <nms-table-column :label="lanMap['last_down_time']" prop="last_down_time"></nms-table-column>
+            <nms-table-column :label="lanMap['last_down_reason']" prop="last_down_reason"></nms-table-column>
+            <nms-table-column :label="lanMap['config']" width="160px">
+                <template slot-scope="row">
+                    <nms-dropdown @command="command">
+                        <span>{{ lanMap['config'] }}</span>
+                        <div slot="dropdown">
+                            <nms-dropdown-item
+                                :command="{ action: 'detail', data: row }"
+                            >{{ lanMap['show_detail'] }}</nms-dropdown-item>
+                            <nms-dropdown-item
+                                :command="{ action: 'port_config', data: row }"
+                            >{{ lanMap['onu_port_cfg'] }}</nms-dropdown-item>
+                            <nms-dropdown-item
+                                :command="{ action: 'delete', data: row }"
+                            >{{ lanMap['del_onu'] }}</nms-dropdown-item>
+                            <nms-dropdown-item
+                                :command="{ action: 'remove', data: row }"
+                            >{{ lanMap['add_to_deny'] }}</nms-dropdown-item>
+                            <nms-dropdown-item
+                                :command="{ action: 'reboot', data: row }"
+                            >{{ lanMap['reboot_onu'] }}</nms-dropdown-item>
                         </div>
-                    </td>
-                </tr>
-            </tbody>
-        </table>
-        <p v-if=" onulist.length === 0">{{ lanMap['no_more_data'] }}</p>
+                    </nms-dropdown>
+                </template>
+            </nms-table-column>
+        </nms-table>
     </div>
 </template>
 
@@ -211,13 +185,13 @@ export default {
             add_onudesc: "",
             search_str: "",
             tips_authstate: "",
-            onu_display_style: 1,
-            is_batch_mgmt: false,
+            isBatchMgmt: "",
             batch_onulist: [],
-            select_all: false,
-            selectall_state: false,
             post_url: "",
-            dropdownPosition: {}
+            // 标识是否有拖动并且未保存的数据
+            isDraggable: false,
+            // 排序标识， 正序/倒序
+            sortState: false
         };
     },
     computed: {
@@ -230,9 +204,9 @@ export default {
             return false;
         },
         onulist() {
-            let onulist = this.onu_allow_list;
+            let onulist = this.onu_allow_list.slice(0);
             if (!!this.search_str) {
-                const list = onulist.filter(item => {
+                onulist = onulist.filter(item => {
                     let flag = false;
                     if (
                         item.macaddr.indexOf(this.search_str) !== -1 ||
@@ -248,20 +222,19 @@ export default {
                     } catch (error) {}
                     return flag;
                 });
-                onulist = list;
             }
-            onulist.sort((a, b) => {
-                if (
-                    a.status.toLowerCase() === "online" &&
-                    b.status.toLowerCase() === "online"
-                ) {
-                    return a.onu_id - b.onu_id;
-                }
-                return (
-                    a.status.toLowerCase() === "online" &&
-                    b.status.toLowerCase() !== "online"
-                );
-            });
+            // onulist.sort((a, b) => {
+            //     if (
+            //         a.status.toLowerCase() === "online" &&
+            //         b.status.toLowerCase() === "online"
+            //     ) {
+            //         return a.onu_id - b.onu_id;
+            //     }
+            //     return (
+            //         a.status.toLowerCase() === "online" &&
+            //         b.status.toLowerCase() !== "online"
+            //     );
+            // });
             return onulist;
         }
     },
@@ -647,34 +620,124 @@ export default {
         },
         //  开启/关闭 批量管理状态
         show_batchmgmt() {
-            if (this.is_batch_mgmt) {
+            if (this.isBatchMgmt) {
                 this.batch_onulist = [];
             }
-            this.is_batch_mgmt = !this.is_batch_mgmt;
+            if (this.isBatchMgmt !== "") {
+                this.isBatchMgmt = "";
+            } else {
+                this.isBatchMgmt = "selection";
+                this.$refs["ont-allow-table"].clearSelection();
+            }
             this.search_str = "";
         },
-        //  全选/反选 按钮
-        change_select_status() {
-            this.select_all = !this.select_all;
-            this.batch_onulist = [];
-            const onulist = this.onulist.map(item => item.onu_id);
-            if (this.select_all) {
-                this.batch_onulist = onulist;
+        selecttionChange(selections) {
+            this.batch_onulist = selections;
+        },
+        command({ action, data }) {
+            const ACTIONS = {
+                detail(row) {
+                    this.onu_detail(row.port_id, row.onu_id);
+                },
+                port_config(row) {
+                    this.onu_port_config(row.port_id, row.onu_id);
+                },
+                delete(row) {
+                    this.delete_onu(row);
+                },
+                remove(row) {
+                    this.remove_onu(row);
+                },
+                reboot(row) {
+                    this.reboot(row);
+                }
+            };
+            if (typeof ACTIONS[action] === "function") {
+                ACTIONS[action].call(this, data);
             }
         },
-        mouseoverCb(e) {
-            const el = e.currentTarget;
-            const { bottom } = el.getBoundingClientRect();
-            const clientHeight = document.documentElement.clientHeight;
-            //  162 为下拉菜单的高度，30为补足footer栏高度
-            if (bottom + 162 + 30 > clientHeight) {
-                this.dropdownPosition = { top: "-162px" };
+        setRowStyle(row) {
+            return row.status.toLowerCase() === "online"
+                ? ""
+                : { color: "red" };
+        },
+        draggable(dragIndex, targetIndex) {
+            const list = this.onu_allow_list.slice(0);
+            list.splice(targetIndex, 0, list.splice(dragIndex, 1)[0]);
+            this.onu_allow_list = list;
+            this.isDraggable = true;
+        },
+        sortMethod(a, b) {
+            if (
+                (a.status.toLowerCase() !== "online" &&
+                    b.status.toLowerCase() !== "online") ||
+                (a.status.toLowerCase() === "online" &&
+                    b.status.toLowerCase() === "online")
+            ) {
+                return a.onu_id - b.onu_id;
+            }
+            if (!this.sortState) {
+                return (
+                    a.status.toLowerCase() === "online" &&
+                    b.status.toLowerCase() !== "online"
+                );
             } else {
-                this.dropdownPosition = {};
+                return (
+                    a.status.toLowerCase() !== "online" &&
+                    b.status.toLowerCase() === "online"
+                );
             }
         },
-        mouseoutCb() {
-            this.dropdownPosition = {};
+        sortChange(list) {
+            this.onu_allow_list = list;
+            this.isDraggable = false;
+            this.sortState = !this.sortState;
+        },
+        saveDrag() {
+            return this.$confirm(this.lanMap["unSaveInfo"])
+                .then(_ => {
+                    return this.$http
+                        .post("/onu_allow_list?form=sort", {
+                            method: "set",
+                            param: {
+                                port_id: Number(this.portid),
+                                onulist: this.onu_allow_list.map(
+                                    item => item.onu_id
+                                )
+                            }
+                        })
+                        .then(res => {
+                            if (res.data.code === 1) {
+                                this.$message.success(
+                                    this.lanMap["save"] +
+                                        this.lanMap["st_success"]
+                                );
+                                this.getData();
+                                this.isDraggable = false;
+                                return Promise.resolve();
+                            } else {
+                                this.$message.error(
+                                    `(${res.data.code}) ${res.data.message}`
+                                );
+                                return Promise.reject();
+                            }
+                        })
+                        .catch(_ => {});
+                })
+                .catch(_ => {});
+        }
+    },
+    beforeRouteLeave(to, from, next) {
+        if (this.isDraggable) {
+            this.saveDrag()
+                .then(_ => {
+                    next();
+                })
+                .catch(_ => {
+                    next();
+                });
+        } else {
+            next();
         }
     },
     watch: {
@@ -682,21 +745,6 @@ export default {
             sessionStorage.setItem("pid", Number(this.portid));
             this.getData();
             this.batch_onulist = [];
-        },
-        batch_onulist() {
-            this.$nextTick(() => {
-                if (this.batch_onulist.length === this.onulist.length) {
-                    this.select_all = true;
-                    this.selectall_state = true;
-                } else {
-                    this.select_all = false;
-                    this.selectall_state = false;
-                }
-                if (!this.onulist.length) {
-                    this.select_all = false;
-                    this.selectall_state = false;
-                }
-            });
         }
     }
 };
@@ -729,12 +777,6 @@ h2 {
 hr + div {
     margin: 30px 0 0 10px;
 }
-span {
-    display: inline-block;
-    width: 16%;
-    text-align: center;
-    font-size: 16px;
-}
 input {
     margin-left: 20px;
     margin-top: 9px;
@@ -750,9 +792,6 @@ select {
     border-radius: 3px;
     text-indent: 10px;
     margin-left: 6px;
-}
-select + a {
-    margin-left: 60px;
 }
 a {
     padding: 0 20px;
@@ -791,18 +830,24 @@ div.modal-item {
     line-height: 40px;
     vertical-align: middle;
     padding-left: 30px;
+    span {
+        display: inline-block;
+        width: 16%;
+        text-align: center;
+        font-size: 16px;
+    }
+    span.tips {
+        font-size: 14px;
+        margin-left: 10px;
+        width: auto;
+        color: @tipsColor;
+    }
 }
 div.modal-content input {
     margin: 0 0 0 20px;
 }
 div.modal-item select {
     margin: 0 0 0 20px;
-}
-span.tips {
-    font-size: 14px;
-    margin-left: 10px;
-    width: auto;
-    color: @tipsColor;
 }
 div.modal-btn {
     margin: 15px;
@@ -816,10 +861,6 @@ i.verified-actived {
 }
 i.unverified {
     background: url("../../../assets/unauthstatus-normal.png") no-repeat;
-}
-i.reload {
-    background: url("../../../assets/refresh.png") no-repeat;
-    margin: 0 20px 0;
 }
 span > span {
     width: 40px;
@@ -836,6 +877,7 @@ div.tool-tips {
     }
     > i.icon-tips {
         background: url("../../../assets/tips.png") no-repeat;
+        vertical-align: top;
     }
     > div {
         display: none;
@@ -862,10 +904,6 @@ div.tool-tips {
                 margin: 0;
                 &:first-child {
                     color: #3990e5;
-                }
-                > i.reload {
-                    margin: 0;
-                    background-position: 0 -2px;
                 }
             }
         }
@@ -909,69 +947,6 @@ div.batch-onu {
             margin: 0 20px;
             span {
                 display: inline;
-            }
-        }
-    }
-}
-table {
-    width: calc(~"100% - 20px");
-    border: 1px solid @borderColor;
-    margin: 16px 10px 0 10px;
-    td {
-        padding: 6px;
-        box-sizing: border-box;
-        text-align: center;
-        word-break: break-all;
-        border-color: @borderColor;
-    }
-    thead {
-        background: @tableHeaderBgColor;
-        color: @tableHeaderColor;
-    }
-    tbody {
-        tr {
-            &:hover {
-                background: #dfdfdf;
-            }
-        }
-        span {
-            width: auto;
-        }
-    }
-}
-.onu-table-dropdown-menu {
-    position: relative;
-    cursor: pointer;
-    padding: 3px 0;
-    line-height: 18px;
-    &:hover {
-        > div {
-            max-height: 210px;
-        }
-    }
-    > div {
-        background: #fff;
-        transition: all 0.2s linear;
-        box-shadow: 0 2px 12px 0 rgba(0, 0, 0, 0.1);
-        max-height: 0;
-        width: 160px;
-        z-index: 1;
-        overflow: hidden;
-        position: absolute;
-        left: -7px;
-        top: 24px;
-        border-radius: 5px;
-        color: #444;
-        > div {
-            line-height: 30px;
-            &:hover {
-                color: #67aef6;
-            }
-            &:first-child {
-                margin-top: 6px;
-            }
-            &:last-child {
-                margin-bottom: 6px;
             }
         }
     }
