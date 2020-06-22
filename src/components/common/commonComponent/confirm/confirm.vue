@@ -1,19 +1,3 @@
-<!-- <template>
-    <div v-if="visible" class="modal-dialog">
-        <div class="cover"></div>
-        <div>
-            <div class="confirm-title">{{ title || 'Notice' }}</div>
-            <hr />
-            <div class="tool-tips">{{ content ? content : 'Please confirm' }}</div>
-            <div>
-                <a href="javascript:;" @click="handleAction('confirm')">{{ 'apply' }}</a>
-                <a href="javascript:;" @click="handleAction('cancel')">{{ 'cancel' }}</a>
-            </div>
-        </div>
-    </div>
-     
-</template> -->
-
 <script>
 export default {
     name: "serviceConfirm",
@@ -30,37 +14,54 @@ export default {
     },
     methods: {
         confirm() {
-            return new Promise((resolve, reject) => {
+            const instance = new Promise((resolve, reject) => {
                 this.promiseActions = { resolve, reject };
             });
+            // 特殊情况下，需手动关闭时使用
+            instance.close = () => {
+                this.visible = false;
+            };
+            return instance;
         },
-        confirmHandle(){
+        confirmHandle() {
             this.visible = false;
-            return this.promiseActions.resolve('confirm');
+            return this.promiseActions.resolve("confirm");
         },
-        cancelHandle(){
+        cancelHandle() {
             this.visible = false;
-            return this.promiseActions.reject('cancel');
+            return this.promiseActions.reject("cancel");
         }
     },
-    render(h){
-        if(!this.visible){
-            return '';
+    render(h) {
+        if (!this.visible) {
+            return "";
         }
         return (
             <div class="modal-dialog">
                 <div class="cover"></div>
-                <div class={ this.center ? 'layout-center' : ''}>
-                    <div class="confirm-title">{ this.title || 'Notice' }</div>
+                <div class={this.center ? "layout-center" : ""}>
+                    <div class="confirm-title">{this.title || "Notice"}</div>
                     <hr />
-                    <div class="tool-tips">{ this.content ? this.content : 'Please confirm' }</div>
+                    <div class="tool-tips">
+                        {this.content ? this.content : "Please confirm"}
+                    </div>
                     <div class="msg-box-footer">
-                        <a href="javascript: void(0);" onClick={ this.confirmHandle }>{ this.confirmBtnText }</a>
-                        <a href="javascript: void(0);" onClick={ this.cancelHandle }>{ this.cancelBtnText }</a>
+                        <a
+                            href="javascript: void(0);"
+                            onClick={this.confirmHandle}
+                        >
+                            {this.confirmBtnText}
+                        </a>
+                        <a
+                            href="javascript: void(0);"
+                            onClick={this.cancelHandle}
+                        >
+                            {this.cancelBtnText}
+                        </a>
                     </div>
                 </div>
             </div>
-        )
+        );
     }
 };
 </script>
@@ -114,8 +115,8 @@ a:hover {
 a:active {
     border: 1px solid @activedButtonBorderColor;
 }
-.layout-center{
-    .msg-box-footer{
+.layout-center {
+    .msg-box-footer {
         position: initial;
         margin: 30px 0 0 0;
         width: 100%;
