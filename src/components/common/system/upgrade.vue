@@ -394,7 +394,7 @@ export default {
                                     type: "success",
                                     text: text1
                                 });
-                                this.$confirm(
+                                const cfm = this.$confirm(
                                     this.lanMap["upgrade_success"] + " ?"
                                 )
                                     .then(_ => {
@@ -404,6 +404,13 @@ export default {
                                         clearTimeout(this.reboot_timer);
                                     });
                                 this.reboot_timer = setTimeout(() => {
+                                    // 超时自动重启 olt时，关闭confirm
+                                    if (
+                                        cfm &&
+                                        typeof cfm.close === "function"
+                                    ) {
+                                        cfm.close();
+                                    }
                                     this.upgrade_result();
                                 }, 15000);
                                 clearInterval(this.interval);
