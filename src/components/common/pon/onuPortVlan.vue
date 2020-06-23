@@ -150,7 +150,6 @@
                 <div class="close" @click="close_modal"></div>
             </div>
         </div>
-        <confirm v-if="cfm_del_vlan" @choose="submit_del_tagmode"></confirm>
     </div>
 </template>
 
@@ -183,8 +182,7 @@ export default {
             mvlan: "",
             tag_mode: 0,
             svlan: "",
-            cvlan: "",
-            cfm_del_vlan: false
+            cvlan: ""
         };
     },
     created() {
@@ -274,9 +272,16 @@ export default {
                 });
         },
         open_cfm_del_vlan(node) {
-            this.cfm_del_vlan = true;
             this.svlan = node.svlan;
             this.cvlan = node.cvlan;
+            this.$confirm()
+                .then(_ => {
+                    this.submit_del_tagmode(svlan, cvlan);
+                })
+                .catch(_ => {})
+                .finally(_ => {
+                    this.flag = 0;
+                });
         },
         open_modal(flag) {
             this.flag = flag;
@@ -392,45 +397,35 @@ export default {
                 });
             this.close_modal();
         },
-        submit_del_tagmode(bool) {
-            if (bool) {
-                var post_param = {
-                    method: "delete",
-                    param: {
-                        port_id: Number(this.portid),
-                        onu_id: Number(this.onuid),
-                        op_id: Number(this.opid),
-                        tag_mode: 2,
-                        svlan: this.svlan,
-                        cvlan: this.cvlan
+        submit_del_tagmode(svlan, cvlan) {
+            var post_param = {
+                method: "delete",
+                param: {
+                    port_id: Number(this.portid),
+                    onu_id: Number(this.onuid),
+                    op_id: Number(this.opid),
+                    tag_mode: 2,
+                    svlan,
+                    cvlan
+                }
+            };
+            this.$http
+                .post("/onumgmt?form=mc_tag_mode", post_param)
+                .then(res => {
+                    if (res.data.code === 1) {
+                        this.$message({
+                            type: res.data.type,
+                            text: this.lanMap["st_success"]
+                        });
+                        this.getData();
+                    } else if (res.data.code > 1) {
+                        this.$message({
+                            type: res.data.type,
+                            text: "(" + res.data.code + ") " + res.data.message
+                        });
                     }
-                };
-                this.$http
-                    .post("/onumgmt?form=mc_tag_mode", post_param)
-                    .then(res => {
-                        if (res.data.code === 1) {
-                            this.$message({
-                                type: res.data.type,
-                                text: this.lanMap["st_success"]
-                            });
-                            this.getData();
-                        } else if (res.data.code > 1) {
-                            this.$message({
-                                type: res.data.type,
-                                text:
-                                    "(" +
-                                    res.data.code +
-                                    ") " +
-                                    res.data.message
-                            });
-                        }
-                    })
-                    .catch(err => {
-                        // to do
-                    });
-            }
-            this.cfm_del_vlan = false;
-            this.flag = 0;
+                })
+                .catch(err => {});
         },
         submit_add_mvlan() {
             if (this.mvlan < 1 || this.mvlan > 4094 || isNaN(this.mvlan)) {

@@ -249,10 +249,6 @@
             </div>
             <div v-else class="warning">{{ lanMap['flush_page_retry'] }}</div>
         </div>
-        <confirm :tool-tips="modal_tips" @choose="result" v-if="userChoose"></confirm>
-        <confirm :tool-tips="modal_tips" @choose="storm_result" v-if="stormCfg"></confirm>
-        <confirm :tool-tips="modal_tips" @choose="mirror_result" v-if="mirrorCfg"></confirm>
-        <confirm :tool-tips="modal_tips" @choose="flush_mirror_result" v-if="flush_mirror"></confirm>
     </div>
 </template>
 
@@ -300,10 +296,6 @@ export default {
             portid: 0,
             link_status: 0,
             admin_status: 0,
-            //  基本配置 confirm 弹出框
-            userChoose: false,
-            //  风暴控制 confirm 弹出框
-            stormCfg: false,
             //  交换配置更改项统计
             flags: 0,
             //  交换配置数据
@@ -328,9 +320,6 @@ export default {
                 multicast: 0,
                 unicast: 0
             },
-            //  端口镜像设置 confirm 弹出框
-            mirrorCfg: false,
-            flush_mirror: false,
             //  端口镜像数据
             mirror: {
                 src_port: 0,
@@ -453,111 +442,100 @@ export default {
             if (original.port_desc !== this.port_data.port_desc) {
                 this.flags += 2048;
             }
-            this.userChoose = true;
-            if (original.link_aggregation) {
-                this.modal_tips = this.lanMap["link_aggregation_tips"];
-            } else {
-                this.modal_tips = this.lanMap["if_sure"];
-            }
+            const modal_tips = original.link_aggregation
+                ? this.lanMap["link_aggregation_tips"]
+                : this.lanMap["if_sure"];
+            this.$confirm(modal_tips)
+                .then(_ => {
+                    this.result();
+                })
+                .catch(_ => {});
         },
         //  根据用户点击按钮，执行不同动作  -->  风暴控制
-        storm_result(bool) {
-            if (bool) {
-                var storm_cfg_data = this.stormctrl_data.data;
-                if (this.storm_flags === 0) {
-                    this.stormCfg = false;
-                    this.$message({
-                        type: "info",
-                        text: this.lanMap["modify_tips"]
-                    });
-                    return;
-                }
-                if (
-                    storm_cfg_data.broadcast != this.storm_data.broadcast &&
-                    (this.storm_data.broadcast === "" ||
-                        this.storm_data.broadcast < 0 ||
-                        this.storm_data.broadcast > 1488100 ||
-                        isNaN(this.storm_data.broadcast))
-                ) {
-                    this.stormCfg = false;
-                    this.$message({
-                        type: "error",
-                        text:
-                            this.lanMap["param_error"] +
-                            ":" +
-                            this.lanMap["broadcast"]
-                    });
-                    return;
-                }
-                if (
-                    storm_cfg_data.multicast != this.storm_data.multicast &&
-                    (this.storm_data.multicast === "" ||
-                        this.storm_data.multicast < 0 ||
-                        this.storm_data.multicast > 1488100 ||
-                        isNaN(this.storm_data.multicast))
-                ) {
-                    this.stormCfg = false;
-                    this.$message({
-                        type: "error",
-                        text:
-                            this.lanMap["param_error"] +
-                            ":" +
-                            this.lanMap["multicast"]
-                    });
-                    return;
-                }
-                if (
-                    storm_cfg_data.unicast != this.storm_data.unicast &&
-                    (this.storm_data.unicast === "" ||
-                        this.storm_data.unicast < 0 ||
-                        this.storm_data.unicast > 1488100 ||
-                        isNaN(this.storm_data.unicast))
-                ) {
-                    this.stormCfg = false;
-                    this.$message({
-                        type: "error",
-                        text:
-                            this.lanMap["param_error"] +
-                            ":" +
-                            this.lanMap["unicast"]
-                    });
-                    return;
-                }
-                var post_params = {
-                    method: "set",
-                    param: {
-                        port_id: Number(this.portid),
-                        flags: this.storm_flags,
-                        broadcast: Number(this.storm_data.broadcast),
-                        multicast: Number(this.storm_data.multicast),
-                        unicast: Number(this.storm_data.unicast)
-                    }
-                };
-                this.$http
-                    .post("/switch_port?form=stormctrl", post_params)
-                    .then(res => {
-                        if (res.data.code === 1) {
-                            this.$message({
-                                type: res.data.type,
-                                text: this.lanMap["setting_ok"]
-                            });
-                        } else if (res.data.code > 1) {
-                            this.$message({
-                                type: res.data.type,
-                                text:
-                                    "(" +
-                                    res.data.code +
-                                    ") " +
-                                    res.data.message
-                            });
-                        }
-                        this.getStormData();
-                    })
-                    .catch(err => {
-                        // to do
-                    });
+        storm_result() {
+            var storm_cfg_data = this.stormctrl_data.data;
+            if (this.storm_flags === 0) {
+                this.$message({
+                    type: "info",
+                    text: this.lanMap["modify_tips"]
+                });
+                return;
             }
-            this.stormCfg = false;
+            if (
+                storm_cfg_data.broadcast != this.storm_data.broadcast &&
+                (this.storm_data.broadcast === "" ||
+                    this.storm_data.broadcast < 0 ||
+                    this.storm_data.broadcast > 1488100 ||
+                    isNaN(this.storm_data.broadcast))
+            ) {
+                this.$message({
+                    type: "error",
+                    text:
+                        this.lanMap["param_error"] +
+                        ":" +
+                        this.lanMap["broadcast"]
+                });
+                return;
+            }
+            if (
+                storm_cfg_data.multicast != this.storm_data.multicast &&
+                (this.storm_data.multicast === "" ||
+                    this.storm_data.multicast < 0 ||
+                    this.storm_data.multicast > 1488100 ||
+                    isNaN(this.storm_data.multicast))
+            ) {
+                this.$message({
+                    type: "error",
+                    text:
+                        this.lanMap["param_error"] +
+                        ":" +
+                        this.lanMap["multicast"]
+                });
+                return;
+            }
+            if (
+                storm_cfg_data.unicast != this.storm_data.unicast &&
+                (this.storm_data.unicast === "" ||
+                    this.storm_data.unicast < 0 ||
+                    this.storm_data.unicast > 1488100 ||
+                    isNaN(this.storm_data.unicast))
+            ) {
+                this.$message({
+                    type: "error",
+                    text:
+                        this.lanMap["param_error"] +
+                        ":" +
+                        this.lanMap["unicast"]
+                });
+                return;
+            }
+            var post_params = {
+                method: "set",
+                param: {
+                    port_id: Number(this.portid),
+                    flags: this.storm_flags,
+                    broadcast: Number(this.storm_data.broadcast),
+                    multicast: Number(this.storm_data.multicast),
+                    unicast: Number(this.storm_data.unicast)
+                }
+            };
+            this.$http
+                .post("/switch_port?form=stormctrl", post_params)
+                .then(res => {
+                    if (res.data.code === 1) {
+                        this.$message({
+                            type: res.data.type,
+                            text: this.lanMap["setting_ok"]
+                        });
+                    } else if (res.data.code > 1) {
+                        this.$message({
+                            type: res.data.type,
+                            text: "(" + res.data.code + ") " + res.data.message
+                        });
+                    }
+                    this.getStormData();
+                })
+                .catch(err => {});
         },
         //  点击风暴控制栏的确认按钮时弹出确认层，并收集数据
         storm_cfg() {
@@ -572,260 +550,220 @@ export default {
             if (storm_cfg_data.unicast != this.storm_data.unicast) {
                 this.storm_flags += 1;
             }
-            this.stormCfg = true;
-            if (storm_cfg_data.link_aggregation) {
-                this.modal_tips = this.lanMap["link_aggregation_tips"];
-            } else {
-                this.modal_tips = this.lanMap["if_sure"];
-            }
+            const modal_tips = storm_cfg_data.link_aggregation
+                ? this.lanMap["link_aggregation_tips"]
+                : this.lanMap["if_sure"];
+            this.$confirm(modal_tips)
+                .then(_ => {
+                    this.storm_result();
+                })
+                .catch(_ => {});
         },
         //  根据用户点击按钮，执行不同动作  -->  交换基本配置
-        result(bool) {
-            if (bool) {
-                var original = this.swich_port_info.data;
-                if (this.flags === 0) {
-                    this.userChoose = false;
-                    this.$message({
-                        type: "info",
-                        text: this.lanMap["modify_tips"]
-                    });
-                    return;
-                }
-                if (
-                    original.mtu !== this.port_data.mtu &&
-                    (!this.port_data.mtu ||
-                        this.port_data.mtu < 128 ||
-                        this.port_data.mtu > 2000 ||
-                        isNaN(this.port_data.mtu))
-                ) {
-                    this.userChoose = false;
-                    this.$message({
-                        type: "error",
-                        text:
-                            this.lanMap["param_error"] +
-                            ":" +
-                            this.lanMap["mtu"]
-                    });
-                    return;
-                }
-                if (
-                    original.erate !== this.port_data.erate &&
-                    this.portid > this.system.data.ponports &&
-                    (this.port_data.erate === "" ||
-                        (this.port_data.erate !== 0 &&
-                            (this.port_data.erate < 64 ||
-                                this.port_data.erate > 1024000)) ||
-                        isNaN(this.port_data.erate))
-                ) {
-                    this.userChoose = false;
-                    this.$message({
-                        type: "error",
-                        text:
-                            this.lanMap["param_error"] +
-                            ":" +
-                            this.lanMap["erate"]
-                    });
-                    return;
-                }
-                if (
-                    original.irate !== this.port_data.irate &&
-                    this.portid > this.system.data.ponports &&
-                    (this.port_data.irate === "" ||
-                        (this.port_data.irate !== 0 &&
-                            (this.port_data.irate < 64 ||
-                                this.port_data.irate > 1024000)) ||
-                        isNaN(this.port_data.irate))
-                ) {
-                    this.userChoose = false;
-                    this.$message({
-                        type: "error",
-                        text:
-                            this.lanMap["param_error"] +
-                            ":" +
-                            this.lanMap["irate"]
-                    });
-                    return;
-                }
-                if (
-                    original.pvid !== this.port_data.pvid &&
-                    (!this.port_data.pvid ||
-                        this.port_data.pvid < 1 ||
-                        this.port_data.pvid > 4094 ||
-                        isNaN(this.port_data.pvid))
-                ) {
-                    this.userChoose = false;
-                    this.$message({
-                        type: "error",
-                        text:
-                            this.lanMap["param_error"] +
-                            ":" +
-                            this.lanMap["pvid"]
-                    });
-                    return;
-                }
-                if (this.port_data.port_desc.length > 64) {
-                    this.userChoose = false;
-                    this.$message.error(
-                        `${this.lanMap["param_error"]}: ${this.lanMap["port_desc"]}`
-                    );
-                    return;
-                }
-                var post_params = {
-                    method: "set",
-                    param: {
-                        port_id: Number(this.portid),
-                        flags: this.flags,
-                        admin_status: this.port_data.admin_status,
-                        auto_neg: this.port_data.auto_neg,
-                        speed: this.port_data.speed,
-                        duplex: this.port_data.duplex,
-                        flow_ctrl: this.port_data.flow_ctrl,
-                        mtu: Number(this.port_data.mtu),
-                        erate: Number(this.port_data.erate),
-                        irate: Number(this.port_data.irate),
-                        pvid: Number(this.port_data.pvid),
-                        port_desc: this.port_data.port_desc
-                    }
-                };
-                this.$http
-                    .post("/switch_port?form=port_info", post_params)
-                    .then(res => {
-                        if (res.data.code === 1) {
-                            this.$message({
-                                type: res.data.type,
-                                text: this.lanMap["setting_ok"]
-                            });
-                        } else if (res.data.code > 1) {
-                            this.$message({
-                                type: res.data.type,
-                                text:
-                                    "(" +
-                                    res.data.code +
-                                    ") " +
-                                    res.data.message
-                            });
-                        }
-                        this.getPortData();
-                    })
-                    .catch(err => {
-                        // to do
-                    });
+        result() {
+            var original = this.swich_port_info.data;
+            if (this.flags === 0) {
+                this.$message({
+                    type: "info",
+                    text: this.lanMap["modify_tips"]
+                });
+                return;
             }
-            this.userChoose = false;
+            if (
+                original.mtu !== this.port_data.mtu &&
+                (!this.port_data.mtu ||
+                    this.port_data.mtu < 128 ||
+                    this.port_data.mtu > 2000 ||
+                    isNaN(this.port_data.mtu))
+            ) {
+                this.$message({
+                    type: "error",
+                    text: this.lanMap["param_error"] + ":" + this.lanMap["mtu"]
+                });
+                return;
+            }
+            if (
+                original.erate !== this.port_data.erate &&
+                this.portid > this.system.data.ponports &&
+                (this.port_data.erate === "" ||
+                    (this.port_data.erate !== 0 &&
+                        (this.port_data.erate < 64 ||
+                            this.port_data.erate > 1024000)) ||
+                    isNaN(this.port_data.erate))
+            ) {
+                this.$message({
+                    type: "error",
+                    text:
+                        this.lanMap["param_error"] + ":" + this.lanMap["erate"]
+                });
+                return;
+            }
+            if (
+                original.irate !== this.port_data.irate &&
+                this.portid > this.system.data.ponports &&
+                (this.port_data.irate === "" ||
+                    (this.port_data.irate !== 0 &&
+                        (this.port_data.irate < 64 ||
+                            this.port_data.irate > 1024000)) ||
+                    isNaN(this.port_data.irate))
+            ) {
+                this.$message({
+                    type: "error",
+                    text:
+                        this.lanMap["param_error"] + ":" + this.lanMap["irate"]
+                });
+                return;
+            }
+            if (
+                original.pvid !== this.port_data.pvid &&
+                (!this.port_data.pvid ||
+                    this.port_data.pvid < 1 ||
+                    this.port_data.pvid > 4094 ||
+                    isNaN(this.port_data.pvid))
+            ) {
+                this.$message({
+                    type: "error",
+                    text: this.lanMap["param_error"] + ":" + this.lanMap["pvid"]
+                });
+                return;
+            }
+            if (this.port_data.port_desc.length > 64) {
+                this.$message.error(
+                    `${this.lanMap["param_error"]}: ${this.lanMap["port_desc"]}`
+                );
+                return;
+            }
+            var post_params = {
+                method: "set",
+                param: {
+                    port_id: Number(this.portid),
+                    flags: this.flags,
+                    admin_status: this.port_data.admin_status,
+                    auto_neg: this.port_data.auto_neg,
+                    speed: this.port_data.speed,
+                    duplex: this.port_data.duplex,
+                    flow_ctrl: this.port_data.flow_ctrl,
+                    mtu: Number(this.port_data.mtu),
+                    erate: Number(this.port_data.erate),
+                    irate: Number(this.port_data.irate),
+                    pvid: Number(this.port_data.pvid),
+                    port_desc: this.port_data.port_desc
+                }
+            };
+            this.$http
+                .post("/switch_port?form=port_info", post_params)
+                .then(res => {
+                    if (res.data.code === 1) {
+                        this.$message({
+                            type: res.data.type,
+                            text: this.lanMap["setting_ok"]
+                        });
+                    } else if (res.data.code > 1) {
+                        this.$message({
+                            type: res.data.type,
+                            text: "(" + res.data.code + ") " + res.data.message
+                        });
+                    }
+                    this.getPortData();
+                })
+                .catch(err => {});
         },
         //  端口镜像  确认框
         mirror_cfg() {
-            this.mirrorCfg = true;
-            this.modal_tips = this.lanMap["if_sure"];
+            this.$confirm()
+                .then(_ => {
+                    this.mirror_result();
+                })
+                .catch(_ => {});
         },
         //  端口镜像  清除按钮
         flush_mirror_cfg() {
-            this.flush_mirror = true;
+            this.$confirm()
+                .then(_ => {
+                    this.flush_mirror_result();
+                })
+                .catch(_ => {});
         },
-        flush_mirror_result(bool) {
-            if (bool) {
-                var post_param = {
-                    method: "clear",
-                    param: {
-                        src_port: Number(this.portid)
+        flush_mirror_result() {
+            var post_param = {
+                method: "clear",
+                param: {
+                    src_port: Number(this.portid)
+                }
+            };
+            this.$http
+                .post("/switch_port?form=mirror", post_param)
+                .then(res => {
+                    if (res.data.code === 1) {
+                        this.$message({
+                            type: res.data.type,
+                            text: this.lanMap["setting_ok"]
+                        });
+                    } else if (res.data.code > 1) {
+                        this.$message({
+                            type: res.data.type,
+                            text: "(" + res.data.code + ") " + res.data.message
+                        });
                     }
-                };
-                this.$http
-                    .post("/switch_port?form=mirror", post_param)
-                    .then(res => {
-                        if (res.data.code === 1) {
-                            this.$message({
-                                type: res.data.type,
-                                text: this.lanMap["setting_ok"]
-                            });
-                        } else if (res.data.code > 1) {
-                            this.$message({
-                                type: res.data.type,
-                                text:
-                                    "(" +
-                                    res.data.code +
-                                    ") " +
-                                    res.data.message
-                            });
-                        }
-                        this.getMirrorData();
-                    })
-                    .catch(err => {
-                        // to do
-                    });
-            }
-            this.flush_mirror = false;
+                    this.getMirrorData();
+                })
+                .catch(err => {});
         },
         //  端口镜像框内确认/取消按钮
-        mirror_result(bool) {
-            if (bool) {
-                var data = this.mirror_data.data;
-                if (
-                    data.dst_port === this.mirror.dst_port &&
-                    data.type === this.mirror.type
-                ) {
-                    this.mirrorCfg = false;
-                    this.$message({
-                        type: "info",
-                        text: this.lanMap["modify_tips"]
-                    });
-                    return;
-                }
-                if (this.mirror.dst_port === 0 && this.mirror.type !== 0) {
-                    this.mirrorCfg = false;
-                    this.$message({
-                        type: "error",
-                        text:
-                            this.lanMap["param_error"] +
-                            ":" +
-                            this.lanMap["dst_port"]
-                    });
-                    return;
-                }
-                if (this.mirror.dst_port !== 0 && this.mirror.type === 0) {
-                    this.mirrorCfg = false;
-                    this.$message({
-                        type: "error",
-                        text:
-                            this.lanMap["param_error"] +
-                            ":" +
-                            this.lanMap["type"]
-                    });
-                    return;
-                }
-                var post_params = {
-                    method: "set",
-                    param: {
-                        src_port: Number(this.portid),
-                        dst_port: this.mirror.dst_port,
-                        type: this.mirror.type
-                    }
-                };
-                this.$http
-                    .post("/switch_port?form=mirror", post_params)
-                    .then(res => {
-                        if (res.data.code === 1) {
-                            this.$message({
-                                type: res.data.type,
-                                text: this.lanMap["setting_ok"]
-                            });
-                        } else if (res.data.code > 1) {
-                            this.$message({
-                                type: res.data.type,
-                                text:
-                                    "(" +
-                                    res.data.code +
-                                    ") " +
-                                    res.data.message
-                            });
-                        }
-                        this.getMirrorData();
-                    })
-                    .catch(err => {
-                        // to do
-                    });
+        mirror_result() {
+            var data = this.mirror_data.data;
+            if (
+                data.dst_port === this.mirror.dst_port &&
+                data.type === this.mirror.type
+            ) {
+                this.$message({
+                    type: "info",
+                    text: this.lanMap["modify_tips"]
+                });
+                return;
             }
-            this.mirrorCfg = false;
+            if (this.mirror.dst_port === 0 && this.mirror.type !== 0) {
+                this.$message({
+                    type: "error",
+                    text:
+                        this.lanMap["param_error"] +
+                        ":" +
+                        this.lanMap["dst_port"]
+                });
+                return;
+            }
+            if (this.mirror.dst_port !== 0 && this.mirror.type === 0) {
+                this.$message({
+                    type: "error",
+                    text: this.lanMap["param_error"] + ":" + this.lanMap["type"]
+                });
+                return;
+            }
+            var post_params = {
+                method: "set",
+                param: {
+                    src_port: Number(this.portid),
+                    dst_port: this.mirror.dst_port,
+                    type: this.mirror.type
+                }
+            };
+            this.$http
+                .post("/switch_port?form=mirror", post_params)
+                .then(res => {
+                    if (res.data.code === 1) {
+                        this.$message({
+                            type: res.data.type,
+                            text: this.lanMap["setting_ok"]
+                        });
+                    } else if (res.data.code > 1) {
+                        this.$message({
+                            type: res.data.type,
+                            text: "(" + res.data.code + ") " + res.data.message
+                        });
+                    }
+                    this.getMirrorData();
+                })
+                .catch(err => {});
         },
         getPortData() {
             this.$http
