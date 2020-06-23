@@ -303,7 +303,7 @@ export default {
                 this.post_url = "/onu_allow_list?form=batch";
                 olist = olist
                     .map(item => {
-                        return Number(item);
+                        return item.onu_id;
                     })
                     .sort((a, b) => a - b);
             } else {
@@ -457,7 +457,7 @@ export default {
                 this.post_url = "/onu_allow_list?form=batch";
                 olist = olist
                     .map(item => {
-                        return Number(item);
+                        return item.onu_id;
                     })
                     .sort((a, b) => a - b);
             } else {
