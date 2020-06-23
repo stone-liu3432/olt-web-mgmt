@@ -297,7 +297,7 @@ export default {
         // 删除onu
         delete_onu(node) {
             var olist;
-            this.post_url = "/onu_allow_list";
+            this.post_url = "/onu_allow_list?form=onucfg";
             if (!node) {
                 olist = this.batch_onulist;
                 this.post_url = "/onu_allow_list?form=batch";
@@ -379,7 +379,7 @@ export default {
                     }
                 };
                 this.$http
-                    .post("/onu_allow_list", post_params)
+                    .post("/onu_allow_list?form=onucfg", post_params)
                     .then(res => {
                         if (res.data.code === 1) {
                             this.$message({
@@ -407,7 +407,7 @@ export default {
         //  onu认证/取消认证确认框
         result_authstate(data) {
             this.$http
-                .post("/onu_allow_list", data)
+                .post("/onu_allow_list?form=onucfg", data)
                 .then(res => {
                     if (res.data.code === 1) {
                         this.$message({
@@ -451,7 +451,7 @@ export default {
         //  移动ONU到阻止列表
         remove_onu(node) {
             var olist;
-            this.post_url = "/onu_allow_list";
+            this.post_url = "/onu_allow_list?form=onucfg";
             if (!node) {
                 olist = this.batch_onulist;
                 this.post_url = "/onu_allow_list?form=batch";
