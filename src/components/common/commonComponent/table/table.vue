@@ -1,9 +1,10 @@
 <script>
 import tableColumnSlot from "./tableSlots";
 import { removeItem } from "@/utils/common";
+import nmsSortIcon from "../svg/sort";
 export default {
     name: "nmsTable",
-    components: { tableColumnSlot },
+    components: { tableColumnSlot, nmsSortIcon },
     props: {
         border: {
             type: Boolean,
@@ -32,17 +33,34 @@ export default {
         showHeader: {
             type: Boolean,
             default: true
+        },
+        draggable: {
+            type: Boolean,
+            default: false
+        }
+    },
+    computed: {
+        type() {
+            const row = this.columns.filter(item => !!item.type);
+            return row.length ? row[0].type : "";
+        },
+        typeIndex() {
+            const row = this.columns.filter(item => !!item.type);
+            return this.columns.indexOf(row[0]);
         }
     },
     data() {
         return {
-            type: "",
             cusIndex: 1,
             expandedRows: [],
             columns: [],
             colIndex: 0,
             selections: [],
-            selectAll: false
+            selectAll: false,
+            dragRow: null,
+            targetRow: null,
+            tableRows: [],
+            cacheRows: []
         };
     },
     provide() {
@@ -53,9 +71,6 @@ export default {
     methods: {
         commitData(col) {
             !this.columns.includes(col) && this.columns.push(col);
-            if (col.type) {
-                this.type = col.type;
-            }
         },
         setRowStyle(row, rowIndex) {
             const rowStyle = this.rowStyle;
@@ -98,6 +113,72 @@ export default {
                 this.expandedRows.push(row);
             }
             this.$emit("expand-change", row, this.expandedRows);
+        },
+        clearSelection() {
+            this.selectAll = false;
+            this.selections = [];
+        },
+        dragStart(e, row) {
+            e.stopPropagation();
+            // firefox
+            e.dataTransfer.setData("text", " ");
+            e.dataTransfer.effectAllowed = "move";
+            this.dragRow = row;
+        },
+        dragEnd(e, row) {
+            e.stopPropagation();
+            if (this.targetRow === this.dragRow) {
+                return;
+            }
+            this.$emit(
+                "draggable",
+                this.tableRows.indexOf(this.dragRow),
+                this.tableRows.indexOf(this.targetRow)
+            );
+        },
+        dragEnter(e, row) {
+            e.stopPropagation();
+            if (this.targetRow === e.target) {
+                return;
+            }
+            e.dataTransfer.dropEffect = "move";
+            this.targetRow = row;
+        },
+        dragLeave(e, row) {
+            e.stopPropagation();
+        },
+        dragOver(e, row) {
+            e.stopPropagation();
+            e.dataTransfer.dropEffect = "move";
+        },
+        sortRows(row) {
+            if (typeof row.sortMethod === "function") {
+                this.tableRows.sort(row.sortMethod);
+                this.$emit("sort-change", this.tableRows);
+                return;
+            }
+            if (row.sortBy) {
+                const sortMethods = {
+                    ascending(a, b) {
+                        return a[row.sortBy] - b[row.sortBy];
+                    },
+                    descending(a, b) {
+                        return b[row.sortBy] - a[row.sortBy];
+                    }
+                };
+                const func = sortMethods[row.sortOrders[row.sortFlags]];
+                if (typeof func === "function") {
+                    this.tableRows.sort(func);
+                }
+                if (row.sortOrders[row.sortFlags] === null) {
+                    this.tableRows = this.cacheRows.slice(0);
+                }
+                row.sortFlags += 1;
+                if (row.sortFlags >= row.sortOrders.length) {
+                    row.sortFlags = 0;
+                }
+                this.$emit("sort-change", this.tableRows);
+            }
         }
     },
     render(h) {
@@ -124,16 +205,17 @@ export default {
                         <input
                             type="checkbox"
                             value={index}
-                            checked={this.selections.includes(index)}
+                            checked={this.selections.includes(row)}
                             onChange={e => {
                                 const val = e.target.checked;
                                 val
-                                    ? this.selections.includes(index)
+                                    ? this.selections.includes(row)
                                         ? ""
-                                        : this.selections.push(index)
-                                    : removeItem(this.selections, index);
+                                        : this.selections.push(row)
+                                    : removeItem(this.selections, row);
                                 if (
-                                    this.selections.length === this.rows.length
+                                    this.selections.length ===
+                                    this.tableRows.length
                                 ) {
                                     this.selectAll = true;
                                 } else {
@@ -176,7 +258,8 @@ export default {
             }
         };
         const generateRows = (row, index) => {
-            return this.columns.map((col, colIndex) => {
+            const cols = this.columns.filter(item => item.type !== "");
+            return cols.map((col, colIndex) => {
                 if (col.type) {
                     if (col.type === "index") {
                         this.cusIndex = col.index;
@@ -227,11 +310,25 @@ export default {
             });
         };
         const generateTbody = () => {
-            return this.rows.map((row, index) => {
+            return this.tableRows.map((row, index) => {
                 return [
                     <tr
                         style={this.setRowStyle(row, index)}
                         class={this.setRowClass(row, index)}
+                        draggable={this.draggable}
+                        onDragstart={e =>
+                            this.draggable && this.dragStart(e, row)
+                        }
+                        onDragend={e => this.draggable && this.dragEnd(e, row)}
+                        onDragenter={e =>
+                            this.draggable && this.dragEnter(e, row)
+                        }
+                        onDragleave={e =>
+                            this.draggable && this.dragLeave(e, row)
+                        }
+                        onDragOner={e =>
+                            this.draggable && this.dragOver(e, row)
+                        }
                     >
                         {generateRowHeader(row, index)}
                         {generateRows(row, index)}
@@ -256,11 +353,16 @@ export default {
                                       const val = e.target.checked;
                                       this.selectAll = val;
                                       if (val) {
-                                          this.rows.forEach((item, index) => {
-                                              !this.selections.includes(
-                                                  index
-                                              ) && this.selections.push(index);
-                                          });
+                                          this.tableRows.forEach(
+                                              (item, index) => {
+                                                  !this.selections.includes(
+                                                      item
+                                                  ) &&
+                                                      this.selections.push(
+                                                          item
+                                                      );
+                                              }
+                                          );
                                       } else {
                                           this.selections = [];
                                       }
@@ -276,12 +378,22 @@ export default {
                       )
                     : res.push(<th></th>);
             }
-            res.push(
-                this.columns.map(item => {
+            const cols = this.columns.filter(item => item.type !== "");
+            res.push.apply(
+                res,
+                cols.map(item => {
                     return item.type ? null : (
-                        <th style={item.headerStyle}>
+                        <th
+                            style={{
+                                cursor: item.sortable ? "pointer" : "",
+                                userSelect: item.sortable ? "none" : "",
+                                ...item.headerStyle
+                            }}
+                            onClick={e => item.sortable && this.sortRows(item)}
+                        >
                             {item.header ||
                                 (item.label === undefined ? "" : item.label)}
+                            {item.sortable && <nms-sort-icon></nms-sort-icon>}
                         </th>
                     );
                 })
@@ -298,10 +410,16 @@ export default {
                 <thead>{generateThead()}</thead>
                 {this.$slots.default}
                 <tbody>
-                    {this.rows.length ? generateTbody() : emptySlot()}
+                    {this.tableRows.length ? generateTbody() : emptySlot()}
                 </tbody>
             </table>
         );
+    },
+    watch: {
+        rows() {
+            this.tableRows = this.rows;
+            this.cacheRows = this.rows.slice(0);
+        }
     }
 };
 </script>
