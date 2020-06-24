@@ -396,13 +396,15 @@ export default {
                                 });
                                 const cfm = this.$confirm(
                                     this.lanMap["upgrade_success"] + " ?"
-                                )
-                                    .then(_ => {
+                                );
+                                cfm.then(
+                                    _ => {
                                         this.upgrade_result();
-                                    })
-                                    .catch(_ => {
+                                    },
+                                    _ => {
                                         clearTimeout(this.reboot_timer);
-                                    });
+                                    }
+                                );
                                 this.reboot_timer = setTimeout(() => {
                                     // 超时自动重启 olt时，关闭confirm
                                     if (
