@@ -4,12 +4,21 @@
             <h2>{{ lanMap['onu_allow'] }}</h2>
             <span>{{ lanMap['port_id'] }}</span>
             <select v-model.number="portid">
+                <option :value="0x100">{{ lanMap['all'] }}</option>
                 <option
                     v-for="(item,key) in port_name.pon"
                     :key="key"
                     :value="item.id"
                 >{{ item.name }}</option>
             </select>
+            <template v-if="onu_allow_list.length">
+                <span class="onu-count onu-total">{{ lanMap['registered_onu'] }}:</span>
+                <span>{{ onu_allow_list.length }}</span>
+                <span class="onu-count onu-online">{{ lanMap['online'] }}:</span>
+                <span>{{ onlineCount }}</span>
+                <span class="onu-count onu-offline">{{ lanMap['offline'] }}:</span>
+                <span>{{ onu_allow_list.length - onlineCount }}</span>
+            </template>
         </div>
         <hr />
         <div>
@@ -17,16 +26,18 @@
             <a href="javascript:void(0);" @click="add_onu" v-if="custom.addonu">{{ lanMap['add'] }}</a>
             <a href="javascript:void(0);" @click="onu_bandwieth">{{ lanMap['sla_cfg'] }}</a>
             <a href="javascript:void(0);" @click="onu_deny">{{ lanMap['onu_deny'] }}</a>
-            <a
-                href="javascript:void(0);"
-                @click="show_batchmgmt"
-                v-if="!isBatchMgmt"
-            >{{ lanMap['batch_mgmt_onu'] }}</a>
-            <a
-                href="javascript:void(0);"
-                @click="show_batchmgmt"
-                v-else
-            >{{ lanMap['exit_batch_onu'] }}</a>
+            <template v-if="isAll">
+                <a
+                    href="javascript:void(0);"
+                    @click="show_batchmgmt"
+                    v-if="!isBatchMgmt"
+                >{{ lanMap['batch_mgmt_onu'] }}</a>
+                <a
+                    href="javascript:void(0);"
+                    @click="show_batchmgmt"
+                    v-else
+                >{{ lanMap['exit_batch_onu'] }}</a>
+            </template>
             <a href="javascript: void(0);" v-if="isDraggable" @click="saveDrag">{{ lanMap['save'] }}</a>
             <div class="rt tool-tips">
                 <i class="icon-tips"></i>
@@ -109,7 +120,7 @@
         <nms-table
             :rows="onulist"
             border
-            draggable
+            :draggable="isAll"
             ref="ont-allow-table"
             :rowStyle="setRowStyle"
             @selection-change="selecttionChange"
@@ -236,6 +247,14 @@ export default {
             //     );
             // });
             return onulist;
+        },
+        onlineCount() {
+            return this.onu_allow_list.filter(
+                item => item.status.toLowerCase() === "online"
+            ).length;
+        },
+        isAll() {
+            return this.portid !== 0x100;
         }
     },
     activated() {
@@ -244,8 +263,8 @@ export default {
         this.getData();
     },
     created() {
-        var pid = sessionStorage.getItem("pid");
-        this.portid = this.$route.query.port_id || pid || 1;
+        var pid = Number(sessionStorage.getItem("pid"));
+        this.portid = this.$route.query.port_id || pid || 0x100;
         if (this.$route.query.port_id) {
             this.$router.push("/onu_allow");
         }
@@ -260,9 +279,7 @@ export default {
                         }
                     }
                 })
-                .catch(err => {
-                    // to do
-                });
+                .catch(err => {});
         }
     },
     methods: {
@@ -278,8 +295,12 @@ export default {
         getData() {
             this.search_str = "";
             this.onu_allow_list = [];
+            const url =
+                this.portid === 0x100
+                    ? this.change_url.onu_allow_all
+                    : "/onu_allow_list?port_id=" + this.portid;
             this.$http
-                .get("/onu_allow_list?port_id=" + this.portid)
+                .get(url)
                 .then(res => {
                     if (res.data.code === 1) {
                         if (Array.isArray(res.data.data)) {
@@ -319,7 +340,7 @@ export default {
             const post_params = {
                 method: "delete",
                 param: {
-                    port_id: Number(this.portid),
+                    port_id: node.port_id,
                     onu_id: olist,
                     macaddr: node ? node.macaddr : ""
                 }
@@ -431,7 +452,7 @@ export default {
             const post_params = {
                 method: "set",
                 param: {
-                    port_id: Number(this.portid),
+                    port_id: node.port_id,
                     onu_id: node.onu_id,
                     macaddr: node ? node.macaddr : "",
                     auth_state: node.auth_state ? 0 : 1,
@@ -473,7 +494,7 @@ export default {
             const post_params = {
                 method: "reject",
                 param: {
-                    port_id: Number(this.portid),
+                    port_id: node.port_id,
                     onu_id: olist,
                     macaddr: node ? node.macaddr : ""
                 }
@@ -524,7 +545,7 @@ export default {
             const post_params = {
                 method: "set",
                 param: {
-                    port_id: Number(this.portid),
+                    port_id: item.port_id,
                     onu_id: item.onu_id,
                     flags: 1,
                     fec_mode: 1
@@ -740,6 +761,13 @@ export default {
             next();
         }
     },
+    // hack 其他页无 portid 为 0x100 的情况
+    beforeDestroy() {
+        const pid = Number(sessionStorage.getItem("pid"));
+        if (pid === 0x100) {
+            sessionStorage.setItem("pid", 1);
+        }
+    },
     watch: {
         portid() {
             sessionStorage.setItem("pid", Number(this.portid));
@@ -758,8 +786,8 @@ h2 {
     margin: 0 0 0 20px;
 }
 .onu-allow {
-    padding-top: 70px;
-    padding-bottom: 30px;
+    height: calc(~"100% - 100px");
+    overflow-y: auto;
     > div:first-child {
         height: 36px;
         line-height: 36px;
@@ -949,6 +977,28 @@ div.batch-onu {
                 display: inline;
             }
         }
+    }
+}
+span.onu-count {
+    display: inline-block;
+    vertical-align: middle;
+    margin-left: 30px;
+    font-weight: 600;
+    & + span {
+        display: inline-block;
+        vertical-align: middle;
+        margin-left: 6px;
+        font-weight: 600;
+    }
+    &.onu-total,
+    &.onu-total + span,
+    &.onu-online,
+    &.onu-online + span {
+        color: #1478de;
+    }
+    &.onu-offline,
+    &.onu-offline + span {
+        color: #f56c6c;
     }
 }
 </style>
