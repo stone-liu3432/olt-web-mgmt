@@ -1,34 +1,47 @@
 <template>
     <div id="home">
-        <div class="port-info">
-            <h3>{{ lanMap['pon_info'] }}</h3>
-            <div>
-                <port
-                    v-for="(item,index) in ponInfo.data"
-                    :key="index"
-                    :port-info="item"
-                    port-type="pon"
-                    v-if="ponInfo.data && ponInfo.data.length "
-                ></port>
+        <div class="port-container">
+            <div class="port-info">
+                <h3>
+                    <span>{{ lanMap['pon_info'] }}</span>
+                    <span
+                        class="onu-count"
+                        style="margin-left: 100px;"
+                    >{{ lanMap['registered_onu'] }}:</span>
+                    <span>{{ online + offline }}</span>
+                    <span class="onu-count">{{ lanMap['online'] }}:</span>
+                    <span>{{ online }}</span>
+                    <span class="onu-count onu-offline">{{ lanMap['offline'] }}:</span>
+                    <span>{{ offline }}</span>
+                </h3>
+                <div>
+                    <port
+                        v-for="(item,index) in ponInfo.data"
+                        :key="index"
+                        :port-info="item"
+                        port-type="pon"
+                        v-if="ponInfo.data && ponInfo.data.length "
+                    ></port>
+                </div>
             </div>
-        </div>
-        <div class="port-info">
-            <h3>{{ lanMap['ge_port_info'] }}</h3>
-            <div>
-                <port
-                    v-for="(item,index) in port_name.ge"
-                    :key="index"
-                    :port-info="item"
-                    port-type="ge"
-                    v-if="port_name && port_name.ge"
-                ></port>
-                <port
-                    v-for="(item,index) in port_name.xge"
-                    :key="index"
-                    :port-info="item"
-                    port-type="xge"
-                    v-if="port_name && port_name.xge"
-                ></port>
+            <div class="port-info">
+                <h3>{{ lanMap['ge_port_info'] }}</h3>
+                <div>
+                    <port
+                        v-for="(item,index) in port_name.ge"
+                        :key="index"
+                        :port-info="item"
+                        port-type="ge"
+                        v-if="port_name && port_name.ge"
+                    ></port>
+                    <port
+                        v-for="(item,index) in port_name.xge"
+                        :key="index"
+                        :port-info="item"
+                        port-type="xge"
+                        v-if="port_name && port_name.xge"
+                    ></port>
+                </div>
             </div>
         </div>
     </div>
@@ -46,7 +59,27 @@ export default {
             interval: null
         };
     },
-    computed: mapState(["port_name", "lanMap", "change_url", "system"]),
+    computed: {
+        ...mapState(["port_name", "lanMap", "change_url", "system"]),
+        online() {
+            if (!Array.isArray(this.ponInfo.data)) {
+                return 0;
+            }
+            return this.ponInfo.data.reduce(
+                (pre, item) => pre + item.online,
+                0
+            );
+        },
+        offline() {
+            if (!Array.isArray(this.ponInfo.data)) {
+                return 0;
+            }
+            return this.ponInfo.data.reduce(
+                (pre, item) => pre + item.offline,
+                0
+            );
+        }
+    },
     created() {
         this.getPon();
         if (!this.port_name.ge) {
@@ -132,9 +165,16 @@ export default {
 
 <style lang="less" scoped>
 #home {
-    padding: 70px 0 30px 0;
-    width: 1280px;
-    margin: 0 auto;
+    height: calc(~"100% - 100px");
+    overflow-y: auto;
+    &::before {
+        content: "";
+        display: table;
+    }
+    > div.port-container {
+        width: 1280px;
+        margin: 0 auto;
+    }
 }
 div.port-info {
     h3 {
@@ -142,9 +182,15 @@ div.port-info {
         margin: 16px 0 16px 20px;
         font-weight: 500;
         color: #29bdfa;
+        line-height: 24px;
+        > span {
+            display: inline-block;
+            vertical-align: middle;
+        }
     }
     > div {
         padding: 0 0 0 20px;
+        overflow: hidden;
     }
     &:after {
         content: "";
@@ -154,5 +200,19 @@ div.port-info {
     .port {
         cursor: pointer;
     }
+}
+span.onu-count,
+span.onu-count + span {
+    margin-left: 20px;
+    font-size: 16px;
+    color: #1478de;
+}
+span.onu-count + span {
+    margin-left: 6px;
+    color: #1478de;
+}
+span.onu-offline,
+span.onu-offline + span {
+    color: #f56c6c;
 }
 </style>
