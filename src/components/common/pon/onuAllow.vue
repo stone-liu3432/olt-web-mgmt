@@ -23,10 +23,14 @@
         <hr />
         <div>
             <a href="javascript:void(0);" @click="reload">{{ lanMap['refresh'] }}</a>
-            <a href="javascript:void(0);" @click="add_onu" v-if="custom.addonu">{{ lanMap['add'] }}</a>
-            <a href="javascript:void(0);" @click="onu_bandwieth">{{ lanMap['sla_cfg'] }}</a>
-            <a href="javascript:void(0);" @click="onu_deny">{{ lanMap['onu_deny'] }}</a>
             <template v-if="isAll">
+                <a
+                    href="javascript:void(0);"
+                    @click="add_onu"
+                    v-if="custom.addonu"
+                >{{ lanMap['add'] }}</a>
+                <a href="javascript:void(0);" @click="onu_bandwieth">{{ lanMap['sla_cfg'] }}</a>
+                <a href="javascript:void(0);" @click="onu_deny">{{ lanMap['onu_deny'] }}</a>
                 <a
                     href="javascript:void(0);"
                     @click="show_batchmgmt"
@@ -340,7 +344,7 @@ export default {
             const post_params = {
                 method: "delete",
                 param: {
-                    port_id: node.port_id,
+                    port_id: node ? node.port_id : this.portid,
                     onu_id: olist,
                     macaddr: node ? node.macaddr : ""
                 }
@@ -494,7 +498,7 @@ export default {
             const post_params = {
                 method: "reject",
                 param: {
-                    port_id: node.port_id,
+                    port_id: node ? node.port_id : this.portid,
                     onu_id: olist,
                     macaddr: node ? node.macaddr : ""
                 }
@@ -756,21 +760,27 @@ export default {
                 })
                 .catch(_ => {
                     next();
+                })
+                .finally(_ => {
+                    if (this.portid === 0x100) {
+                        sessionStorage.setItem("pid", 1);
+                    }
                 });
         } else {
+            // 放在beforeDestroy里，刷新时会有问题
+            if (this.portid === 0x100) {
+                sessionStorage.setItem("pid", 1);
+            }
             next();
-        }
-    },
-    // hack 其他页无 portid 为 0x100 的情况
-    beforeDestroy() {
-        const pid = Number(sessionStorage.getItem("pid"));
-        if (pid === 0x100) {
-            sessionStorage.setItem("pid", 1);
         }
     },
     watch: {
         portid() {
-            sessionStorage.setItem("pid", Number(this.portid));
+            if (this.portid === 0x100) {
+                this.isBatchMgmt = "";
+            }
+            this.isDraggable = false;
+            sessionStorage.setItem("pid", this.portid);
             this.getData();
             this.batch_onulist = [];
         }
