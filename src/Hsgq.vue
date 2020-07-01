@@ -123,6 +123,10 @@ export default {
 //  #184777
 //  #2C72BB
 //  #E0EFE7
+body {
+    background: @bgColor;
+    overflow-y: hidden;
+}
 #hsgq {
     font-family: Arial, "Avenir", Helvetica, sans-serif;
     -webkit-font-smoothing: antialiased;
@@ -132,8 +136,6 @@ export default {
     min-width: 1280px;
     max-width: 1980px;
     font-size: 16px;
-    overflow-y: scroll;
-    background: @bgColor;
 }
 .global-load {
     display: none;
@@ -249,6 +251,9 @@ select {
     height: 30px;
     line-height: 30px;
     text-indent: 6px;
+    &:focus {
+        outline: none;
+    }
 }
 a {
     border: 1px solid transparent;
