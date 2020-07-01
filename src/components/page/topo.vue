@@ -1,5 +1,5 @@
 <template>
-    <div class="topo" :style="{ 'height': height + 'px' }">
+    <div class="topo">
         <canvas ref="topo" :width="width" :height="height"></canvas>
         <nms-popover
             :visible.sync="visible"
@@ -229,24 +229,6 @@ export default {
         }
     },
     created() {
-        // 测试数据，测试数据量大小时的表现
-        // if (process.env.NODE_ENV == "development") {
-        //     this.getPon()
-        //         .then(res => {
-        //             this.ponList = Object.freeze(res.data.data);
-        //             import("../../../simulation_data/onuAllowFilter")
-        //                 .then(data => {
-        //                     const list = data.default;
-        //                     this.onuList = Object.freeze(list);
-        //                     this.$nextTick(_ => {
-        //                         this.draw();
-        //                     });
-        //                 })
-        //                 .catch(err => {});
-        //         })
-        //         .catch(err => {});
-        //     return;
-        // }
         this.getData();
     },
     mounted() {
@@ -530,7 +512,6 @@ export default {
             container.fontColor = "0, 0, 0";
             // 相临container背景色区分
             container.fillColor = "224, 239, 231";
-            //     index % 2 === 1 ? "224, 239, 231" : "198, 219, 209";
             container.borderColor = "204, 204, 204";
             container.borderWidth = 1;
             container.width = this.onuContainerWidth;
@@ -626,7 +607,7 @@ export default {
             // popover离节点的高度
             const baseGutter = 10;
             // 滚动条偏移量
-            const scrollHeight = this.$root.$el.scrollTop;
+            const scrollHeight = this.$el.scrollTop;
             // 顶部菜单高度
             const topMenuHeight = 70;
             //  12为文本高度
@@ -880,9 +861,9 @@ export default {
 <style lang="less" scoped>
 .topo {
     width: 100%;
-    height: 100%;
-    margin-top: 70px;
+    height: calc(~"100% - 100px");
     position: relative;
+    overflow-y: scroll;
 }
 .device-info {
     > div {
@@ -908,9 +889,9 @@ export default {
     }
 }
 .topo-toolbar {
-    position: fixed;
-    top: 70px;
-    right: 15px;
+    position: absolute;
+    top: 0px;
+    right: 0px;
     background: #ddd;
     padding: 6px 12px;
     user-select: none;
