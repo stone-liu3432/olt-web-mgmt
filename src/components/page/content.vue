@@ -6,32 +6,29 @@
 </template>
 
 <script>
-import leftAside from '@/components/page/aside'
-import detail from '@/components/page/detail'
+import leftAside from "@/components/page/aside";
+import detail from "@/components/page/detail";
 export default {
-    name: 'content-area',
+    name: "content-area",
     components: {
         leftAside,
-        detail,
+        detail
     },
-    methods: {
-
-    },
-    created(){
-        
-    },
-    beforeDestroy(){
-        sessionStorage.removeItem('first_menu');
-        sessionStorage.removeItem('sec_menu');
-    },
-}
+    methods: {},
+    created() {},
+    beforeDestroy() {
+        sessionStorage.removeItem("first_menu");
+        sessionStorage.removeItem("sec_menu");
+    }
+};
 </script>
 
 <style lang="less" scoped>
-#content{
-    padding: 70px 0 30px 0;
-    &::after{
-        content: '';
+#content {
+    height: calc(~"100% - 100px");
+    overflow-y: auto;
+    &::after {
+        content: "";
         display: table;
         clear: both;
     }
