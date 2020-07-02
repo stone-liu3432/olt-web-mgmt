@@ -695,7 +695,7 @@ export default {
                     del_onu(data) {
                         this.$confirm(this.lanMap["tips_del_onu"])
                             .then(_ => {
-                                const url = "/onu_allow_list";
+                                const url = "/onu_allow_list?form=onucfg";
                                 const post_params = {
                                     method: "delete",
                                     param: {
@@ -711,7 +711,7 @@ export default {
                     add_to_deny(data) {
                         this.$confirm(this.lanMap["tips_add_deny_onu"])
                             .then(_ => {
-                                const url = "/onu_allow_list";
+                                const url = "/onu_allow_list?form=onucfg";
                                 const post_params = {
                                     method: "reject",
                                     param: {
