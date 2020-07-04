@@ -61,8 +61,7 @@ export default {
 #detail {
     margin: 0 0 0 220px;
     padding: 20px;
-    width: 79%;
-    min-width: 1020px;
-    min-height: 800px;
+    width: calc(100% - 220px);
+    box-sizing: border-box;
 }
 </style>
