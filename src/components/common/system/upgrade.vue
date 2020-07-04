@@ -61,6 +61,7 @@
                     <div class="progress-cover" :style="{ 'width': width + 'px' }"></div>
                     <div>{{ parseInt(width*100/400) + '%' }}</div>
                 </div>
+                <div>{{ lanMap['upgradeTips'] }}</div>
             </div>
         </div>
     </div>
@@ -73,6 +74,7 @@ export default {
     data() {
         return {
             isLoading: false,
+            isFullVersion: false,
             isReboot: null,
             width: 0,
             timer: null,
@@ -315,6 +317,7 @@ export default {
                     this.load_file && this.load_file.close();
                     if (res.data.code === 1) {
                         this.isLoading = true;
+                        this.isFullVersion = true;
                         this.upgrade_callback(
                             this.lanMap["fv_upgrade_succ"],
                             this.lanMap["upgrade_buzy"],
@@ -456,9 +459,13 @@ export default {
         isLoading() {
             if (this.isLoading) {
                 this.timer = setInterval(() => {
-                    this.width += parseInt(Math.random() * 20);
+                    this.width += parseInt(
+                        Math.random() * (this.isFullVersion ? 10 : 15)
+                    );
                     this.width > 380 && (this.width = 380);
                 }, 1000);
+            } else {
+                this.isFullVersion = false;
             }
         }
     },
@@ -495,6 +502,7 @@ h3 > span {
 form.upload-form {
     position: relative;
     left: 30px;
+    width: calc(~"100% - 30px");
 }
 .updateFile {
     position: absolute;
@@ -580,6 +588,12 @@ div.progress {
             text-align: center;
             color: #fff;
         }
+    }
+    & + div {
+        padding: 20px 20px 0 20px;
+        line-height: 24px;
+        text-align: center;
+        color: #fff;
     }
 }
 </style>
