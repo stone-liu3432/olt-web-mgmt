@@ -867,6 +867,8 @@ var en = {
     unSaveInfo:
         "There is unsaved information on the current page, do you want to save it ?",
     all: " All ",
+    upgradeTips:
+        "The device is being upgraded, please be patient, do not refresh the web page and restart the device.",
 
     composeRange(min, max) {
         return `${min} - ${max} characters`;

@@ -840,6 +840,7 @@ var zh = {
     log: "日志",
     unSaveInfo: "当前页面存在未保存的信息，是否保存 ?",
     all: "全部",
+    upgradeTips: "设备正在升级中，请耐心等待，不要刷新网页和重启设备。",
 
     composeRange(min, max) {
         return `${min} - ${max}位字符`;
