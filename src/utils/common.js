@@ -203,3 +203,7 @@ export function removeItem(arr, item) {
     }
     return result;
 }
+
+export function isFunction(func) {
+    return typeof func === "function";
+}
