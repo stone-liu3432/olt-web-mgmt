@@ -58,6 +58,7 @@
             <nms-table-column prop="onu_name" :label="lanMap['onu_name']"></nms-table-column>
             <nms-table-column prop="macaddr" :label="lanMap['macaddr']"></nms-table-column>
             <nms-table-column prop="retry" :label="lanMap['retry']"></nms-table-column>
+            <nms-table-column prop="reason" :label="lanMap['reason']"></nms-table-column>
             <nms-table-column :label="lanMap['config']">
                 <template slot-scope="rows">
                     <a
@@ -137,7 +138,7 @@ export default {
                     param: {
                         port_id: Number(this.portid),
                         macaddr: this.addItem.macaddr,
-                        onu_desc: this.addItem.desc
+                        reason: this.addItem.desc
                     }
                 };
                 this.$http
