@@ -462,7 +462,7 @@ export default {
     padding: 20px 0 20px 0;
     > h2 {
         float: left;
-        width: 200px;
+        width: 210px;
         font-size: 24px;
         font-weight: 600;
         color: #67aef7;
