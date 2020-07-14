@@ -435,7 +435,7 @@ export default [
         }
     },
     {
-        path: "/port_isolation",
+        path: "/port_group",
         component: portIsolation,
         meta: {
             requireAuth: true
