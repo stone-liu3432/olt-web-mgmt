@@ -1,6 +1,21 @@
 <template>
     <div>
         <div class="service-title">{{ lanMap['service'] }}</div>
+        <hr />
+        <div class="system-port">
+            <span>{{ lanMap['sys_port'] }}</span>
+            <span style="margin: 0 8px 0 50px;">http:</span>
+            <span>{{ sysPortInfo.http }}</span>
+            <span style="margin: 0 8px 0 50px;">https:</span>
+            <span>{{ sysPortInfo.https }}</span>
+            <span style="margin: 0 8px 0 50px;">telnet:</span>
+            <span>{{ sysPortInfo.telnet }}</span>
+            <a
+                href="javascript: void(0);"
+                style="float: right;"
+                @click="openSysPortDialog"
+            >{{ lanMap['config'] }}</a>
+        </div>
         <div class="frpc" v-if="showFRPC">
             <hr />
             <h4>
@@ -237,6 +252,36 @@
                 <a href="javascript: void(0);" @click="closeModal">{{ lanMap['cancel'] }}</a>
             </div>
         </nms-dialog>
+        <nms-dialog :visible.sync="portVisible" width="500px" :title="lanMap['config']">
+            <div class="sys-port-item">
+                <span>http</span>
+                <input
+                    type="text"
+                    v-model="sysForm.http"
+                    :style="{ 'border-color': validatePort(sysForm.http) ? '' : 'red' }"
+                />
+            </div>
+            <div class="sys-port-item">
+                <span>https</span>
+                <input
+                    type="text"
+                    v-model="sysForm.https"
+                    :style="{ 'border-color': validatePort(sysForm.https) ? '' : 'red' }"
+                />
+            </div>
+            <div class="sys-port-item">
+                <span>telnet</span>
+                <input
+                    type="text"
+                    v-model="sysForm.telnet"
+                    :style="{ 'border-color': validatePort(sysForm.telnet) ? '' : 'red' }"
+                />
+            </div>
+            <div slot="footer">
+                <nms-button @click="submitSysPort">{{ lanMap['apply'] }}</nms-button>
+                <nms-button @click="portVisible = false;">{{ lanMap['cancel'] }}</nms-button>
+            </div>
+        </nms-dialog>
     </div>
 </template>
 
@@ -301,7 +346,14 @@ export default {
                 subdomain: ""
             },
             visible: false,
-            supportFrpc: false
+            supportFrpc: false,
+            sysPortInfo: {},
+            portVisible: false,
+            sysForm: {
+                http: "",
+                https: "",
+                telnet: ""
+            }
         };
     },
     created() {
@@ -309,6 +361,7 @@ export default {
         this.get_ssh();
         this.get_community();
         this.showFRPC && this.getFrpc();
+        this.getSysPort();
     },
     methods: {
         get_ssh() {
@@ -351,6 +404,19 @@ export default {
                 .catch(err => {
                     // to do
                 });
+        },
+        getSysPort() {
+            this.sysPortInfo = {};
+            this.$http
+                .get("/system_service?form=port")
+                .then(res => {
+                    if (res.data.code === 1) {
+                        if (res.data.data) {
+                            this.sysPortInfo = res.data.data;
+                        }
+                    }
+                })
+                .catch(err => {});
         },
         open_del_sshkey(node) {
             this.$confirm(this.lanMap["if_sure"])
@@ -699,6 +765,53 @@ export default {
             if (typeof done === "function") {
                 done();
             }
+        },
+        openSysPortDialog() {
+            this.portVisible = true;
+            Object.keys(this.sysForm).forEach(key => {
+                this.sysForm[key] = this.sysPortInfo[key];
+            });
+        },
+        submitSysPort() {
+            if (!this.validatePort(this.sysForm.http)) {
+                return this.$message.error(
+                    `${this.lanMap["param_error"]}: http`
+                );
+            }
+            if (!this.validatePort(this.sysForm.https)) {
+                return this.$message.error(
+                    `${this.lanMap["param_error"]}: https`
+                );
+            }
+            if (!this.validatePort(this.sysForm.telnet)) {
+                return this.$message.error(
+                    `${this.lanMap["param_error"]}: telnet`
+                );
+            }
+            this.$http
+                .post("/system_service?form=port", {
+                    method: "set",
+                    param: {
+                        http: this.sysForm.http,
+                        https: this.sysForm.https,
+                        telnet: this.sysForm.telnet
+                    }
+                })
+                .then(res => {
+                    if (res.data.code === 1) {
+                        this.$message.success(this.lanMap["setting_ok"]);
+                        this.getSysPort();
+                    } else {
+                        this.$message.error(
+                            `(${res.data.code}) ${res.data.message}`
+                        );
+                    }
+                })
+                .catch(err => {});
+            this.portVisible = false;
+        },
+        validatePort(port) {
+            return port >= 1 && port <= 65535;
         }
     }
 };
@@ -865,12 +978,11 @@ div.add-ssh {
     }
 }
 .frpc {
-    margin: 20px;
     h4 {
         color: @titleColor;
         font-size: 20px;
         font-weight: 500;
-        margin: 20px 0 0 0;
+        margin: 20px 0 20px 20px;
         a {
             float: right;
         }
@@ -932,6 +1044,31 @@ div.add-ssh {
         color: #666;
         width: auto;
         margin-left: 5px;
+    }
+}
+div.system-port {
+    margin: 20px 0 20px 20px;
+    > span:first-child {
+        color: @titleColor;
+        font-size: 20px;
+        font-weight: 500;
+        margin: 0 30px 0 0;
+    }
+    &:after {
+        content: "";
+        display: table;
+        clear: both;
+    }
+}
+div.sys-port-item {
+    margin: 10px 0;
+    span {
+        display: inline-block;
+        vertical-align: middle;
+        width: 120px;
+        text-align: right;
+        padding-right: 12px;
+        box-sizing: border-box;
     }
 }
 </style>
