@@ -199,14 +199,6 @@ export default {
     created() {
         this.getGroupData();
     },
-    // mounted() {
-    //     this.portGroupData.inter_working = [
-    //         {
-    //             port_id: 2,
-    //             inter_working_portlist: "2-3,5-9"
-    //         }
-    //     ];
-    // },
     methods: {
         getGroupData() {
             this.portGroupData = {};
@@ -353,7 +345,21 @@ export default {
                             method: "set",
                             param: {}
                         }
-                    );
+                    )
+                        .then(res => {
+                            if (res.data.code === 1) {
+                                this.$message.success(
+                                    this.lanMap["reset"] +
+                                        this.lanMap["st_success"]
+                                );
+                                this.getGroupData();
+                            } else {
+                                this.$message.error(
+                                    `(${res.data.code}) ${res.data.message}`
+                                );
+                            }
+                        })
+                        .catch(err => {});
                 })
                 .catch(_ => {});
         },
@@ -363,7 +369,7 @@ export default {
             this.postData("/switch_isolate?form=inter_working", {
                 method: "set",
                 param: {
-                    port_id: 1,
+                    port_id: this.port_id,
                     inter_working_portlist: list.toString()
                 }
             });
