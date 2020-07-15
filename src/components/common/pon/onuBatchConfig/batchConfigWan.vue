@@ -1,5 +1,12 @@
 <template>
     <div>
+        <!-- <div style="margin: 0 0 0 10px;">
+            <nms-button @click="openBatchDialog">{{ lanMap['config'] + lanMap['all'] }}</nms-button>
+            <nms-button
+                style="margin-left: 30px;"
+                @click="clearWan"
+            >{{ lanMap['clear'] + lanMap['all'] }}</nms-button>
+        </div>-->
         <nms-table :rows="wanList" border>
             <nms-table-column :label="lanMap['onu_id']">
                 <template
@@ -41,15 +48,24 @@
             <div slot="title">{{ lanMap['detail'] }}</div>
             <onu-wan-config :port-data="portData" style="height: 600px;"></onu-wan-config>
         </nms-dialog>
+        <!-- <nms-dialog :visible.sync="batchVisible" width="660px">
+            <div slot="title">{{ lanMap['config'] + lanMap['all'] }}</div>
+            <wan-form ref="wan-form"></wan-form>
+            <div slot="footer">
+                <nms-button @click="submitBatch('wan-form')">{{ lanMap['apply'] }}</nms-button>
+                <nms-button @click="batchVisible = false;">{{ lanMap['cancel'] }}</nms-button>
+            </div>
+        </nms-dialog>-->
     </div>
 </template>
 
 <script>
 import { mapState } from "vuex";
 import onuWanConfig from "./onuWanConfig";
+// import wanForm from "./wanForm";
 export default {
     name: "batchWan",
-    components: { onuWanConfig },
+    components: { onuWanConfig /* wanForm */ },
     computed: {
         ...mapState(["lanMap"])
     },
@@ -70,7 +86,8 @@ export default {
                 0x2: "INTERNET",
                 0x4: "Other",
                 0x8: "VOICE"
-            }
+            },
+            batchVisible: false
         };
     },
     created() {
@@ -123,6 +140,89 @@ export default {
                 voip: row.voip
             };
             this.visible = true;
+        },
+        openBatchDialog() {
+            this.batchVisible = true;
+        },
+        submitBatch(formName) {
+            const loading = this.$loading();
+            this.$refs[formName].validate(form => {
+                this.$http
+                    .post("/ponmgmt?form=wan", {
+                        method: "add",
+                        param: {
+                            port_id: this.portid,
+                            onu_id: 0,
+                            name: form.name,
+                            index: -1,
+                            ipmode: form.ipmode,
+                            ctype: form.ctype,
+                            mtu: form.mtu,
+                            igmpproxy: form.igmpproxy,
+                            ipproto: form.ipproto,
+                            ipaddr: form.ipaddr,
+                            ipmask: form.ipmask,
+                            gateway: form.gateway,
+                            pppoemode: form.pppoemode,
+                            user: form.user,
+                            password: form.password,
+                            tagmode: form.tagmode,
+                            vlan_id: form.vlan_id,
+                            reqdns: form.reqdns,
+                            pridns: form.pridns,
+                            secdns: form.secdns,
+                            portmap:
+                                this.formData.ctype !== 8
+                                    ? this.formData.portmap.sort(
+                                          (a, b) => a - b
+                                      )
+                                    : null
+                        }
+                    })
+                    .then(res => {
+                        if (res.data.code === 1) {
+                            this.$message.success(this.lanMap["setting_ok"]);
+                            this.getData(this.portid);
+                        } else {
+                            this.$message.error(
+                                `(${res.data.code}) ${res.data.message}`
+                            );
+                        }
+                    })
+                    .catch(err => {})
+                    .finally(_ => {
+                        loading.close();
+                        this.batchVisible = false;
+                    });
+            });
+        },
+        clearWan() {
+            this.$confirm()
+                .then(_ => {
+                    this.$http
+                        .post("/ponmgmt?form=wan", {
+                            method: "clear",
+                            param: {
+                                port_id: this.portid,
+                                onu_id: 0
+                            }
+                        })
+                        .then(res => {
+                            if (res.data.code === 1) {
+                                this.$message.success(
+                                    this.lanMap["clear"] +
+                                        this.lanMap["st_success"]
+                                );
+                                this.getData();
+                            } else {
+                                this.$message.error(
+                                    `(${res.data.code}) ${res.data.message}`
+                                );
+                            }
+                        })
+                        .catch(err => {});
+                })
+                .catch(_ => {});
         }
     },
     watch: {
