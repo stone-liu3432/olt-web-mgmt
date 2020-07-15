@@ -1,5 +1,8 @@
 <template>
     <div>
+        <div style="margin: 0 0 0 10px;">
+            <nms-button @click="openDialog()">{{ lanMap['config'] + lanMap['all'] }}</nms-button>
+        </div>
         <nms-table border :rows="wlanList">
             <nms-table-column prop="port_id" :label="lanMap['onu_id']">
                 <template slot-scope="rows">{{ `ONU${rows.port_id}/${rows.onu_id}` }}</template>
@@ -44,17 +47,18 @@
         >
             <div class="dialog-wlan-item">
                 <span>{{ lanMap['onu_id'] }}:</span>
-                <span>{{ `ONU${wlanInfo.port_id}/${wlanInfo.onu_id}` }}</span>
+                <span v-if="isBatch">{{ lanMap['all'] }}</span>
+                <span v-else>{{ `ONU${wlanInfo.port_id}/${wlanInfo.onu_id}` }}</span>
             </div>
             <div class="dialog-wlan-item">
                 <span>WLAN {{ lanMap['mode'] }}:</span>
                 <span>
                     <label>
-                        <input type="radio" v-model.number="wlan_mode" value="1" />
+                        <input type="radio" v-model.number="wlan_mode" :value="1" />
                         2.4G
                     </label>
                     <label v-if="wlanInfo.wlan === 2" style="margin-left: 12px;">
-                        <input type="radio" v-model.number="wlan_mode" value="2" />
+                        <input type="radio" v-model.number="wlan_mode" :value="2" />
                         5G
                     </label>
                 </span>
@@ -124,7 +128,21 @@ export default {
     },
     data() {
         return {
-            wlanList: [],
+            wlanList: [
+                // {
+                //     port_id: 1,
+                //     onu_id: 4,
+                //     wlan: 2,
+                //     mode: 1,
+                //     encrypt: 4,
+                //     ssid: "asdf",
+                //     password: "dafdsfasdf",
+                //     mode_5g: 1,
+                //     encrypt_5g: 6,
+                //     ssid_5g: "khjkjh",
+                //     password_5g: "sdvgasfsd"
+                // }
+            ],
             encrypts: { 0: "None", 4: "WPA2", 6: "WPA2Mixed" },
             visible: false,
             wlanInfo: {},
@@ -132,7 +150,8 @@ export default {
             wlan_mode: 1,
             wlan_encrypt: 0,
             ssid: "",
-            password: ""
+            password: "",
+            isBatch: false
         };
     },
     created() {
@@ -140,32 +159,6 @@ export default {
             this.getData(this.portid);
         }
     },
-    // mounted() {
-    //     this.wlanList = [
-    //         {
-    //             port_id: 1,
-    //             onu_id: 2,
-    //             wlan: 1,
-    //             mode: 1,
-    //             encrypt: 0,
-    //             ssid: "1234",
-    //             password: "12345678"
-    //         },
-    //         {
-    //             port_id: 1,
-    //             onu_id: 4,
-    //             wlan: 2,
-    //             mode: 1,
-    //             encrypt: 4,
-    //             ssid: "asdf",
-    //             password: "dafdsfasdf",
-    //             mode_5g: 1,
-    //             encrypt_5g: 6,
-    //             ssid_5g: "khjkjh",
-    //             password_5g: "sdvgasfsd"
-    //         }
-    //     ];
-    // },
     methods: {
         getData(port_id) {
             this.wlanList = [];
@@ -184,8 +177,8 @@ export default {
             return {
                 method: "set",
                 param: {
-                    port_id: this.wlanInfo.port_id,
-                    onu_id: this.wlanInfo.onu_id,
+                    port_id: this.portid,
+                    onu_id: this.isBatch ? 0 : this.wlanInfo.onu_id,
                     mode: this.wlan_mode,
                     encrypt: this.wlan_encrypt,
                     ssid: this.ssid,
@@ -211,8 +204,11 @@ export default {
                 .catch(_ => {});
         },
         postData(data) {
+            const url = this.isBatch
+                ? "/ponmgmt?form=wlan"
+                : '"/onumgmt?form=wlan"';
             this.$http
-                .post("/onumgmt?form=wlan", data)
+                .post(url, data)
                 .then(res => {
                     if (res.data.code === 1) {
                         this.$message.success(
@@ -220,7 +216,6 @@ export default {
                                 this.lanMap["st_success"]
                             }`
                         );
-                        this.closeDialog();
                         this.getData(this.portid);
                     } else {
                         this.$message.error(
@@ -229,6 +224,7 @@ export default {
                     }
                 })
                 .catch(err => {});
+            this.closeDialog();
         },
         submitWlan() {
             if (this.validData()) {
@@ -259,12 +255,20 @@ export default {
             return true;
         },
         openDialog(node) {
-            this.wlanInfo = node;
             this.visible = true;
-            this.showVal();
+            if (node) {
+                this.wlanInfo = node;
+                this.showVal();
+            } else {
+                this.wlanInfo = { wlan: 2 };
+                this.isBatch = true;
+                this.wlan_encrypt = 0;
+                this.ssid = "";
+                this.password = "";
+            }
         },
         showVal() {
-            if (Object.keys(this.wlanInfo).length) {
+            if (Object.keys(this.wlanInfo).length && !this.isBatch) {
                 this.wlan_encrypt = this.wlanInfo[
                     WLAN_KEY[this.wlan_mode]["encrypt"]
                 ];
@@ -281,6 +285,7 @@ export default {
         closeDialog() {
             this.beforeClose(_ => {
                 this.visible = false;
+                this.isBatch = false;
             });
         }
     },
