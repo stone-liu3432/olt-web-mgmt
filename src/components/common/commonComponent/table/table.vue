@@ -68,6 +68,10 @@ export default {
             commit: this.commitData
         };
     },
+    created() {
+        this.tableRows = this.rows;
+        this.cacheRows = this.rows.slice(0);
+    },
     methods: {
         commitData(col) {
             !this.columns.includes(col) && this.columns.push(col);
