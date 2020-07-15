@@ -109,7 +109,7 @@
                         <input
                             type="text"
                             v-model.number="opt_min"
-                            :style="{ 'border-color': isNaN(opt_min) || opt_min > -20 ? 'red' : '' }"
+                            :style="{ 'border-color': isNaN(opt_min) || (opt_min && opt_min > -20) ? 'red' : '' }"
                         />
                         <span>dBm</span>
                     </div>
@@ -382,7 +382,7 @@ export default {
                 .catch(_ => {});
         },
         setOptLimit() {
-            if (this.opt_min > -20 || isNaN(this.opt_min)) {
+            if ((this.opt_min && this.opt_min > -20) || isNaN(this.opt_min)) {
                 return this.$message.error(
                     this.lanMap["param_error"] +
                         ": " +
@@ -394,7 +394,7 @@ export default {
                     method: "set",
                     param: {
                         port_id: this.port_id,
-                        opt_min: this.opt_min,
+                        opt_min: Number(this.opt_min),
                         opt_min_action: this.opt_min_action,
                         opt_max: 0,
                         opt_max_action: 0
