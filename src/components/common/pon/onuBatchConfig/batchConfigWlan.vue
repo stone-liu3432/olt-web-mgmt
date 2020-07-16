@@ -16,7 +16,9 @@
             <nms-table-column prop="ssid" label="2.4G SSID"></nms-table-column>
             <nms-table-column prop="password" :label="`2.4G ${lanMap['password']}`"></nms-table-column>
             <nms-table-column prop="encrypt_5g" :label="`5G ${lanMap['encrypt']}`">
-                <template slot-scope="rows">{{ rows.wlan === 2 ? encrypts[rows.encrypt] : ' - ' }}</template>
+                <template
+                    slot-scope="rows"
+                >{{ rows.wlan === 2 ? encrypts[rows.encrypt_5g] : ' - ' }}</template>
             </nms-table-column>
             <nms-table-column prop="ssid_5g" label="5G SSID">
                 <template slot-scope="rows">{{ rows.ssid_5g || ' - ' }}</template>
@@ -206,7 +208,7 @@ export default {
         postData(data) {
             const url = this.isBatch
                 ? "/ponmgmt?form=wlan"
-                : '"/onumgmt?form=wlan"';
+                : "/onumgmt?form=wlan";
             this.$http
                 .post(url, data)
                 .then(res => {
