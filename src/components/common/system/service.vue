@@ -4,22 +4,28 @@
         <hr />
         <div class="system-port">
             <span>{{ lanMap['sys_port'] }}</span>
-            <span style="margin: 0 8px 0 50px;">http:</span>
-            <span>{{ sysPortInfo.http }}</span>
-            <span style="margin: 0 8px 0 50px;">https:</span>
-            <span>{{ sysPortInfo.https }}</span>
-            <span style="margin: 0 8px 0 50px;">telnet:</span>
-            <span>{{ sysPortInfo.telnet }}</span>
-            <a
-                href="javascript: void(0);"
-                style="float: right;"
-                @click="openSysPortDialog"
-            >{{ lanMap['config'] }}</a>
+            <a href="javascript: void(0);" @click="openSysPortDialog">{{ lanMap['config'] }}</a>
+            <div>
+                <span style="margin: 0 8px 0 50px;">http:</span>
+                <span>{{ sysPortInfo.http }}</span>
+                <span style="margin: 0 8px 0 50px;">https:</span>
+                <span>{{ sysPortInfo.https }}</span>
+                <span style="margin: 0 8px 0 50px;">telnet:</span>
+                <span>{{ sysPortInfo.telnet }}</span>
+            </div>
+        </div>
+        <hr />
+        <div class="spec-support">
+            <span>
+                <span>5620{{ lanMap['support'] }}:</span>
+                <span>{{ spec1 ? lanMap['support'] : lanMap['not_support'] }}</span>
+            </span>
+            <a href="javascript: void(0);" @click="setSpec">{{ lanMap['config'] }}</a>
         </div>
         <div class="frpc" v-if="showFRPC">
             <hr />
             <h4>
-                FRPC
+                <span>FRPC</span>
                 <a href="javascript: void(0);" @click="openDialog">{{ lanMap['config'] }}</a>
             </h4>
             <template v-if="Object.keys(frpc).length">
@@ -33,72 +39,63 @@
         </div>
         <hr />
         <div class="service-item">
-            <div>SNMP</div>
-            <div>
-                <div class="snmp-item">
-                    <div>trapserver</div>
+            <div class="snmp-item">
+                <h5>SNMP trapserver</h5>
+                <div>
                     <div>
-                        <div>
-                            <span>server ip</span>
-                            <input type="text" v-model="serverip" />
-                        </div>
-                        <div>
-                            <span>trap port</span>
-                            <span>{{ trap_port }}</span>
-                        </div>
-                        <div>
-                            <span>trap community</span>
-                            <input
-                                id="trap_community"
-                                type="text"
-                                v-model="trap_community"
-                                :style="{ 'border-color': trap_community.length > 16 ? 'red' : ''}"
-                                placeholder="0-16 characters"
-                            />
-                        </div>
-                        <div onselectstart="return false;">
-                            <a
-                                href="javascript:void(0);"
-                                @click="set_trapserver"
-                            >{{ lanMap['apply'] }}</a>
-                        </div>
+                        <span>server ip</span>
+                        <input type="text" v-model="serverip" />
+                    </div>
+                    <div>
+                        <span>trap port</span>
+                        <span>{{ trap_port }}</span>
+                    </div>
+                    <div>
+                        <span>trap community</span>
+                        <input
+                            id="trap_community"
+                            type="text"
+                            v-model="trap_community"
+                            :style="{ 'border-color': trap_community.length > 16 ? 'red' : ''}"
+                            placeholder="0-16 characters"
+                        />
+                    </div>
+                    <div onselectstart="return false;">
+                        <a href="javascript:void(0);" @click="set_trapserver">{{ lanMap['apply'] }}</a>
                     </div>
                 </div>
-                <div class="snmp-item">
-                    <div>community</div>
+            </div>
+            <div class="snmp-item">
+                <h5>SNMP community</h5>
+                <div>
+                    <div onselectstart="return false;" style="padding-left: 20px;">
+                        <input type="checkbox" id="read_community" v-model="flag_read" />
+                        <label for="read_community">Read community</label>
+                        <input type="checkbox" id="write_community" v-model="flag_write" />
+                        <label for="write_community">Write community</label>
+                    </div>
                     <div>
-                        <div onselectstart="return false;">
-                            <input type="checkbox" id="read_community" v-model="flag_read" />
-                            <label for="read_community">Read community</label>
-                            <input type="checkbox" id="write_community" v-model="flag_write" />
-                            <label for="write_community">Write community</label>
-                        </div>
-                        <div>
-                            <span>Read community</span>
-                            <input
-                                id="read_community_input"
-                                type="text"
-                                v-model="read_community"
-                                :style="{ 'border-color': read_community.length > 16 ? 'red' : ''}"
-                                placeholder="0-16 characters"
-                            />
-                        </div>
-                        <div>
-                            <span>Write community</span>
-                            <input
-                                id="write_community_input"
-                                type="text"
-                                v-model="write_community"
-                                :style="{ 'border-color': write_community.length > 16 ? 'red' : ''}"
-                                placeholder="0-16 characters"
-                            />
-                        </div>
-                        <div onselectstart="return false;">
-                            <a
-                                href="javascript:void(0);"
-                                @click="set_community"
-                            >{{ lanMap['apply'] }}</a>
-                        </div>
+                        <span>Read community</span>
+                        <input
+                            id="read_community_input"
+                            type="text"
+                            v-model="read_community"
+                            :style="{ 'border-color': read_community.length > 16 ? 'red' : ''}"
+                            placeholder="0-16 characters"
+                        />
+                    </div>
+                    <div>
+                        <span>Write community</span>
+                        <input
+                            id="write_community_input"
+                            type="text"
+                            v-model="write_community"
+                            :style="{ 'border-color': write_community.length > 16 ? 'red' : ''}"
+                            placeholder="0-16 characters"
+                        />
+                    </div>
+                    <div onselectstart="return false;">
+                        <a href="javascript:void(0);" @click="set_community">{{ lanMap['apply'] }}</a>
                     </div>
                 </div>
             </div>
@@ -257,25 +254,28 @@
                 <span>http</span>
                 <input
                     type="text"
-                    v-model="sysForm.http"
-                    :style="{ 'border-color': validatePort(sysForm.http) ? '' : 'red' }"
+                    v-model.number="sysForm.http"
+                    :style="{ 'border-color': validatePort(sysForm.http, 'http') ? '' : 'red' }"
                 />
+                <span class="tips">80 - 50000</span>
             </div>
             <div class="sys-port-item">
                 <span>https</span>
                 <input
                     type="text"
-                    v-model="sysForm.https"
-                    :style="{ 'border-color': validatePort(sysForm.https) ? '' : 'red' }"
+                    v-model.number="sysForm.https"
+                    :style="{ 'border-color': validatePort(sysForm.https, 'https') ? '' : 'red' }"
                 />
+                <span class="tips">443 - 50000</span>
             </div>
             <div class="sys-port-item">
                 <span>telnet</span>
                 <input
                     type="text"
-                    v-model="sysForm.telnet"
-                    :style="{ 'border-color': validatePort(sysForm.telnet) ? '' : 'red' }"
+                    v-model.number="sysForm.telnet"
+                    :style="{ 'border-color': validatePort(sysForm.telnet, 'telnet') ? '' : 'red' }"
                 />
+                <span class="tips">23, 1000 - 50000</span>
             </div>
             <div slot="footer">
                 <nms-button @click="submitSysPort">{{ lanMap['apply'] }}</nms-button>
@@ -301,7 +301,12 @@ export default {
             return reg.test(this.frpcForm.custom_domains);
         },
         showFRPC() {
-            return this.system.data.size > 16 && this.custom.frpc;
+            const res =
+                this.system.data &&
+                this.system.data.size > 16 &&
+                this.custom.frpc;
+            res && this.getFrpc();
+            return res;
         }
     },
     data() {
@@ -350,18 +355,20 @@ export default {
             sysPortInfo: {},
             portVisible: false,
             sysForm: {
-                http: "",
-                https: "",
-                telnet: ""
-            }
+                http: "", // 80 - 50000
+                https: "", // 443 - 50000
+                telnet: "" // 23 1000 - 50000
+            },
+            spec1: 0,
+            spec_model: 0
         };
     },
     created() {
         this.get_trap();
         this.get_ssh();
         this.get_community();
-        this.showFRPC && this.getFrpc();
         this.getSysPort();
+        this.getSpec();
     },
     methods: {
         get_ssh() {
@@ -413,6 +420,19 @@ export default {
                     if (res.data.code === 1) {
                         if (res.data.data) {
                             this.sysPortInfo = res.data.data;
+                        }
+                    }
+                })
+                .catch(err => {});
+        },
+        getSpec() {
+            this.spec1 = 0;
+            this.$http
+                .get("/system_service?form=spec1")
+                .then(res => {
+                    if (res.data.code === 1) {
+                        if (res.data.data) {
+                            this.spec1 = res.data.data.spec1;
                         }
                     }
                 })
@@ -523,8 +543,6 @@ export default {
         },
         set_community() {
             if (this.limit) {
-                var e = e || window.event;
-                var node = e.target || e.srcElement;
                 this.$message({
                     type: "error",
                     text: this.lanMap["click_often"],
@@ -536,24 +554,6 @@ export default {
             setTimeout(() => {
                 this.limit = false;
             }, 1000);
-            this.read_community = replaceDBCS(
-                this.read_community.replace(/\s*/g, "")
-            );
-            this.write_community = replaceDBCS(
-                this.write_community.replace(/\s*/g, "")
-            );
-            if (
-                !this.read_community ||
-                !this.write_community ||
-                this.read_community.length > 16 ||
-                this.write_community.length > 16
-            ) {
-                if (this.read_community.length > 16)
-                    document.getElementById("read_community_input").focus();
-                if (this.write_community.length > 16)
-                    document.getElementById("write_community_input").focus();
-                return;
-            }
             var flags = 0;
             if (this.flag_read) flags += 1;
             if (this.flag_write) flags += 2;
@@ -563,6 +563,28 @@ export default {
                     text: this.lanMap["modify_tips"]
                 });
                 return;
+            }
+            this.read_community = replaceDBCS(
+                this.read_community.replace(/\s*/g, "")
+            );
+            this.write_community = replaceDBCS(
+                this.write_community.replace(/\s*/g, "")
+            );
+            if (
+                this.flag_read &&
+                (!this.read_community || this.read_community.length > 16)
+            ) {
+                return this.$message.error(
+                    `${this.lanMap["param_error"]}: read community`
+                );
+            }
+            if (
+                this.flag_write &&
+                (!this.write_community || this.write_community.length > 16)
+            ) {
+                return this.$message.error(
+                    `${this.lanMap["param_error"]}: write community`
+                );
             }
             var params = {
                 method: "set",
@@ -588,9 +610,7 @@ export default {
                         });
                     }
                 })
-                .catch(err => {
-                    // to do
-                });
+                .catch(err => {});
         },
         //  添加ssh密钥
         open_add_ssh() {
@@ -773,17 +793,17 @@ export default {
             });
         },
         submitSysPort() {
-            if (!this.validatePort(this.sysForm.http)) {
+            if (!this.validatePort(this.sysForm.http, "http")) {
                 return this.$message.error(
                     `${this.lanMap["param_error"]}: http`
                 );
             }
-            if (!this.validatePort(this.sysForm.https)) {
+            if (!this.validatePort(this.sysForm.https, "https")) {
                 return this.$message.error(
                     `${this.lanMap["param_error"]}: https`
                 );
             }
-            if (!this.validatePort(this.sysForm.telnet)) {
+            if (!this.validatePort(this.sysForm.telnet, "telnet")) {
                 return this.$message.error(
                     `${this.lanMap["param_error"]}: telnet`
                 );
@@ -792,9 +812,9 @@ export default {
                 .post("/system_service?form=port", {
                     method: "set",
                     param: {
-                        http: this.sysForm.http,
-                        https: this.sysForm.https,
-                        telnet: this.sysForm.telnet
+                        http: Number(this.sysForm.http),
+                        https: Number(this.sysForm.https),
+                        telnet: Number(this.sysForm.telnet)
                     }
                 })
                 .then(res => {
@@ -810,8 +830,77 @@ export default {
                 .catch(err => {});
             this.portVisible = false;
         },
-        validatePort(port) {
-            return port >= 1 && port <= 65535;
+        validatePort(port, type) {
+            const TYPES = {
+                http(val) {
+                    return val >= 80 && val <= 50000;
+                },
+                https(val) {
+                    return val >= 443 && val <= 50000;
+                },
+                telnet(val) {
+                    return val === 23 || (val >= 1000 && val <= 50000);
+                }
+            };
+            if (typeof TYPES[type] === "function") {
+                return TYPES[type].call(this, Number(port));
+            }
+        },
+        setSpec() {
+            this.spec_model = this.spec1;
+            this.$confirm(
+                <div class="spec-item">
+                    <span>5620{this.lanMap["support"]}:</span>
+                    <select
+                        value={this.spec_model}
+                        onChange={e => (this.spec_model = e.target.value)}
+                    >
+                        <option value={0}>{this.lanMap["not_support"]}</option>
+                        <option value={1}>{this.lanMap["support"]}</option>
+                    </select>
+                </div>,
+                this.lanMap["config"]
+            )
+                .then(_ => {
+                    this.submitSpec(this.spec_model);
+                })
+                .catch(_ => {});
+        },
+        submitSpec(spec) {
+            if (Number(this.spec_model) === this.spec1) {
+                return this.$message.info(this.lanMap["modify_tips"]);
+            }
+            this.$http
+                .post("/system_service?form=spec1", {
+                    method: "set",
+                    param: {
+                        spec1: this.spec_model
+                    }
+                })
+                .then(res => {
+                    if (res.data.code === 1) {
+                        this.$confirm(this.lanMap["cfg_succ_reboot_tips"])
+                            .then(_ => {
+                                this.$http
+                                    .get("/system_reboot")
+                                    .then(res => {
+                                        const lang = sessionStorage.getItem(
+                                            "lang"
+                                        );
+                                        sessionStorage.clear();
+                                        sessionStorage.setItem("lang", lang);
+                                        this.$router.push("/login");
+                                    })
+                                    .catch(err => {});
+                            })
+                            .catch(_ => {});
+                    } else {
+                        this.$message.error(
+                            `(${res.data.code}) ${res.data.message}`
+                        );
+                    }
+                })
+                .catch(_ => {});
         }
     }
 };
@@ -831,38 +920,36 @@ div.service-title {
 div.service-item {
     margin: 20px;
     overflow: hidden;
-    > div:first-child {
-        width: 200px;
-        line-height: 30px;
-        font-size: 20px;
-        font-weight: 500;
-        color: @titleColor;
-    }
-    > div {
-        float: left;
-    }
 }
 div.snmp-item {
+    width: 450px;
+    box-sizing: border-box;
     line-height: 36px;
     overflow: hidden;
-    margin-top: 20px;
+    float: left;
+    h5 {
+        color: @titleColor;
+        font-size: 18px;
+        font-weight: 500;
+    }
     > div {
-        float: left;
         > div {
+            margin: 6px 0;
             > span {
                 display: inline-block;
-                width: 150px;
+                text-align: right;
+                padding-right: 12px;
+                width: 140px;
             }
             > a {
-                float: right;
                 width: 120px;
                 padding: 0;
-                margin: 10px 20px 0 0;
+                margin: 8px 0 0 230px;
             }
         }
     }
     > div:first-child {
-        width: 150px;
+        width: 120px;
     }
     input[type="checkbox"] {
         margin: 0 5px 0 20px;
@@ -880,9 +967,7 @@ div.ssh-info {
             color: @titleColor;
             font-size: 20px;
             font-weight: 500;
-        }
-        a {
-            float: right;
+            width: 230px;
         }
         &:after {
             content: "";
@@ -979,13 +1064,15 @@ div.add-ssh {
 }
 .frpc {
     h4 {
-        color: @titleColor;
-        font-size: 20px;
-        font-weight: 500;
-        margin: 20px 0 20px 20px;
-        a {
-            float: right;
+        > span {
+            color: @titleColor;
+            font-size: 20px;
+            font-weight: 500;
+            display: inline-block;
+            vertical-align: middle;
+            width: 230px;
         }
+        margin: 20px 0 20px 20px;
         & + div {
             margin-top: 10px;
         }
@@ -997,7 +1084,7 @@ div.add-ssh {
     }
     div {
         line-height: 30px;
-        margin: 0 10px;
+        margin: 0 20px;
         border: 1px solid @borderColor;
         span {
             display: inline-block;
@@ -1047,17 +1134,17 @@ div.add-ssh {
     }
 }
 div.system-port {
+    > div {
+        margin: 20px 0;
+    }
     margin: 20px 0 20px 20px;
     > span:first-child {
+        display: inline-block;
+        vertical-align: middle;
+        width: 230px;
         color: @titleColor;
         font-size: 20px;
         font-weight: 500;
-        margin: 0 30px 0 0;
-    }
-    &:after {
-        content: "";
-        display: table;
-        clear: both;
     }
 }
 div.sys-port-item {
@@ -1069,6 +1156,42 @@ div.sys-port-item {
         text-align: right;
         padding-right: 12px;
         box-sizing: border-box;
+    }
+    span.tips {
+        width: auto;
+        text-align-last: left;
+        padding: 0 0 0 6px;
+        font-size: @tipsFontSize;
+        color: @tipsColor;
+    }
+}
+div.spec-support {
+    margin: 20px;
+    > span {
+        display: inline-block;
+        vertical-align: middle;
+        width: 230px;
+        > span {
+            line-height: 32px;
+            display: inline-block;
+            vertical-align: middle;
+            &:first-child {
+                color: @titleColor;
+                font-size: 20px;
+                font-weight: 500;
+            }
+        }
+    }
+}
+div.spec-item {
+    > span {
+        display: inline-block;
+        width: 120px;
+        text-align: right;
+        padding-right: 12px;
+    }
+    > select {
+        width: 200px;
     }
 }
 </style>
