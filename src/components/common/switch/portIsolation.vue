@@ -72,7 +72,7 @@
                 </nms-table-column>
             </nms-table>
         </template>
-        <nms-dialog :visible.sync="visible" width="750px">
+        <nms-dialog :visible.sync="visible" width="750px" :before-close="beforeClose">
             <div slot="title">{{ `${lanMap[dialogType] || ''}${lanMap['port'] || ''}` }}</div>
             <template v-if="dialogType === 'add' || dialogType === 'delete'">
                 <div class="isolate" style="margin: 0;">
@@ -89,7 +89,7 @@
                                 {{ item.name }}
                             </label>
                         </template>
-                        <template v-for="item in port_name.ge" v-if="portType !== 'pon'">
+                        <template v-for="item in port_name.ge" v-if="portType === 'ge'">
                             <label :class="{ 'disabled': disabledItem(item.id) }">
                                 <input
                                     type="checkbox"
@@ -100,7 +100,7 @@
                                 {{ item.name }}
                             </label>
                         </template>
-                        <template v-if="port_name.xge && portType !== 'pon'">
+                        <template v-if="port_name.xge && (portType === 'ge')">
                             <template v-for="item in port_name.xge">
                                 <label :class="{ 'disabled': disabledItem(item.id) }">
                                     <input
@@ -185,8 +185,8 @@ export default {
             port_id: 0,
             portGroupData: {
                 // port_group_mode: 2,
-                // pon_isolate_portlist: "",
-                // uplink_isolate_portlist: "",
+                // pon_isolate_portlist: "1-8",
+                // uplink_isolate_portlist: "9-12",
                 // inter_working: [
                 //     {
                 //         port_id: 1,
@@ -219,11 +219,19 @@ export default {
             this.portType = portType;
             this.port_id = 1;
             this.portlist =
-                portType === "pon" ? this.isolatePonList : this.isolateGeList;
+                portType === "pon"
+                    ? this.isolatePonList
+                    : portType === "ge"
+                    ? this.isolateGeList
+                    : [];
         },
         closeDialog() {
             this.visible = false;
             this.port_id = 0;
+        },
+        beforeClose(done) {
+            this.port_id = 0;
+            done();
         },
         disabledItem(port_id) {
             // string转number & 取整
@@ -252,7 +260,9 @@ export default {
             let isolatePortlist =
                 this.portType === "pon"
                     ? this.isolatePonList
-                    : this.isolateGeList;
+                    : this.portType === "ge"
+                    ? this.isolateGeList
+                    : [];
             if (
                 !this.portlist.length ||
                 (this.dialogType === "add" &&
@@ -272,7 +282,7 @@ export default {
                     pon_isolate_portlist:
                         this.portType === "pon" ? list : undefined,
                     uplink_isolate_portlist:
-                        this.portType !== "pon" ? list : undefined
+                        this.portType === "ge" ? list : undefined
                 }
             };
             const url =
@@ -378,7 +388,10 @@ export default {
     },
     watch: {
         port_id() {
-            if (this.port_id === 0) {
+            if (
+                this.portGroupData.port_group_mode === 1 ||
+                this.port_id === 0
+            ) {
                 return;
             }
             const list = this.portGroupData.inter_working || [];
