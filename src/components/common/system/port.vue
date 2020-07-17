@@ -203,10 +203,7 @@ hr {
     width: 100%;
     border-color: @borderColor;
     border-top: none;
-    &::before {
-        content: "";
-        display: table;
-        clear: both;
-    }
+    clear: both;
+    box-sizing: border-box;
 }
 </style>
