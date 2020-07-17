@@ -861,6 +861,7 @@ var zh = {
     support: "支持",
     not_support: "不支持",
     cfg_succ_reboot_tips: "配置成功，重启设备后生效，是否现在重启设备 ?",
+    del_checked: "删除选中",
 
     composeRange(min, max) {
         return `${min} - ${max}位字符`;

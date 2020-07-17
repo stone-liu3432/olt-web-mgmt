@@ -890,6 +890,7 @@ var en = {
     not_support: "Not Support",
     cfg_succ_reboot_tips:
         "Successfully configured, take effect after reboot the device. Do you want to restart the device now ?",
+    del_checked: " Delete Selected ",
 
     composeRange(min, max) {
         return `${min} - ${max} characters`;
