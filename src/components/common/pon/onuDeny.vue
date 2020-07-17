@@ -31,6 +31,7 @@
                 </div>
             </div>
             <div>
+                <a href="javascript: void(0);" @click="deleChecked">{{ lanMap['del_checked'] }}</a>
                 <a href="javascript:;" @click="add">{{ lanMap['add'] }}</a>
             </div>
         </div>
@@ -51,7 +52,8 @@
                 <a href="javascript:;" @click="handle(false)">{{ lanMap['cancel'] }}</a>
             </span>
         </div>
-        <nms-table :rows="onu_deny_list" border>
+        <nms-table :rows="onu_deny_list" border @selection-change="selectionChange">
+            <nms-table-column type="selection"></nms-table-column>
             <nms-table-column :label="lanMap['onu_id']">
                 <template slot-scope="rows">{{ 'ONU0'+rows.port_id +'/'+ rows.onu_id }}</template>
             </nms-table-column>
@@ -59,7 +61,7 @@
             <nms-table-column prop="macaddr" :label="lanMap['macaddr']"></nms-table-column>
             <nms-table-column prop="retry" :label="lanMap['retry']"></nms-table-column>
             <nms-table-column prop="reason" :label="lanMap['reason']"></nms-table-column>
-            <nms-table-column :label="lanMap['config']">
+            <nms-table-column :label="lanMap['config']" width="100px">
                 <template slot-scope="rows">
                     <a
                         href="javascript: void(0);"
@@ -87,7 +89,8 @@ export default {
                 isShow: false,
                 desc: "",
                 macaddr: ""
-            }
+            },
+            selections: []
         };
     },
     activated() {
@@ -142,7 +145,7 @@ export default {
                     }
                 };
                 this.$http
-                    .post("/onu_deny_list", post_param)
+                    .post("/onu_deny_list?form=onucfg", post_param)
                     .then(res => {
                         if (res.data.code === 1) {
                             this.$message({
@@ -179,7 +182,7 @@ export default {
         result(data) {
             // 确认框中用户点击确认时的操作
             this.$http
-                .post("/onu_deny_list", data)
+                .post("/onu_deny_list?form=onucfg", data)
                 .then(res => {
                     if (res.data.code === 1) {
                         this.$message({
@@ -213,6 +216,45 @@ export default {
             this.$confirm(this.lanMap["confirm_del_deny"])
                 .then(_ => {
                     this.result(post_param);
+                })
+                .catch(_ => {});
+        },
+        selectionChange(selections) {
+            this.selections = selections;
+        },
+        deleChecked() {
+            if (!this.selections.length) {
+                return this.$message.info(this.lanMap["modify_tips"]);
+            }
+            this.$confirm(
+                this.lanMap["if_sure"] + this.lanMap["del_checked"] + " ONU"
+            )
+                .then(_ => {
+                    const onu_id = this.selections.map(item => item.onu_id);
+                    onu_id.sort((a, b) => a - b);
+                    this.$http
+                        .post("/onu_deny_list?form=batch", {
+                            method: "delete",
+                            param: {
+                                port_id: this.portid,
+                                onu_id
+                            }
+                        })
+                        .then(res => {
+                            if (res.data.code === 1) {
+                                this.$message.success(
+                                    this.lanMap["delete"] +
+                                        this.lanMap["st_success"]
+                                );
+                                this.getData();
+                                this.selections = [];
+                            } else {
+                                this.$message.error(
+                                    `(${res.data.code}) ${res.data.message}`
+                                );
+                            }
+                        })
+                        .catch(err => {});
                 })
                 .catch(_ => {});
         }
