@@ -153,7 +153,8 @@ var en = {
     click: " Click",
     onudeny_add_tips:
         " Click the Add button to manually add the ONU in deny list,need parameters MAC address(required), descriptor(optional)",
-    onudeny_del_tips: " Remove the current ONU from the deny list",
+    onudeny_del_tips:
+        "Click delete button remove the current ONU from the deny list",
     tips_onu_btn_del: " Delete ONU",
     tips_onu_btn_rej: " Reject ONU to blacklist",
     tips_onu_restart: " Restart ONU",
@@ -891,6 +892,7 @@ var en = {
     cfg_succ_reboot_tips:
         "Successfully configured, take effect after reboot the device. Do you want to restart the device now ?",
     del_checked: " Delete Selected ",
+    port_default_vlan: "Port Default VLAN",
 
     composeRange(min, max) {
         return `${min} - ${max} characters`;

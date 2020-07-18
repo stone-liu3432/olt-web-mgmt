@@ -151,7 +151,7 @@ var zh = {
     click: "点击",
     onudeny_add_tips:
         "点击增加按钮，手动添加ONU到阻止列表，需要参数MAC地址(必填)，描述信息(选填)",
-    onudeny_del_tips: "将当前ONU从阻止列表移除",
+    onudeny_del_tips: "点击删除按钮将当前ONU从阻止列表移除",
     tips_onu_btn_del: "删除当前ONU",
     tips_onu_btn_rej: "将当前ONU到阻止列表",
     tips_onu_restart: "重启ONU",
@@ -862,6 +862,7 @@ var zh = {
     not_support: "不支持",
     cfg_succ_reboot_tips: "配置成功，重启设备后生效，是否现在重启设备 ?",
     del_checked: "删除选中",
+    port_default_vlan: "端口默认VLAN",
 
     composeRange(min, max) {
         return `${min} - ${max}位字符`;
