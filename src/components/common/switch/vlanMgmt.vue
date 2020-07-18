@@ -28,17 +28,21 @@
             </nms-table-column>
             <nms-table-column :label="lanMap['config']" width="160px">
                 <template slot-scope="rows">
-                    <a
-                        href="javascript: void(0);"
-                        @click="config_port(rows)"
-                        class="btn-text table-btn-text"
-                    >{{ lanMap['config'] }}</a>
-                    <a
-                        href="javascript: void(0);"
-                        @click="deleteVlan(rows.vlan_id)"
-                        class="btn-text table-btn-text"
-                        v-if="rows.vlan_id !== 1"
-                    >{{ lanMap['delete'] }}</a>
+                    <nms-dropdown @command="command">
+                        <span>{{ lanMap['config'] }}</span>
+                        <div slot="dropdown">
+                            <nms-dropdown-item
+                                :command="{ action: 'config', data: rows }"
+                            >{{ lanMap['config'] }}</nms-dropdown-item>
+                            <nms-dropdown-item
+                                v-if="rows.vlan_id !== 1"
+                                :command="{ action: 'delete', data: rows }"
+                            >{{ lanMap['delete'] }}</nms-dropdown-item>
+                            <nms-dropdown-item
+                                :command="{ action: 'default_vlan', data: rows }"
+                            >{{ lanMap['port_default_vlan'] }}</nms-dropdown-item>
+                        </div>
+                    </nms-dropdown>
                 </template>
             </nms-table-column>
         </nms-table>
@@ -275,6 +279,28 @@
                 <div class="close" @click="close_batch_del"></div>
             </div>
         </div>
+        <nms-dialog :visible.sync="dialogVisible" width="800px">
+            <div slot="title">{{ lanMap['config'] }}</div>
+            <div class="port-default-vlan-item">
+                <span>{{ lanMap['vlan_id'] }}:</span>
+                <span>{{ vlanid }}</span>
+            </div>
+            <div class="port-default-vlan-item">
+                <span>{{ lanMap['default_vlan_portlist'] }}:</span>
+                <span>
+                    <template v-for="item in port_info.data || []">
+                        <label>
+                            <input type="checkbox" v-model="defVlanPortList" :value="item.port_id" />
+                            {{ item.port_id | getPortName }}
+                        </label>
+                    </template>
+                </span>
+            </div>
+            <div slot="footer">
+                <nms-button @click="submitDefVlan">{{ lanMap['apply'] }}</nms-button>
+                <nms-button @click="dialogVisible = false;">{{ lanMap['cancel'] }}</nms-button>
+            </div>
+        </nms-dialog>
     </div>
 </template>
 
@@ -284,7 +310,13 @@ import { parsePortList, parsePort } from "@/utils/common";
 export default {
     name: "vlanMgmt",
     computed: {
-        ...mapState(["lanMap", "port_name", "system", "change_url"]),
+        ...mapState([
+            "lanMap",
+            "port_name",
+            "system",
+            "change_url",
+            "port_info"
+        ]),
         // 分页的数据 --> 显示到页面的数据
         vlan_tab() {
             if (!this.search_id) {
@@ -346,7 +378,9 @@ export default {
             untagged_list: [],
             //  以当前vlan作为端口默认vlan的端口列表
             def_list: [],
-            lags: {}
+            lags: {},
+            dialogVisible: false,
+            defVlanPortList: []
         };
     },
     created() {
@@ -370,9 +404,7 @@ export default {
                                     }
                                 }
                             })
-                            .catch(err => {
-                                // to do
-                            });
+                            .catch(err => {});
                     }
                 })
                 .catch(err => {});
@@ -683,6 +715,58 @@ export default {
                 n = n ^ item;
             });
             return n;
+        },
+        command({ action, data }) {
+            const ACTIONS = {
+                config(row) {
+                    this.config_port(row);
+                },
+                delete(row) {
+                    this.deleteVlan(row.vlan_id);
+                },
+                default_vlan(row) {
+                    this.openDialog(row);
+                }
+            };
+            if (typeof ACTIONS[action] === "function") {
+                ACTIONS[action].call(this, data);
+            }
+        },
+        openDialog(row) {
+            this.dialogVisible = true;
+            this.vlanid = row.vlan_id;
+            this.defVlanPortList = parsePort(row.default_vlan_portlist);
+        },
+        submitDefVlan() {
+            if (!this.defVlanPortList.length) {
+                return this.$message.info(this.lanMap["modify_tips"]);
+            }
+            const list = this.defVlanPortList;
+            list.sort((a, b) => a - b);
+            this.$http
+                .post("/switch_vlan_pvid", {
+                    method: "set",
+                    param: {
+                        vlan_id: this.vlanid,
+                        default_vlan_portlist: list.join(",")
+                    }
+                })
+                .then(res => {
+                    if (res.data.code === 1) {
+                        this.$message.success(this.lanMap["setting_ok"]);
+                        this.getData();
+                    } else {
+                        this.$message({
+                            type: res.data.type,
+                            text: `(${res.data.code}) ${res.data.message}`
+                        });
+                        if (res.data.type === "warning") {
+                            this.getData();
+                        }
+                    }
+                })
+                .catch(err => {});
+            this.dialogVisible = false;
         }
     },
     watch: {
@@ -1125,5 +1209,26 @@ div.cover + div.batch-delete {
     cursor: not-allowed;
     box-shadow: none;
     opacity: 0.65;
+}
+div.port-default-vlan-item {
+    margin: 12px 0;
+    span {
+        display: inline-block;
+        vertical-align: middle;
+        width: 180px;
+        text-align: right;
+        padding: 0 10px 0 0;
+        box-sizing: border-box;
+    }
+    span + span {
+        width: calc(~"100% - 200px");
+        text-align: left;
+        label {
+            display: inline-block;
+            vertical-align: middle;
+            line-height: 24px;
+            width: 24%;
+        }
+    }
 }
 </style>
