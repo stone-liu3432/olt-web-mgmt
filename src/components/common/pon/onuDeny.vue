@@ -22,16 +22,16 @@
                     </div>
                     <div>
                         <p>{{ lanMap['delete'] }}</p>
-                        <p>
-                            {{ lanMap['click'] }}
-                            <i class="icon-delete"></i>
-                            {{ lanMap['onudeny_del_tips'] }}
-                        </p>
+                        <p>{{ lanMap['onudeny_del_tips'] }}</p>
                     </div>
                 </div>
             </div>
             <div>
-                <a href="javascript: void(0);" @click="deleChecked">{{ lanMap['del_checked'] }}</a>
+                <a
+                    href="javascript: void(0);"
+                    style="padding: 0 12px;"
+                    @click="deleChecked"
+                >{{ lanMap['del_checked'] }}</a>
                 <a href="javascript:;" @click="add">{{ lanMap['add'] }}</a>
             </div>
         </div>
@@ -52,7 +52,12 @@
                 <a href="javascript:;" @click="handle(false)">{{ lanMap['cancel'] }}</a>
             </span>
         </div>
-        <nms-table :rows="onu_deny_list" border @selection-change="selectionChange">
+        <nms-table
+            :rows="onu_deny_list"
+            border
+            @selection-change="selectionChange"
+            ref="onu-deny-table"
+        >
             <nms-table-column type="selection"></nms-table-column>
             <nms-table-column :label="lanMap['onu_id']">
                 <template slot-scope="rows">{{ 'ONU0'+rows.port_id +'/'+ rows.onu_id }}</template>
@@ -247,7 +252,9 @@ export default {
                                         this.lanMap["st_success"]
                                 );
                                 this.getData();
+                                // 清除选中
                                 this.selections = [];
+                                this.$refs["onu-deny-table"].clearSelection();
                             } else {
                                 this.$message.error(
                                     `(${res.data.code}) ${res.data.message}`
@@ -325,10 +332,6 @@ div.add-deny {
         width: 23%;
     }
 }
-.bg-title {
-    background: #2361a2;
-    color: #fff;
-}
 .add-item > span {
     width: 12%;
     line-height: 32px;
@@ -381,22 +384,6 @@ a {
     padding: 0;
     margin-left: 10px;
 }
-.inline-btn {
-    height: 26px;
-    line-height: 26px;
-}
-i.icon-delete {
-    display: inline-block;
-    cursor: pointer;
-    width: 32px;
-    height: 32px;
-    vertical-align: middle;
-    background: url("../../../assets/delete-normal.png") no-repeat;
-}
-div.data-failed {
-    margin: 20px 10px;
-    color: red;
-}
 div.tool-tips {
     margin: 0 0 0 20px;
     display: inline-block;
@@ -417,7 +404,7 @@ div.tool-tips {
     > div {
         display: none;
         width: 300px;
-        height: 200px;
+        // height: 200px;
         position: absolute;
         right: 26px;
         top: 26px;
@@ -425,7 +412,7 @@ div.tool-tips {
         padding: 8px;
         background: #ddd;
         > div {
-            padding: 5px 0;
+            padding: 5px;
             &:first-child {
                 border-bottom: 1px solid #333;
             }
