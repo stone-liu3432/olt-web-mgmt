@@ -3,13 +3,6 @@
         <div class="login-banner">
             <div class="lf"></div>
             <h1 class="lf" style="fontSize:36px;"></h1>
-            <!-- <div class="rt change-lang">
-                <span>{{ lanMap['lang'] }}</span>
-                <select v-model="lang">
-                    <option value="zh">简体中文</option>
-                    <option value="en">English</option>
-                </select>
-            </div>-->
         </div>
         <div class="login-body">
             <h2>{{ lanMap['login_user'] }}</h2>
@@ -218,67 +211,67 @@ div.login {
     height: 100%;
     min-height: 768px;
     background: #6c6d69;
-}
-div.login-banner {
-    height: 90px;
-}
-div.login-body {
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -70%);
-    width: 700px;
-    height: 400px;
-    padding: 35px 15px 15px 15px;
-    background: #fff;
-    border-radius: 8px;
-    text-align: center;
-}
-div.login-body > h2 {
-    font-size: 28px;
-    font-weight: 600;
-    color: #666;
-    height: 50px;
-    line-height: 50px;
-}
-div.login-body > h3 {
-    font-size: 14px;
-    height: 30px;
-    line-height: 30px;
-    color: #49a3ff;
-}
-div.login-tips {
-    position: relative;
-    text-align: center;
-    width: auto;
-}
-div.login-tips > h4 {
-    font-size: 14px;
-    width: 100%;
-    height: 30px;
-    line-height: 30px;
-    color: red;
-}
-div.login-tips > h4:last-child {
-    position: absolute;
-    left: 0;
-    top: 0;
-}
-div.login-body a {
-    display: inline-block;
-    position: relative;
-    width: 300px;
-    height: 42px;
-    line-height: 42px;
-    text-align: center;
-    background: #49a3ff;
-    color: #fff;
-    font-size: 20px;
-    border-radius: 5px;
-    transition: all 0.3s linear;
-}
-div.login-body a:active {
-    background: rgb(13, 113, 146);
+    div.login-banner {
+        height: 90px;
+    }
+    div.login-body {
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -70%);
+        width: 700px;
+        height: 400px;
+        padding: 35px 15px 15px 15px;
+        background: #fff;
+        border-radius: 8px;
+        text-align: center;
+        > h2 {
+            font-size: 28px;
+            font-weight: 600;
+            color: #666;
+            height: 50px;
+            line-height: 50px;
+        }
+        > h3 {
+            font-size: 14px;
+            height: 30px;
+            line-height: 30px;
+            color: #49a3ff;
+        }
+        div.login-tips {
+            position: relative;
+            text-align: center;
+            width: auto;
+            > h4 {
+                font-size: 14px;
+                width: 100%;
+                height: 30px;
+                line-height: 30px;
+                color: red;
+                &:last-child {
+                    position: absolute;
+                    left: 0;
+                    top: 0;
+                }
+            }
+        }
+        a {
+            display: inline-block;
+            position: relative;
+            width: 300px;
+            height: 42px;
+            line-height: 42px;
+            text-align: center;
+            background: #49a3ff;
+            color: #fff;
+            font-size: 20px;
+            border-radius: 5px;
+            transition: all 0.3s linear;
+            &:active {
+                background: rgb(13, 113, 146);
+            }
+        }
+    }
 }
 form > div {
     line-height: 40px;
