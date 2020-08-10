@@ -94,19 +94,19 @@ export default {
                 day: 0,
                 hour: 0,
                 min: 0,
-                sec: 0
+                sec: 0,
             },
             run_time: {
                 day: 0,
                 hour: 0,
                 min: 0,
-                sec: 0
+                sec: 0,
             },
             company_name: "",
             company_addr: "",
             company_email: "",
             company_phone: "",
-            supplier_info: ""
+            supplier_info: "",
         };
     },
     computed: {
@@ -116,7 +116,7 @@ export default {
             "system",
             "change_url",
             "menu",
-            "port_name"
+            "port_name",
         ]),
         showCompanyInfo() {
             return (
@@ -126,12 +126,12 @@ export default {
                 !!this.company_phone ||
                 !!this.supplier_info
             );
-        }
+        },
     },
     created() {
         this.$http
             .get(this.change_url.cpu)
-            .then(res => {
+            .then((res) => {
                 if (res.data.code === 1) {
                     this.cpuInfo = res.data;
                     this.$nextTick(() => {
@@ -142,13 +142,13 @@ export default {
                     });
                 }
             })
-            .catch(err => {
+            .catch((err) => {
                 // to do
             });
         //  请求url: /time?form=info
         this.$http
             .get(this.change_url.time)
-            .then(res => {
+            .then((res) => {
                 if (res.data.code === 1) {
                     this.timer = res.data;
                     var arr = this.timer.data.time_now;
@@ -202,7 +202,7 @@ export default {
                     }
                 }
             })
-            .catch(err => {
+            .catch((err) => {
                 // to do
             });
         this.interval = setInterval(() => {
@@ -220,17 +220,17 @@ export default {
         ...mapMutations({
             systemInfo: "updateSysData",
             update_menu: "updateMenu",
-            sys_time: "updateTime"
+            sys_time: "updateTime",
         }),
         getUsageRate() {
             this.$http
                 .get(this.change_url.cpu)
-                .then(res => {
+                .then((res) => {
                     if (res.data.code === 1) {
                         this.cpuInfo = res.data;
                     }
                 })
-                .catch(err => {
+                .catch((err) => {
                     // to do
                 });
         },
@@ -289,7 +289,7 @@ export default {
             memoryCtx.lineWidth = 15;
             memoryCtx.strokeStyle = "#65B2FB";
             if (memoryNum >= 70) {
-                cpuCtx.strokeStyle = "red";
+                memoryCtx.strokeStyle = "red";
             }
             //设置开始处为0点钟方向(-90 * Math.PI / 180)
             //num为百分比值(0-100)  //memoryNum
@@ -317,7 +317,7 @@ export default {
             this.supplier_info = "";
             this.$http
                 .get("/board?info=setting_board")
-                .then(res => {
+                .then((res) => {
                     if (res.data.code === 1) {
                         var data = res.data.data;
                         this.company_name = data.name || "";
@@ -327,10 +327,10 @@ export default {
                         this.supplier_info = data.supplier_info || "";
                     }
                 })
-                .catch(err => {
+                .catch((err) => {
                     // to do
                 });
-        }
+        },
     },
     watch: {
         usageRates() {
@@ -342,8 +342,8 @@ export default {
                     );
                 });
             }
-        }
-    }
+        },
+    },
 };
 </script>
 
