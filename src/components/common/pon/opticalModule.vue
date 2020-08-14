@@ -40,7 +40,11 @@
                 >{{`${lanMap['port_id']}: ${ op_info.port_id ? portName(op_info.port_id) : ""}` }}</div>
                 <div class="layout-row">
                     <div class="row-40">
-                        <cus-table :data="mstateData" :title="lanMap['o_m_state']" :cus-layout="layoutMtype('mtype')"></cus-table>
+                        <cus-table
+                            :data="mstateData"
+                            :title="lanMap['o_m_state']"
+                            :cus-layout="layoutMtype('mtype')"
+                        ></cus-table>
                     </div>
                     <div class="row-60">
                         <cus-table :data="manuInfoData" :title="lanMap['o_m_maunu_info']"></cus-table>
@@ -96,7 +100,7 @@ export default {
                     prev[item] = this.op_info[item];
                     if (this.op_info[item] instanceof Array) {
                         prev[item] = this.op_info[item]
-                            .map(i => i.toString(16))
+                            .map((i) => i.toString(16))
                             .join(" ");
                     }
                 }
@@ -118,13 +122,13 @@ export default {
                 )}, ${this.op_info[this.opParams[item][1]].toFixed(2)}]`;
                 return prev;
             }, {});
-        }
+        },
     },
     props: {
         data: {
             type: Array,
-            default: _ => []
-        }
+            default: (_) => [],
+        },
     },
     data() {
         return {
@@ -136,7 +140,7 @@ export default {
                 "work_temprature",
                 "work_voltage",
                 "transmit_bias",
-                "transmit_power"
+                "transmit_power",
             ],
             manuInfos: [
                 "vendor_name",
@@ -145,7 +149,7 @@ export default {
                 "vendor_pn",
                 "vendor_sn",
                 "date_code",
-                "vendor_specific"
+                "vendor_specific",
             ],
             staticInfos: [
                 "module_type",
@@ -155,7 +159,7 @@ export default {
                 "identifier",
                 "connector",
                 "encoding",
-                "cc_base"
+                "cc_base",
             ],
             opParams: {
                 temp_warn_threshold: ["temp_low_warning", "temp_high_warning"],
@@ -164,25 +168,25 @@ export default {
                 vol_alarm_threshold: ["vol_low_alarm", "vol_high_alarm"],
                 tx_bias_warn_threshold: [
                     "bias_low_warning",
-                    "bias_high_warning"
+                    "bias_high_warning",
                 ],
                 tx_bias_alarm_threshold: ["bias_low_alarm", "bias_high_alarm"],
                 tx_power_warn_threshold: [
                     "txpwr_low_warning",
-                    "txpwr_high_warning"
+                    "txpwr_high_warning",
                 ],
                 tx_power_alarm_threshold: [
                     "txpwr_low_alarm",
-                    "txpwr_high_alarm"
+                    "txpwr_high_alarm",
                 ],
                 rx_power_warn_threshold: [
                     "rxpwr_low_warning",
-                    "rxpwr_high_warning"
+                    "rxpwr_high_warning",
                 ],
                 rx_power_alarm_threshold: [
                     "rxpwr_low_alarm",
-                    "rxpwr_high_alarm"
-                ]
+                    "rxpwr_high_alarm",
+                ],
             },
             op_info: {
                 // port_id: 1,
@@ -226,8 +230,8 @@ export default {
                 // rxpwr_high_alarm: 123,
                 // rxpwr_low_alarm: 123,
                 // rxpwr_high_warning: 123,
-                // rxpwr_low_warning: 123
-            }
+                // rxpwr_low_warning: 123,
+            },
         };
     },
     methods: {
@@ -242,9 +246,9 @@ export default {
             this.op_info = {};
             this.$http
                 .get("/ponmgmt", {
-                    params: { form: "optical_poninfo", port_id: portid }
+                    params: { form: "optical_poninfo", port_id: portid },
                 })
-                .then(res => {
+                .then((res) => {
                     if (res.data.code === 1) {
                         if (res.data.data) {
                             this.visible = true;
@@ -252,7 +256,7 @@ export default {
                         }
                     }
                 })
-                .catch(err => {});
+                .catch((err) => {});
         },
         filterKeys(key) {
             let reg = /(_high_)|(_low_)/;
@@ -262,15 +266,16 @@ export default {
             this.op_info = {};
             this.visible = false;
         },
-        layoutMtype(){
-            const mtype_map = ['in_cali', 'ex_cali'], _this = this;
+        layoutMtype() {
+            const mtype_map = ["in_cali", "ex_cali"],
+                _this = this;
             return {
-                mtype(val){
-                    return _this.lanMap[mtype_map[val]]
-                }
-            }
-        }
-    }
+                mtype(val) {
+                    return _this.lanMap[mtype_map[val]];
+                },
+            };
+        },
+    },
 };
 </script>
 
@@ -285,10 +290,18 @@ table {
         border: 1px solid #ddd;
         padding: 6px 12px;
     }
-    th{
+    th {
         background: #2361a2;
         color: #fff;
     }
+}
+div.cover + div.om-dialog-content {
+    top: 0;
+    left: 0;
+    bottom: 0;
+    right: 0;
+    margin: auto;
+    transform: none;
 }
 div.om-dialog-content {
     width: 900px;
