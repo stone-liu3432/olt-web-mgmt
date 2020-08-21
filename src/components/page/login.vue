@@ -1,103 +1,144 @@
 <template>
     <div class="login">
-        <div class="login-banner">
-            <div class="lf"></div>
-            <h1 class="lf" style="fontSize:36px;"></h1>
-        </div>
         <div class="login-body">
-            <h2>{{ lanMap['login_user'] }}</h2>
-            <h3>{{ lanMap['login_page_login_hit'] }}</h3>
-            <form>
-                <div>
-                    <span>{{ lanMap['user_name'] }}</span>
-                    <input
-                        type="text"
-                        v-model="userName"
-                        :class="[ verify_uname ? 'input-error' : '' ]"
-                        v-focus
-                    />
-                </div>
-                <div class="user-pwd">
-                    <span>{{ lanMap['password'] }}</span>
-                    <input
-                        type="password"
-                        v-model="userPwd"
-                        id="userPwd"
-                        :class="[ verify_upwd ? 'input-error' : '' ]"
-                        autocomplete="off"
-                        @keyup.enter="userLogin"
-                    />
-                    <i :class="[ visible ? 'visible' : 'invisible']" @click="changeVisible"></i>
-                </div>
-                <div>
-                    <span>{{ lanMap['lang'] }}</span>
-                    <div>
-                        <label>
-                            <input type="radio" v-model="lang" value="zh" />
-                            简体中文
-                        </label>
-                        <label>
-                            <input type="radio" v-model="lang" value="en" />
-                            English
-                        </label>
+            <div class="login-logo">
+                <template v-if="hasLogo">
+                    <img src="/login_logo.png" />
+                    <template v-if="custom.hsgq">
+                        <div class="copyright-design-info">Copyright 2017-2020. Design by HSGQ.</div>
+                    </template>
+                </template>
+                <template v-else>
+                    <p>EPON-OLT</p>
+                </template>
+            </div>
+            <div class="login-form">
+                <h3>{{ lanMap['login_page_login_hit'] }}</h3>
+                <form :class="formStyle">
+                    <div class="login-form-item">
+                        <span>{{ lanMap['user_name'] }}:</span>
+                        <input
+                            type="text"
+                            v-model="userName"
+                            :class="[ verify_uname ? 'input-error' : '' ]"
+                            v-focus
+                        />
                     </div>
-                </div>
-                <div class="login-tips">
-                    <h4
-                        :style="{'opacity': verify_uname ? 1 : 0}"
-                    >{{ lanMap['username_length_fail'] }}</h4>
-                    <h4
-                        :style="{'opacity': verify_upwd ? 1 : 0}"
-                    >{{ lanMap['password_length_fail'] }}</h4>
-                    <h4
-                        :style="{'opacity': login_failed ? 1 : 0}"
-                    >{{ lanMap['service_user_password_fail'] }}</h4>
-                </div>
-                <div>
-                    <a href="javascript:;" @click="userLogin">{{ lanMap['login_user'] }}</a>
-                </div>
-            </form>
+                    <div class="login-form-item user-pwd">
+                        <span>{{ lanMap['password'] }}:</span>
+                        <input
+                            type="password"
+                            v-model="userPwd"
+                            id="userPwd"
+                            :class="[ verify_upwd ? 'input-error' : '' ]"
+                            autocomplete="off"
+                            @keyup.enter="userLogin"
+                        />
+                        <i :class="[ visible ? 'visible' : 'invisible']" @click="changeVisible"></i>
+                    </div>
+                    <template v-if="!custom.fix_lang">
+                        <div class="login-form-item">
+                            <span>{{ lanMap['lang'] }}:</span>
+                            <label>
+                                <input type="radio" v-model="lang" value="zh" />
+                                简体中文
+                            </label>
+                            <label>
+                                <input type="radio" v-model="lang" value="en" />
+                                English
+                            </label>
+                        </div>
+                    </template>
+                    <template v-if="custom.captcha">
+                        <div class="login-form-item login-form-captcha">
+                            <!-- 有订制要求，需要验证码时 -->
+                            <span>{{ lanMap['verification_code'] }}:</span>
+                            <img @click="getCaptcha" ref="captcha-img" />
+                            <input type="text" v-model="captcha" />
+                        </div>
+                    </template>
+
+                    <p>
+                        <template v-if="verify_uname">{{ lanMap['username_length_fail'] }}</template>
+                    </p>
+                    <p>
+                        <template v-if="verify_upwd">{{ lanMap['password_length_fail'] }}</template>
+                    </p>
+                    <div class="login-form-submit">
+                        <a href="javascript: void(0);" @click="userLogin">{{ lanMap['login_user'] }}</a>
+                    </div>
+                </form>
+            </div>
         </div>
     </div>
 </template>
 
 <script>
 import md5 from "md5";
-import { mapState, mapMutations } from "vuex";
+import { mapState, mapMutations, mapActions } from "vuex";
+import { clearSessionStorage } from "@/utils/common";
 export default {
     name: "login",
     data() {
         return {
             userName: "",
             userPwd: "",
-            //  验证用户名
-            verify_uname: false,
-            //  验证密码
-            verify_upwd: false,
-            //  用户名或密码服务器验证未通过
-            login_failed: false,
             //  密码可见或不可见
             visible: false,
             //  语言选项
-            lang: ""
+            lang: "",
+            captchaSrc: "",
+            captcha: "",
+            hasLogo: false,
         };
     },
-    computed: mapState(["lanMap", "language"]),
+    computed: {
+        ...mapState(["lanMap", "language", "custom"]),
+        verify_uname() {
+            const reg = /^[a-zA-Z][a-zA-Z_\d]{3,15}$/;
+            return !reg.test(this.userName) && this.userName !== "";
+        },
+        verify_upwd() {
+            const reg = /^[^\s\?\\\/\'\"]{5,16}$/;
+            return !reg.test(this.userPwd) && this.userPwd !== "";
+        },
+        formStyle() {
+            if (this.custom.fix_lang && !this.custom.captcha) {
+                return "large-gutter";
+            }
+            if (
+                (this.custom.fix_lang && this.custom.captcha) ||
+                (!this.custom.fix_lang && !this.custom.captcha)
+            ) {
+                return "medium-gutter";
+            }
+        },
+    },
     created() {
         this.lang = this.language;
-        sessionStorage.clear();
+        this.updateCustom();
+        clearSessionStorage();
+        this.$http
+            .get("/login_logo.png")
+            .then((res) => {
+                this.hasLogo = true;
+            })
+            .catch((err) => {
+                this.hasLogo = false;
+            });
     },
     methods: {
         ...mapMutations({
-            set_language: "updateLang"
+            setLanguage: "updateLang",
         }),
+        ...mapActions(["updateCustom"]),
         userLogin() {
-            this.login_failed = false;
             if (
                 this.verify_uname ||
                 this.verify_upwd ||
                 this.userName === "" ||
-                this.userPwd === ""
+                this.userPwd === "" ||
+                (this.captchaSrc && !this.captcha)
             ) {
                 return;
             }
@@ -109,13 +150,15 @@ export default {
                     method: "set",
                     param: {
                         name: this.userName,
-                        key: md5(self.userName + ":" + self.userPwd)
-                    }
+                        key: md5(self.userName + ":" + self.userPwd),
+                        captcha_v: this.captcha || "",
+                        captcha_f: this.captchaSrc || "",
+                    },
                 },
-                timeout: 5000
+                timeout: 5000,
             })
-                .then(res => {
-                    this.userPwd = "";
+                .then((res) => {
+                    // this.userPwd = "";
                     if (res.data.code === 1) {
                         sessionStorage.setItem(
                             "x-token",
@@ -127,22 +170,21 @@ export default {
                             text:
                                 this.lanMap["login_success"] +
                                 "," +
-                                this.userName
+                                this.userName,
                         });
                         this.$router.push("/main");
                     } else if (res.data.code > 1) {
                         this.$message({
                             type: "error",
-                            text: "(" + res.data.code + ") " + res.data.message
+                            text: "(" + res.data.code + ") " + res.data.message,
                         });
-                        this.login_failed = true;
                     }
                 })
-                .catch(err => {
+                .catch((err) => {
                     // 登录超时时的处理，默认为5秒无响应超时
                     this.$message({
                         type: "error",
-                        text: this.lanMap["http_login_timeout"]
+                        text: this.lanMap["http_login_timeout"],
                     });
                 });
         },
@@ -154,53 +196,50 @@ export default {
             } else {
                 uPwd.type = "password";
             }
-        }
+        },
+        getCaptcha() {
+            this.captchaSrc = "";
+            this.$http
+                .get("/system_captcha")
+                .then((res) => {
+                    if (res.data.code === 1) {
+                        if (res.data.data) {
+                            const fname = res.data.data.filename;
+                            this.$refs["captcha-img"].src = fname;
+                            this.captchaSrc = fname;
+                        }
+                    }
+                })
+                .catch((err) => {});
+        },
     },
     watch: {
-        userName() {
-            var reg = /^[a-zA-Z][a-zA-Z_\d]{3,15}$/;
-            if (!reg.test(this.userName)) {
-                this.verify_uname = true;
-            } else {
-                this.verify_uname = false;
-            }
-            if (this.userName == "") {
-                this.verify_uname = false;
-            }
-            this.login_failed = false;
-        },
-        userPwd() {
-            var reg = /^[^\s\?\\\/\'\"]{5,16}$/;
-            if (!reg.test(this.userPwd)) {
-                this.verify_upwd = true;
-            } else {
-                this.verify_upwd = false;
-            }
-            if (this.userPwd == "") {
-                this.verify_upwd = false;
-            }
-            this.login_failed = false;
-        },
         lang() {
-            this.set_language(this.lang);
+            if (this.custom.fix_lang) {
+                return;
+            }
+            this.setLanguage(this.lang);
             sessionStorage.setItem("def_lang", this.lang);
             const data = {
                 method: "set",
                 param: {
-                    lang: this.lang
-                }
+                    lang: this.lang,
+                },
             };
             this.$http
                 .post("/system_lang", data)
-                .then(res => {
-                    // to do
-                })
-                .catch(err => {});
+                .then((res) => {})
+                .catch((err) => {});
         },
         language() {
             this.lang = this.language;
-        }
-    }
+        },
+        custom() {
+            if (this.custom.captcha) {
+                this.getCaptcha();
+            }
+        },
+    },
 };
 </script>
 
@@ -216,91 +255,133 @@ div.login {
     }
     div.login-body {
         position: absolute;
-        top: 50%;
-        left: 50%;
-        transform: translate(-50%, -70%);
+        top: 0;
+        right: 0;
+        bottom: 0;
+        left: 0;
+        margin: auto;
         width: 700px;
         height: 400px;
-        padding: 35px 15px 15px 15px;
         background: #fff;
         border-radius: 8px;
-        text-align: center;
-        > h2 {
-            font-size: 28px;
-            font-weight: 600;
-            color: #666;
-            height: 50px;
-            line-height: 50px;
-        }
-        > h3 {
-            font-size: 14px;
-            height: 30px;
-            line-height: 30px;
-            color: #49a3ff;
-        }
-        div.login-tips {
-            position: relative;
-            text-align: center;
-            width: auto;
-            > h4 {
-                font-size: 14px;
-                width: 100%;
-                height: 30px;
-                line-height: 30px;
-                color: red;
-                &:last-child {
-                    position: absolute;
-                    left: 0;
-                    top: 0;
-                }
-            }
-        }
-        a {
-            display: inline-block;
-            position: relative;
+        div.login-logo {
+            float: left;
             width: 300px;
-            height: 42px;
-            line-height: 42px;
+            height: 100%;
+            box-sizing: border-box;
+            border-radius: 8px 0 0 8px;
+            border-right: 1px solid @borderColor;
+            line-height: 400px;
             text-align: center;
-            background: #49a3ff;
-            color: #fff;
-            font-size: 20px;
-            border-radius: 5px;
-            transition: all 0.3s linear;
-            &:active {
-                background: rgb(13, 113, 146);
+            position: relative;
+            img {
+                max-width: 298px;
+                vertical-align: middle;
+            }
+            p {
+                font-size: 42px;
+                font-weight: 600;
+                text-align: center;
+                color: @titleColor;
+            }
+            div.copyright-design-info {
+                position: absolute;
+                bottom: 6px;
+                left: 0;
+                width: 100%;
+                height: 32px;
+                line-height: 32px;
+                text-align: center;
+                font-size: 14px;
+                color: @infoColor;
             }
         }
     }
+    h3 {
+        font-size: 14px;
+        height: 60px;
+        line-height: 60px;
+        color: #49a3ff;
+        text-align: center;
+    }
+    &::after {
+        content: "";
+        display: table;
+        clear: both;
+    }
 }
-form > div {
-    line-height: 40px;
-    width: 450px;
-    margin: 15px auto;
-    > div {
-        display: inline-block;
-        width: 300px;
-        text-align: left;
-        label + label {
-            margin-left: 20px;
+div.login-form {
+    float: left;
+    width: 400px;
+    height: 400px;
+    padding: 20px 0;
+    box-sizing: border-box;
+    border-radius: 0 8px 8px 0;
+    p {
+        height: 28px;
+        color: red;
+        font-size: 12px;
+        padding: 0px 20px;
+        box-sizing: border-box;
+        text-align: center;
+    }
+    div.login-form-item {
+        margin: 6px 0;
+        height: 36px;
+        line-height: 36px;
+        span {
+            display: inline-block;
+            vertical-align: middle;
+            width: 100px;
+            text-align: right;
+            padding: 0 8px 0 0;
+            box-sizing: border-box;
+        }
+        img {
+            width: 120px;
+            height: 32px;
+            vertical-align: middle;
+            border: 1px solid @borderColor;
+        }
+    }
+    div.login-form-captcha > input[type="text"] {
+        width: 133px;
+    }
+    div.login-form-submit {
+        padding: 10px 0;
+        text-align: center;
+        a {
+            width: 200px;
+            height: 36px;
+            line-height: 36px;
+            background: @hoverButtonColor;
+            &:hover {
+                color: @buttonColor;
+                background: @hoverTextBtnColor;
+            }
+        }
+    }
+    form.large-gutter {
+        .login-form-item {
+            margin-top: 40px;
+        }
+    }
+    form.medium-gutter {
+        .login-form-item {
+            margin-top: 24px;
         }
     }
 }
 div.user-pwd {
     position: relative;
 }
-form span {
-    display: inline-block;
-    width: 100px;
-    height: 40px;
-}
 form i {
     display: inline-block;
     width: 32px;
     height: 32px;
     position: absolute;
-    top: 9px;
-    right: 35px;
+    top: 2px;
+    right: 40px;
     cursor: pointer;
 }
 i.invisible {
@@ -311,39 +392,27 @@ i.visible {
 }
 input[type="text"],
 input[type="password"] {
-    width: 300px;
-    height: 40px;
+    width: 260px;
+    height: 32px;
     text-indent: 10px;
     border: 1px solid #ccc;
     font-size: 16px;
     border-radius: 3px;
     outline: none;
+    &:focus {
+        border: 1px solid #1e90ff;
+    }
+}
+label {
+    vertical-align: middle;
+    & + label {
+        margin-left: 20px;
+    }
 }
 input.input-error {
     border-color: red;
-}
-input.input-error:focus {
-    border-color: red;
-}
-input:focus {
-    border: 1px solid #1e90ff;
-}
-div.change-lang {
-    margin: 30px 50px 0 0;
-    > span {
-        margin-right: 10px;
-        padding: 5px;
-        color: #fff;
-    }
-    > select {
-        width: 120px;
-        height: 30px;
-        font-size: 14px;
-        text-indent: 15px;
-        border-radius: 5px;
-        &:focus {
-            border-radius: 5px;
-        }
+    &:focus {
+        border-color: red;
     }
 }
 </style>
