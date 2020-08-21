@@ -2,13 +2,34 @@
     <div id="sys-set">
         <div class="change-lang rt">
             <a href="javascript:void(0);" @click="backto_devmgmt">{{ lanMap['goback_devmgmt'] }}</a>
-            <span>{{ lanMap['lang'] }}</span>
-            <select v-model="lang">
-                <option value="zh">简体中文</option>
-                <option value="en">English</option>
-            </select>
+            <template v-if="!custom.fix_lang">
+                <span>{{ lanMap['lang'] }}</span>
+                <select v-model="lang">
+                    <option value="zh">简体中文</option>
+                    <option value="en">English</option>
+                </select>
+            </template>
         </div>
         <h1 class="sys-set-title">{{ lanMap['sysinfo_set'] }}</h1>
+        <div class="sys-set-item">
+            <h1>login logo</h1>
+            <p class="tips">{{ lanMap['imagesize_tips'] }}</p>
+            <form>
+                <input
+                    type="file"
+                    name="sys-file"
+                    class="hide"
+                    ref="login-logo-file"
+                    @change="changeFile('loginLogo','login-logo-file', 'login-logo-fileName')"
+                    accept="image/png, image/jpg, image/jpeg"
+                />
+                <span class="updateFile" ref="login-logo-fileName">{{ lanMap['file_click'] }}</span>
+                <a
+                    href="javascript:void(0);"
+                    @click="commit_logo('loginLogo','login-logo-file', 'login-logo-fileName')"
+                >{{ lanMap['commit'] }}</a>
+            </form>
+        </div>
         <div class="sys-set-item">
             <h1>logo</h1>
             <p class="tips">{{ lanMap['logosize_tips'] }}</p>
@@ -17,12 +38,15 @@
                     type="file"
                     name="sys-file"
                     class="hide"
-                    id="sys-file"
-                    @change="changeFile()"
-                    accept="image/png"
+                    ref="sys-file"
+                    @change="changeFile('logo', 'sys-file', 'sys-fileName')"
+                    accept="image/png, image/jpg, image/jpeg"
                 />
-                <span class="updateFile" id="sys-fileName">{{ lanMap['file_click'] }}</span>
-                <a href="javascript:void(0);" @click="commit_logo">{{ lanMap['commit'] }}</a>
+                <span class="updateFile" ref="sys-fileName">{{ lanMap['file_click'] }}</span>
+                <a
+                    href="javascript:void(0);"
+                    @click="commit_logo('logo', 'sys-file', 'sys-fileName')"
+                >{{ lanMap['commit'] }}</a>
             </form>
         </div>
         <div class="sys-set-item">
@@ -42,7 +66,6 @@
         <div class="sys-set-item">
             <a href="javascript:void(0);" @click="commit_info">{{ lanMap['commit'] }}</a>
         </div>
-        <loading v-if="isloading"></loading>
     </div>
 </template>
 
@@ -52,16 +75,15 @@ import loading from "@/components/common/loading";
 export default {
     name: "sys_setting",
     components: { loading },
-    computed: mapState(["lanMap", "language"]),
+    computed: mapState(["lanMap", "language", "custom"]),
     data() {
         return {
             lang: "zh",
-            isloading: false,
             company_name: "",
             company_addr: "",
             company_email: "",
             company_phone: "",
-            supplier_info: ""
+            supplier_info: "",
         };
     },
     created() {
@@ -72,15 +94,15 @@ export default {
     },
     methods: {
         ...mapMutations({
-            set_language: "updateLang"
+            set_language: "updateLang",
         }),
         backto_devmgmt() {
             this.$router.replace("/main");
         },
         //  选择上传文件
-        changeFile() {
-            var file = document.getElementById("sys-file");
-            var fileName = document.getElementById("sys-fileName");
+        changeFile(type, ref1, ref2) {
+            var file = this.$refs[ref1];
+            var fileName = this.$refs[ref2];
             var files = file.files[0];
             if (!files) {
                 fileName.innerText = this.lanMap["file_click"];
@@ -90,8 +112,11 @@ export default {
             var myImg = URL.createObjectURL(files);
             var img = new Image();
             img.src = myImg;
-            img.onload = function() {
-                if (img.width !== 240 || img.height !== 70) {
+            img.onload = function () {
+                if (
+                    type === "logo" &&
+                    (img.width !== 240 || img.height !== 70)
+                ) {
                     file.value = "";
                     fileName.innerText = _this.lanMap["file_click"];
                 }
@@ -100,49 +125,56 @@ export default {
                 file.value.lastIndexOf("\\") + 1
             );
         },
-        commit_logo() {
+        commit_logo(type, ref1, ref2) {
             var formData = new FormData();
-            var file = document.getElementById("sys-file");
+            var file = this.$refs[ref1];
             var files = file.files[0];
-            var fileName = document.getElementById("sys-fileName");
+            console.log(files);
+            var fileName = this.$refs[ref2];
             if (!files) {
                 fileName.innerText = this.lanMap["file_click"];
                 this.$message({
                     type: "warning",
-                    text: this.lanMap["file_not_select"]
+                    text: this.lanMap["file_not_select"],
                 });
                 return;
             }
-            if (files.size / 1024 > 200) {
+            // 文件大小限制为 50kb
+            const limit = 50;
+            if (files.size / 1024 > limit) {
                 this.$message({
                     type: "warning",
-                    text: this.lanMap["imagesize_tips"]
+                    text: this.lanMap["imagesize_tips"],
                 });
                 return;
             }
             formData.append("file", files);
-            this.isloading = true;
+            const loading = this.$loading();
+            const url =
+                type === "logo"
+                    ? "/upgrade?type=logo"
+                    : "/upgrade?type=login_logo";
             this.$http
-                .post("/upgrade?type=logo", formData, {
+                .post(url, formData, {
                     headers: { "Content-Type": "multipart/form-data" },
-                    timeout: 0
+                    timeout: 0,
                 })
-                .then(res => {
-                    this.isloading = false;
+                .then((res) => {
                     if (res.data.code === 1) {
                         this.$message({
                             type: res.data.type,
-                            text: this.lanMap["setting_ok"]
+                            text: this.lanMap["setting_ok"],
                         });
                     } else if (res.data.code > 1) {
                         this.$message({
                             type: res.data.type,
-                            text: this.lanMap["setting_fail"]
+                            text: `(${res.data.code}) ${res.data.message}`,
                         });
                     }
                 })
-                .catch(err => {
-                    // to do
+                .catch((err) => {})
+                .finally((_) => {
+                    loading && loading.close();
                 });
         },
         commit_info() {
@@ -152,28 +184,28 @@ export default {
                     addr: this.company_addr,
                     email: this.company_email,
                     phone: this.company_phone,
-                    supplier_info: this.supplier_info
-                }
+                    supplier_info: this.supplier_info,
+                },
             };
             this.$http
                 .post("/board?info=setting_board", post_data)
-                .then(res => {
+                .then((res) => {
                     if (res.data.code === 1) {
                         this.$message({
                             type: res.data.type,
-                            text: this.lanMap["setting_ok"]
+                            text: this.lanMap["setting_ok"],
                         });
                     } else if (res.data.code > 1) {
                         this.$message({
                             type: res.data.type,
-                            text: this.lanMap["setting_fail"]
+                            text: this.lanMap["setting_fail"],
                         });
                     }
                 })
-                .catch(err => {
+                .catch((err) => {
                     // to do
                 });
-        }
+        },
     },
     watch: {
         lang() {
@@ -181,8 +213,8 @@ export default {
         },
         language() {
             this.lang = this.language;
-        }
-    }
+        },
+    },
 };
 </script>
 
