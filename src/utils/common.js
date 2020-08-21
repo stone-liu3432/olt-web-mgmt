@@ -207,3 +207,9 @@ export function removeItem(arr, item) {
 export function isFunction(func) {
     return typeof func === "function";
 }
+
+export function clearSessionStorage() {
+    const lang = sessionStorage.getItem("def_lang");
+    sessionStorage.clear();
+    sessionStorage.setItem("def_lang", lang);
+}
