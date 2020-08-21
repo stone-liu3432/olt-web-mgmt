@@ -17,7 +17,7 @@ export default {
     components: {
         topBanner,
         contentArea,
-        bottomFooter
+        bottomFooter,
     },
     data() {
         return {
@@ -26,7 +26,7 @@ export default {
             time: 0,
             interval: null,
             uName: "",
-            isRouterAlive: true
+            isRouterAlive: true,
         };
     },
     created() {
@@ -71,7 +71,7 @@ export default {
         //  手机登录时，调整高度
         this.$nextTick(() => {
             if (window) {
-                var os = (function() {
+                var os = (function () {
                     var ua = navigator.userAgent,
                         isWindowsPhone = /(?:Windows Phone)/.test(ua),
                         isSymbian = /(?:SymbianOS)/.test(ua) || isWindowsPhone,
@@ -88,7 +88,7 @@ export default {
                         isTablet: isTablet,
                         isPhone: isPhone,
                         isAndroid: isAndroid,
-                        isPc: isPc
+                        isPc: isPc,
                     };
                 })();
                 if (!os.isPc) {
@@ -98,17 +98,12 @@ export default {
             }
         });
         // 阻止firefox拖拽时打开新页面
-        document.body.addEventListener("drop", e => {
+        document.body.addEventListener("drop", (e) => {
             e.preventDefault();
             e.stopPropagation();
         });
     },
     beforeDestroy() {
-        sessionStorage.removeItem("pid");
-        sessionStorage.removeItem("oid");
-        sessionStorage.removeItem("f_menu");
-        sessionStorage.removeItem("first_menu");
-        sessionStorage.removeItem("sec_menu");
         clearInterval(this.interval);
         document.body.removeEventListener("mousemove", this.user_timeout);
         document.body.removeEventListener("mousedown", this.user_timeout);
@@ -118,12 +113,12 @@ export default {
         ...mapMutations({
             portInfo: "updatePortData",
             portName: "updatePortName",
-            changeNav: "updateNavMenu"
+            changeNav: "updateNavMenu",
         }),
         ...mapActions({
             getSystem: "updateSystem",
             getMenu: "updateMenu",
-            getCustom: "updateCustom"
+            getCustom: "updateCustom",
         }),
         reload() {
             this.isRouterAlive = false;
@@ -137,7 +132,7 @@ export default {
         getData() {
             this.$http
                 .get(this.change_url.port)
-                .then(res => {
+                .then((res) => {
                     this.portInfo(res.data);
                     var pon = this.system.data.ponports;
                     var ge = this.system.data.geports;
@@ -148,7 +143,7 @@ export default {
                         ge_count = res.data.data.slice(pon);
                         portName = {
                             pon: this.get_portName(pon_count, "PON"),
-                            ge: this.get_portName(ge_count, "GE")
+                            ge: this.get_portName(ge_count, "GE"),
                         };
                     } else {
                         ge_count = res.data.data.slice(pon, pon + ge);
@@ -156,12 +151,12 @@ export default {
                         portName = {
                             pon: this.get_portName(pon_count, "PON"),
                             ge: this.get_portName(ge_count, "GE"),
-                            xge: this.get_portName(xge_count, "XGE")
+                            xge: this.get_portName(xge_count, "XGE"),
                         };
                     }
                     this.portName(portName);
                 })
-                .catch(err => {});
+                .catch((err) => {});
         },
         // 根据port_id 分配端口名
         get_portName(arr, prefix) {
@@ -178,9 +173,9 @@ export default {
                 obj[arr[i].port_id].data = arr[i];
             }
             return obj;
-        }
+        },
     },
-    computed: mapState(["port_info", "system", "change_url", "lanMap"])
+    computed: mapState(["port_info", "system", "change_url", "lanMap"]),
 };
 </script>
 
