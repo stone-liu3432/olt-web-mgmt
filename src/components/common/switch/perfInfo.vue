@@ -1,6 +1,18 @@
 <template>
     <div>
-        <h2>{{ lanMap['perf_info'] }}</h2>
+        <h2>
+            {{ lanMap['perf_info'] }}
+            <nms-button
+                size="mini"
+                style="margin-left: 30px;"
+                @click="refreshData"
+            >{{ lanMap['refresh'] }}</nms-button>
+            <nms-button
+                size="mini"
+                style="margin-left: 30px;"
+                @click="clearPerf(0)"
+            >{{ lanMap['clear_perf_all'] }}</nms-button>
+        </h2>
         <hr />
         <nms-table :rows="perf_list" border>
             <nms-table-column prop="port_id" :label="lanMap['port_id']" min-width="80px">
@@ -45,6 +57,7 @@
 
 <script>
 import { mapState } from "vuex";
+import { debounce } from "@/utils/common";
 export default {
     name: "perfInfo",
     computed: mapState(["lanMap", "port_name", "port_info", "change_url"]),
@@ -53,7 +66,7 @@ export default {
             portid: 0,
             visible: false,
             perf_list: [],
-            perf_detail: {}
+            perf_detail: {},
         };
     },
     activated() {
@@ -67,31 +80,31 @@ export default {
             this.perf_list = [];
             this.$http
                 .get("/switch_port?form=statistictab")
-                .then(res => {
+                .then((res) => {
                     if (res.data.code === 1) {
                         if (res.data.data && res.data.data.length) {
                             this.perf_list = res.data.data;
                         }
                     }
                 })
-                .catch(err => {
+                .catch((err) => {
                     // to do
                 });
         },
         clearPerf(portid) {
             this.$confirm(this.lanMap["if_sure"])
-                .then(_ => {
+                .then((_) => {
                     this.$http
                         .get("/switch_port?form=nostatistic", {
-                            params: { port_id: portid }
+                            params: { port_id: portid },
                         })
-                        .then(res => {
+                        .then((res) => {
                             if (res.data.code === 1) {
                                 this.$message({
                                     type: res.data.type,
                                     text:
                                         this.lanMap["clear_perf"] +
-                                        this.lanMap["setting_ok"]
+                                        this.lanMap["setting_ok"],
                                 });
                                 this.getData();
                             } else {
@@ -101,13 +114,13 @@ export default {
                                         "(" +
                                         res.data.code +
                                         ")" +
-                                        res.data.message
+                                        res.data.message,
                                 });
                             }
                         })
-                        .catch(err => {});
+                        .catch((err) => {});
                 })
-                .catch(_ => {});
+                .catch((_) => {});
         },
         showDetail(portid) {
             this.visible = true;
@@ -118,16 +131,19 @@ export default {
             this.portid = port_id;
             this.$http
                 .get("/switch_port", { params: { form: "statistic", port_id } })
-                .then(res => {
+                .then((res) => {
                     if (res.data.code === 1) {
                         if (res.data.data) {
                             this.perf_detail = res.data.data;
                         }
                     }
                 })
-                .catch(err => {});
-        }
-    }
+                .catch((err) => {});
+        },
+        refreshData() {
+            debounce(this.getData, 1000, this);
+        },
+    },
 };
 </script>
 
@@ -135,7 +151,7 @@ export default {
 h2 {
     margin: 10px 0 10px 0;
     display: inline-block;
-    width: 300px;
+    // width: 300px;
     font-size: 24px;
     font-weight: 600;
     color: #67aef7;
