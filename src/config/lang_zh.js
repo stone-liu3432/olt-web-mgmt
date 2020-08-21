@@ -519,7 +519,7 @@ var zh = {
     product_name_tips: "产品名称不得多于12个字符",
     sysinfo_set: "Logo，型号，公司信息设置",
     goback_devmgmt: "回到设备管理",
-    imagesize_tips: "图片大小最大为200kb",
+    imagesize_tips: "图片大小最大为50kb",
 
     acl_id_range_error:
         "ACL ID取值范围错误，其中基础ACL为2000-2999，高级ACL为3000-4999，链路ACL为5000-5999",
@@ -862,7 +862,9 @@ var zh = {
     not_support: "不支持",
     cfg_succ_reboot_tips: "配置成功，重启设备后生效，是否现在重启设备 ?",
     del_checked: "删除选中",
-    port_default_vlan: "端口默认VLAN",
+    port_default_vlan: "端口缺省VLAN",
+    verification_code: "验证码",
+    clear_perf_all: "清除所有统计信息",
 
     composeRange(min, max) {
         return `${min} - ${max}位字符`;
