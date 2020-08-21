@@ -32,8 +32,10 @@
                             <nms-dropdown-item command="reboot">{{ lanMap['reboot'] }}</nms-dropdown-item>
                             <nms-dropdown-item command="optical">{{ lanMap['pon_optical'] }}</nms-dropdown-item>
                             <nms-dropdown-item command="viewConfig">{{ lanMap['view_cfg'] }}</nms-dropdown-item>
-                            <nms-dropdown-item command="zh">简体中文</nms-dropdown-item>
-                            <nms-dropdown-item command="en">English</nms-dropdown-item>
+                            <template v-if="!custom.fix_lang">
+                                <nms-dropdown-item command="zh">简体中文</nms-dropdown-item>
+                                <nms-dropdown-item command="en">English</nms-dropdown-item>
+                            </template>
                         </template>
                     </nms-dropdown>
                 </li>
@@ -63,7 +65,7 @@ const messageActions = {
     //  接收到server发送的pong包时的动作
     heartbeats() {
         this.resetHeartBeat();
-    }
+    },
 };
 const typeActions = {
     alarm(data) {
@@ -74,7 +76,7 @@ const typeActions = {
             this.$message({
                 type: "warning",
                 text: content,
-                duration: 60000
+                duration: 60000,
             });
             this.msgs = [];
             sessionStorage.removeItem("x-token");
@@ -86,7 +88,7 @@ const typeActions = {
         //  action:  1-resgister，2-timeout，3-heartbeats
         const { action } = data;
         action && messageActions[MESSAGE_ACTION_MAP[action]].call(this);
-    }
+    },
 };
 export default {
     name: "topBanner",
@@ -97,14 +99,15 @@ export default {
             "language",
             "menu",
             "change_url",
-            "nav_menu"
+            "nav_menu",
+            "custom",
         ]),
         socketFlag() {
             if (this.socketState) {
                 return this.lanMap["close_rt_alarm"];
             }
             return this.lanMap["open_rt_alarm"];
-        }
+        },
     },
     data() {
         return {
@@ -118,7 +121,7 @@ export default {
             heartbeat: 30000,
             socketState: true,
             msgs: [],
-            msgQueue: []
+            msgQueue: [],
         };
     },
     created() {
@@ -132,7 +135,7 @@ export default {
     },
     mounted() {
         this.initSocket();
-        this.$once("hook:beforeDestroy", _ => {
+        this.$once("hook:beforeDestroy", (_) => {
             this.closeWs();
         });
     },
@@ -142,42 +145,42 @@ export default {
             changeMenu: "updateNavMenu",
             changeAdvMenu: "updateAdvMenu",
             changeFMenu: "updateAdvFMenu",
-            change_lang: "updateLang"
+            change_lang: "updateLang",
         }),
         login_out() {
             this.$confirm(this.lanMap["logout"] + " ?")
-                .then(_ => {
+                .then((_) => {
                     const post_params = {
                         method: "set",
                         param: {
-                            name: this.uName
-                        }
+                            name: this.uName,
+                        },
                     };
                     this.$http
                         .post("/userlogin?form=logout", post_params)
-                        .then(res => {
+                        .then((res) => {
                             this.$message({
                                 type: "success",
-                                text: this.lanMap["login_out"]
+                                text: this.lanMap["login_out"],
                             });
                             sessionStorage.removeItem("x-token");
                             sessionStorage.removeItem("uname");
                             this.$router.push("/login");
                         })
-                        .catch(err => {});
+                        .catch((err) => {});
                 })
-                .catch(_ => {});
+                .catch((_) => {});
         },
         savecfg() {
             this.$confirm(this.lanMap["save_cfg_confirm"])
-                .then(_ => {
+                .then((_) => {
                     this.$http
                         .get("/system_save")
-                        .then(res => {
+                        .then((res) => {
                             if (res.data.code === 1) {
                                 this.$message({
                                     type: res.data.type,
-                                    text: this.lanMap["save_succ"]
+                                    text: this.lanMap["save_succ"],
                                 });
                             } else if (res.data.code > 1) {
                                 this.$message({
@@ -186,13 +189,13 @@ export default {
                                         "(" +
                                         res.data.code +
                                         ") " +
-                                        res.data.message
+                                        res.data.message,
                                 });
                             }
                         })
-                        .catch(err => {});
+                        .catch((err) => {});
                 })
-                .catch(_ => {});
+                .catch((_) => {});
         },
         user_mgmt() {
             this.$router.push("user_mgmt");
@@ -202,12 +205,12 @@ export default {
             if (node === "advanced_setting") {
                 this.$http
                     .get(this.change_url.menu)
-                    .then(res => {
+                    .then((res) => {
                         if (res.data.code === 1) {
                             this.addmenu(res.data);
                         }
                     })
-                    .catch(err => {});
+                    .catch((err) => {});
             }
             this.changeMenu(node);
             sessionStorage.setItem("f_menu", node);
@@ -217,38 +220,38 @@ export default {
         },
         reboot() {
             this.$confirm(this.lanMap["reboot_olt_hit"])
-                .then(_ => {
+                .then((_) => {
                     this.$http
                         .get("/system_reboot")
-                        .then(res => {})
-                        .catch(err => {});
+                        .then((res) => {})
+                        .catch((err) => {});
                     this.reboot_req();
                     this.loading = this.$loading();
                 })
-                .catch(_ => {});
+                .catch((_) => {});
         },
         reboot_req() {
             this.$http
                 .get("/system_start", { timeout: 3000 })
-                .then(res => {
+                .then((res) => {
                     if (res.data.code === 1) {
                         this.loading && this.loading.close();
                         sessionStorage.clear();
                         this.$router.push("/login");
                     }
                 })
-                .catch(err => {
-                    setTimeout(_ => {
+                .catch((err) => {
+                    setTimeout((_) => {
                         this.reboot_req();
                     }, 3000);
                 });
         },
         viewCurrentConfig() {
             this.$confirm(this.lanMap["if_sure"])
-                .then(_ => {
+                .then((_) => {
                     this.$http
                         .get("/system_running_config")
-                        .then(res => {
+                        .then((res) => {
                             if (res.data.code === 1) {
                                 try {
                                     var a = document.createElement("a");
@@ -269,26 +272,26 @@ export default {
                                         "(" +
                                         res.data.code +
                                         ") " +
-                                        res.data.message
+                                        res.data.message,
                                 });
                             }
                         })
-                        .catch(err => {});
+                        .catch((err) => {});
                 })
-                .catch(_ => {});
+                .catch((_) => {});
         },
         changeLang(lang) {
             this.change_lang(lang);
             const data = {
                 method: "set",
                 param: {
-                    lang
-                }
+                    lang,
+                },
             };
             this.$http
                 .post("/system_lang", data)
-                .then(res => {})
-                .catch(err => {});
+                .then((res) => {})
+                .catch((err) => {});
         },
         shortcut(command) {
             const ACTIONS = {
@@ -322,7 +325,7 @@ export default {
                 en() {
                     if (this.language === "en") return;
                     this.changeLang("en");
-                }
+                },
             };
             if (typeof ACTIONS[command] === "function") {
                 ACTIONS[command].call(this);
@@ -331,19 +334,19 @@ export default {
         initSocket() {
             if ("WebSocket" in window) {
                 let ws = new WebSocket(wsUrl);
-                ws.onopen = e => {
+                ws.onopen = (e) => {
                     if (ws.readyState === 1) {
                         this.sendRegisterMsg();
                         //  心跳检测
                         this.startHeartBeat();
                     }
                 };
-                ws.onmessage = e => {
+                ws.onmessage = (e) => {
                     //  type: 1-alarm 2-message
                     const { type, ...data } = JSON.parse(e.data);
                     type && typeActions[TYPE_MAP[type]].call(this, data);
                 };
-                ws.onclose = e => {
+                ws.onclose = (e) => {
                     if (e.code !== 0x3e8) {
                         if (this.ws_limit >= 3) {
                             this.$message.error(this.lanMap["conn_error"]);
@@ -358,24 +361,24 @@ export default {
                         this.ws_limit = 0;
                     }
                 };
-                ws.onerror = e => {};
+                ws.onerror = (e) => {};
                 this.ws = ws;
             }
         },
         closeWs(code = 0x3e8) {
             if (this.ws) {
-                this.ws.onclose = e => {};
+                this.ws.onclose = (e) => {};
                 this.ws.close(code);
                 this.ws = null;
             }
         },
         startHeartBeat() {
-            this.timeout = setTimeout(_ => {
+            this.timeout = setTimeout((_) => {
                 this.ws &&
                     this.ws.send(
                         JSON.stringify({
                             type: 2,
-                            action: 3
+                            action: 3,
                         })
                     );
             }, this.heartbeat);
@@ -394,14 +397,14 @@ export default {
                         type: 2, // message
                         action: 1, // register
                         xtoken,
-                        username
+                        username,
                     })
                 );
-        }
+        },
     },
     watch: {
         system() {
-            this.$nextTick(_ => {
+            this.$nextTick((_) => {
                 this.$refs["logo-image"].src = "../../logo.png";
             });
         },
@@ -411,20 +414,20 @@ export default {
                     const notify = this.msgQueue.shift();
                     notify.close(notify.id);
                 }
-                this.$nextTick(_ => {
+                this.$nextTick((_) => {
                     const { content, level, alarm_id } = this.msgs.shift();
                     content &&
                         this.msgQueue.push(
                             this.$notify({
                                 message: content,
                                 position: "bottom-right",
-                                type: LEVEL[level] || "info"
+                                type: LEVEL[level] || "info",
                             })
                         );
                 });
             }
-        }
-    }
+        },
+    },
 };
 </script>
 

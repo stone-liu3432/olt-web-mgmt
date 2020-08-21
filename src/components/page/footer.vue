@@ -1,17 +1,19 @@
 <template>
     <div id="footer">
         <div>
-            <span>{{ lanMap['lang'] }}</span>
-            <span>:</span>
-            <span
-                @click="changeLang('zh')"
-                :style="{ 'color' : language === 'zh' ? '#67aef6' : '' }"
-            >简体中文</span>
-            <span
-                @click="changeLang('en')"
-                :style="{ 'color' : language === 'en' ? '#67aef6' : '' }"
-            >English</span>
-            <span>&nbsp;&nbsp;|&nbsp;&nbsp;</span>
+            <template v-if="!custom.fix_lang">
+                <span>{{ lanMap['lang'] }}</span>
+                <span>:</span>
+                <span
+                    @click="changeLang('zh')"
+                    :style="{ 'color' : language === 'zh' ? '#67aef6' : '' }"
+                >简体中文</span>
+                <span
+                    @click="changeLang('en')"
+                    :style="{ 'color' : language === 'en' ? '#67aef6' : '' }"
+                >English</span>
+                <span>&nbsp;&nbsp;|&nbsp;&nbsp;</span>
+            </template>
             <span>{{ lanMap['fw_ver'] }}</span>
             <span>:</span>
             <span v-if="system && system.data">{{ system.data.fw_ver }}</span>
@@ -29,30 +31,30 @@ export default {
     name: "bottomFooter",
     data() {
         return {
-            lang: ""
+            lang: "",
         };
     },
-    computed: mapState(["lanMap", "language", "system"]),
+    computed: mapState(["lanMap", "language", "system", "custom"]),
     methods: {
         ...mapMutations({
-            change_lang: "updateLang"
+            change_lang: "updateLang",
         }),
         changeLang(lang) {
             this.change_lang(lang);
             const data = {
                 method: "set",
                 param: {
-                    lang
-                }
+                    lang,
+                },
             };
             this.$http
                 .post("/system_lang", data)
-                .then(res => {
+                .then((res) => {
                     // to do
                 })
-                .catch(err => {});
-        }
-    }
+                .catch((err) => {});
+        },
+    },
 };
 </script>
 
