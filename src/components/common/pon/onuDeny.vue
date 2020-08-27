@@ -43,7 +43,7 @@
                 :style="{ 'border-color': test_macaddr ? 'red' : '' }"
                 v-focus
             />
-            <span>{{ lanMap['desc'] }}</span>
+            <span>{{ lanMap['reason'] }}</span>
             <input type="text" v-model="addItem.desc" />
             <span>
                 <a href="javascript:;" @click="handle(true)">{{ lanMap['apply'] }}</a>
@@ -93,9 +93,9 @@ export default {
             addItem: {
                 isShow: false,
                 desc: "",
-                macaddr: ""
+                macaddr: "",
             },
-            selections: []
+            selections: [],
         };
     },
     activated() {
@@ -107,10 +107,10 @@ export default {
         if (this.change_url.beta === "test") {
             this.$http
                 .get("./simulation_data/onu_deny_list.json")
-                .then(res => {
+                .then((res) => {
                     this.onu_deny_list = res.data.data;
                 })
-                .catch(err => {
+                .catch((err) => {
                     // to do
                 });
         }
@@ -120,14 +120,14 @@ export default {
             this.onu_deny_list = [];
             this.$http
                 .get("/onu_deny_list?port_id=" + this.portid)
-                .then(res => {
+                .then((res) => {
                     if (res.data.code === 1) {
                         if (res.data.data && res.data.data.length) {
                             this.onu_deny_list = res.data.data;
                         }
                     }
                 })
-                .catch(err => {
+                .catch((err) => {
                     // to do
                 });
         },
@@ -137,7 +137,7 @@ export default {
                 if (this.test_macaddr || this.addItem.macaddr === "") {
                     this.$message({
                         type: "error",
-                        text: this.lanMap["param_mac"]
+                        text: this.lanMap["param_mac"],
                     });
                     return;
                 }
@@ -146,18 +146,18 @@ export default {
                     param: {
                         port_id: Number(this.portid),
                         macaddr: this.addItem.macaddr,
-                        reason: this.addItem.desc
-                    }
+                        reason: this.addItem.desc,
+                    },
                 };
                 this.$http
                     .post("/onu_deny_list?form=onucfg", post_param)
-                    .then(res => {
+                    .then((res) => {
                         if (res.data.code === 1) {
                             this.$message({
                                 type: res.data.type,
                                 text:
                                     this.lanMap["add"] +
-                                    this.lanMap["st_success"]
+                                    this.lanMap["st_success"],
                             });
                             this.getData();
                         } else if (res.data.code > 1) {
@@ -167,11 +167,11 @@ export default {
                                     "(" +
                                     res.data.code +
                                     ") " +
-                                    res.data.message
+                                    res.data.message,
                             });
                         }
                     })
-                    .catch(err => {
+                    .catch((err) => {
                         // to do
                     });
             }
@@ -188,23 +188,23 @@ export default {
             // 确认框中用户点击确认时的操作
             this.$http
                 .post("/onu_deny_list?form=onucfg", data)
-                .then(res => {
+                .then((res) => {
                     if (res.data.code === 1) {
                         this.$message({
                             type: res.data.type,
                             text:
                                 this.lanMap["delete"] +
-                                this.lanMap["st_success"]
+                                this.lanMap["st_success"],
                         });
                         this.getData();
                     } else if (res.data.code > 1) {
                         this.$message({
                             type: res.data.type,
-                            text: "(" + res.data.code + ") " + res.data.message
+                            text: "(" + res.data.code + ") " + res.data.message,
                         });
                     }
                 })
-                .catch(err => {
+                .catch((err) => {
                     // to do
                 });
         },
@@ -215,14 +215,14 @@ export default {
                 param: {
                     port_id,
                     onu_id,
-                    macaddr
-                }
+                    macaddr,
+                },
             };
             this.$confirm(this.lanMap["confirm_del_deny"])
-                .then(_ => {
+                .then((_) => {
                     this.result(post_param);
                 })
-                .catch(_ => {});
+                .catch((_) => {});
         },
         selectionChange(selections) {
             this.selections = selections;
@@ -234,18 +234,18 @@ export default {
             this.$confirm(
                 this.lanMap["if_sure"] + this.lanMap["del_checked"] + " ONU"
             )
-                .then(_ => {
-                    const onu_id = this.selections.map(item => item.onu_id);
+                .then((_) => {
+                    const onu_id = this.selections.map((item) => item.onu_id);
                     onu_id.sort((a, b) => a - b);
                     this.$http
                         .post("/onu_deny_list?form=batch", {
                             method: "delete",
                             param: {
                                 port_id: this.portid,
-                                onu_id
-                            }
+                                onu_id,
+                            },
                         })
-                        .then(res => {
+                        .then((res) => {
                             if (res.data.code === 1) {
                                 this.$message.success(
                                     this.lanMap["delete"] +
@@ -261,10 +261,10 @@ export default {
                                 );
                             }
                         })
-                        .catch(err => {});
+                        .catch((err) => {});
                 })
-                .catch(_ => {});
-        }
+                .catch((_) => {});
+        },
     },
     watch: {
         "addItem.macaddr"() {
@@ -283,8 +283,8 @@ export default {
         portid() {
             sessionStorage.setItem("pid", Number(this.portid));
             this.getData();
-        }
-    }
+        },
+    },
 };
 </script>
 
@@ -322,7 +322,7 @@ div.add-deny {
 }
 .add-item {
     height: 40px;
-    min-width: 1060px;
+    min-width: 1030px;
     margin-top: 10px;
     border: 1px solid #ddd;
     line-height: 40px;
