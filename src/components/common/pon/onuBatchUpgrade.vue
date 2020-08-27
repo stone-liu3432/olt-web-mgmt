@@ -200,7 +200,7 @@ import { mapState } from "vuex";
 export default {
     name: "onuBatchUpgrade",
     computed: {
-        ...mapState(["lanMap", "port_name", "change_url"])
+        ...mapState(["lanMap", "port_name", "change_url"]),
     },
     data() {
         return {
@@ -232,7 +232,7 @@ export default {
             port_bind_type: [],
             //  选中的onu
             bind_onu: [],
-            checked_otp: false
+            checked_otp: false,
         };
     },
     created() {
@@ -243,7 +243,7 @@ export default {
         get_upgrade_type() {
             this.$http
                 .get("/onu_upgrade?form=upgrade_type")
-                .then(res => {
+                .then((res) => {
                     if (res.data.code === 1) {
                         this.upgrade_type = res.data;
                         if (this.upgrade_type.data) {
@@ -254,7 +254,7 @@ export default {
                         this.otp_list = [];
                     }
                 })
-                .catch(err => {
+                .catch((err) => {
                     // to do
                 });
         },
@@ -263,7 +263,7 @@ export default {
             if (!type && (!this.otp_list.length || this.otp_list.length < 1)) {
                 this.$message({
                     type: "error",
-                    text: this.lanMap["no_upgrade_type"]
+                    text: this.lanMap["no_upgrade_type"],
                 });
                 return;
             }
@@ -282,33 +282,33 @@ export default {
                     text:
                         this.lanMap["param_error"] +
                         ": " +
-                        this.lanMap["upgrade_type"]
+                        this.lanMap["upgrade_type"],
                 });
                 return;
             }
             var post_params = {
                 method: "add",
                 param: {
-                    upgrade_type: this.add_otp
-                }
+                    upgrade_type: this.add_otp,
+                },
             };
             this.$http
                 .post("/onu_upgrade?form=upgrade_type", post_params)
-                .then(res => {
+                .then((res) => {
                     if (res.data.code === 1) {
                         this.$message({
                             type: res.data.type,
-                            text: this.lanMap["setting_ok"]
+                            text: this.lanMap["setting_ok"],
                         });
                         this.get_upgrade_type();
                     } else if (res.data.code > 1) {
                         this.$message({
                             type: res.data.type,
-                            text: "(" + res.data.code + ") " + res.data.message
+                            text: "(" + res.data.code + ") " + res.data.message,
                         });
                     }
                 })
-                .catch(err => {
+                .catch((err) => {
                     // to do
                 });
             this.close_otp_dialog();
@@ -321,33 +321,33 @@ export default {
                     text:
                         this.lanMap["param_error"] +
                         ": " +
-                        this.lanMap["upgrade_type"]
+                        this.lanMap["upgrade_type"],
                 });
                 return;
             }
             var post_params = {
                 method: "delete",
                 param: {
-                    upgrade_type: this.del_otp
-                }
+                    upgrade_type: this.del_otp,
+                },
             };
             this.$http
                 .post("/onu_upgrade?form=upgrade_type", post_params)
-                .then(res => {
+                .then((res) => {
                     if (res.data.code === 1) {
                         this.$message({
                             type: res.data.type,
-                            text: this.lanMap["etting_ok"]
+                            text: this.lanMap["etting_ok"],
                         });
                         this.get_upgrade_type();
                     } else if (res.data.code > 1) {
                         this.$message({
                             type: res.data.type,
-                            text: "(" + res.data.code + ") " + res.data.message
+                            text: "(" + res.data.code + ") " + res.data.message,
                         });
                     }
                 })
-                .catch(err => {
+                .catch((err) => {
                     // to do
                 });
             this.close_otp_dialog();
@@ -376,14 +376,14 @@ export default {
             if (!this.upgrade_file) {
                 this.$message({
                     type: "error",
-                    text: this.lanMap["file_not_select"]
+                    text: this.lanMap["file_not_select"],
                 });
                 return;
             }
             if (!this.param_otp) {
                 this.$message({
                     type: "error",
-                    text: this.lanMap["no_upgrade_type"]
+                    text: this.lanMap["no_upgrade_type"],
                 });
                 return;
             }
@@ -393,15 +393,15 @@ export default {
                     text:
                         this.lanMap["param_error"] +
                         ": " +
-                        this.lanMap["port_id"]
+                        this.lanMap["port_id"],
                 });
                 return;
             }
             this.$confirm()
-                .then(_ => {
+                .then((_) => {
                     this.upload_file();
                 })
-                .catch(_ => {});
+                .catch((_) => {});
         },
         //  上传文件
         upload_file() {
@@ -412,19 +412,19 @@ export default {
             this.$http
                 .post("/onu_upload?type=" + this.param_otp, formData, {
                     headers: { "Content-Type": "multipart/form-data" },
-                    timeout: 0
+                    timeout: 0,
                 })
-                .then(res => {
+                .then((res) => {
                     if (res.data.code === 1) {
                         this.start_upgrade_onu();
                     } else if (res.data.code > 1) {
                         this.$message({
                             type: res.data.type,
-                            text: "(" + res.data.code + ") " + res.data.message
+                            text: "(" + res.data.code + ") " + res.data.message,
                         });
                     }
                 })
-                .catch(error => {
+                .catch((error) => {
                     // to do
                 });
         },
@@ -435,39 +435,39 @@ export default {
                 param: {
                     port_id: this.param_pid,
                     onu_id: 0,
-                    upgrade_type: this.param_otp
-                }
+                    upgrade_type: this.param_otp,
+                },
             };
             this.$http
                 .post("/onu_upgrade?form=upgrade", post_params)
-                .then(res => {
+                .then((res) => {
                     if (res.data.code === 1) {
                         this.$message({
                             type: res.data.type,
-                            text: this.lanMap["onu_upgrade_start"]
+                            text: this.lanMap["onu_upgrade_start"],
                         });
                     } else if (res.data.code > 1) {
                         this.$message({
                             type: res.data.type,
-                            text: "(" + res.data.code + ") " + res.data.message
+                            text: "(" + res.data.code + ") " + res.data.message,
                         });
                     }
                 })
-                .catch(err => {
+                .catch((err) => {
                     // to do
                 });
         },
         get_onu_baseinfo() {
             this.$http
                 .get(this.change_url.get_onu_baseinfo)
-                .then(res => {
+                .then((res) => {
                     if (res.data.code === 1) {
                         this.onu_base_info = res.data;
                     } else {
                         this.onu_base_info = {};
                     }
                 })
-                .catch(err => {
+                .catch((err) => {
                     // to do
                 });
         },
@@ -476,7 +476,7 @@ export default {
             if (!this.otp_list.length || this.otp_list.length < 1) {
                 this.$message({
                     type: "error",
-                    text: this.lanMap["no_upgrade_type"]
+                    text: this.lanMap["no_upgrade_type"],
                 });
                 return;
             }
@@ -495,7 +495,7 @@ export default {
             this.bind_onu = [];
             if (this.checked_otp) {
                 var olist = document.getElementsByName("checked-onu-bind");
-                olist.forEach(item => {
+                olist.forEach((item) => {
                     this.bind_onu.push(item.value);
                 });
             }
@@ -508,7 +508,7 @@ export default {
                     text:
                         this.lanMap["param_error"] +
                         ": " +
-                        this.lanMap["upgrade_type"]
+                        this.lanMap["upgrade_type"],
                 });
                 return;
             }
@@ -518,14 +518,14 @@ export default {
                     text:
                         this.lanMap["param_error"] +
                         ": " +
-                        this.lanMap["port_id"]
+                        this.lanMap["port_id"],
                 });
                 return;
             }
             if (!this.bind_onu.length) {
                 this.$message({
                     type: "info",
-                    text: this.lanMap["no_select_onu"]
+                    text: this.lanMap["no_select_onu"],
                 });
                 return;
             }
@@ -534,35 +534,36 @@ export default {
                 param: {
                     port_id: this.portid,
                     onu_list: this.bind_onu,
-                    upgrade_type: this.bind_otp
-                }
+                    upgrade_type: this.bind_otp,
+                },
             };
             this.$http
                 .post("/onu_upgrade?form=bind_upgrade_type", post_params)
-                .then(res => {
+                .then((res) => {
                     if (res.data.code === 1) {
                         this.$message({
                             type: res.data.type,
-                            text: this.lanMap["setting_ok"]
+                            text: this.lanMap["setting_ok"],
                         });
+                        this.get_upgrade_type();
                     } else if (res.data.code > 1) {
                         this.$message({
                             type: res.data.type,
-                            text: "(" + res.data.code + ") " + res.data.message
+                            text: "(" + res.data.code + ") " + res.data.message,
                         });
                     }
                 })
-                .catch(err => {
+                .catch((err) => {
                     // to do
                 });
             this.close_bind_modal();
-        }
+        },
     },
     watch: {
         portid() {
             this.bind_onu = [];
             if (this.onu_base_info.data) {
-                this.port_bind_type = this.onu_base_info.data.filter(item => {
+                this.port_bind_type = this.onu_base_info.data.filter((item) => {
                     return item.port_id === this.portid;
                 });
             }
@@ -573,8 +574,8 @@ export default {
             } else {
                 this.checked_otp = true;
             }
-        }
-    }
+        },
+    },
 };
 </script>
 
