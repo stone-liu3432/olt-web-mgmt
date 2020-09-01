@@ -129,7 +129,6 @@ export default {
             var formData = new FormData();
             var file = this.$refs[ref1];
             var files = file.files[0];
-            console.log(files);
             var fileName = this.$refs[ref2];
             if (!files) {
                 fileName.innerText = this.lanMap["file_click"];
