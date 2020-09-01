@@ -315,7 +315,7 @@ export default {
             "port_name",
             "system",
             "change_url",
-            "port_info"
+            "port_info",
         ]),
         // 分页的数据 --> 显示到页面的数据
         vlan_tab() {
@@ -329,7 +329,7 @@ export default {
                 );
             }
             const tab = [];
-            this.vlan_list.forEach(item => {
+            this.vlan_list.forEach((item) => {
                 if (
                     String(item.vlan_id).indexOf(String(this.search_id)) !== -1
                 ) {
@@ -346,7 +346,7 @@ export default {
                 this.pagination.display * (this.pagination.index - 1),
                 this.pagination.index * this.pagination.display
             );
-        }
+        },
     },
     data() {
         return {
@@ -369,7 +369,7 @@ export default {
                 // 总页数
                 page: 0,
                 // 每页显示的数据数量
-                display: 20
+                display: 20,
             },
             // 添加/修改VLAN模态框隐藏显示
             modalDialog: false,
@@ -380,7 +380,9 @@ export default {
             def_list: [],
             lags: {},
             dialogVisible: false,
-            defVlanPortList: []
+            defVlanPortList: [],
+            // default vlan  数据缓存
+            originalVlanlist: [],
         };
     },
     created() {
@@ -393,21 +395,21 @@ export default {
             this.vlan_list = [];
             this.$http
                 .get(this.change_url.getvlan)
-                .then(res => {
+                .then((res) => {
                     if (res.data.code === 1) {
                         this.$http
                             .get(this.change_url.vlancfg)
-                            .then(res => {
+                            .then((res) => {
                                 if (res.data.code === 1) {
                                     if (res.data.data && res.data.data.length) {
                                         this.vlan_list = res.data.data;
                                     }
                                 }
                             })
-                            .catch(err => {});
+                            .catch((err) => {});
                     }
                 })
-                .catch(err => {});
+                .catch((err) => {});
         },
         //  创建VLAN
         createVlan(flag) {
@@ -424,22 +426,22 @@ export default {
         //  删除VLAN
         deleteVlan(vlanid) {
             this.$confirm(this.lanMap["delete_vlan_hit"])
-                .then(_ => {
+                .then((_) => {
                     const post_param = {
                         method: "destroy",
                         param: {
-                            vlan_id: vlanid
-                        }
+                            vlan_id: vlanid,
+                        },
                     };
                     this.$http
                         .post("/switch_vlan", post_param)
-                        .then(res => {
+                        .then((res) => {
                             if (res.data.code === 1) {
                                 this.$message({
                                     type: res.data.type,
                                     text:
                                         this.lanMap["delete"] +
-                                        this.lanMap["st_success"]
+                                        this.lanMap["st_success"],
                                 });
                                 this.vlan_list.forEach((item, index, arr) => {
                                     if (item.vlan_id === vlanid) {
@@ -453,15 +455,15 @@ export default {
                                         "(" +
                                         res.data.code +
                                         ") " +
-                                        res.data.message
+                                        res.data.message,
                                 });
                             }
                         })
-                        .catch(err => {
+                        .catch((err) => {
                             // to do
                         });
                 })
-                .catch(_ => {});
+                .catch((_) => {});
         },
         //  配置 VLAN 端口模态框
         config_port(data) {
@@ -507,40 +509,48 @@ export default {
                             .toString(),
                         untagged_portlist: this.untagged_list
                             .sort((a, b) => a - b)
-                            .toString()
-                    }
+                            .toString(),
+                    },
                 };
                 url = "/switch_vlan";
             } else {
                 post_param = {
                     method: "set",
                     param: {
-                        vlanid_s: vid_s > vid_e ? vid_e : vid_s,
-                        vlanid_e: vid_s > vid_e ? vid_s : vid_e,
+                        vlanid_s: vid_e
+                            ? vid_s > vid_e
+                                ? vid_e
+                                : vid_s
+                            : vid_s,
+                        vlanid_e: vid_e
+                            ? vid_s > vid_e
+                                ? vid_s
+                                : vid_e
+                            : vid_s,
                         tagged_portlist: this.tagged_list
                             .sort((a, b) => a - b)
                             .toString(),
                         untagged_portlist: this.untagged_list
                             .sort((a, b) => a - b)
-                            .toString()
-                    }
+                            .toString(),
+                    },
                 };
                 url = "/switch_vlanlist";
             }
             this.$http
                 .post(url, post_param)
-                .then(res => {
+                .then((res) => {
                     if (res.data.code === 1) {
                         if (!this.tip_flag && !create_flag) {
                             this.$message({
                                 type: res.data.type,
-                                text: this.lanMap["setting_ok"]
+                                text: this.lanMap["setting_ok"],
                             });
                         }
                         if (create_flag) {
                             this.$message({
                                 type: res.data.type,
-                                text: this.lanMap["create_vlan_info"]
+                                text: this.lanMap["create_vlan_info"],
                             });
                         }
                         this.pagination.index = 1;
@@ -548,7 +558,7 @@ export default {
                     } else if (res.data.code > 1) {
                         this.$message({
                             type: res.data.type,
-                            text: "(" + res.data.code + ") " + res.data.message
+                            text: "(" + res.data.code + ") " + res.data.message,
                         });
                         if (res.data.type === "warning") {
                             this.pagination.index = 1;
@@ -560,7 +570,7 @@ export default {
                     this.tip_flag = false;
                     this.closeModal();
                 })
-                .catch(err => {
+                .catch((err) => {
                     // to do
                 });
         },
@@ -579,11 +589,11 @@ export default {
                     vid_s < 1 ||
                     isNaN(vid_e) ||
                     vid_e > 4094 ||
-                    vid_e < 1
+                    vid_e < 0
                 ) {
                     this.$message({
                         type: "error",
-                        text: this.lanMap["vlanid_range_hit"]
+                        text: this.lanMap["vlanid_range_hit"],
                     });
                     return;
                 }
@@ -591,20 +601,28 @@ export default {
                     method: "create",
                     param: {
                         type: 1,
-                        vlanid_s: vid_s > vid_e ? vid_e : vid_s,
-                        vlanid_e: vid_s > vid_e ? vid_s : vid_e
-                    }
+                        vlanid_s: vid_e
+                            ? vid_s > vid_e
+                                ? vid_e
+                                : vid_s
+                            : vid_s,
+                        vlanid_e: vid_e
+                            ? vid_s > vid_e
+                                ? vid_s
+                                : vid_e
+                            : vid_s,
+                    },
                 };
                 this.$http
                     .post("/switch_vlanlist", post_param)
-                    .then(res => {
+                    .then((res) => {
                         if (res.data.code === 1) {
                             if (tag_str || untag_str) {
                                 this.set_vlan(0, vid_s, vid_e, true);
                             } else {
                                 this.$message({
                                     type: res.data.type,
-                                    text: this.lanMap["create_vlan_info"]
+                                    text: this.lanMap["create_vlan_info"],
                                 });
                                 this.pagination.index = 1;
                                 this.getData();
@@ -620,11 +638,11 @@ export default {
                                     "(" +
                                     res.data.code +
                                     ") " +
-                                    res.data.message
+                                    res.data.message,
                             });
                         }
                     })
-                    .catch(err => {
+                    .catch((err) => {
                         // to do
                     });
             } else {
@@ -655,41 +673,41 @@ export default {
                 vid_s < 1 ||
                 vid_s > 4094 ||
                 isNaN(vid_s) ||
-                vid_e < 1 ||
+                vid_e < 0 ||
                 vid_e > 4094 ||
                 isNaN(vid_e)
             ) {
                 this.$message({
                     type: "error",
-                    text: this.lanMap["vlanid_range_hit"]
+                    text: this.lanMap["vlanid_range_hit"],
                 });
                 return;
             }
             var post_param = {
                 method: "destroy",
                 param: {
-                    vlanid_s: vid_s > vid_e ? vid_e : vid_s,
-                    vlanid_e: vid_s > vid_e ? vid_s : vid_e
-                }
+                    vlanid_s: vid_e ? (vid_s > vid_e ? vid_e : vid_s) : vid_s,
+                    vlanid_e: vid_e ? (vid_s > vid_e ? vid_s : vid_e) : vid_s,
+                },
             };
             this.$http
                 .post("/switch_vlanlist", post_param)
-                .then(res => {
+                .then((res) => {
                     if (res.data.code === 1) {
                         this.$message({
                             type: res.data.type,
-                            text: this.lanMap["setting_ok"]
+                            text: this.lanMap["setting_ok"],
                         });
                         this.pagination.index = 1;
                         this.getData();
                     } else if (res.data.code > 1) {
                         this.$message({
                             type: res.data.type,
-                            text: "(" + res.data.code + ") " + res.data.message
+                            text: "(" + res.data.code + ") " + res.data.message,
                         });
                     }
                 })
-                .catch(err => {
+                .catch((err) => {
                     // to do
                 });
             this.close_batch_del();
@@ -699,7 +717,7 @@ export default {
         },
         composeLags(data) {
             var reg = /^\s*lag(\d)_portlist\s*$/;
-            Object.keys(data).forEach(item => {
+            Object.keys(data).forEach((item) => {
                 if (reg.test(item)) {
                     var key = item.replace(reg, "$1");
                     this.lags[key] = parsePort(data[item]);
@@ -708,10 +726,10 @@ export default {
         },
         difference(arr1, arr2) {
             var n = 0;
-            arr1.forEach(item => {
+            arr1.forEach((item) => {
                 n = n ^ item;
             });
-            arr2.forEach(item => {
+            arr2.forEach((item) => {
                 n = n ^ item;
             });
             return n;
@@ -726,7 +744,7 @@ export default {
                 },
                 default_vlan(row) {
                     this.openDialog(row);
-                }
+                },
             };
             if (typeof ACTIONS[action] === "function") {
                 ACTIONS[action].call(this, data);
@@ -736,38 +754,87 @@ export default {
             this.dialogVisible = true;
             this.vlanid = row.vlan_id;
             this.defVlanPortList = parsePort(row.default_vlan_portlist);
+            this.originalVlanlist = this.defVlanPortList.slice(0);
         },
         submitDefVlan() {
-            if (!this.defVlanPortList.length) {
+            const additive = this.defVlanPortList.reduce((pre, item) => {
+                    !this.originalVlanlist.includes(item) && pre.push(item);
+                    return pre;
+                }, []),
+                deleted = this.originalVlanlist.reduce((pre, item) => {
+                    !this.defVlanPortList.includes(item) && pre.push(item);
+                    return pre;
+                }, []);
+            if (!additive.length && !deleted.length) {
                 return this.$message.info(this.lanMap["modify_tips"]);
             }
-            const list = this.defVlanPortList;
-            list.sort((a, b) => a - b);
-            this.$http
-                .post("/switch_vlan_pvid", {
-                    method: "set",
-                    param: {
-                        vlan_id: this.vlanid,
-                        default_vlan_portlist: list.join(",")
-                    }
-                })
-                .then(res => {
-                    if (res.data.code === 1) {
-                        this.$message.success(this.lanMap["setting_ok"]);
-                        this.getData();
-                    } else {
-                        this.$message({
-                            type: res.data.type,
-                            text: `(${res.data.code}) ${res.data.message}`
-                        });
-                        if (res.data.type === "warning") {
-                            this.getData();
-                        }
-                    }
-                })
-                .catch(err => {});
+            if (deleted.length && this.vlanid === 1) {
+                return this.$message.error(this.lanMap["port_def_vlan_tips"]);
+            }
+            additive.sort((a, b) => a - b);
+            deleted.sort((a, b) => a - b);
+            if (deleted.length) {
+                this.setPortDefVlan(1, deleted.join(","))
+                    .then((res) => {
+                        this.responseHandle(res, additive.length ? false : true)
+                            .then((res) => {
+                                if (additive.length) {
+                                    this.setPortDefVlan(
+                                        this.vlanid,
+                                        additive.join(",")
+                                    )
+                                        .then((_res) => {
+                                            this.responseHandle(_res)
+                                                .then((_) => {
+                                                    this.getData();
+                                                })
+                                                .catch((_) => {});
+                                        })
+                                        .catch((_err) => {});
+                                } else {
+                                    this.getData();
+                                }
+                            })
+                            .catch((err) => {});
+                    })
+                    .catch((err) => {});
+            } else {
+                this.setPortDefVlan(this.vlanid, additive.join(","))
+                    .then((res) => {
+                        this.responseHandle(res)
+                            .then((res) => {
+                                this.getData();
+                            })
+                            .catch((err) => {});
+                    })
+                    .catch((err) => {});
+            }
             this.dialogVisible = false;
-        }
+        },
+        setPortDefVlan(vlan_id, default_vlan_portlist) {
+            return this.$http.post("/switch_vlan_pvid", {
+                method: "set",
+                param: {
+                    vlan_id,
+                    default_vlan_portlist,
+                },
+            });
+        },
+        responseHandle(res, tips = true) {
+            if (res.data.code === 1) {
+                tips && this.$message.success(this.lanMap["setting_ok"]);
+                return Promise.resolve(res);
+            } else {
+                tips &&
+                    this.$message.error(
+                        `(${res.data.code}) ${res.data.message}`
+                    );
+                if (res.data.type === "warning") {
+                    return Promise.resolve(res);
+                }
+                return Promise.reject(res);
+            }
+        },
     },
     watch: {
         search_id(newVal, oldVal) {
@@ -784,14 +851,16 @@ export default {
                     this.port_name.ge[val].lag
                 ) {
                     if (this.lags[this.port_name.ge[val].lag]) {
-                        this.lags[this.port_name.ge[val].lag].forEach(_item => {
-                            if (
-                                _item !== val &&
-                                !this.tagged_list.includes(_item)
-                            ) {
-                                this.tagged_list.push(_item);
+                        this.lags[this.port_name.ge[val].lag].forEach(
+                            (_item) => {
+                                if (
+                                    _item !== val &&
+                                    !this.tagged_list.includes(_item)
+                                ) {
+                                    this.tagged_list.push(_item);
+                                }
                             }
-                        });
+                        );
                     }
                 }
                 if (
@@ -801,7 +870,7 @@ export default {
                 ) {
                     if (this.lags[this.port_name.xge[val].lag]) {
                         this.lags[this.port_name.xge[val].lag].forEach(
-                            _item => {
+                            (_item) => {
                                 if (
                                     _item !== val &&
                                     !this.tagged_list.includes(_item)
@@ -827,14 +896,16 @@ export default {
                     this.port_name.ge[val].lag
                 ) {
                     if (this.lags[this.port_name.ge[val].lag]) {
-                        this.lags[this.port_name.ge[val].lag].forEach(_item => {
-                            if (this.tagged_list.indexOf(_item) > -1) {
-                                this.tagged_list.splice(
-                                    this.tagged_list.indexOf(_item),
-                                    1
-                                );
+                        this.lags[this.port_name.ge[val].lag].forEach(
+                            (_item) => {
+                                if (this.tagged_list.indexOf(_item) > -1) {
+                                    this.tagged_list.splice(
+                                        this.tagged_list.indexOf(_item),
+                                        1
+                                    );
+                                }
                             }
-                        });
+                        );
                     }
                 }
                 if (
@@ -844,7 +915,7 @@ export default {
                 ) {
                     if (this.lags[this.port_name.xge[val].lag]) {
                         this.lags[this.port_name.xge[val].lag].forEach(
-                            _item => {
+                            (_item) => {
                                 if (this.tagged_list.indexOf(_item) > -1) {
                                     this.tagged_list.splice(
                                         this.tagged_list.indexOf(_item),
@@ -867,14 +938,16 @@ export default {
                     this.port_name.ge[val].lag
                 ) {
                     if (this.lags[this.port_name.ge[val].lag]) {
-                        this.lags[this.port_name.ge[val].lag].forEach(_item => {
-                            if (
-                                _item !== val &&
-                                !this.untagged_list.includes(_item)
-                            ) {
-                                this.untagged_list.push(_item);
+                        this.lags[this.port_name.ge[val].lag].forEach(
+                            (_item) => {
+                                if (
+                                    _item !== val &&
+                                    !this.untagged_list.includes(_item)
+                                ) {
+                                    this.untagged_list.push(_item);
+                                }
                             }
-                        });
+                        );
                     }
                 }
                 if (
@@ -884,7 +957,7 @@ export default {
                 ) {
                     if (this.lags[this.port_name.xge[val].lag]) {
                         this.lags[this.port_name.xge[val].lag].forEach(
-                            _item => {
+                            (_item) => {
                                 if (
                                     _item !== val &&
                                     !this.untagged_list.includes(_item)
@@ -909,14 +982,16 @@ export default {
                     this.port_name.ge[val].lag
                 ) {
                     if (this.lags[this.port_name.ge[val].lag]) {
-                        this.lags[this.port_name.ge[val].lag].forEach(_item => {
-                            if (this.untagged_list.indexOf(_item) > -1) {
-                                this.untagged_list.splice(
-                                    this.untagged_list.indexOf(_item),
-                                    1
-                                );
+                        this.lags[this.port_name.ge[val].lag].forEach(
+                            (_item) => {
+                                if (this.untagged_list.indexOf(_item) > -1) {
+                                    this.untagged_list.splice(
+                                        this.untagged_list.indexOf(_item),
+                                        1
+                                    );
+                                }
                             }
-                        });
+                        );
                     }
                 }
                 if (
@@ -926,7 +1001,7 @@ export default {
                 ) {
                     if (this.lags[this.port_name.xge[val].lag]) {
                         this.lags[this.port_name.xge[val].lag].forEach(
-                            _item => {
+                            (_item) => {
                                 if (this.untagged_list.indexOf(_item) > -1) {
                                     this.untagged_list.splice(
                                         this.untagged_list.indexOf(_item),
@@ -938,8 +1013,8 @@ export default {
                     }
                 }
             }
-        }
-    }
+        },
+    },
 };
 </script>
 
