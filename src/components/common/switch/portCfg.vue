@@ -262,7 +262,7 @@ export default {
             "port_info",
             "port_name",
             "change_url",
-            "system"
+            "system",
         ]),
         PORT_INFO_MAP() {
             return [
@@ -277,15 +277,15 @@ export default {
                 "erate",
                 "irate",
                 "pvid",
-                "port_desc"
-            ].filter(item =>
-                this.swich_port_info.data.port_id < this.system.data.ponports
+                "port_desc",
+            ].filter((item) =>
+                this.swich_port_info.data.port_id <= this.system.data.ponports
                     ? item !== "irate" &&
                       item !== "erate" &&
                       item !== "flow_ctrl"
                     : true
             );
-        }
+        },
     },
     data() {
         return {
@@ -310,7 +310,7 @@ export default {
                 erate: 0,
                 irate: 0,
                 pvid: 0,
-                port_desc: ""
+                port_desc: "",
             },
             //  风暴控制更改统计项
             storm_flags: 0,
@@ -318,15 +318,15 @@ export default {
             storm_data: {
                 broadcast: 0,
                 multicast: 0,
-                unicast: 0
+                unicast: 0,
             },
             //  端口镜像数据
             mirror: {
                 src_port: 0,
                 dst_port: 0,
-                type: 1
+                type: 1,
             },
-            modal_tips: ""
+            modal_tips: "",
         };
     },
     created() {
@@ -338,7 +338,7 @@ export default {
         if (this.change_url.beta == "test") {
             this.$http
                 .get("./simulation_data/swich_port_info.json")
-                .then(res => {
+                .then((res) => {
                     if (res.data.code === 1) {
                         this.swich_port_info = res.data;
                         for (var key in res.data.data) {
@@ -348,12 +348,12 @@ export default {
                         this.swich_port_info = {};
                     }
                 })
-                .catch(err => {
+                .catch((err) => {
                     // to do
                 });
             this.$http
                 .get("./simulation_data/storm.json")
-                .then(res => {
+                .then((res) => {
                     if (res.data.code === 1) {
                         this.stormctrl_data = res.data;
                         for (var key in res.data.data) {
@@ -363,12 +363,12 @@ export default {
                         this.stormctrl_data = {};
                     }
                 })
-                .catch(err => {
+                .catch((err) => {
                     // to do
                 });
             this.$http
                 .get("./simulation_data/mirror.json")
-                .then(res => {
+                .then((res) => {
                     if (res.data.code === 1) {
                         this.mirror_data = res.data;
                         for (var key in res.data.data) {
@@ -378,7 +378,7 @@ export default {
                         this.mirror_data = {};
                     }
                 })
-                .catch(err => {
+                .catch((err) => {
                     // to do
                 });
         }
@@ -398,7 +398,7 @@ export default {
             ) {
                 this.$message({
                     type: "error",
-                    text: this.lanMap["auto_neg_tips"]
+                    text: this.lanMap["auto_neg_tips"],
                 });
                 return;
             }
@@ -446,10 +446,10 @@ export default {
                 ? this.lanMap["link_aggregation_tips"]
                 : this.lanMap["if_sure"];
             this.$confirm(modal_tips)
-                .then(_ => {
+                .then((_) => {
                     this.result();
                 })
-                .catch(_ => {});
+                .catch((_) => {});
         },
         //  根据用户点击按钮，执行不同动作  -->  风暴控制
         storm_result() {
@@ -457,7 +457,7 @@ export default {
             if (this.storm_flags === 0) {
                 this.$message({
                     type: "info",
-                    text: this.lanMap["modify_tips"]
+                    text: this.lanMap["modify_tips"],
                 });
                 return;
             }
@@ -473,7 +473,7 @@ export default {
                     text:
                         this.lanMap["param_error"] +
                         ":" +
-                        this.lanMap["broadcast"]
+                        this.lanMap["broadcast"],
                 });
                 return;
             }
@@ -489,7 +489,7 @@ export default {
                     text:
                         this.lanMap["param_error"] +
                         ":" +
-                        this.lanMap["multicast"]
+                        this.lanMap["multicast"],
                 });
                 return;
             }
@@ -505,7 +505,7 @@ export default {
                     text:
                         this.lanMap["param_error"] +
                         ":" +
-                        this.lanMap["unicast"]
+                        this.lanMap["unicast"],
                 });
                 return;
             }
@@ -516,26 +516,26 @@ export default {
                     flags: this.storm_flags,
                     broadcast: Number(this.storm_data.broadcast),
                     multicast: Number(this.storm_data.multicast),
-                    unicast: Number(this.storm_data.unicast)
-                }
+                    unicast: Number(this.storm_data.unicast),
+                },
             };
             this.$http
                 .post("/switch_port?form=stormctrl", post_params)
-                .then(res => {
+                .then((res) => {
                     if (res.data.code === 1) {
                         this.$message({
                             type: res.data.type,
-                            text: this.lanMap["setting_ok"]
+                            text: this.lanMap["setting_ok"],
                         });
                     } else if (res.data.code > 1) {
                         this.$message({
                             type: res.data.type,
-                            text: "(" + res.data.code + ") " + res.data.message
+                            text: "(" + res.data.code + ") " + res.data.message,
                         });
                     }
                     this.getStormData();
                 })
-                .catch(err => {});
+                .catch((err) => {});
         },
         //  点击风暴控制栏的确认按钮时弹出确认层，并收集数据
         storm_cfg() {
@@ -554,10 +554,10 @@ export default {
                 ? this.lanMap["link_aggregation_tips"]
                 : this.lanMap["if_sure"];
             this.$confirm(modal_tips)
-                .then(_ => {
+                .then((_) => {
                     this.storm_result();
                 })
-                .catch(_ => {});
+                .catch((_) => {});
         },
         //  根据用户点击按钮，执行不同动作  -->  交换基本配置
         result() {
@@ -565,7 +565,7 @@ export default {
             if (this.flags === 0) {
                 this.$message({
                     type: "info",
-                    text: this.lanMap["modify_tips"]
+                    text: this.lanMap["modify_tips"],
                 });
                 return;
             }
@@ -578,7 +578,7 @@ export default {
             ) {
                 this.$message({
                     type: "error",
-                    text: this.lanMap["param_error"] + ":" + this.lanMap["mtu"]
+                    text: this.lanMap["param_error"] + ":" + this.lanMap["mtu"],
                 });
                 return;
             }
@@ -594,7 +594,7 @@ export default {
                 this.$message({
                     type: "error",
                     text:
-                        this.lanMap["param_error"] + ":" + this.lanMap["erate"]
+                        this.lanMap["param_error"] + ":" + this.lanMap["erate"],
                 });
                 return;
             }
@@ -610,7 +610,7 @@ export default {
                 this.$message({
                     type: "error",
                     text:
-                        this.lanMap["param_error"] + ":" + this.lanMap["irate"]
+                        this.lanMap["param_error"] + ":" + this.lanMap["irate"],
                 });
                 return;
             }
@@ -623,7 +623,8 @@ export default {
             ) {
                 this.$message({
                     type: "error",
-                    text: this.lanMap["param_error"] + ":" + this.lanMap["pvid"]
+                    text:
+                        this.lanMap["param_error"] + ":" + this.lanMap["pvid"],
                 });
                 return;
             }
@@ -647,67 +648,67 @@ export default {
                     erate: Number(this.port_data.erate),
                     irate: Number(this.port_data.irate),
                     pvid: Number(this.port_data.pvid),
-                    port_desc: this.port_data.port_desc
-                }
+                    port_desc: this.port_data.port_desc,
+                },
             };
             this.$http
                 .post("/switch_port?form=port_info", post_params)
-                .then(res => {
+                .then((res) => {
                     if (res.data.code === 1) {
                         this.$message({
                             type: res.data.type,
-                            text: this.lanMap["setting_ok"]
+                            text: this.lanMap["setting_ok"],
                         });
                     } else if (res.data.code > 1) {
                         this.$message({
                             type: res.data.type,
-                            text: "(" + res.data.code + ") " + res.data.message
+                            text: "(" + res.data.code + ") " + res.data.message,
                         });
                     }
                     this.getPortData();
                 })
-                .catch(err => {});
+                .catch((err) => {});
         },
         //  端口镜像  确认框
         mirror_cfg() {
             this.$confirm()
-                .then(_ => {
+                .then((_) => {
                     this.mirror_result();
                 })
-                .catch(_ => {});
+                .catch((_) => {});
         },
         //  端口镜像  清除按钮
         flush_mirror_cfg() {
             this.$confirm()
-                .then(_ => {
+                .then((_) => {
                     this.flush_mirror_result();
                 })
-                .catch(_ => {});
+                .catch((_) => {});
         },
         flush_mirror_result() {
             var post_param = {
                 method: "clear",
                 param: {
-                    src_port: Number(this.portid)
-                }
+                    src_port: Number(this.portid),
+                },
             };
             this.$http
                 .post("/switch_port?form=mirror", post_param)
-                .then(res => {
+                .then((res) => {
                     if (res.data.code === 1) {
                         this.$message({
                             type: res.data.type,
-                            text: this.lanMap["setting_ok"]
+                            text: this.lanMap["setting_ok"],
                         });
                     } else if (res.data.code > 1) {
                         this.$message({
                             type: res.data.type,
-                            text: "(" + res.data.code + ") " + res.data.message
+                            text: "(" + res.data.code + ") " + res.data.message,
                         });
                     }
                     this.getMirrorData();
                 })
-                .catch(err => {});
+                .catch((err) => {});
         },
         //  端口镜像框内确认/取消按钮
         mirror_result() {
@@ -718,7 +719,7 @@ export default {
             ) {
                 this.$message({
                     type: "info",
-                    text: this.lanMap["modify_tips"]
+                    text: this.lanMap["modify_tips"],
                 });
                 return;
             }
@@ -728,14 +729,15 @@ export default {
                     text:
                         this.lanMap["param_error"] +
                         ":" +
-                        this.lanMap["dst_port"]
+                        this.lanMap["dst_port"],
                 });
                 return;
             }
             if (this.mirror.dst_port !== 0 && this.mirror.type === 0) {
                 this.$message({
                     type: "error",
-                    text: this.lanMap["param_error"] + ":" + this.lanMap["type"]
+                    text:
+                        this.lanMap["param_error"] + ":" + this.lanMap["type"],
                 });
                 return;
             }
@@ -744,31 +746,31 @@ export default {
                 param: {
                     src_port: Number(this.portid),
                     dst_port: this.mirror.dst_port,
-                    type: this.mirror.type
-                }
+                    type: this.mirror.type,
+                },
             };
             this.$http
                 .post("/switch_port?form=mirror", post_params)
-                .then(res => {
+                .then((res) => {
                     if (res.data.code === 1) {
                         this.$message({
                             type: res.data.type,
-                            text: this.lanMap["setting_ok"]
+                            text: this.lanMap["setting_ok"],
                         });
                     } else if (res.data.code > 1) {
                         this.$message({
                             type: res.data.type,
-                            text: "(" + res.data.code + ") " + res.data.message
+                            text: "(" + res.data.code + ") " + res.data.message,
                         });
                     }
                     this.getMirrorData();
                 })
-                .catch(err => {});
+                .catch((err) => {});
         },
         getPortData() {
             this.$http
                 .get("/switch_port?form=port_info&port_id=" + this.portid)
-                .then(res => {
+                .then((res) => {
                     if (res.data.code === 1) {
                         this.swich_port_info = res.data;
                         this.port_data = Object.assign({}, res.data.data);
@@ -779,14 +781,14 @@ export default {
                     }
                     this.flags = 0;
                 })
-                .catch(err => {
+                .catch((err) => {
                     // to do
                 });
         },
         getStormData() {
             this.$http
                 .get("/switch_port?form=stormctrl&port_id=" + this.portid)
-                .then(res => {
+                .then((res) => {
                     if (res.data.code === 1) {
                         this.stormctrl_data = res.data;
                         this.storm_data = Object.assign({}, res.data.data);
@@ -795,14 +797,14 @@ export default {
                     }
                     this.storm_flags = 0;
                 })
-                .catch(err => {
+                .catch((err) => {
                     // to do
                 });
         },
         getMirrorData() {
             this.$http
                 .get("/switch_port?form=mirror&port_id=" + this.portid)
-                .then(res => {
+                .then((res) => {
                     if (res.data.code === 1) {
                         this.mirror_data = res.data;
                         this.mirror = Object.assign({}, res.data.data);
@@ -810,7 +812,7 @@ export default {
                         this.mirror_data = {};
                     }
                 })
-                .catch(err => {
+                .catch((err) => {
                     // to do
                 });
         },
@@ -818,7 +820,7 @@ export default {
             this.getPortData();
             this.getStormData();
             this.getMirrorData();
-        }
+        },
     },
     watch: {
         portid() {
@@ -826,8 +828,8 @@ export default {
             this.getPortData();
             this.getStormData();
             this.getMirrorData();
-        }
-    }
+        },
+    },
 };
 </script>
 
