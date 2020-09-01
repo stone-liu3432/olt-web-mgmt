@@ -895,6 +895,7 @@ var en = {
     port_default_vlan: "Port Default VLAN",
     verification_code: "Verification",
     clear_perf_all: " Clear All Performance ",
+    port_def_vlan_tips: "Port default VLAN 1 cannot be removed",
 
     composeRange(min, max) {
         return `${min} - ${max} characters`;
