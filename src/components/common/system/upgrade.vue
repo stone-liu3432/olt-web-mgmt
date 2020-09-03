@@ -80,7 +80,7 @@ export default {
             timer: null,
             interval: null,
             reboot_timer: null,
-            load_file: null
+            load_file: null,
         };
     },
     computed: mapState(["lanMap"]),
@@ -88,24 +88,24 @@ export default {
         reboot() {
             this.$http
                 .get("/system_start", { timeout: 3000 })
-                .then(res => {
+                .then((res) => {
                     if (res.data.code === 1) {
                         this.isReboot && this.isReboot.close();
                         sessionStorage.clear();
                         this.$router.push("/login");
                     }
                 })
-                .catch(err => {
+                .catch((err) => {
                     this.reboot();
                 });
         },
         upgrade_result() {
             this.$http
                 .get("/system_reboot")
-                .then(res => {
+                .then((res) => {
                     // to do
                 })
-                .catch(err => {
+                .catch((err) => {
                     // to do
                 });
             this.isReboot = this.$loading();
@@ -135,14 +135,14 @@ export default {
                 fileName.innerText = this.lanMap["file_click"];
                 this.$message({
                     type: "error",
-                    text: this.lanMap["file_not_select"]
+                    text: this.lanMap["file_not_select"],
                 });
                 return;
             }
             if (!reg.test(fileName.innerText)) {
                 this.$message({
                     type: "error",
-                    text: this.lanMap["restore_file_nr"]
+                    text: this.lanMap["restore_file_nr"],
                 });
                 return;
             }
@@ -161,9 +161,9 @@ export default {
             this.$http
                 .post("/upgrade?type=firmware", formData, {
                     headers: { "Content-Type": "multipart/form-data" },
-                    timeout: 0
+                    timeout: 0,
                 })
-                .then(res => {
+                .then((res) => {
                     document.body.removeEventListener(
                         "keydown",
                         this.preventRefresh
@@ -186,12 +186,12 @@ export default {
                         this.isLoading = false;
                         this.$message({
                             type: res.data.type,
-                            text: "(" + res.data.code + ") " + res.data.message
+                            text: "(" + res.data.code + ") " + res.data.message,
                         });
                     }
                     this.width = 0;
                 })
-                .catch(error => {
+                .catch((error) => {
                     // to do
                     this.load_file && this.load_file.close();
                 });
@@ -206,14 +206,14 @@ export default {
                 fileName.innerText = this.lanMap["file_click"];
                 this.$message({
                     type: "error",
-                    text: this.lanMap["file_not_select"]
+                    text: this.lanMap["file_not_select"],
                 });
                 return;
             }
             if (!reg.test(fileName.innerText)) {
                 this.$message({
                     type: "error",
-                    text: this.lanMap["restore_file_nr"]
+                    text: this.lanMap["restore_file_nr"],
                 });
                 return;
             }
@@ -232,9 +232,9 @@ export default {
             this.$http
                 .post("/upgrade?type=system", formData, {
                     headers: { "Content-Type": "multipart/form-data" },
-                    timeout: 0
+                    timeout: 0,
                 })
-                .then(res => {
+                .then((res) => {
                     document.body.removeEventListener(
                         "keydown",
                         this.preventRefresh
@@ -257,12 +257,12 @@ export default {
                         this.isLoading = false;
                         this.$message({
                             type: res.data.type,
-                            text: "(" + res.data.code + ") " + res.data.message
+                            text: "(" + res.data.code + ") " + res.data.message,
                         });
                     }
                     this.width = 0;
                 })
-                .catch(error => {
+                .catch((error) => {
                     // to do
                     this.load_file && this.load_file.close();
                 });
@@ -277,14 +277,14 @@ export default {
                 fileName.innerText = this.lanMap["file_click"];
                 this.$message({
                     type: "error",
-                    text: this.lanMap["file_not_select"]
+                    text: this.lanMap["file_not_select"],
                 });
                 return;
             }
             if (!reg.test(fileName.innerText)) {
                 this.$message({
                     type: "error",
-                    text: this.lanMap["restore_file_nr"]
+                    text: this.lanMap["restore_file_nr"],
                 });
                 return;
             }
@@ -303,9 +303,9 @@ export default {
             this.$http
                 .post("/upgrade?type=fullversion", formData, {
                     headers: { "Content-Type": "multipart/form-data" },
-                    timeout: 0
+                    timeout: 0,
                 })
-                .then(res => {
+                .then((res) => {
                     document.body.removeEventListener(
                         "keydown",
                         this.preventRefresh
@@ -329,12 +329,12 @@ export default {
                         this.isLoading = false;
                         this.$message({
                             type: res.data.type,
-                            text: "(" + res.data.code + ") " + res.data.message
+                            text: "(" + res.data.code + ") " + res.data.message,
                         });
                     }
                     this.width = 0;
                 })
-                .catch(error => {
+                .catch((error) => {
                     // to do
                     this.load_file && this.load_file.close();
                 });
@@ -343,28 +343,28 @@ export default {
             this.$confirm(
                 this.lanMap["if_sure"] + this.lanMap["upgrade_firmware"] + "?"
             )
-                .then(_ => {
+                .then((_) => {
                     this.result_firmware();
                 })
-                .catch(_ => {});
+                .catch((_) => {});
         },
         system() {
             this.$confirm(
                 this.lanMap["if_sure"] + this.lanMap["upgrade_system"] + "?"
             )
-                .then(_ => {
+                .then((_) => {
                     this.result_system();
                 })
-                .catch(_ => {});
+                .catch((_) => {});
         },
         fullversion() {
             this.$confirm(
                 this.lanMap["if_sure"] + this.lanMap["fullversion"] + "?"
             )
-                .then(_ => {
+                .then((_) => {
                     this.result_fullversion();
                 })
-                .catch(_ => {});
+                .catch((_) => {});
         },
         //  固件或系统升级期间，禁用F5刷新浏览器
         preventRefresh(e) {
@@ -385,7 +385,7 @@ export default {
             this.interval = setInterval(() => {
                 this.$http
                     .get("/upgrade_status")
-                    .then(res => {
+                    .then((res) => {
                         if (res.data.code === 1) {
                             //  触发升级成功
                             if (res.data.data.status === 2) {
@@ -395,16 +395,16 @@ export default {
                                 this.isLoading = false;
                                 this.$message({
                                     type: "success",
-                                    text: text1
+                                    text: text1,
                                 });
                                 const cfm = this.$confirm(
                                     this.lanMap["upgrade_success"] + " ?"
                                 );
                                 cfm.then(
-                                    _ => {
+                                    (_) => {
                                         this.upgrade_result();
                                     },
-                                    _ => {
+                                    (_) => {
                                         clearTimeout(this.reboot_timer);
                                     }
                                 );
@@ -425,7 +425,7 @@ export default {
                                 this.isLoading = false;
                                 this.$message({
                                     type: "error",
-                                    text: text2
+                                    text: text2,
                                 });
                                 clearInterval(this.interval);
                             }
@@ -435,7 +435,7 @@ export default {
                             this.isLoading = false;
                             this.$message({
                                 type: "error",
-                                text: text3
+                                text: text3,
                             });
                             clearInterval(this.interval);
                         } else {
@@ -444,16 +444,16 @@ export default {
                             this.isLoading = false;
                             this.$message({
                                 type: "error",
-                                text: text4
+                                text: text4,
                             });
                             clearInterval(this.interval);
                         }
                     })
-                    .catch(_err => {
+                    .catch((_err) => {
                         // to do
                     });
             }, 15000);
-        }
+        },
     },
     watch: {
         isLoading() {
@@ -467,13 +467,13 @@ export default {
             } else {
                 this.isFullVersion = false;
             }
-        }
+        },
     },
     beforeDestroy() {
         clearInterval(this.interval);
         clearInterval(this.timer);
         clearTimeout(this.reboot_timer);
-    }
+    },
 };
 </script>
 
