@@ -209,7 +209,7 @@ export default {
                 2032,
                 2033,
                 2034,
-                2035
+                2035,
             ],
             months: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12],
             days: [
@@ -243,7 +243,7 @@ export default {
                 28,
                 29,
                 30,
-                31
+                31,
             ],
             hours: [
                 0,
@@ -269,7 +269,7 @@ export default {
                 20,
                 21,
                 22,
-                23
+                23,
             ],
             mins: [
                 0,
@@ -331,7 +331,7 @@ export default {
                 56,
                 57,
                 58,
-                59
+                59,
             ],
             secs: [
                 0,
@@ -393,7 +393,7 @@ export default {
                 56,
                 57,
                 58,
-                59
+                59,
             ],
             set_time: {
                 year: 0,
@@ -401,9 +401,9 @@ export default {
                 day: 0,
                 hour: 0,
                 min: 0,
-                sec: 0
+                sec: 0,
             },
-            timezones: [],
+            timezones: timezone,
             timezone: null,
             now_time: {
                 year: 0,
@@ -411,25 +411,25 @@ export default {
                 day: 0,
                 hour: 0,
                 min: 0,
-                sec: 0
+                sec: 0,
             },
             //  设置时间方式   -->  0->自动，1->手动
             set_time_type: 1,
             preferred_ipaddr: "",
             alternate_ipaddr: "",
             reg_ip: /^(([1-9]|[1-9]\d|1\d\d|2[0-4]\d|25[0-5])\.){1}((\d|[1-9]\d|1\d\d|2[0-4]\d|25[0-5])\.){2}([1-9]|[1-9]\d|1\d\d|2[0-4]\d|25[0-4]){1}$/,
-            poll_interval_time: ""
+            poll_interval_time: "",
         };
     },
     created() {
-        this.get_time();
-        this.timezones = timezone;
+        // this.get_time();
+        this.get_ntp();
     },
     methods: {
         get_time() {
             this.$http
                 .get(this.change_url.time)
-                .then(res => {
+                .then((res) => {
                     if (res.data.code === 1) {
                         this.timer = res.data;
                         var arr = this.timer.data.time_now;
@@ -443,14 +443,14 @@ export default {
                         this.auto_update_time();
                     }
                 })
-                .catch(err => {
+                .catch((err) => {
                     // to do
                 });
         },
         get_ntp() {
             this.$http
                 .get("/time?form=ntp")
-                .then(res => {
+                .then((res) => {
                     if (res.data.code === 1) {
                         if (res.data.data.status) {
                             this.set_time_type = 0;
@@ -462,14 +462,13 @@ export default {
                                 (60 * 60 * 24);
                         } else {
                             this.set_time_type = 1;
+                            this.get_time();
                         }
                     } else {
                         this.set_time_type = 1;
                     }
                 })
-                .catch(err => {
-                    // to do
-                });
+                .catch((err) => {});
         },
         set_ntp_submit() {
             if (!this.reg_ip.test(this.preferred_ipaddr)) {
@@ -478,7 +477,7 @@ export default {
                     text:
                         this.lanMap["param_error"] +
                         ": " +
-                        this.lanMap["ntp_ipaddr1"]
+                        this.lanMap["ntp_ipaddr1"],
                 });
                 return;
             }
@@ -491,16 +490,16 @@ export default {
                     text:
                         this.lanMap["param_error"] +
                         ": " +
-                        this.lanMap["update_frequency"]
+                        this.lanMap["update_frequency"],
                 });
                 return;
             }
             if (this.poll_interval_time <= 0) this.poll_interval_time = 1;
             this.$confirm()
-                .then(_ => {
+                .then((_) => {
                     this.ntp_result();
                 })
-                .catch(_ => {});
+                .catch((_) => {});
         },
         //  ntp设置
         ntp_result() {
@@ -509,26 +508,26 @@ export default {
                 param: {
                     status: this.set_time_type,
                     ntp_srv_ip: [this.preferred_ipaddr, this.alternate_ipaddr],
-                    poll_interval_time: this.poll_interval_time * 60 * 60 * 24
-                }
+                    poll_interval_time: this.poll_interval_time * 60 * 60 * 24,
+                },
             };
             this.$http
                 .post("/time?form=ntp", post_params)
-                .then(res => {
+                .then((res) => {
                     if (res.data.code === 1) {
                         this.$message({
                             type: res.data.type,
-                            text: this.lanMap["setting_ok"]
+                            text: this.lanMap["setting_ok"],
                         });
                         this.get_ntp();
                     } else if (res.data.code > 1) {
                         this.$message({
                             type: res.data.type,
-                            text: "(" + res.data.code + ") " + res.data.message
+                            text: "(" + res.data.code + ") " + res.data.message,
                         });
                     }
                 })
-                .catch(err => {});
+                .catch((err) => {});
         },
         //  设置定时器，自动更新页面时间
         auto_update_time() {
@@ -591,7 +590,7 @@ export default {
                         26,
                         27,
                         28,
-                        29
+                        29,
                     ];
                     return;
                 }
@@ -625,7 +624,7 @@ export default {
                         25,
                         26,
                         27,
-                        28
+                        28,
                     ];
                     return;
                 }
@@ -666,7 +665,7 @@ export default {
                     27,
                     28,
                     29,
-                    30
+                    30,
                 ];
             } else {
                 this.days = [
@@ -700,7 +699,7 @@ export default {
                     28,
                     29,
                     30,
-                    31
+                    31,
                 ];
             }
         },
@@ -711,30 +710,28 @@ export default {
                 param: {
                     status: this.set_time_type,
                     ntp_srv_ip: [this.preferred_ipaddr, this.alternate_ipaddr],
-                    poll_interval_time: this.poll_interval_time
-                }
+                    poll_interval_time: this.poll_interval_time,
+                },
             };
             this.$http
                 .post("/time?form=ntp", post_params)
-                .then(res => {
+                .then((res) => {
                     if (res.data.code === 1) {
                         this.get_time();
                     } else if (res.data.code > 1) {
                         this.$message({
                             type: res.data.type,
-                            text: "(" + res.data.code + ") " + res.data.message
+                            text: "(" + res.data.code + ") " + res.data.message,
                         });
                     }
                 })
-                .catch(err => {
-                    // to do
-                });
+                .catch((err) => {});
         },
         //  从服务器更新本地时间
         get_time_byser() {
             this.$http
                 .get("/time?form=info")
-                .then(res => {
+                .then((res) => {
                     if (res.data.code === 1) {
                         this.timer = res.data;
                         var arr = this.timer.data.time_now;
@@ -749,18 +746,16 @@ export default {
                             type: res.data.type,
                             text:
                                 this.lanMap["update_time"] +
-                                this.lanMap["st_success"]
+                                this.lanMap["st_success"],
                         });
                     } else if (res.data.code > 1) {
                         this.$message({
                             type: res.data.type,
-                            text: "(" + res.data.code + ") " + res.data.message
+                            text: "(" + res.data.code + ") " + res.data.message,
                         });
                     }
                 })
-                .catch(err => {
-                    // to do
-                });
+                .catch((err) => {});
         },
         //  手动设置时间
         handle_set_time() {
@@ -773,27 +768,25 @@ export default {
                         this.set_time.day,
                         this.set_time.hour,
                         this.set_time.min,
-                        this.set_time.sec
+                        this.set_time.sec,
                     ],
-                    time_zone: this.timezone
-                }
+                    time_zone: this.timezone,
+                },
             };
             this.$http
                 .post("/time?form=info", post_params)
-                .then(res => {
+                .then((res) => {
                     if (res.data.code === 1) {
                         this.handle_update_time();
                     } else if (res.data.code > 1) {
                         this.$message({
                             type: res.data.type,
-                            text: "(" + res.data.code + ") " + res.data.message
+                            text: "(" + res.data.code + ") " + res.data.message,
                         });
                     }
                 })
-                .catch(err => {
-                    // to do
-                });
-        }
+                .catch((err) => {});
+        },
     },
     watch: {
         "set_time.month"() {
@@ -801,12 +794,12 @@ export default {
         },
         "set_time.year"() {
             this.february();
-        }
+        },
     },
     beforeDestroy() {
         clearInterval(this.interval);
     },
-    computed: mapState(["lanMap", "change_url"])
+    computed: mapState(["lanMap", "change_url"]),
 };
 </script>
 
