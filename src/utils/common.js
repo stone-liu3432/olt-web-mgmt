@@ -103,20 +103,23 @@ export function parsePortList(str) {
 export function getPortName(port_id) {
     const names = store.state.port_name;
     const system = store.state.system.data;
-    let ports = system.ponports + system.geports;
-    if (system.xgeports) {
-        ports += system.xgeports;
+    if (system) {
+        let ports = system.ponports + system.geports;
+        if (system.xgeports) {
+            ports += system.xgeports;
+        }
+        if (port_id <= 0 || !names || port_id > ports) {
+            return "";
+        }
+        return names.pon[port_id]
+            ? names.pon[port_id].name
+            : names.ge[port_id]
+            ? names.ge[port_id].name
+            : names.xge && names.xge[port_id]
+            ? names.xge[port_id].name
+            : "";
     }
-    if (port_id <= 0 || !names || !system || port_id > ports) {
-        return "";
-    }
-    return names.pon[port_id]
-        ? names.pon[port_id].name
-        : names.ge[port_id]
-        ? names.ge[port_id].name
-        : names.xge && names.xge[port_id]
-        ? names.xge[port_id].name
-        : "";
+    return "";
 }
 
 export function parsePort(str) {
