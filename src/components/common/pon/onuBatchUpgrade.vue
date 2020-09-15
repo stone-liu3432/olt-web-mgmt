@@ -174,7 +174,7 @@
                                 :title="item.onu_name || 'ONU0' + item.port_id + '/' + item.onu_id"
                             >{{ item.onu_name || 'ONU0' + item.port_id + '/' + item.onu_id }}</li>
                             <li :title="item.vendor || ' - '">{{ item.vendor || ' - ' }}</li>
-                            <li :title="item.sn_mode || ' - '">{{ item.sn_mode || ' - ' }}</li>
+                            <li :title="item.sn_model || ' - '">{{ item.sn_model || ' - ' }}</li>
                             <li :title="item.chip_model || ' - '">{{ item.chip_model || ' - ' }}</li>
                             <li :title="item.onu_chip || ' - '">{{ item.onu_chip || ' - ' }}</li>
                             <li :title="item.software_ver || ' - '">{{ item.software_ver || ' - ' }}</li>
