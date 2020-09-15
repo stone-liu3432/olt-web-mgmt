@@ -896,6 +896,7 @@ var en = {
     verification_code: "Verification",
     clear_perf_all: " Clear All Performance ",
     port_def_vlan_tips: "Port default VLAN 1 cannot be removed",
+    mac_auth_portlist: "MAC Authentication",
 
     composeRange(min, max) {
         return `${min} - ${max} characters`;

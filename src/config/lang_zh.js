@@ -866,6 +866,7 @@ var zh = {
     verification_code: "验证码",
     clear_perf_all: "清除所有统计信息",
     port_def_vlan_tips: "端口缺省VLAN 1无法移除",
+    mac_auth_portlist: "MAC认证",
 
     composeRange(min, max) {
         return `${min} - ${max}位字符`;
