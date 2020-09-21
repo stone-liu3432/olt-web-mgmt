@@ -84,6 +84,7 @@ export default {
             company_email: "",
             company_phone: "",
             supplier_info: "",
+            hyperLink: "",
         };
     },
     created() {
@@ -91,6 +92,14 @@ export default {
         if (sessionStorage.getItem("uname") !== "devol") {
             this.$router.back();
         }
+        this.$http
+            .get("/board?info=setting_board")
+            .then((res) => {
+                if (res.data.code === 1) {
+                    this.hyperLink = res.data.data.cc_url;
+                }
+            })
+            .catch((err) => {});
     },
     methods: {
         ...mapMutations({
@@ -184,6 +193,7 @@ export default {
                     email: this.company_email,
                     phone: this.company_phone,
                     supplier_info: this.supplier_info,
+                    cc_url: this.hyperLink,
                 },
             };
             this.$http
