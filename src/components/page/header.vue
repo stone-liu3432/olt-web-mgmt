@@ -4,11 +4,12 @@
             class="top-banner-logo lf"
             :style="{ 'font-size': system.data.vendor.length > 12 ? '28px' : '32px' }"
         >
-            <img v-if="has_logo" ref="logo-image" @error="isNoLogo" />
-            <a
-                href="javascript: void(0);"
-                v-else
-            >{{ system.data.vendor ? system.data.vendor.length > 18 ? system.data.vendor.substring(0, 18) : system.data.vendor : "Neutral" }}</a>
+            <a :href="hyperLink" :target="target">
+                <img v-if="has_logo" ref="logo-image" @error="isNoLogo" />
+                <template
+                    v-else
+                >{{ system.data.vendor ? system.data.vendor.length > 18 ? system.data.vendor.substring(0, 18) : system.data.vendor : "Neutral" }}</template>
+            </a>
         </div>
         <div class="top-banner-nav lf">
             <ul class="top-banner-group">
@@ -122,6 +123,8 @@ export default {
             socketState: true,
             msgs: [],
             msgQueue: [],
+            hyperLink: "javascript: void(0);",
+            target: "",
         };
     },
     created() {
@@ -132,6 +135,19 @@ export default {
         } else {
             this.changeMenu("status");
         }
+        this.$http
+            .get("/board?info=setting_board")
+            .then((res) => {
+                if (res.data.code === 1) {
+                    if (res.data.data.cc_url) {
+                        this.hyperLink = res.data.data.cc_url;
+                        !/^https?:\/\//.test(this.hyperLink) &&
+                            (this.hyperLink += "https://");
+                        this.target = "__blank";
+                    }
+                }
+            })
+            .catch((err) => {});
     },
     mounted() {
         this.initSocket();
