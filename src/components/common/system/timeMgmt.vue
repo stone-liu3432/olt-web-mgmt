@@ -422,7 +422,6 @@ export default {
         };
     },
     created() {
-        // this.get_time();
         this.get_ntp();
     },
     methods: {
@@ -443,16 +442,14 @@ export default {
                         this.auto_update_time();
                     }
                 })
-                .catch((err) => {
-                    // to do
-                });
+                .catch((err) => {});
         },
         get_ntp() {
             this.$http
                 .get("/time?form=ntp")
                 .then((res) => {
                     if (res.data.code === 1) {
-                        if (res.data.data.status) {
+                        if (!res.data.data.status) {
                             this.set_time_type = 0;
                             var ipaddr_list = res.data.data.ntp_srv_ip;
                             this.preferred_ipaddr = ipaddr_list[0] || "";
@@ -531,6 +528,9 @@ export default {
         },
         //  设置定时器，自动更新页面时间
         auto_update_time() {
+            if (this.interval) {
+                clearInterval(this.interval);
+            }
             if (this.timer.data) {
                 this.interval = setInterval(() => {
                     if (this.now_time.sec < 59) {
@@ -709,23 +709,11 @@ export default {
                 method: "set",
                 param: {
                     status: this.set_time_type,
-                    ntp_srv_ip: [this.preferred_ipaddr, this.alternate_ipaddr],
-                    poll_interval_time: this.poll_interval_time,
+                    ntp_srv_ip: ["0.0.0.0", ""],
+                    poll_interval_time: 1,
                 },
             };
-            this.$http
-                .post("/time?form=ntp", post_params)
-                .then((res) => {
-                    if (res.data.code === 1) {
-                        this.get_time();
-                    } else if (res.data.code > 1) {
-                        this.$message({
-                            type: res.data.type,
-                            text: "(" + res.data.code + ") " + res.data.message,
-                        });
-                    }
-                })
-                .catch((err) => {});
+            return this.$http.post("/time?form=ntp", post_params);
         },
         //  从服务器更新本地时间
         get_time_byser() {
@@ -759,30 +747,45 @@ export default {
         },
         //  手动设置时间
         handle_set_time() {
-            var post_params = {
-                method: "set",
-                param: {
-                    time: [
-                        this.set_time.year,
-                        this.set_time.month,
-                        this.set_time.day,
-                        this.set_time.hour,
-                        this.set_time.min,
-                        this.set_time.sec,
-                    ],
-                    time_zone: this.timezone,
-                },
-            };
-            this.$http
-                .post("/time?form=info", post_params)
+            this.handle_update_time()
                 .then((res) => {
                     if (res.data.code === 1) {
-                        this.handle_update_time();
-                    } else if (res.data.code > 1) {
-                        this.$message({
-                            type: res.data.type,
-                            text: "(" + res.data.code + ") " + res.data.message,
-                        });
+                        var post_params = {
+                            method: "set",
+                            param: {
+                                time: [
+                                    this.set_time.year,
+                                    this.set_time.month,
+                                    this.set_time.day,
+                                    this.set_time.hour,
+                                    this.set_time.min,
+                                    this.set_time.sec,
+                                ],
+                                time_zone: this.timezone,
+                            },
+                        };
+                        this.$http
+                            .post("/time?form=info", post_params)
+                            .then((res) => {
+                                if (res.data.code === 1) {
+                                    this.$message.success(
+                                        this.lanMap["setting_ok"]
+                                    );
+                                    this.get_time();
+                                } else {
+                                    this.$message.error(
+                                        "(" +
+                                            res.data.code +
+                                            ") " +
+                                            res.data.message
+                                    );
+                                }
+                            })
+                            .catch((err) => {});
+                    } else {
+                        this.$message.error(
+                            "(" + res.data.code + ") " + res.data.message
+                        );
                     }
                 })
                 .catch((err) => {});
