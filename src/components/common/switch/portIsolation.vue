@@ -172,7 +172,7 @@ export default {
         },
         interWorkingList() {
             return this.portGroupData.inter_working || [];
-        }
+        },
     },
     data() {
         return {
@@ -190,10 +190,10 @@ export default {
                 // inter_working: [
                 //     {
                 //         port_id: 1,
-                //         inter_working_portlist: "2-3,5-9"
-                //     }
-                // ]
-            }
+                //         inter_working_portlist: "2-3,5-9",
+                //     },
+                // ],
+            },
         };
     },
     created() {
@@ -204,14 +204,14 @@ export default {
             this.portGroupData = {};
             this.$http
                 .get("/switch_isolate?form=port_group")
-                .then(res => {
+                .then((res) => {
                     if (res.data.code === 1) {
                         if (res.data.data) {
                             this.portGroupData = res.data.data;
                         }
                     }
                 })
-                .catch(err => {});
+                .catch((err) => {});
         },
         openDialog(action, portType) {
             this.visible = true;
@@ -271,7 +271,9 @@ export default {
                 return this.$message.error(this.lanMap["modify_tips"]);
             }
             const list = (this.dialogType === "add"
-                ? this.portlist.filter(item => !isolatePortlist.includes(item))
+                ? this.portlist.filter(
+                      (item) => !isolatePortlist.includes(item)
+                  )
                 : this.portlist
             )
                 .sort((a, b) => a - b)
@@ -282,8 +284,8 @@ export default {
                     pon_isolate_portlist:
                         this.portType === "pon" ? list : undefined,
                     uplink_isolate_portlist:
-                        this.portType === "ge" ? list : undefined
-                }
+                        this.portType === "ge" ? list : undefined,
+                },
             };
             const url =
                 this.portType === "pon"
@@ -295,7 +297,7 @@ export default {
         postData(url, data, type = "config") {
             this.$http
                 .post(url, data)
-                .then(res => {
+                .then((res) => {
                     if (res.data.code === 1) {
                         this.$message.success(
                             `${this.lanMap[type]}${this.lanMap["st_success"]}`
@@ -307,7 +309,7 @@ export default {
                         );
                     }
                 })
-                .catch(err => {});
+                .catch((err) => {});
         },
         setPortGroupMode() {
             this.portGroupMode = this.portGroupData.port_group_mode;
@@ -316,11 +318,11 @@ export default {
                     <span>{this.lanMap["port_group_mode"]}:</span>
                     <select
                         value={this.portGroupMode}
-                        onChange={e =>
+                        onChange={(e) =>
                             (this.portGroupMode = Number(e.target.value))
                         }
                     >
-                        {Object.keys(this.PORT_GROUP_MODE_MAP).map(key => (
+                        {Object.keys(this.PORT_GROUP_MODE_MAP).map((key) => (
                             <option value={Number(key)}>
                                 {this.lanMap[this.PORT_GROUP_MODE_MAP[key]]}
                             </option>
@@ -329,10 +331,10 @@ export default {
                 </div>,
                 this.lanMap["config"]
             )
-                .then(_ => {
+                .then((_) => {
                     this.submitSetMode(this.portGroupMode);
                 })
-                .catch(_ => {});
+                .catch((_) => {});
         },
         submitSetMode(mode) {
             if (mode === this.portMode) {
@@ -342,21 +344,21 @@ export default {
             this.postData("/switch_isolate?form=port_group_mode", {
                 method: "set",
                 param: {
-                    port_group_mode: mode
-                }
+                    port_group_mode: mode,
+                },
             });
         },
         resetConfig() {
             this.$confirm()
-                .then(_ => {
+                .then((_) => {
                     this.postData(
                         "/switch_isolate?form=inter_working_default",
                         {
                             method: "set",
-                            param: {}
+                            param: {},
                         }
                     )
-                        .then(res => {
+                        .then((res) => {
                             if (res.data.code === 1) {
                                 this.$message.success(
                                     this.lanMap["reset"] +
@@ -369,22 +371,27 @@ export default {
                                 );
                             }
                         })
-                        .catch(err => {});
+                        .catch((err) => {});
                 })
-                .catch(_ => {});
+                .catch((_) => {});
         },
         submitPortMapping() {
             const list = this.portlist.slice(0);
+            if (!list.length) {
+                return this.$message.error(
+                    `${this.lanMap["required"]}: ${this.lanMap["egress"]}`
+                );
+            }
             list.sort((a, b) => a - b);
             this.postData("/switch_isolate?form=inter_working", {
                 method: "set",
                 param: {
                     port_id: this.port_id,
-                    inter_working_portlist: list.toString()
-                }
+                    inter_working_portlist: list.toString(),
+                },
             });
             this.closeDialog();
-        }
+        },
     },
     watch: {
         port_id() {
@@ -395,14 +402,14 @@ export default {
                 return;
             }
             const list = this.portGroupData.inter_working || [];
-            const res = list.filter(item => item.port_id === this.port_id)[0];
+            const res = list.filter((item) => item.port_id === this.port_id)[0];
             if (res) {
                 this.portlist = parsePort(res.inter_working_portlist);
             } else {
                 this.portlist = [];
             }
-        }
-    }
+        },
+    },
 };
 </script>
 
