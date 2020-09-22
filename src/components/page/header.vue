@@ -142,7 +142,7 @@ export default {
                     if (res.data.data.cc_url) {
                         this.hyperLink = res.data.data.cc_url;
                         !/^https?:\/\//.test(this.hyperLink) &&
-                            (this.hyperLink += "https://");
+                            (this.hyperLink += "http://");
                         this.target = "__blank";
                     }
                 }
