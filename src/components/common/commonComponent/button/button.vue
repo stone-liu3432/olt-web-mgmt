@@ -1,7 +1,7 @@
 <template>
     <a
         href="javascript: void(0);"
-        :class="[{'disabled': disabled || loading}, type, `button-${size}`]"
+        :class="[{ disabled: disabled || loading }, type, `button-${size}`]"
         v-bind="$attrs"
         v-on="disabled ? '' : $listeners"
     >
@@ -31,21 +31,21 @@ export default {
     name: "nmsButton",
     props: {
         type: {
-            type: String
+            type: String,
         },
         size: {
             type: String,
-            default: "small"
+            default: "small",
         },
         disabled: {
             type: Boolean,
-            default: false
+            default: false,
         },
         loading: {
             type: Boolean,
-            default: false
-        }
-    }
+            default: false,
+        },
+    },
 };
 </script>
 
@@ -64,7 +64,7 @@ a {
     padding: 7px 12px;
 }
 .button-small {
-    font-size: 12px;
+    font-size: 14px;
     padding: 9px 15px;
 }
 .disabled {
