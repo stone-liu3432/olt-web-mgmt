@@ -8,46 +8,46 @@ export default {
     props: {
         border: {
             type: Boolean,
-            default: false
+            default: false,
         },
         stripe: {
             type: Boolean,
-            default: false
+            default: false,
         },
         rows: {
             type: Array,
-            default: _ => []
+            default: (_) => [],
         },
         emptyText: {
             type: String,
-            default: "No data"
+            default: "No data",
         },
         rowStyle: {
             type: [Function, Object],
-            default: _ => ({})
+            default: (_) => ({}),
         },
         rowClass: {
             type: [Function, String],
-            default: ""
+            default: "",
         },
         showHeader: {
             type: Boolean,
-            default: true
+            default: true,
         },
         draggable: {
             type: Boolean,
-            default: false
-        }
+            default: false,
+        },
     },
     computed: {
         type() {
-            const row = this.columns.filter(item => !!item.type);
+            const row = this.columns.filter((item) => !!item.type);
             return row.length ? row[0].type : "";
         },
         typeIndex() {
-            const row = this.columns.filter(item => !!item.type);
+            const row = this.columns.filter((item) => !!item.type);
             return this.columns.indexOf(row[0]);
-        }
+        },
     },
     data() {
         return {
@@ -60,12 +60,12 @@ export default {
             dragRow: null,
             targetRow: null,
             tableRows: [],
-            cacheRows: []
+            cacheRows: [],
         };
     },
     provide() {
         return {
-            commit: this.commitData
+            commit: this.commitData,
         };
     },
     created() {
@@ -168,7 +168,7 @@ export default {
                     },
                     descending(a, b) {
                         return b[row.sortBy] - a[row.sortBy];
-                    }
+                    },
                 };
                 const func = sortMethods[row.sortOrders[row.sortFlags]];
                 if (typeof func === "function") {
@@ -183,7 +183,7 @@ export default {
                 }
                 this.$emit("sort-change", this.tableRows);
             }
-        }
+        },
     },
     render(h) {
         const emptySlot = () => {
@@ -210,7 +210,7 @@ export default {
                             type="checkbox"
                             value={index}
                             checked={this.selections.includes(row)}
-                            onChange={e => {
+                            onChange={(e) => {
                                 const val = e.target.checked;
                                 val
                                     ? this.selections.includes(row)
@@ -239,8 +239,8 @@ export default {
                             {
                                 "table-expanded-row": this.expandedRows.includes(
                                     row
-                                )
-                            }
+                                ),
+                            },
                         ]}
                         onClick={() => this.expandClick(row)}
                     >
@@ -262,7 +262,7 @@ export default {
             }
         };
         const generateRows = (row, index) => {
-            const cols = this.columns.filter(item => item.type !== "");
+            const cols = this.columns.filter((item) => item.type !== "");
             return cols.map((col, colIndex) => {
                 if (col.type) {
                     if (col.type === "index") {
@@ -298,7 +298,7 @@ export default {
             if (this.type !== "expand") {
                 return null;
             }
-            return this.columns.map(item => {
+            return this.columns.map((item) => {
                 if (!item.type || !this.expandedRows.includes(row)) {
                     return null;
                 }
@@ -320,24 +320,26 @@ export default {
                         style={this.setRowStyle(row, index)}
                         class={this.setRowClass(row, index)}
                         draggable={this.draggable}
-                        onDragstart={e =>
+                        onDragstart={(e) =>
                             this.draggable && this.dragStart(e, row)
                         }
-                        onDragend={e => this.draggable && this.dragEnd(e, row)}
-                        onDragenter={e =>
+                        onDragend={(e) =>
+                            this.draggable && this.dragEnd(e, row)
+                        }
+                        onDragenter={(e) =>
                             this.draggable && this.dragEnter(e, row)
                         }
-                        onDragleave={e =>
+                        onDragleave={(e) =>
                             this.draggable && this.dragLeave(e, row)
                         }
-                        onDragOner={e =>
+                        onDragOner={(e) =>
                             this.draggable && this.dragOver(e, row)
                         }
                     >
                         {generateRowHeader(row, index)}
                         {generateRows(row, index)}
                     </tr>,
-                    generateExpandRow(row, index)
+                    generateExpandRow(row, index),
                 ];
             });
         };
@@ -349,11 +351,11 @@ export default {
             if (this.type) {
                 this.type === "selection"
                     ? res.push(
-                          <th>
+                          <th width="50px">
                               <input
                                   type="checkbox"
                                   checked={this.selectAll}
-                                  onChange={e => {
+                                  onChange={(e) => {
                                       const val = e.target.checked;
                                       this.selectAll = val;
                                       if (val) {
@@ -382,18 +384,20 @@ export default {
                       )
                     : res.push(<th></th>);
             }
-            const cols = this.columns.filter(item => item.type !== "");
+            const cols = this.columns.filter((item) => item.type !== "");
             res.push.apply(
                 res,
-                cols.map(item => {
+                cols.map((item) => {
                     return item.type ? null : (
                         <th
                             style={{
                                 cursor: item.sortable ? "pointer" : "",
                                 userSelect: item.sortable ? "none" : "",
-                                ...item.headerStyle
+                                ...item.headerStyle,
                             }}
-                            onClick={e => item.sortable && this.sortRows(item)}
+                            onClick={(e) =>
+                                item.sortable && this.sortRows(item)
+                            }
                         >
                             {item.header ||
                                 (item.label === undefined ? "" : item.label)}
@@ -408,7 +412,7 @@ export default {
             <table
                 class={{
                     "has-border": this.border,
-                    "has-stripe": this.stripe
+                    "has-stripe": this.stripe,
                 }}
             >
                 <thead>{generateThead()}</thead>
@@ -423,8 +427,8 @@ export default {
         rows() {
             this.tableRows = this.rows;
             this.cacheRows = this.rows.slice(0);
-        }
-    }
+        },
+    },
 };
 </script>
 
