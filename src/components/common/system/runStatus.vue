@@ -1,83 +1,161 @@
 <template>
     <div class="running-status">
-        <h1>{{ lanMap['running_status'] }}</h1>
+        <h1>{{ lanMap["running_status"] }}</h1>
         <div>
             <div class="system-info" v-if="this.system.data">
-                <h2>{{ lanMap['sys_info'] }}</h2>
+                <h2>{{ lanMap["sys_info"] }}</h2>
                 <div
-                    v-for="(item,key) of this.system.data"
+                    v-for="(item, key) of this.system.data"
                     :key="key"
                     class="system-info-detail"
                     v-if="key !== 'bl_ver' && key !== 'vendor'"
                 >
                     <span>{{ lanMap[key] }}</span>
-                    <span>{{ item }}</span>
+                    <span
+                        v-if="key !== 'lic_total'"
+                        :style="{
+                            color:
+                                key === 'lic_available' && item <= 5
+                                    ? 'red'
+                                    : '',
+                        }"
+                    >
+                        {{ item }}
+                    </span>
+                    <template v-else>
+                        <span>{{ item === 0 ? lanMap["forever"] : item }}</span>
+                        <template v-if="item !== 0">
+                            <nms-button
+                                style="margin-left: 30px"
+                                @click="openDialog"
+                            >
+                                {{ lanMap["add"] + lanMap["lic_total"] }}
+                            </nms-button>
+                        </template>
+                    </template>
                 </div>
             </div>
             <div class="cpu-info" v-if="this.cpuInfo.data">
-                <h2>{{ lanMap['hw_status'] }}</h2>
+                <h2>{{ lanMap["hw_status"] }}</h2>
                 <div>
                     <div>
-                        <p>{{ lanMap['cpu_usage'] }}</p>
-                        <canvas width="200" height="200" id="cpu-detail"></canvas>
+                        <p>{{ lanMap["cpu_usage"] }}</p>
+                        <canvas
+                            width="200"
+                            height="200"
+                            id="cpu-detail"
+                        ></canvas>
                     </div>
                     <div>
-                        <P>{{ lanMap['memory_usage'] }}</P>
-                        <canvas width="200" height="200" id="memory-detail"></canvas>
+                        <P>{{ lanMap["memory_usage"] }}</P>
+                        <canvas
+                            width="200"
+                            height="200"
+                            id="memory-detail"
+                        ></canvas>
                     </div>
                 </div>
                 <div class="container" v-if="this.timer.data">
-                    <h2>{{ lanMap['sys_run_time'] }}</h2>
+                    <h2>{{ lanMap["sys_run_time"] }}</h2>
                     <div class="time-info">
-                        <span>{{ lanMap['current_time'] + ' :' }}</span>
+                        <span>{{ lanMap["current_time"] + " :" }}</span>
                         <span>
                             {{
-                            now_time.year + '-' + now_time.month + '-' + now_time.day + ' ' +
-                            now_time.hour + ':' + (now_time.min < 10 ? '0' + now_time.min : now_time.min ) + ':' +
-                            (now_time.sec < 10 ? '0' + now_time.sec : now_time.sec)
+                                now_time.year +
+                                "-" +
+                                now_time.month +
+                                "-" +
+                                now_time.day +
+                                " " +
+                                now_time.hour +
+                                ":" +
+                                (now_time.min < 10
+                                    ? "0" + now_time.min
+                                    : now_time.min) +
+                                ":" +
+                                (now_time.sec < 10
+                                    ? "0" + now_time.sec
+                                    : now_time.sec)
                             }}
                         </span>
                     </div>
                     <div class="time-info">
-                        <span>{{ lanMap['run_time']+' :' }}</span>
+                        <span>{{ lanMap["run_time"] + " :" }}</span>
                         <span>
-                            {{ run_time.day + " " + lanMap['days'] }}
-                            {{ run_time.hour + " " + lanMap['hours'] }}
-                            {{ (run_time.min < 10 ? '0' + run_time.min : run_time.min) + " " + lanMap['mins'] }}
-                            {{ (run_time.sec < 10 ? '0' + run_time.sec : run_time.sec) + " " + lanMap['secs'] }}
+                            {{ run_time.day + " " + lanMap["days"] }}
+                            {{ run_time.hour + " " + lanMap["hours"] }}
+                            {{
+                                (run_time.min < 10
+                                    ? "0" + run_time.min
+                                    : run_time.min) +
+                                " " +
+                                lanMap["mins"]
+                            }}
+                            {{
+                                (run_time.sec < 10
+                                    ? "0" + run_time.sec
+                                    : run_time.sec) +
+                                " " +
+                                lanMap["secs"]
+                            }}
                         </span>
                     </div>
                 </div>
             </div>
         </div>
         <div class="company-info" v-if="showCompanyInfo">
-            <h2>{{ lanMap['company_info'] }}</h2>
+            <h2>{{ lanMap["company_info"] }}</h2>
             <div v-if="company_name">
-                <span>{{ lanMap['company_name'] }}</span>
+                <span>{{ lanMap["company_name"] }}</span>
                 <span>{{ company_name }}</span>
             </div>
             <div v-if="company_addr">
-                <span>{{ lanMap['company_addr'] }}</span>
+                <span>{{ lanMap["company_addr"] }}</span>
                 <span>{{ company_addr }}</span>
             </div>
             <div v-if="company_email">
-                <span>{{ lanMap['company_email'] }}</span>
+                <span>{{ lanMap["company_email"] }}</span>
                 <span>{{ company_email }}</span>
             </div>
             <div v-if="company_phone">
-                <span>{{ lanMap['company_phone'] }}</span>
+                <span>{{ lanMap["company_phone"] }}</span>
                 <span>{{ company_phone }}</span>
             </div>
             <div v-if="supplier_info">
-                <span>{{ lanMap['supplier_info'] }}</span>
+                <span>{{ lanMap["supplier_info"] }}</span>
                 <span>{{ supplier_info }}</span>
             </div>
         </div>
+        <nms-dialog :visible.sync="dialogVisible" width="600px">
+            <div slot="title">{{ lanMap["add"] + lanMap["lic_total"] }}</div>
+            <div class="dialog-content">
+                <span>license:</span>
+                <input
+                    type="text"
+                    v-model="trylic"
+                    :style="{
+                        'border-color': /^[a-zA-Z0-9]{32}$/.test(trylic)
+                            ? ''
+                            : 'red',
+                        width: '350px',
+                    }"
+                />
+                <span class="tips">{{ lanMap.composeRange(32) }}</span>
+            </div>
+            <div slot="footer">
+                <nms-button @click="submitTryLic">{{
+                    lanMap["apply"]
+                }}</nms-button>
+                <nms-button @click="dialogVisible = false">{{
+                    lanMap["cancel"]
+                }}</nms-button>
+            </div>
+        </nms-dialog>
     </div>
 </template>
 
 <script>
-import { mapState, mapMutations } from "vuex";
+import { mapState, mapMutations, mapActions } from "vuex";
 export default {
     name: "runStatus",
     data() {
@@ -107,6 +185,8 @@ export default {
             company_email: "",
             company_phone: "",
             supplier_info: "",
+            dialogVisible: false,
+            trylic: "",
         };
     },
     computed: {
@@ -142,10 +222,7 @@ export default {
                     });
                 }
             })
-            .catch((err) => {
-                // to do
-            });
-        //  请求url: /time?form=info
+            .catch((err) => {});
         this.$http
             .get(this.change_url.time)
             .then((res) => {
@@ -202,9 +279,7 @@ export default {
                     }
                 }
             })
-            .catch((err) => {
-                // to do
-            });
+            .catch((err) => {});
         this.interval = setInterval(() => {
             this.getUsageRate();
         }, 5000);
@@ -219,8 +294,9 @@ export default {
     methods: {
         ...mapMutations({
             systemInfo: "updateSysData",
-            update_menu: "updateMenu",
-            sys_time: "updateTime",
+        }),
+        ...mapActions({
+            getSystem: "updateSystem",
         }),
         getUsageRate() {
             this.$http
@@ -331,6 +407,33 @@ export default {
                     // to do
                 });
         },
+        openDialog() {
+            this.dialogVisible = true;
+        },
+        submitTryLic() {
+            if (!/^[a-zA-Z0-9]{32}$/.test(this.trylic)) {
+                this.$message.error(`${this.lanMap["param_error"]}: license`);
+            }
+            this.$http
+                .post("/board?info=trylic", {
+                    method: "set",
+                    param: {
+                        trylic: this.trylic,
+                    },
+                })
+                .then((res) => {
+                    if (res.data.code === 1) {
+                        this.$message.success(this.lanMap["setting_ok"]);
+                        this.getSystem();
+                    } else {
+                        this.$message.error(
+                            `(${res.data.code}) ${res.data.message}`
+                        );
+                    }
+                    this.dialogVisible = false;
+                })
+                .catch((err) => {});
+        },
     },
     watch: {
         usageRates() {
@@ -429,6 +532,7 @@ h2 {
     width: 150px;
     padding: 10px 30px 10px 0;
     text-align: right;
+    vertical-align: middle;
 }
 .system-info-detail {
     border-bottom: 1px solid #ddd;
@@ -503,6 +607,22 @@ div.cpu-info > div.container {
     }
     h2 {
         margin: 10px 0;
+    }
+}
+.dialog-content {
+    > span {
+        display: inline-block;
+        width: 100px;
+        text-align: right;
+        padding-right: 20px;
+        box-sizing: border-box;
+    }
+    span.tips {
+        width: auto;
+        font-size: @tipsFontSize;
+        color: @tipsColor;
+        padding: 0;
+        margin-left: 12px;
     }
 }
 </style>
