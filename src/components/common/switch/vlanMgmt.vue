@@ -1,46 +1,102 @@
 <template>
     <div class="vlan-mgmt">
         <div>
-            <h2>{{ lanMap['vlan_cfg'] }}</h2>
+            <h2>{{ lanMap["vlan_cfg"] }}</h2>
         </div>
         <div class="btn-group-vlan">
-            <a href="javascript:void(0);" @click="createVlan()">{{ lanMap['create'] }} VLAN</a>
-            <a href="javascript:void(0);" @click="open_batch_del">{{ lanMap['delete'] }} VLAN</a>
-            <a href="javascript:void(0);" @click="createVlan(1)">{{ lanMap['batch_cfg_vlan'] }}</a>
+            <a href="javascript:void(0);" @click="createVlan()"
+                >{{ lanMap["create"] }} VLAN</a
+            >
+            <a href="javascript:void(0);" @click="open_batch_del"
+                >{{ lanMap["delete"] }} VLAN</a
+            >
+            <a href="javascript:void(0);" @click="createVlan(1)">{{
+                lanMap["batch_cfg_vlan"]
+            }}</a>
         </div>
         <div class="search">
-            <p class="lf">{{ lanMap['vlan_list'] }}</p>
+            <p class="lf">{{ lanMap["vlan_list"] }}</p>
             <div class="lf">
-                <input type="text" placeholder="VLAN ID" v-model.number="search_id" />
+                <input
+                    type="text"
+                    placeholder="VLAN ID"
+                    v-model.number="search_id"
+                />
                 <i class="icon-search"></i>
             </div>
         </div>
         <nms-table :rows="vlan_tab" border>
-            <nms-table-column prop="vlan_id" :label="lanMap['vlan_id']"></nms-table-column>
-            <nms-table-column prop="tagged_portlist" :label="lanMap['tagged_portlist']">
-                <template slot-scope="rows">{{ parsePortList(rows.tagged_portlist) || ' - ' }}</template>
+            <nms-table-column
+                prop="vlan_id"
+                :label="lanMap['vlan_id']"
+            ></nms-table-column>
+            <nms-table-column
+                prop="vlan_name"
+                :label="lanMap['name']"
+            ></nms-table-column>
+            <nms-table-column
+                prop="tagged_portlist"
+                :label="lanMap['tagged_portlist']"
+            >
+                <template slot-scope="rows">{{
+                    parsePortList(rows.tagged_portlist) || " - "
+                }}</template>
             </nms-table-column>
-            <nms-table-column prop="untagged_portlist" :label="lanMap['untagged_portlist']">
-                <template slot-scope="rows">{{ parsePortList(rows.untagged_portlist) || ' - ' }}</template>
+            <nms-table-column
+                prop="untagged_portlist"
+                :label="lanMap['untagged_portlist']"
+            >
+                <template slot-scope="rows">{{
+                    parsePortList(rows.untagged_portlist) || " - "
+                }}</template>
             </nms-table-column>
-            <nms-table-column prop="default_vlan_portlist" :label="lanMap['default_vlan_portlist']">
-                <template slot-scope="rows">{{ parsePortList(rows.default_vlan_portlist) || ' - ' }}</template>
+            <nms-table-column
+                prop="default_vlan_portlist"
+                :label="lanMap['default_vlan_portlist']"
+            >
+                <template slot-scope="rows">{{
+                    parsePortList(rows.default_vlan_portlist) || " - "
+                }}</template>
             </nms-table-column>
+            <nms-table-column
+                prop="vlan_desc"
+                :label="lanMap['desc']"
+            ></nms-table-column>
             <nms-table-column :label="lanMap['config']" width="160px">
                 <template slot-scope="rows">
                     <nms-dropdown @command="command">
-                        <span>{{ lanMap['config'] }}</span>
+                        <span>{{ lanMap["config"] }}</span>
                         <div slot="dropdown">
                             <nms-dropdown-item
                                 :command="{ action: 'config', data: rows }"
-                            >{{ lanMap['config'] }}</nms-dropdown-item>
+                                >{{ lanMap["config"] }}</nms-dropdown-item
+                            >
                             <nms-dropdown-item
                                 v-if="rows.vlan_id !== 1"
                                 :command="{ action: 'delete', data: rows }"
-                            >{{ lanMap['delete'] }}</nms-dropdown-item>
+                                >{{ lanMap["delete"] }}</nms-dropdown-item
+                            >
                             <nms-dropdown-item
-                                :command="{ action: 'default_vlan', data: rows }"
-                            >{{ lanMap['port_default_vlan'] }}</nms-dropdown-item>
+                                :command="{
+                                    action: 'default_vlan',
+                                    data: rows,
+                                }"
+                                >{{
+                                    lanMap["port_default_vlan"]
+                                }}</nms-dropdown-item
+                            >
+                            <nms-dropdown-item
+                                :command="{ action: 'name', data: rows }"
+                                >{{
+                                    lanMap["config"] + lanMap["name"]
+                                }}</nms-dropdown-item
+                            >
+                            <nms-dropdown-item
+                                :command="{ action: 'desc', data: rows }"
+                                >{{
+                                    lanMap["config"] + lanMap["desc"]
+                                }}</nms-dropdown-item
+                            >
                         </div>
                     </nms-dropdown>
                 </template>
@@ -50,21 +106,27 @@
             :total="vlan_list.length"
             :current-page="pagination.index"
             @current-change="changeIndex"
-            style="float: right;"
+            style="float: right"
         ></nms-pagination>
         <div class="modal-dialog" v-if="modalDialog">
             <div class="cover"></div>
-            <div class="modal-content" :style="{ 'height': create_vlan ? '430px' : '370px' }">
-                <h3
-                    v-if="create_vlan && !batch_set_vlan"
-                    class="modal-header"
-                >{{ lanMap['create'] }}</h3>
-                <h3 v-if="create_vlan && batch_set_vlan" class="modal-header">{{ lanMap['config'] }}</h3>
+            <div
+                class="modal-content"
+                :style="{ height: create_vlan ? '430px' : '370px' }"
+            >
+                <h3 v-if="create_vlan && !batch_set_vlan" class="modal-header">
+                    {{ lanMap["create"] }}
+                </h3>
+                <h3 v-if="create_vlan && batch_set_vlan" class="modal-header">
+                    {{ lanMap["config"] }}
+                </h3>
                 <div class="modal-title">
                     <div v-if="!create_vlan" class="modal-header">
                         <span>VLAN ID:</span>
                         <span>{{ vlanid }}</span>
-                        <span class="def-vlan-tips">{{ lanMap['def_vlan_tips'] }}</span>
+                        <span class="def-vlan-tips">{{
+                            lanMap["def_vlan_tips"]
+                        }}</span>
                     </div>
                     <div class="add-vlan" v-if="create_vlan">
                         <span>VLAN ID：</span>
@@ -74,16 +136,34 @@
                                 type="text"
                                 placeholder="1-4094"
                                 v-model.number="vlanid_s"
-                                :style="{ 'border-color' : (vlanid_s != '' && (isNaN(vlanid_s) || vlanid_s > 4094 || vlanid_s < 1)) ? 'red' : '' }"
+                                :style="{
+                                    'border-color':
+                                        vlanid_s != '' &&
+                                        (isNaN(vlanid_s) ||
+                                            vlanid_s > 4094 ||
+                                            vlanid_s < 1)
+                                            ? 'red'
+                                            : '',
+                                }"
                             />
                             ~
                             <input
                                 type="text"
                                 placeholder="1-4094"
                                 v-model.number="vlanid_e"
-                                :style="{ 'border-color' : (vlanid_e != '' && (isNaN(vlanid_e) || vlanid_e > 4094 || vlanid_e < 1)) ? 'red' : '' }"
+                                :style="{
+                                    'border-color':
+                                        vlanid_e != '' &&
+                                        (isNaN(vlanid_e) ||
+                                            vlanid_e > 4094 ||
+                                            vlanid_e < 1)
+                                            ? 'red'
+                                            : '',
+                                }"
                             />
-                            <span class="tips">{{ lanMap['vlanid_range_hit'] }}</span>
+                            <span class="tips">{{
+                                lanMap["vlanid_range_hit"]
+                            }}</span>
                         </span>
                     </div>
                 </div>
@@ -93,32 +173,26 @@
                         <div class="vlan-port">
                             <div>
                                 <span
-                                    v-for="(item,key) in port_name.pon"
+                                    v-for="(item, key) in port_name.pon"
                                     :key="key"
-                                    style="width: 12%;"
+                                    style="width: 12%"
                                     class="tagged"
                                 >
-                                    <label :class="{ disabled: def_list.includes(item.id) }">
+                                    <label
+                                        :class="{
+                                            disabled: def_list.includes(
+                                                item.id
+                                            ),
+                                        }"
+                                    >
                                         <input
                                             type="checkbox"
                                             :value="item.id"
                                             v-model="tagged_list"
-                                            :id="'tagged'+item.id"
-                                            :disabled="def_list.includes(item.id)"
-                                        />
-                                        {{ item.name }}
-                                    </label>
-                                </span>
-                            </div>
-                            <div>
-                                <span v-for="(item,key) in port_name.ge" :key="key" class="tagged">
-                                    <label :class="{ disabled: def_list.includes(item.id) }">
-                                        <input
-                                            type="checkbox"
-                                            :value="item.id"
-                                            v-model="tagged_list"
-                                            :id="'tagged'+item.id"
-                                            :disabled="def_list.includes(item.id)"
+                                            :id="'tagged' + item.id"
+                                            :disabled="
+                                                def_list.includes(item.id)
+                                            "
                                         />
                                         {{ item.name }}
                                     </label>
@@ -126,18 +200,52 @@
                             </div>
                             <div>
                                 <span
-                                    v-for="(item,key) in port_name.xge"
+                                    v-for="(item, key) in port_name.ge"
                                     :key="key"
-                                    v-if="port_name.xge"
                                     class="tagged"
                                 >
-                                    <label :class="{ disabled: def_list.includes(item.id) }">
+                                    <label
+                                        :class="{
+                                            disabled: def_list.includes(
+                                                item.id
+                                            ),
+                                        }"
+                                    >
                                         <input
                                             type="checkbox"
                                             :value="item.id"
                                             v-model="tagged_list"
-                                            :id="'tagged'+item.id"
-                                            :disabled="def_list.includes(item.id)"
+                                            :id="'tagged' + item.id"
+                                            :disabled="
+                                                def_list.includes(item.id)
+                                            "
+                                        />
+                                        {{ item.name }}
+                                    </label>
+                                </span>
+                            </div>
+                            <div>
+                                <span
+                                    v-for="(item, key) in port_name.xge"
+                                    :key="key"
+                                    v-if="port_name.xge"
+                                    class="tagged"
+                                >
+                                    <label
+                                        :class="{
+                                            disabled: def_list.includes(
+                                                item.id
+                                            ),
+                                        }"
+                                    >
+                                        <input
+                                            type="checkbox"
+                                            :value="item.id"
+                                            v-model="tagged_list"
+                                            :id="'tagged' + item.id"
+                                            :disabled="
+                                                def_list.includes(item.id)
+                                            "
                                         />
                                         {{ item.name }}
                                     </label>
@@ -151,18 +259,26 @@
                         <div class="vlan-port">
                             <div>
                                 <span
-                                    v-for="(item,key) in port_name.pon"
+                                    v-for="(item, key) in port_name.pon"
                                     :key="key"
-                                    style="width: 12%;"
+                                    style="width: 12%"
                                     class="untagged"
                                 >
-                                    <label :class="{ disabled: def_list.includes(item.id) }">
+                                    <label
+                                        :class="{
+                                            disabled: def_list.includes(
+                                                item.id
+                                            ),
+                                        }"
+                                    >
                                         <input
                                             type="checkbox"
-                                            :id="'untagged'+item.id"
+                                            :id="'untagged' + item.id"
                                             :value="item.id"
                                             v-model="untagged_list"
-                                            :disabled="def_list.includes(item.id)"
+                                            :disabled="
+                                                def_list.includes(item.id)
+                                            "
                                         />
                                         {{ item.name }}
                                     </label>
@@ -170,17 +286,25 @@
                             </div>
                             <div>
                                 <span
-                                    v-for="(item,key) in port_name.ge"
+                                    v-for="(item, key) in port_name.ge"
                                     :key="key"
                                     class="untagged"
                                 >
-                                    <label :class="{ disabled: def_list.includes(item.id) }">
+                                    <label
+                                        :class="{
+                                            disabled: def_list.includes(
+                                                item.id
+                                            ),
+                                        }"
+                                    >
                                         <input
                                             type="checkbox"
-                                            :id="'untagged'+item.id"
+                                            :id="'untagged' + item.id"
                                             :value="item.id"
                                             v-model="untagged_list"
-                                            :disabled="def_list.includes(item.id)"
+                                            :disabled="
+                                                def_list.includes(item.id)
+                                            "
                                         />
                                         {{ item.name }}
                                     </label>
@@ -188,18 +312,26 @@
                             </div>
                             <div>
                                 <span
-                                    v-for="(item,key) in port_name.xge"
+                                    v-for="(item, key) in port_name.xge"
                                     :key="key"
                                     v-if="port_name.xge"
                                     class="untagged"
                                 >
-                                    <label :class="{ disabled: def_list.includes(item.id) }">
+                                    <label
+                                        :class="{
+                                            disabled: def_list.includes(
+                                                item.id
+                                            ),
+                                        }"
+                                    >
                                         <input
                                             type="checkbox"
-                                            :id="'untagged'+item.id"
+                                            :id="'untagged' + item.id"
                                             :value="item.id"
                                             v-model="untagged_list"
-                                            :disabled="def_list.includes(item.id)"
+                                            :disabled="
+                                                def_list.includes(item.id)
+                                            "
                                         />
                                         {{ item.name }}
                                     </label>
@@ -212,31 +344,36 @@
                             href="javascript:void(0);"
                             class="rt"
                             @click="handle_cfg(false)"
-                        >{{ lanMap['cancel'] }}</a>
+                            >{{ lanMap["cancel"] }}</a
+                        >
                         <a
                             href="javascript:void(0);"
                             class="rt"
                             @click="handle_cfg(true)"
-                        >{{ lanMap['apply'] }}</a>
+                            >{{ lanMap["apply"] }}</a
+                        >
                     </div>
                     <div class="vlan-mode" v-if="create_vlan">
                         <a
                             href="javascript:void(0);"
                             class="rt"
                             @click="handle_create(false)"
-                        >{{ lanMap['cancel'] }}</a>
+                            >{{ lanMap["cancel"] }}</a
+                        >
                         <a
                             href="javascript:void(0);"
                             class="rt"
                             @click="handle_create(true)"
                             v-if="!batch_set_vlan"
-                        >{{ lanMap['apply'] }}</a>
+                            >{{ lanMap["apply"] }}</a
+                        >
                         <a
                             href="javascript:void(0);"
                             class="rt"
-                            @click="set_vlan(0,vlanid_s,vlanid_e,false)"
+                            @click="set_vlan(0, vlanid_s, vlanid_e, false)"
                             v-if="batch_set_vlan"
-                        >{{ lanMap['apply'] }}</a>
+                            >{{ lanMap["apply"] }}</a
+                        >
                     </div>
                 </div>
                 <div class="close" @click="closeModal"></div>
@@ -246,7 +383,7 @@
             <div class="cover"></div>
             <div class="batch-delete">
                 <div>
-                    <h3 class="modal-header">{{ lanMap['delete'] }} VLAN</h3>
+                    <h3 class="modal-header">{{ lanMap["delete"] }} VLAN</h3>
                     <div>
                         <span>VLAN ID</span>
                         <input
@@ -254,51 +391,89 @@
                             v-focus
                             v-model.number="vlanid_s"
                             placeholder="1-4094"
-                            :style="{ 'border-color' : (vlanid_s != '' && (isNaN(vlanid_s) || vlanid_s > 4094 || vlanid_s < 1)) ? 'red' : '' }"
+                            :style="{
+                                'border-color':
+                                    vlanid_s != '' &&
+                                    (isNaN(vlanid_s) ||
+                                        vlanid_s > 4094 ||
+                                        vlanid_s < 1)
+                                        ? 'red'
+                                        : '',
+                            }"
                         />
                         ~
                         <input
                             type="text"
                             v-model.number="vlanid_e"
                             placeholder="1-4094"
-                            :style="{ 'border-color' : (vlanid_e != '' && (isNaN(vlanid_e) || vlanid_e > 4094 || vlanid_e < 1)) ? 'red' : '' }"
+                            :style="{
+                                'border-color':
+                                    vlanid_e != '' &&
+                                    (isNaN(vlanid_e) ||
+                                        vlanid_e > 4094 ||
+                                        vlanid_e < 1)
+                                        ? 'red'
+                                        : '',
+                            }"
                         />
                     </div>
-                    <p>{{ lanMap['vlanid_range_hit'] }}</p>
+                    <p>{{ lanMap["vlanid_range_hit"] }}</p>
                     <div>
                         <a
                             href="javascript:void(0);"
                             @click="submit_batch_del"
-                        >{{ lanMap['apply'] }}</a>
+                            >{{ lanMap["apply"] }}</a
+                        >
                         <a
                             href="javascript:void(0);"
                             @click="close_batch_del"
-                        >{{ lanMap['cancel'] }}</a>
+                            >{{ lanMap["cancel"] }}</a
+                        >
                     </div>
                 </div>
                 <div class="close" @click="close_batch_del"></div>
             </div>
         </div>
         <nms-dialog :visible.sync="dialogVisible" width="800px">
-            <div slot="title">{{ lanMap['config'] }}</div>
+            <div slot="title">{{ lanMap["config"] }}</div>
             <div class="port-default-vlan-item">
-                <span>{{ lanMap['vlan_id'] }}:</span>
+                <span>{{ lanMap["vlan_id"] }}:</span>
                 <span>{{ vlanid }}</span>
             </div>
             <div class="port-default-vlan-item">
-                <span>{{ lanMap['default_vlan_portlist'] }}:</span>
+                <span>{{ lanMap["default_vlan_portlist"] }}:</span>
                 <span>
                     <template v-for="item in port_info.data || []">
                         <label>
-                            <input type="checkbox" v-model="defVlanPortList" :value="item.port_id" />
+                            <input
+                                type="checkbox"
+                                v-model="defVlanPortList"
+                                :value="item.port_id"
+                            />
                             {{ item.port_id | getPortName }}
                         </label>
                     </template>
                 </span>
             </div>
             <div slot="footer">
-                <nms-button @click="submitDefVlan">{{ lanMap['apply'] }}</nms-button>
-                <nms-button @click="dialogVisible = false;">{{ lanMap['cancel'] }}</nms-button>
+                <nms-button @click="submitDefVlan">{{
+                    lanMap["apply"]
+                }}</nms-button>
+                <nms-button @click="dialogVisible = false">{{
+                    lanMap["cancel"]
+                }}</nms-button>
+            </div>
+        </nms-dialog>
+        <nms-dialog :visible.sync="setVisible" width="650px">
+            <div slot="title">{{ lanMap["config"] }}</div>
+            <vlan-form ref="vlan-form"></vlan-form>
+            <div slot="footer">
+                <nms-button @click="submitNameOrDesc('vlan-form')">{{
+                    lanMap["apply"]
+                }}</nms-button>
+                <nms-button @click="setVisible = false">{{
+                    lanMap["cancel"]
+                }}</nms-button>
             </div>
         </nms-dialog>
     </div>
@@ -307,8 +482,10 @@
 <script>
 import { mapState } from "vuex";
 import { parsePortList, parsePort } from "@/utils/common";
+import vlanForm from "./vlan/vlanForm";
 export default {
     name: "vlanMgmt",
+    components: { vlanForm },
     computed: {
         ...mapState([
             "lanMap",
@@ -383,6 +560,8 @@ export default {
             defVlanPortList: [],
             // default vlan  数据缓存
             originalVlanlist: [],
+            setVisible: false,
+            setType: "",
         };
     },
     created() {
@@ -745,10 +924,73 @@ export default {
                 default_vlan(row) {
                     this.openDialog(row);
                 },
+                name(row) {
+                    this.setNameOrDesc("name", row);
+                },
+                desc(row) {
+                    this.setNameOrDesc("desc", row);
+                },
             };
             if (typeof ACTIONS[action] === "function") {
                 ACTIONS[action].call(this, data);
             }
+        },
+        setNameOrDesc(type, row) {
+            this.setVisible = true;
+            this.$nextTick(() => {
+                this.$refs["vlan-form"].init(type, row);
+            });
+        },
+        submitNameOrDesc(formName) {
+            this.$refs[formName].validate((type, form) => {
+                const params =
+                    type === "name"
+                        ? {
+                              url: "/switch_vlan?form=vlan_name",
+                              data: {
+                                  method: "set",
+                                  param: {
+                                      vlan_id: form.vlan_id,
+                                      vlan_name:
+                                          form.vlan_name.replace(/\s*/g, "") ||
+                                          "VLAN" + form.vlan_id,
+                                  },
+                              },
+                          }
+                        : type === "desc"
+                        ? {
+                              url: "/switch_vlan?form=vlan_desc",
+                              data: {
+                                  method: "set",
+                                  param: {
+                                      vlan_id: form.vlan_id,
+                                      vlan_desc:
+                                          form.vlan_desc ||
+                                          "VLAN" + form.vlan_id,
+                                  },
+                              },
+                          }
+                        : null;
+                if (params) {
+                    const { url, data } = params;
+                    this.$http
+                        .post(url, data)
+                        .then((res) => {
+                            if (res.data.code === 1) {
+                                this.$message.success(
+                                    this.lanMap["setting_ok"]
+                                );
+                                this.getData();
+                            } else {
+                                this.$message.error(
+                                    `(${res.data.code}) ${res.data.message}`
+                                );
+                            }
+                        })
+                        .catch((err) => {});
+                    this.setVisible = false;
+                }
+            });
         },
         openDialog(row) {
             this.dialogVisible = true;
