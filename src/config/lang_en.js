@@ -897,9 +897,12 @@ var en = {
     clear_perf_all: " Clear All Performance ",
     port_def_vlan_tips: "Port default VLAN 1 cannot be removed",
     mac_auth_portlist: "MAC Authentication",
+    lic_available: "Remaining validity period",
+    lic_total: "Valid period",
+    forever: " Forever ",
 
     composeRange(min, max) {
-        return `${min} - ${max} characters`;
+        return `${min}${max ? " - " + max : ""} characters`;
     }
 };
 

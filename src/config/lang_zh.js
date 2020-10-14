@@ -867,9 +867,12 @@ var zh = {
     clear_perf_all: "清除所有统计信息",
     port_def_vlan_tips: "端口缺省VLAN 1无法移除",
     mac_auth_portlist: "MAC认证",
+    lic_available: "剩余有效期",
+    lic_total: "有效期",
+    forever: "永久",
 
     composeRange(min, max) {
-        return `${min} - ${max}位字符`;
+        return `${min}${max ? " - " + max : ""}位字符`;
     }
 };
 
