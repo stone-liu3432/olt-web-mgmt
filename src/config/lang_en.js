@@ -120,7 +120,7 @@ var en = {
     ipmask: " IP Mask",
     mtu: " MTU",
     interface: " Interface",
-    count: " Count",
+    count: " Count ",
     pktsize: " Packet Size",
     timeout: " Timeout",
 
@@ -900,6 +900,13 @@ var en = {
     lic_available: "Remaining validity period",
     lic_total: "Valid period",
     forever: " Forever ",
+    loid_tips1: "The count input range is 0-64.",
+    loid_tips2:
+        "When count is 1 or not entered, only the currently entered LOID is added.",
+    loid_tips3:
+        "When count is greater than 1, LOIDs will be added in batches, and the rule is to add a digital ID after the currently entered LOID.",
+    loid_tips4:
+        'Example: When the LOID is "test" and the count is 2, two LOIDs of "test2" and "test3" will be added in sequence.',
 
     composeRange(min, max) {
         return `${min}${max ? " - " + max : ""} characters`;

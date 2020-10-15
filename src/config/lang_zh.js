@@ -870,6 +870,12 @@ var zh = {
     lic_available: "剩余有效期",
     lic_total: "有效期",
     forever: "永久",
+    loid_tips1: "count输入范围为0 - 64。",
+    loid_tips2: "count为1或不输入时，只添加当前输入的LOID。",
+    loid_tips3:
+        "count大于1时，将会批量添加LOID，规则为在当前输入的LOID后添加数字标识。",
+    loid_tips4:
+        '例：LOID为"test"，count为2时，将依次添加“test2”，“test3”两个LOID。',
 
     composeRange(min, max) {
         return `${min}${max ? " - " + max : ""}位字符`;
