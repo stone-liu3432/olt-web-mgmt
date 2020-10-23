@@ -906,7 +906,7 @@ var en = {
     loid_tips3:
         "When count is greater than 1, LOIDs will be added in batches, and the rule is to add a digital ID after the currently entered LOID.",
     loid_tips4:
-        'Example: When the LOID is "test" and the count is 2, two LOIDs of "test2" and "test3" will be added in sequence.',
+        'Example: When the LOID is "test" and the count is 2, two LOIDs of "test00" and "test01" will be added in sequence.',
 
     composeRange(min, max) {
         return `${min}${max ? " - " + max : ""} characters`;
