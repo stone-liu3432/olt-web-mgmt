@@ -99,7 +99,9 @@
                         v-model.number="count"
                         :style="{
                             'border-color':
-                                count >= 0 && count <= 64 ? '' : 'red',
+                                count >= 0 && count + loid.length <= 64
+                                    ? ''
+                                    : 'red',
                         }"
                     />
                     <span class="loid-tips">
@@ -109,6 +111,7 @@
                             <p>{{ lanMap["loid_tips2"] }}</p>
                             <p>{{ lanMap["loid_tips3"] }}</p>
                             <p>{{ lanMap["loid_tips4"] }}</p>
+                            <P>{{ lanMap["loid_tips5"] }}</P>
                         </div>
                     </span>
                 </div>
@@ -218,6 +221,11 @@ export default {
                 .catch((err) => {});
         },
         openModal() {
+            if (this.loid.length >= 64) {
+                return this.$message.error(
+                    this.lanMap["loid_count_limit_tips"]
+                );
+            }
             this.addModal = true;
         },
         closeModal() {
@@ -248,6 +256,11 @@ export default {
             if (this.count < 0 || this.count > 64 || isNaN(this.count)) {
                 return this.$message.error(
                     `${this.lanMap["param_error"]}: ${this.lanMap["count"]}`
+                );
+            }
+            if (this.count + this.loid.length > 64) {
+                return this.$message.error(
+                    this.lanMap["loid_count_limit_tips"]
                 );
             }
             var post_data = {
