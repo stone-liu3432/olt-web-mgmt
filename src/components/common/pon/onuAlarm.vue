@@ -1,24 +1,31 @@
 <template>
     <div>
+        <div>
+            <nms-button @click="refreshData" style="width: 120px">{{
+                lanMap["refresh"]
+            }}</nms-button>
+        </div>
         <ul>
-            <li v-for="(item,index) in onu_alarm_list.data" :key="index">{{ item }}</li>
+            <li v-for="(item, index) in onu_alarm_list" :key="index">
+                {{ item }}
+            </li>
         </ul>
-        <div
-            v-if="!onu_alarm_list.data || onu_alarm_list.data.length < 1"
-            class="no-more-data"
-        >{{ lanMap['no_more_data'] }}</div>
+        <div v-if="!onu_alarm_list.length" class="no-more-data">
+            {{ lanMap["no_more_data"] }}
+        </div>
     </div>
 </template>
 
 <script>
 import { mapState } from "vuex";
+import { debounce, isArray } from "@/utils/common";
 export default {
     name: "onuAlarm",
     computed: mapState(["lanMap"]),
     props: ["portData"],
     data() {
         return {
-            onu_alarm_list: {}
+            onu_alarm_list: [],
         };
     },
     created() {
@@ -26,25 +33,27 @@ export default {
     },
     methods: {
         getData() {
+            this.onu_alarm_list = [];
             this.$http
                 .get("/onumgmt?form=alarm-info", {
                     params: {
                         port_id: this.portData.portid,
-                        onu_id: this.portData.onuid
-                    }
+                        onu_id: this.portData.onuid,
+                    },
                 })
-                .then(res => {
+                .then((res) => {
                     if (res.data.code === 1) {
-                        this.onu_alarm_list = res.data;
-                    } else {
-                        this.onu_alarm_list = {};
+                        if (isArray(res.data.data)) {
+                            this.onu_alarm_list = res.data.data;
+                        }
                     }
                 })
-                .catch(err => {
-                    // to do
-                });
-        }
-    }
+                .catch((err) => {});
+        },
+        refreshData() {
+            debounce(this.getData, 1000, this);
+        },
+    },
 };
 </script>
 
