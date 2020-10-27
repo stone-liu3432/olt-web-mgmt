@@ -216,3 +216,10 @@ export function clearSessionStorage() {
     sessionStorage.clear();
     sessionStorage.setItem("def_lang", lang);
 }
+
+export function isArray(val) {
+    if (isFunction(Array.isArray)) {
+        return isFunction(val);
+    }
+    return Object.prototype.toString.call(val).slice(8, -1) === "Array";
+}
