@@ -1,60 +1,79 @@
 <template>
     <div class="onu-allow">
         <div>
-            <h2>{{ lanMap['onu_allow'] }}</h2>
-            <span>{{ lanMap['port_id'] }}</span>
+            <h2>{{ lanMap["onu_allow"] }}</h2>
+            <span>{{ lanMap["port_id"] }}</span>
             <select v-model.number="portid">
-                <option :value="0x100">{{ lanMap['all'] }}</option>
+                <option :value="0x100">{{ lanMap["all"] }}</option>
                 <option
-                    v-for="(item,key) in port_name.pon"
+                    v-for="(item, key) in port_name.pon"
                     :key="key"
                     :value="item.id"
-                >{{ item.name }}</option>
+                >
+                    {{ item.name }}
+                </option>
             </select>
             <template v-if="onu_allow_list.length">
-                <span class="onu-count onu-total">{{ lanMap['registered_onu'] }}:</span>
+                <span class="onu-count onu-total"
+                    >{{ lanMap["registered_onu"] }}:</span
+                >
                 <span>{{ onu_allow_list.length }}</span>
-                <span class="onu-count onu-online">{{ lanMap['online'] }}:</span>
+                <span class="onu-count onu-online"
+                    >{{ lanMap["online"] }}:</span
+                >
                 <span>{{ onlineCount }}</span>
-                <span class="onu-count onu-offline">{{ lanMap['offline'] }}:</span>
+                <span class="onu-count onu-offline"
+                    >{{ lanMap["offline"] }}:</span
+                >
                 <span>{{ onu_allow_list.length - onlineCount }}</span>
             </template>
         </div>
         <hr />
         <div>
-            <a href="javascript:void(0);" @click="reload">{{ lanMap['refresh'] }}</a>
+            <a href="javascript:void(0);" @click="reload">{{
+                lanMap["refresh"]
+            }}</a>
             <template v-if="isAll">
                 <a
                     href="javascript:void(0);"
                     @click="add_onu"
                     v-if="custom.addonu"
-                >{{ lanMap['add'] }}</a>
-                <a href="javascript:void(0);" @click="onu_bandwieth">{{ lanMap['sla_cfg'] }}</a>
-                <a href="javascript:void(0);" @click="onu_deny">{{ lanMap['onu_deny'] }}</a>
+                    >{{ lanMap["add"] }}</a
+                >
+                <a href="javascript:void(0);" @click="onu_bandwieth">{{
+                    lanMap["sla_cfg"]
+                }}</a>
+                <a href="javascript:void(0);" @click="onu_deny">{{
+                    lanMap["onu_deny"]
+                }}</a>
                 <a
                     href="javascript:void(0);"
                     @click="show_batchmgmt"
                     v-if="!isBatchMgmt"
-                >{{ lanMap['batch_mgmt_onu'] }}</a>
-                <a
-                    href="javascript:void(0);"
-                    @click="show_batchmgmt"
-                    v-else
-                >{{ lanMap['exit_batch_onu'] }}</a>
+                    >{{ lanMap["batch_mgmt_onu"] }}</a
+                >
+                <a href="javascript:void(0);" @click="show_batchmgmt" v-else>{{
+                    lanMap["exit_batch_onu"]
+                }}</a>
             </template>
-            <a href="javascript: void(0);" v-if="isDraggable" @click="saveDrag">{{ lanMap['save'] }}</a>
+            <a
+                href="javascript: void(0);"
+                v-if="isDraggable"
+                @click="saveDrag"
+                >{{ lanMap["save"] }}</a
+            >
             <div class="rt tool-tips">
                 <i class="icon-tips"></i>
                 <div>
                     <div>
-                        <p>{{ lanMap['auth_state'] }}</p>
+                        <p>{{ lanMap["auth_state"] }}</p>
                         <p>
                             <i class="verified-actived"></i>
-                            {{ lanMap['tips_cfm_onu'] }}
+                            {{ lanMap["tips_cfm_onu"] }}
                         </p>
                         <p>
                             <i class="unverified"></i>
-                            {{ lanMap['tips_n_cfm_onu'] }}
+                            {{ lanMap["tips_n_cfm_onu"] }}
                         </p>
                     </div>
                 </div>
@@ -63,62 +82,76 @@
         <div class="modal-dialog" v-if="add_dialog">
             <div class="cover"></div>
             <div class="modal-content">
-                <h3 class="modal-header">{{ lanMap['manual_bind'] }}</h3>
+                <h3 class="modal-header">{{ lanMap["manual_bind"] }}</h3>
                 <div class="modal-item">
-                    <span>{{ lanMap['onu_id'] }}</span>
-                    <input type="text" v-model="add_onuid" placeholder="1-64" v-focus />
-                    <span class="tips">{{ lanMap['zero_auto_'] }}</span>
+                    <span>{{ lanMap["onu_id"] }}</span>
+                    <input
+                        type="text"
+                        v-model="add_onuid"
+                        placeholder="1-64"
+                        v-focus
+                    />
+                    <span class="tips">{{ lanMap["zero_auto_"] }}</span>
                 </div>
                 <div class="modal-item">
-                    <span>{{ lanMap['macaddr'] }}</span>
+                    <span>{{ lanMap["macaddr"] }}</span>
                     <input
                         type="text"
                         v-model="add_macaddr"
-                        :style="{'borderColor' : add_macaddr && testMacaddr ? 'red' : ''}"
+                        :style="{
+                            borderColor:
+                                add_macaddr && testMacaddr ? 'red' : '',
+                        }"
                         placeholder="00:00:00:00:00:00"
                     />
                     <span class="tips">EX : 00:00:00:00:00:00</span>
                 </div>
                 <div class="modal-item">
-                    <span>{{ lanMap['auth_state'] }}</span>
+                    <span>{{ lanMap["auth_state"] }}</span>
                     <select v-model="add_onustate">
                         <option value="1">true</option>
                         <option value="0">false</option>
                     </select>
                 </div>
                 <div class="modal-item">
-                    <span>{{ lanMap['desc'] }}</span>
+                    <span>{{ lanMap["desc"] }}</span>
                     <input type="text" v-model="add_onudesc" />
-                    <span class="tips">{{ lanMap['input_desc'] }}</span>
+                    <span class="tips">{{ lanMap["input_desc"] }}</span>
                 </div>
                 <div class="modal-btn">
-                    <a href="javascript:void(0);" @click="add_onuitem(true)">{{ lanMap['apply'] }}</a>
-                    <a href="javascript:void(0);" @click="add_onuitem(false)">{{ lanMap['cancel'] }}</a>
+                    <a href="javascript:void(0);" @click="add_onuitem(true)">{{
+                        lanMap["apply"]
+                    }}</a>
+                    <a href="javascript:void(0);" @click="add_onuitem(false)">{{
+                        lanMap["cancel"]
+                    }}</a>
                 </div>
                 <div class="close" @click="closeModal"></div>
             </div>
         </div>
         <div class="search-onu" v-if="!isBatchMgmt">
-            <h3 class="lf">{{ lanMap['find'] }} ONU</h3>
+            <h3 class="lf">{{ lanMap["find"] }} ONU</h3>
             <div class="lf">
                 <input type="text" v-model="search_str" />
                 <i></i>
             </div>
-            <p class="lf">{{ lanMap['search_by_macaddr'] }}</p>
+            <p class="lf">{{ lanMap["search_by_macaddr"] }}</p>
         </div>
         <div v-else class="search-onu batch-onu">
-            <h3 class="lf">{{ lanMap['batch_mgmt_onu'] }}</h3>
+            <h3 class="lf">{{ lanMap["batch_mgmt_onu"] }}</h3>
             <div class="lf">
                 <a
                     href="javascript:void(0);"
-                    style="margin-left: 30px;"
+                    style="margin-left: 30px"
                     @click="delete_onu()"
-                >{{ lanMap['delete'] }}</a>
+                    >{{ lanMap["delete"] }}</a
+                >
                 <a
                     href="javascript:void(0);"
-                    style="margin-left: 30px;"
+                    style="margin-left: 30px"
                     @click="remove_onu()"
-                >{{ lanMap['add_to_deny'] }}</a>
+                    >{{ lanMap["add_to_deny"] }}</a
+                >
             </div>
         </div>
         <nms-table
@@ -133,11 +166,18 @@
         >
             <nms-table-column :type="isBatchMgmt"></nms-table-column>
             <nms-table-column :label="lanMap['onu_id']" prop="onu_id">
-                <template
-                    slot-scope="row"
-                >{{ row.onu_name || 'ONU0'+ row.port_id +'/'+ row.onu_id }}</template>
+                <template slot-scope="row">{{
+                    row.port_id + "/" + row.onu_id
+                }}</template>
             </nms-table-column>
-            <nms-table-column :label="lanMap['macaddr']" prop="macaddr"></nms-table-column>
+            <nms-table-column
+                :label="lanMap['onu_name']"
+                prop="onu_name"
+            ></nms-table-column>
+            <nms-table-column
+                :label="lanMap['macaddr']"
+                prop="macaddr"
+            ></nms-table-column>
             <nms-table-column
                 :label="lanMap['status']"
                 prop="status"
@@ -145,38 +185,58 @@
                 sortable
                 :sort-method="sortMethod"
             ></nms-table-column>
-            <nms-table-column :label="lanMap['auth_state']" prop="auth_state" width="100px">
+            <nms-table-column
+                :label="lanMap['auth_state']"
+                prop="auth_state"
+                width="100px"
+            >
                 <template slot-scope="row">
-                    <span>{{ row.auth_state ? 'true' : 'false' }}</span>
+                    <span>{{ row.auth_state ? "true" : "false" }}</span>
                     <i
-                        :class="[row.auth_state ? 'verified-actived' : 'unverified']"
+                        :class="[
+                            row.auth_state ? 'verified-actived' : 'unverified',
+                        ]"
                         @click="authstate(row)"
                     ></i>
                 </template>
             </nms-table-column>
-            <nms-table-column :label="lanMap['register_time']" prop="register_time"></nms-table-column>
-            <nms-table-column :label="lanMap['last_down_time']" prop="last_down_time"></nms-table-column>
-            <nms-table-column :label="lanMap['last_down_reason']" prop="last_down_reason"></nms-table-column>
+            <nms-table-column
+                :label="lanMap['register_time']"
+                prop="register_time"
+            ></nms-table-column>
+            <nms-table-column
+                :label="lanMap['last_down_time']"
+                prop="last_down_time"
+            ></nms-table-column>
+            <nms-table-column
+                :label="lanMap['last_down_reason']"
+                prop="last_down_reason"
+            ></nms-table-column>
             <nms-table-column :label="lanMap['config']" width="160px">
                 <template slot-scope="row">
                     <nms-dropdown @command="command">
-                        <span>{{ lanMap['config'] }}</span>
+                        <span>{{ lanMap["config"] }}</span>
                         <div slot="dropdown">
                             <nms-dropdown-item
                                 :command="{ action: 'detail', data: row }"
-                            >{{ lanMap['show_detail'] }}</nms-dropdown-item>
+                                >{{ lanMap["show_detail"] }}</nms-dropdown-item
+                            >
                             <nms-dropdown-item
                                 :command="{ action: 'port_config', data: row }"
-                            >{{ lanMap['onu_port_cfg'] }}</nms-dropdown-item>
+                                >{{ lanMap["onu_port_cfg"] }}</nms-dropdown-item
+                            >
                             <nms-dropdown-item
                                 :command="{ action: 'delete', data: row }"
-                            >{{ lanMap['del_onu'] }}</nms-dropdown-item>
+                                >{{ lanMap["del_onu"] }}</nms-dropdown-item
+                            >
                             <nms-dropdown-item
                                 :command="{ action: 'remove', data: row }"
-                            >{{ lanMap['add_to_deny'] }}</nms-dropdown-item>
+                                >{{ lanMap["add_to_deny"] }}</nms-dropdown-item
+                            >
                             <nms-dropdown-item
                                 :command="{ action: 'reboot', data: row }"
-                            >{{ lanMap['reboot_onu'] }}</nms-dropdown-item>
+                                >{{ lanMap["reboot_onu"] }}</nms-dropdown-item
+                            >
                         </div>
                     </nms-dropdown>
                 </template>
@@ -206,7 +266,7 @@ export default {
             // 标识是否有拖动并且未保存的数据
             isDraggable: false,
             // 排序标识， 正序/倒序
-            sortState: false
+            sortState: false,
         };
     },
     computed: {
@@ -221,7 +281,7 @@ export default {
         onulist() {
             let onulist = this.onu_allow_list.slice(0);
             if (!!this.search_str) {
-                onulist = onulist.filter(item => {
+                onulist = onulist.filter((item) => {
                     let flag = false;
                     if (
                         item.macaddr.indexOf(this.search_str) !== -1 ||
@@ -254,12 +314,12 @@ export default {
         },
         onlineCount() {
             return this.onu_allow_list.filter(
-                item => item.status.toLowerCase() === "online"
+                (item) => item.status.toLowerCase() === "online"
             ).length;
         },
         isAll() {
             return this.portid !== 0x100;
-        }
+        },
     },
     activated() {
         var pid = sessionStorage.getItem("pid");
@@ -276,21 +336,21 @@ export default {
             var url = this.change_url.onu_allow;
             this.$http
                 .get(url)
-                .then(res => {
+                .then((res) => {
                     if (res.data.code === 1) {
                         if (Array.isArray(res.data.data)) {
                             this.onu_allow_list = res.data.data;
                         }
                     }
                 })
-                .catch(err => {});
+                .catch((err) => {});
         }
     },
     methods: {
         ...mapMutations({
             changeMenu: "updateNavMenu",
             changeAdvMenu: "updateAdvMenu",
-            changeFMenu: "updateAdvFMenu"
+            changeFMenu: "updateAdvFMenu",
         }),
         //  手动刷新
         reload() {
@@ -305,14 +365,14 @@ export default {
                     : "/onu_allow_list?port_id=" + this.portid;
             this.$http
                 .get(url)
-                .then(res => {
+                .then((res) => {
                     if (res.data.code === 1) {
                         if (Array.isArray(res.data.data)) {
                             this.onu_allow_list = res.data.data;
                         }
                     }
                 })
-                .catch(err => {
+                .catch((err) => {
                     // to do
                 });
         },
@@ -327,7 +387,7 @@ export default {
                 olist = this.batch_onulist;
                 this.post_url = "/onu_allow_list?form=batch";
                 olist = olist
-                    .map(item => {
+                    .map((item) => {
                         return item.onu_id;
                     })
                     .sort((a, b) => a - b);
@@ -337,7 +397,7 @@ export default {
             if (olist.length <= 0) {
                 this.$message({
                     type: "info",
-                    text: this.lanMap["no_select_onu"]
+                    text: this.lanMap["no_select_onu"],
                 });
                 return;
             }
@@ -346,14 +406,14 @@ export default {
                 param: {
                     port_id: node ? node.port_id : this.portid,
                     onu_id: olist,
-                    macaddr: node ? node.macaddr : ""
-                }
+                    macaddr: node ? node.macaddr : "",
+                },
             };
             this.$confirm(this.lanMap["tips_del_onu"])
-                .then(_ => {
+                .then((_) => {
                     this.result_delete(post_params);
                 })
-                .catch(_ => {});
+                .catch((_) => {});
         },
         //  手动添加 onu
         add_onu() {
@@ -377,7 +437,7 @@ export default {
                 ) {
                     this.$message({
                         type: "error",
-                        text: this.lanMap["param_mac"]
+                        text: this.lanMap["param_mac"],
                     });
                     return;
                 }
@@ -388,7 +448,7 @@ export default {
                 ) {
                     this.$message({
                         type: "error",
-                        text: this.lanMap["param_onuid"]
+                        text: this.lanMap["param_onuid"],
                     });
                     return;
                 }
@@ -400,16 +460,16 @@ export default {
                         macaddr: this.add_macaddr,
                         auth_state: this.add_onustate,
                         onu_type: "",
-                        onu_desc: this.add_onudesc
-                    }
+                        onu_desc: this.add_onudesc,
+                    },
                 };
                 this.$http
                     .post("/onu_allow_list?form=onucfg", post_params)
-                    .then(res => {
+                    .then((res) => {
                         if (res.data.code === 1) {
                             this.$message({
                                 type: res.data.type,
-                                text: this.lanMap["setting_ok"]
+                                text: this.lanMap["setting_ok"],
                             });
                             this.getData();
                         } else if (res.data.code > 1) {
@@ -419,11 +479,11 @@ export default {
                                     "(" +
                                     res.data.code +
                                     ") " +
-                                    res.data.message
+                                    res.data.message,
                             });
                         }
                     })
-                    .catch(err => {
+                    .catch((err) => {
                         // to do
                     });
             }
@@ -433,21 +493,21 @@ export default {
         result_authstate(data) {
             this.$http
                 .post("/onu_allow_list?form=onucfg", data)
-                .then(res => {
+                .then((res) => {
                     if (res.data.code === 1) {
                         this.$message({
                             type: res.data.type,
-                            text: this.lanMap["setting_ok"]
+                            text: this.lanMap["setting_ok"],
                         });
                         this.getData();
                     } else if (res.data.code > 1) {
                         this.$message({
                             type: res.data.type,
-                            text: "(" + res.data.code + ") " + res.data.message
+                            text: "(" + res.data.code + ") " + res.data.message,
                         });
                     }
                 })
-                .catch(err => {
+                .catch((err) => {
                     // to do
                 });
         },
@@ -461,17 +521,17 @@ export default {
                     macaddr: node ? node.macaddr : "",
                     auth_state: node.auth_state ? 0 : 1,
                     onu_type: "",
-                    onu_desc: ""
-                }
+                    onu_desc: "",
+                },
             };
             const tips_authstate = node.auth_state
                 ? this.lanMap["tips_unauth_state"]
                 : this.lanMap["tips_auth_state"];
             this.$confirm(tips_authstate)
-                .then(_ => {
+                .then((_) => {
                     this.result_authstate(post_params);
                 })
-                .catch(_ => {});
+                .catch((_) => {});
         },
         //  移动ONU到阻止列表
         remove_onu(node) {
@@ -481,7 +541,7 @@ export default {
                 olist = this.batch_onulist;
                 this.post_url = "/onu_allow_list?form=batch";
                 olist = olist
-                    .map(item => {
+                    .map((item) => {
                         return item.onu_id;
                     })
                     .sort((a, b) => a - b);
@@ -491,7 +551,7 @@ export default {
             if (olist.length <= 0) {
                 this.$message({
                     type: "info",
-                    text: this.lanMap["no_select_onu"]
+                    text: this.lanMap["no_select_onu"],
                 });
                 return;
             }
@@ -500,14 +560,14 @@ export default {
                 param: {
                     port_id: node ? node.port_id : this.portid,
                     onu_id: olist,
-                    macaddr: node ? node.macaddr : ""
-                }
+                    macaddr: node ? node.macaddr : "",
+                },
             };
             this.$confirm(this.lanMap["tips_add_deny_onu"])
-                .then(_ => {
+                .then((_) => {
                     this.result_deny(post_params);
                 })
-                .catch(_ => {});
+                .catch((_) => {});
         },
         //  跳转带宽管理
         onu_bandwieth() {
@@ -517,23 +577,23 @@ export default {
         result_reboot(data) {
             this.$http
                 .post("/onumgmt?form=config", data)
-                .then(res => {
+                .then((res) => {
                     if (res.data.code === 1) {
                         this.$message({
                             type: res.data.type,
                             text:
                                 this.lanMap["reboot_onu"] +
-                                this.lanMap["st_success"]
+                                this.lanMap["st_success"],
                         });
                         this.getData();
                     } else if (res.data.code > 1) {
                         this.$message({
                             type: res.data.type,
-                            text: "(" + res.data.code + ") " + res.data.message
+                            text: "(" + res.data.code + ") " + res.data.message,
                         });
                     }
                 })
-                .catch(err => {
+                .catch((err) => {
                     // to do
                 });
         },
@@ -542,7 +602,7 @@ export default {
             if (item.status.toLowerCase() !== "online") {
                 this.$message({
                     type: "info",
-                    text: this.lanMap["onu_offline_tips"]
+                    text: this.lanMap["onu_offline_tips"],
                 });
                 return;
             }
@@ -552,14 +612,14 @@ export default {
                     port_id: item.port_id,
                     onu_id: item.onu_id,
                     flags: 1,
-                    fec_mode: 1
-                }
+                    fec_mode: 1,
+                },
             };
             this.$confirm(this.lanMap["confirm_reboot_onu"])
-                .then(_ => {
+                .then((_) => {
                     this.result_reboot(post_params);
                 })
-                .catch(_ => {});
+                .catch((_) => {});
         },
         //  跳转到 onu 详情页
         onu_detail(portid, onuid) {
@@ -603,21 +663,21 @@ export default {
         result_delete(data) {
             this.$http
                 .post(this.post_url, data)
-                .then(res => {
+                .then((res) => {
                     if (res.data.code === 1) {
                         this.$message({
                             type: res.data.type,
-                            text: this.lanMap["setting_ok"]
+                            text: this.lanMap["setting_ok"],
                         });
                         this.getData();
                     } else if (res.data.code > 1) {
                         this.$message({
                             type: res.data.type,
-                            text: "(" + res.data.code + ") " + res.data.message
+                            text: "(" + res.data.code + ") " + res.data.message,
                         });
                     }
                 })
-                .catch(err => {
+                .catch((err) => {
                     // to do
                 });
         },
@@ -625,21 +685,21 @@ export default {
         result_deny(data) {
             this.$http
                 .post(this.post_url, data)
-                .then(res => {
+                .then((res) => {
                     if (res.data.code === 1) {
                         this.$message({
                             type: res.data.type,
-                            text: this.lanMap["setting_ok"]
+                            text: this.lanMap["setting_ok"],
                         });
                         this.getData();
                     } else if (res.data.code > 1) {
                         this.$message({
                             type: res.data.type,
-                            text: "(" + res.data.code + ") " + res.data.message
+                            text: "(" + res.data.code + ") " + res.data.message,
                         });
                     }
                 })
-                .catch(err => {
+                .catch((err) => {
                     // to do
                 });
         },
@@ -675,7 +735,7 @@ export default {
                 },
                 reboot(row) {
                     this.reboot(row);
-                }
+                },
             };
             if (typeof ACTIONS[action] === "function") {
                 ACTIONS[action].call(this, data);
@@ -720,18 +780,18 @@ export default {
         },
         saveDrag() {
             return this.$confirm(this.lanMap["unSaveInfo"])
-                .then(_ => {
+                .then((_) => {
                     return this.$http
                         .post("/onu_allow_list?form=sort", {
                             method: "set",
                             param: {
                                 port_id: Number(this.portid),
                                 onulist: this.onu_allow_list.map(
-                                    item => item.onu_id
-                                )
-                            }
+                                    (item) => item.onu_id
+                                ),
+                            },
                         })
-                        .then(res => {
+                        .then((res) => {
                             if (res.data.code === 1) {
                                 this.$message.success(
                                     this.lanMap["save"] +
@@ -747,21 +807,21 @@ export default {
                                 return Promise.reject();
                             }
                         })
-                        .catch(_ => {});
+                        .catch((_) => {});
                 })
-                .catch(_ => {});
-        }
+                .catch((_) => {});
+        },
     },
     beforeRouteLeave(to, from, next) {
         if (this.isDraggable) {
             this.saveDrag()
-                .then(_ => {
+                .then((_) => {
                     next();
                 })
-                .catch(_ => {
+                .catch((_) => {
                     next();
                 })
-                .finally(_ => {
+                .finally((_) => {
                     if (this.portid === 0x100) {
                         sessionStorage.setItem("pid", 1);
                     }
@@ -783,8 +843,8 @@ export default {
             sessionStorage.setItem("pid", this.portid);
             this.getData();
             this.batch_onulist = [];
-        }
-    }
+        },
+    },
 };
 </script>
 
