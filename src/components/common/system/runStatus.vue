@@ -2,10 +2,10 @@
     <div class="running-status">
         <h1>{{ lanMap["running_status"] }}</h1>
         <div>
-            <div class="system-info" v-if="this.system.data">
+            <div class="system-info" v-if="system.data && system.data">
                 <h2>{{ lanMap["sys_info"] }}</h2>
                 <div
-                    v-for="(item, key) of this.system.data"
+                    v-for="(item, key) of system.data"
                     :key="key"
                     class="system-info-detail"
                     v-if="key !== 'bl_ver' && key !== 'vendor'"
@@ -35,7 +35,7 @@
                     </template>
                 </div>
             </div>
-            <div class="cpu-info" v-if="this.cpuInfo.data">
+            <div class="cpu-info" v-if="cpuInfo.data">
                 <h2>{{ lanMap["hw_status"] }}</h2>
                 <div>
                     <div>
