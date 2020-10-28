@@ -5,40 +5,51 @@
                 <template v-if="hasLogo">
                     <img src="/login_logo.png" />
                     <template v-if="custom.hsgq">
-                        <div class="copyright-design-info">Copyright 2017-2020. Design by HSGQ.</div>
+                        <div class="copyright-design-info">
+                            Copyright 2017-2020. Design by HSGQ.
+                        </div>
                     </template>
                 </template>
-                <template v-else>
-                    <p>EPON-OLT</p>
-                </template>
+                <div :class="['device-type', { 'is-no-logo': !hasLogo }]">
+                    EPON-OLT
+                </div>
+                <div class="device-vendor" v-if="system.data">
+                    <span>{{ system.data.product_name }}</span>
+                    <span style="color: #000"
+                        >{{ `(${system.data.ponports} port OLT)` }}
+                    </span>
+                </div>
             </div>
             <div class="login-form">
-                <h3>{{ lanMap['login_page_login_hit'] }}</h3>
+                <h3>{{ lanMap["login_page_login_hit"] }}</h3>
                 <form :class="formStyle">
                     <div class="login-form-item">
-                        <span>{{ lanMap['user_name'] }}:</span>
+                        <span>{{ lanMap["user_name"] }}:</span>
                         <input
                             type="text"
                             v-model="userName"
-                            :class="[ verify_uname ? 'input-error' : '' ]"
+                            :class="[verify_uname ? 'input-error' : '']"
                             v-focus
                         />
                     </div>
                     <div class="login-form-item user-pwd">
-                        <span>{{ lanMap['password'] }}:</span>
+                        <span>{{ lanMap["password"] }}:</span>
                         <input
                             type="password"
                             v-model="userPwd"
                             id="userPwd"
-                            :class="[ verify_upwd ? 'input-error' : '' ]"
+                            :class="[verify_upwd ? 'input-error' : '']"
                             autocomplete="off"
                             @keyup.enter="userLogin"
                         />
-                        <i :class="[ visible ? 'visible' : 'invisible']" @click="changeVisible"></i>
+                        <i
+                            :class="[visible ? 'visible' : 'invisible']"
+                            @click="changeVisible"
+                        ></i>
                     </div>
                     <template v-if="!custom.fix_lang">
                         <div class="login-form-item">
-                            <span>{{ lanMap['lang'] }}:</span>
+                            <span>{{ lanMap["lang"] }}:</span>
                             <label>
                                 <input type="radio" v-model="lang" value="zh" />
                                 简体中文
@@ -52,20 +63,26 @@
                     <template v-if="custom.captcha">
                         <div class="login-form-item login-form-captcha">
                             <!-- 有订制要求，需要验证码时 -->
-                            <span>{{ lanMap['verification_code'] }}:</span>
+                            <span>{{ lanMap["verification_code"] }}:</span>
                             <img @click="getCaptcha" ref="captcha-img" />
                             <input type="text" v-model="captcha" />
                         </div>
                     </template>
 
                     <p>
-                        <template v-if="verify_uname">{{ lanMap['username_length_fail'] }}</template>
+                        <template v-if="verify_uname">{{
+                            lanMap["username_length_fail"]
+                        }}</template>
                     </p>
                     <p>
-                        <template v-if="verify_upwd">{{ lanMap['password_length_fail'] }}</template>
+                        <template v-if="verify_upwd">{{
+                            lanMap["password_length_fail"]
+                        }}</template>
                     </p>
                     <div class="login-form-submit">
-                        <a href="javascript: void(0);" @click="userLogin">{{ lanMap['login_user'] }}</a>
+                        <a href="javascript: void(0);" @click="userLogin">{{
+                            lanMap["login_user"]
+                        }}</a>
                     </div>
                 </form>
             </div>
@@ -93,7 +110,7 @@ export default {
         };
     },
     computed: {
-        ...mapState(["lanMap", "language", "custom"]),
+        ...mapState(["lanMap", "language", "custom", "system"]),
         verify_uname() {
             const reg = /^[a-zA-Z][a-zA-Z_\d]{3,15}$/;
             return !reg.test(this.userName) && this.userName !== "";
@@ -117,6 +134,7 @@ export default {
     created() {
         this.lang = this.language;
         this.updateCustom();
+        this.updateSystem();
         clearSessionStorage();
         this.$http
             .get("/login_logo.png")
@@ -131,7 +149,7 @@ export default {
         ...mapMutations({
             setLanguage: "updateLang",
         }),
-        ...mapActions(["updateCustom"]),
+        ...mapActions(["updateCustom", "updateSystem"]),
         userLogin() {
             if (
                 this.verify_uname ||
@@ -271,14 +289,17 @@ div.login {
             box-sizing: border-box;
             border-radius: 8px 0 0 8px;
             border-right: 1px solid @borderColor;
-            line-height: 400px;
             text-align: center;
             position: relative;
             img {
                 max-width: 298px;
+                max-height: 240px;
                 vertical-align: middle;
             }
-            p {
+            div.is-no-logo {
+                margin-top: 160px;
+            }
+            div.device-type {
                 font-size: 42px;
                 font-weight: 600;
                 text-align: center;
@@ -294,6 +315,12 @@ div.login {
                 text-align: center;
                 font-size: 14px;
                 color: @infoColor;
+            }
+            div.device-vendor {
+                color: @titleColor;
+                font-weight: bold;
+                margin-top: 12px;
+                font-size: 18px;
             }
         }
     }
