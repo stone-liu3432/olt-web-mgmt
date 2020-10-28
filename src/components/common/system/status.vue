@@ -3,39 +3,40 @@
         <div class="port-container">
             <div class="port-info">
                 <h3>
-                    <span>{{ lanMap['pon_info'] }}</span>
-                    <span
-                        class="onu-count"
-                        style="margin-left: 100px;"
-                    >{{ lanMap['registered_onu'] }}:</span>
+                    <span>{{ lanMap["pon_info"] }}</span>
+                    <span class="onu-count" style="margin-left: 100px"
+                        >{{ lanMap["registered_onu"] }}:</span
+                    >
                     <span>{{ online + offline }}</span>
-                    <span class="onu-count">{{ lanMap['online'] }}:</span>
+                    <span class="onu-count">{{ lanMap["online"] }}:</span>
                     <span>{{ online }}</span>
-                    <span class="onu-count onu-offline">{{ lanMap['offline'] }}:</span>
+                    <span class="onu-count onu-offline"
+                        >{{ lanMap["offline"] }}:</span
+                    >
                     <span>{{ offline }}</span>
                 </h3>
-                <div>
+                <div v-if="ponInfo.data && ponInfo.data.length">
                     <port
-                        v-for="(item,index) in ponInfo.data"
+                        v-for="(item, index) in ponInfo.data"
                         :key="index"
                         :port-info="item"
                         port-type="pon"
-                        v-if="ponInfo.data && ponInfo.data.length "
+                        v-if="ponInfo.data && ponInfo.data.length"
                     ></port>
                 </div>
             </div>
             <div class="port-info">
-                <h3>{{ lanMap['ge_port_info'] }}</h3>
+                <h3>{{ lanMap["ge_port_info"] }}</h3>
                 <div>
                     <port
-                        v-for="(item,index) in port_name.ge"
+                        v-for="(item, index) in port_name.ge"
                         :key="index"
                         :port-info="item"
                         port-type="ge"
                         v-if="port_name && port_name.ge"
                     ></port>
                     <port
-                        v-for="(item,index) in port_name.xge"
+                        v-for="(item, index) in port_name.xge"
                         :key="index"
                         :port-info="item"
                         port-type="xge"
@@ -56,7 +57,7 @@ export default {
     data() {
         return {
             ponInfo: [],
-            interval: null
+            interval: null,
         };
     },
     computed: {
@@ -78,7 +79,7 @@ export default {
                 (pre, item) => pre + item.offline,
                 0
             );
-        }
+        },
     },
     created() {
         this.getPon();
@@ -89,24 +90,24 @@ export default {
     methods: {
         ...mapMutations({
             portInfo: "updatePortData",
-            portName: "updatePortName"
+            portName: "updatePortName",
         }),
         getPon() {
             this.$http
                 .get(this.change_url.pon)
-                .then(res => {
+                .then((res) => {
                     if (res.data.code === 1) {
                         this.ponInfo = res.data;
                     }
                 })
-                .catch(err => {
+                .catch((err) => {
                     // to do
                 });
         },
         getGe() {
             this.$http
                 .get(this.change_url.port)
-                .then(res => {
+                .then((res) => {
                     this.portInfo(res.data);
                     var pon = this.system.data.ponports;
                     var ge = this.system.data.geports;
@@ -117,7 +118,7 @@ export default {
                         ge_count = res.data.data.slice(pon);
                         portName = {
                             pon: this.get_portName(pon_count, "PON"),
-                            ge: this.get_portName(ge_count, "GE")
+                            ge: this.get_portName(ge_count, "GE"),
                         };
                     } else {
                         ge_count = res.data.data.slice(pon, pon + ge);
@@ -125,12 +126,12 @@ export default {
                         portName = {
                             pon: this.get_portName(pon_count, "PON"),
                             ge: this.get_portName(ge_count, "GE"),
-                            xge: this.get_portName(xge_count, "XGE")
+                            xge: this.get_portName(xge_count, "XGE"),
                         };
                     }
                     this.portName(portName);
                 })
-                .catch(err => {
+                .catch((err) => {
                     // to do
                 });
         },
@@ -149,7 +150,7 @@ export default {
                 obj[arr[i].port_id].data = arr[i];
             }
             return obj;
-        }
+        },
     },
     mounted() {
         this.interval = setInterval(() => {
@@ -159,7 +160,7 @@ export default {
     },
     beforeDestroy() {
         if (this.interval) clearInterval(this.interval);
-    }
+    },
 };
 </script>
 

@@ -2,45 +2,74 @@
     <div class="port lf" v-if="portInfo" @click="jump(portInfo)">
         <div class="lf">
             <div
-                :class="[ 'bg-img', portInfo.status ? 'pon-online' : 'pon-offline']"
+                :class="[
+                    'bg-img',
+                    portInfo.status ? 'pon-online' : 'pon-offline',
+                ]"
                 v-if="portType === 'pon'"
             ></div>
             <div
-                :class="[ 'bg-img', portInfo.data.media === 'fiber' ? portInfo.data.admin_status ? portInfo.data.link_status ? 'ge-online' : 'ge-offline' : 'ge-disabled' :
-                 portInfo.data.admin_status ? portInfo.data.link_status ? 'rj45-online' : 'rj45-offline' : 'rj45-disabled', portType !== 'pon' ? 'uplink' : '' ]"
+                :class="[
+                    'bg-img',
+                    portInfo.data.media === 'fiber'
+                        ? portInfo.data.admin_status
+                            ? portInfo.data.link_status
+                                ? 'ge-online'
+                                : 'ge-offline'
+                            : 'ge-disabled'
+                        : portInfo.data.admin_status
+                        ? portInfo.data.link_status
+                            ? 'rj45-online'
+                            : 'rj45-offline'
+                        : 'rj45-disabled',
+                    portType !== 'pon' ? 'uplink' : '',
+                ]"
                 v-if="portType === 'ge' || portType === 'xge'"
             ></div>
             <div v-if="portType === 'pon'">
                 {{ portType.toUpperCase() + portInfo.port_id }} :
-                {{ portInfo.status ? 'online' : 'offline' }}
+                {{ portInfo.status ? "online" : "offline" }}
             </div>
         </div>
         <div class="lf pon-dev-info" v-if="portType === 'pon'">
             <div>
-                <span>{{ lanMap['registered_onu'] }}:</span>
+                <span>{{ lanMap["registered_onu"] }}:</span>
                 <span>{{ portInfo.online + portInfo.offline }}</span>
             </div>
             <div>
-                <span>{{ lanMap['online'] }}:</span>
+                <span>{{ lanMap["online"] }}:</span>
                 <span>{{ portInfo.online }}</span>
             </div>
             <div>
-                <span>{{ lanMap['offline'] }}:</span>
+                <span>{{ lanMap["offline"] }}:</span>
                 <span>{{ portInfo.offline }}</span>
             </div>
         </div>
-        <div class="lf ge-dev-info" v-if="portType === 'ge' || portType === 'xge'">
+        <div
+            class="lf ge-dev-info"
+            v-if="portType === 'ge' || portType === 'xge'"
+        >
             <div>
                 <span>{{ portInfo.name }}:</span>
-                <span>{{ portInfo.data.link_status ? 'online' : 'offline' }}</span>
+                <span>{{
+                    portInfo.data.link_status ? "online" : "offline"
+                }}</span>
             </div>
             <div>
-                <span>{{ lanMap['admin_status'] }}:</span>
-                <span>{{ portInfo.data.admin_status ? lanMap['enable'] : lanMap['disable'] }}</span>
+                <span>{{ lanMap["admin_status"] }}:</span>
+                <span>{{
+                    portInfo.data.admin_status
+                        ? lanMap["enable"]
+                        : lanMap["disable"]
+                }}</span>
             </div>
             <div>
-                <span>{{ lanMap['link_status'] }}:</span>
-                <span>{{ portInfo.data.link_status ? lanMap['link_up'] : lanMap['link_down'] }}</span>
+                <span>{{ lanMap["link_status"] }}:</span>
+                <span>{{
+                    portInfo.data.link_status
+                        ? lanMap["link_up"]
+                        : lanMap["link_down"]
+                }}</span>
             </div>
         </div>
         <hr />
@@ -60,21 +89,24 @@ export default {
                 return this.portInfo.data.port_desc;
             }
             if (this.portType === "pon") {
+                if (!this.port_name.pon) {
+                    return "";
+                }
                 const res = this.port_name.pon[this.portInfo.port_id];
                 return res.data.port_desc;
             }
-        }
+        },
     },
     data() {
         return {
-            _portinfo: ""
+            _portinfo: "",
         };
     },
     methods: {
         ...mapMutations({
             changeMenu: "updateNavMenu",
             changeAdvMenu: "updateAdvMenu",
-            changeFMenu: "updateAdvFMenu"
+            changeFMenu: "updateAdvFMenu",
         }),
         jump(node) {
             if (this.portType === "pon") {
@@ -85,8 +117,8 @@ export default {
             if (this.portType === "ge" || this.portType === "xge") {
                 this.$router.push("/port_cfg?port_id=" + this.portInfo.id);
             }
-        }
-    }
+        },
+    },
 };
 </script>
 
