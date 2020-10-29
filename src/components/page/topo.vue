@@ -13,19 +13,23 @@
                 <template v-if="devType === 'pon'">
                     <div class="device-info">
                         <div>
-                            <span>{{ lanMap['port_id'] }}:</span>
+                            <span>{{ lanMap["port_id"] }}:</span>
                             <span>{{ popoverData.port_id | getPortName }}</span>
                         </div>
                         <div>
-                            <span>{{ lanMap['status'] }}:</span>
-                            <span>{{ popoverData.status ? lanMap['online'] : lanMap['offline'] }}</span>
+                            <span>{{ lanMap["status"] }}:</span>
+                            <span>{{
+                                popoverData.status
+                                    ? lanMap["online"]
+                                    : lanMap["offline"]
+                            }}</span>
                         </div>
                         <div>
-                            <span>{{ lanMap['online'] }}:</span>
+                            <span>{{ lanMap["online"] }}:</span>
                             <span>{{ popoverData.online }}</span>
                         </div>
                         <div>
-                            <span>{{ lanMap['offline'] }}:</span>
+                            <span>{{ lanMap["offline"] }}:</span>
                             <span>{{ popoverData.offline }}</span>
                         </div>
                     </div>
@@ -33,20 +37,28 @@
                 <template v-if="devType === 'onu'">
                     <div class="device-info">
                         <div>
-                            <span>{{ lanMap['onu_name'] }}:</span>
-                            <span :title="onuName">{{ onuName }}</span>
+                            <span>{{ lanMap["onu_id"] }}:</span>
+                            <span :title="onuName">{{
+                                `${popoverData.port_id}/${popoverData.onu_id}`
+                            }}</span>
                         </div>
                         <div>
-                            <span>{{ lanMap['macaddr'] }}:</span>
+                            <span>{{ lanMap["name"] }}</span
+                            ><span>{{ popoverData.onu_name }}</span>
+                        </div>
+                        <div>
+                            <span>{{ lanMap["macaddr"] }}:</span>
                             <span>{{ popoverData.macaddr }}</span>
                         </div>
                         <div>
-                            <span>{{ lanMap['status'] }}:</span>
+                            <span>{{ lanMap["status"] }}:</span>
                             <span>{{ popoverData.status }}</span>
                         </div>
                         <div>
-                            <span>{{ lanMap['auth_state'] }}:</span>
-                            <span>{{ popoverData.auth_state ? 'true' : 'false' }}</span>
+                            <span>{{ lanMap["auth_state"] }}:</span>
+                            <span>{{
+                                popoverData.auth_state ? "true" : "false"
+                            }}</span>
                         </div>
                     </div>
                 </template>
@@ -54,59 +66,68 @@
             <template v-if="popoverType === 'contextmenu'">
                 <template v-if="devType === 'pon'">
                     <nms-dropdown-item
-                        style="cursor: pointer;"
+                        style="cursor: pointer"
                         :command="composeData('pon', 'sla_cfg')"
-                    >{{ lanMap['sla_cfg'] }}</nms-dropdown-item>
+                        >{{ lanMap["sla_cfg"] }}</nms-dropdown-item
+                    >
                     <nms-dropdown-item
-                        style="cursor: pointer;"
+                        style="cursor: pointer"
                         :command="composeData('pon', 'pon_setting')"
-                    >{{ lanMap['pon_setting'] }}</nms-dropdown-item>
+                        >{{ lanMap["pon_setting"] }}</nms-dropdown-item
+                    >
                     <nms-dropdown-item
-                        style="cursor: pointer;"
+                        style="cursor: pointer"
                         :command="composeData('pon', 'pon_optical')"
-                    >{{ lanMap['pon_optical'] }}</nms-dropdown-item>
+                        >{{ lanMap["pon_optical"] }}</nms-dropdown-item
+                    >
                     <nms-dropdown-item
-                        style="cursor: pointer;"
+                        style="cursor: pointer"
                         :command="composeData('pon', 'batch_config')"
-                    >{{ lanMap['batch_config'] }}</nms-dropdown-item>
+                        >{{ lanMap["batch_config"] }}</nms-dropdown-item
+                    >
                 </template>
                 <template v-if="devType === 'onu'">
                     <nms-dropdown-item
-                        style="cursor: pointer;"
+                        style="cursor: pointer"
                         :command="composeData('onu', 'detail')"
-                    >{{ lanMap['detail'] }}</nms-dropdown-item>
+                        >{{ lanMap["detail"] }}</nms-dropdown-item
+                    >
                     <nms-dropdown-item
-                        style="cursor: pointer;"
+                        style="cursor: pointer"
                         :command="composeData('onu', 'onu_port_cfg')"
-                    >{{ lanMap['onu_port_cfg'] }}</nms-dropdown-item>
+                        >{{ lanMap["onu_port_cfg"] }}</nms-dropdown-item
+                    >
                     <nms-dropdown-item
-                        style="cursor: pointer;"
+                        style="cursor: pointer"
                         :command="composeData('onu', 'del_onu')"
-                    >{{ lanMap['del_onu'] }}</nms-dropdown-item>
+                        >{{ lanMap["del_onu"] }}</nms-dropdown-item
+                    >
                     <nms-dropdown-item
-                        style="cursor: pointer;"
+                        style="cursor: pointer"
                         :command="composeData('onu', 'add_to_deny')"
-                    >{{ lanMap['add_to_deny'] }}</nms-dropdown-item>
+                        >{{ lanMap["add_to_deny"] }}</nms-dropdown-item
+                    >
                     <nms-dropdown-item
-                        style="cursor: pointer;"
+                        style="cursor: pointer"
                         :command="composeData('onu', 'reboot_onu')"
-                    >{{ lanMap['reboot_onu'] }}</nms-dropdown-item>
+                        >{{ lanMap["reboot_onu"] }}</nms-dropdown-item
+                    >
                 </template>
             </template>
         </nms-popover>
         <div class="topo-toolbar">
-            <span @click="refreshImage">{{ lanMap['refreshOrReset'] }}</span>
-            <span @click="saveAsImage">{{ lanMap['saveAsImage'] }}</span>
+            <span @click="refreshImage">{{ lanMap["refreshOrReset"] }}</span>
+            <span @click="saveAsImage">{{ lanMap["saveAsImage"] }}</span>
             <input type="text" placeholder="mac / name" v-model="findStr" />
-            <span style="width: 80px;">
-                <template v-if="!find">{{ lanMap['no_result'] }}</template>
+            <span style="width: 80px">
+                <template v-if="!find">{{ lanMap["no_result"] }}</template>
                 <template v-else>
                     <span>{{ index + 1 }}</span>
                     /
                     <span>{{ nodes.length }}</span>
                 </template>
             </span>
-            <span style="padding: 6px 0;" @click="changeNode('next')">
+            <span style="padding: 6px 0" @click="changeNode('next')">
                 <svg
                     viewBox="0 0 1024 1024"
                     xmlns="http://www.w3.org/2000/svg"
@@ -122,7 +143,7 @@
                     />
                 </svg>
             </span>
-            <span style="padding: 6px 0;" @click="changeNode('prev')">
+            <span style="padding: 6px 0" @click="changeNode('prev')">
                 <svg
                     viewBox="0 0 1024 1024"
                     xmlns="http://www.w3.org/2000/svg"
@@ -138,7 +159,7 @@
                     />
                 </svg>
             </span>
-            <span @click="findNode">{{ lanMap['find'] }}</span>
+            <span @click="findNode">{{ lanMap["find"] }}</span>
         </div>
     </div>
 </template>
@@ -180,7 +201,7 @@ export default {
             findFlag: false,
             // 搜索结果
             nodes: [],
-            index: 0
+            index: 0,
         };
     },
     computed: {
@@ -214,10 +235,7 @@ export default {
             return "180px";
         },
         onuName() {
-            return (
-                this.popoverData.onu_name ||
-                `ONU${this.popoverData.port_id}/${this.popoverData.onu_id}`
-            );
+            return `${this.popoverData.port_id}/${this.popoverData.onu_id}`;
         },
         find() {
             if (!this.findStr) {
@@ -226,7 +244,7 @@ export default {
                 this.nodes = [];
             }
             return this.findFlag && !!this.findStr;
-        }
+        },
     },
     created() {
         this.getData();
@@ -235,7 +253,7 @@ export default {
         this.setRect();
         const fn = throttle(this.setRect, 300, this);
         // 鼠标弹起时，若目标节点没有绑定事件处理，则隐藏popover
-        const mouseup = e => {
+        const mouseup = (e) => {
             // 全局鼠标事件捕捉
             if (this.visible) {
                 const scene =
@@ -257,7 +275,7 @@ export default {
         };
         // 滚动时隐藏popover和node上触发的右键菜单
         const scrollFn = throttle(
-            _ => {
+            (_) => {
                 if (this.visible) {
                     this.visible = false;
                 }
@@ -268,7 +286,7 @@ export default {
         window.addEventListener("resize", fn, true);
         window.addEventListener("mouseup", mouseup, false);
         window.addEventListener("scroll", scrollFn, true);
-        this.$once("hook:beforeDestroy", _ => {
+        this.$once("hook:beforeDestroy", (_) => {
             window.removeEventListener("resize", fn);
             window.removeEventListener("mouseup", mouseup);
             window.removeEventListener("scroll", scrollFn);
@@ -278,15 +296,15 @@ export default {
     methods: {
         getData() {
             Promise.all([this.getPon(), this.getOnu()])
-                .then(vals => {
+                .then((vals) => {
                     const [ponlist, onulist] = vals;
                     this.ponList = Object.freeze(ponlist.data.data) || [];
                     this.onuList = Object.freeze(onulist.data.data) || [];
-                    this.$nextTick(_ => {
+                    this.$nextTick((_) => {
                         this.draw();
                     });
                 })
-                .catch(er => {});
+                .catch((er) => {});
         },
         getPon() {
             return this.$http.get(this.change_url.pon);
@@ -301,7 +319,7 @@ export default {
             // 去除头部导航栏高度(70px)以及底部footer高度(30px)
             this.clientHeight = height - 100;
             this.height = height - 100;
-            this.$nextTick(_ => {
+            this.$nextTick((_) => {
                 this.draw();
             });
         },
@@ -367,7 +385,7 @@ export default {
             const ponNum = this.ponList.length;
             // 存在onu列表的pon数量
             const onuArea = Object.values(this.onuMap).filter(
-                item => item && item.length
+                (item) => item && item.length
             ).length;
             this.onuContainerWidth =
                 (this.width - (onuArea + 1) * this.onuContainerGutter) /
@@ -436,7 +454,7 @@ export default {
                             Math.floor(index / count) * this.baseStep;
                         node.setLocation(x, y);
                     }
-                }
+                },
             };
             typeof Actions[type] === "function" &&
                 Actions[type].call(this, data);
@@ -444,23 +462,23 @@ export default {
         bindEvent(node, type, data) {
             const Actions = {
                 root() {
-                    node.click(e => {
+                    node.click((e) => {
                         this.ponNode = null;
                         this.changeView("all");
                     });
                 },
                 pon(data) {
-                    node.click(e => {
+                    node.click((e) => {
                         this.ponNode = node;
                         this.changeView("pon");
                     });
-                    node.mouseover(e => {
+                    node.mouseover((e) => {
                         this.mouseover(node, "pon");
                     });
-                    node.mouseout(e => {
+                    node.mouseout((e) => {
                         this.mouseout(node, "pon");
                     });
-                    node.mouseup(e => {
+                    node.mouseup((e) => {
                         if (e.button === 2) {
                             this.contextMenu(node, "pon", e);
                         }
@@ -468,18 +486,18 @@ export default {
                 },
                 onu(data) {
                     // to do
-                    node.mouseover(e => {
+                    node.mouseover((e) => {
                         this.mouseover(node, "onu");
                     });
-                    node.mouseout(e => {
+                    node.mouseout((e) => {
                         this.mouseout(node, "onu");
                     });
-                    node.mouseup(e => {
+                    node.mouseup((e) => {
                         if (e.button === 2) {
                             this.contextMenu(node, "onu", e);
                         }
                     });
-                }
+                },
             };
             typeof Actions[type] === "function" &&
                 Actions[type].call(this, data);
@@ -570,7 +588,7 @@ export default {
             this.devType = type;
             this.popoverData = node.data;
             // 不加nextTick时，菜单大小还未调整完成，会导致菜单错位
-            this.$nextTick(_ => {
+            this.$nextTick((_) => {
                 this.position = this.computedPosition(node, this.popoverType);
                 this.visible = true;
             });
@@ -586,7 +604,7 @@ export default {
             this.popoverType = "contextmenu";
             this.devType = type;
             this.popoverData = node.data;
-            this.$nextTick(_ => {
+            this.$nextTick((_) => {
                 this.position = this.computedPosition(
                     node,
                     this.popoverType,
@@ -602,7 +620,7 @@ export default {
                 top,
                 bottom,
                 width,
-                height: _height
+                height: _height,
             } = node.getBound();
             // popover离节点的高度
             const baseGutter = 10;
@@ -659,7 +677,7 @@ export default {
             return {
                 type: devType,
                 action,
-                data: this.popoverData
+                data: this.popoverData,
             };
         },
         commandHandle(command) {
@@ -680,7 +698,7 @@ export default {
                     },
                     batch_config() {
                         this.$router.push("/batch_config");
-                    }
+                    },
                 },
                 onu: {
                     detail(data) {
@@ -694,39 +712,39 @@ export default {
                     },
                     del_onu(data) {
                         this.$confirm(this.lanMap["tips_del_onu"])
-                            .then(_ => {
+                            .then((_) => {
                                 const url = "/onu_allow_list?form=onucfg";
                                 const post_params = {
                                     method: "delete",
                                     param: {
                                         port_id: data.port_id,
                                         onu_id: data.onu_id,
-                                        macaddr: data.macaddr
-                                    }
+                                        macaddr: data.macaddr,
+                                    },
                                 };
                                 this.postData(url, post_params);
                             })
-                            .catch(_ => {});
+                            .catch((_) => {});
                     },
                     add_to_deny(data) {
                         this.$confirm(this.lanMap["tips_add_deny_onu"])
-                            .then(_ => {
+                            .then((_) => {
                                 const url = "/onu_allow_list?form=onucfg";
                                 const post_params = {
                                     method: "reject",
                                     param: {
                                         port_id: data.port_id,
                                         onu_id: data.onu_id,
-                                        macaddr: data.macaddr
-                                    }
+                                        macaddr: data.macaddr,
+                                    },
                                 };
                                 this.postData(url, post_params);
                             })
-                            .catch(_ => {});
+                            .catch((_) => {});
                     },
                     reboot_onu(data) {
                         this.$confirm(this.lanMap["confirm_reboot_onu"])
-                            .then(_ => {
+                            .then((_) => {
                                 const url = "/onumgmt?form=config";
                                 const post_params = {
                                     method: "set",
@@ -734,8 +752,8 @@ export default {
                                         port_id: data.port_id,
                                         onu_id: data.onu_id,
                                         flags: 1,
-                                        fec_mode: 1
-                                    }
+                                        fec_mode: 1,
+                                    },
                                 };
                                 this.postData(
                                     url,
@@ -743,9 +761,9 @@ export default {
                                     `${this.lanMap["reboot_onu"]}${this.lanMap["st_success"]}`
                                 );
                             })
-                            .catch(_ => {});
-                    }
-                }
+                            .catch((_) => {});
+                    },
+                },
             };
             if (TYPES[type] && typeof TYPES[type][action] === "function") {
                 TYPES[type][action].call(this, data);
@@ -756,7 +774,7 @@ export default {
             const message = suc_text || this.lanMap["setting_ok"];
             this.$http
                 .post(url, data)
-                .then(res => {
+                .then((res) => {
                     if (res.data.code === 1) {
                         this.$message.success(message);
                         this.getData();
@@ -766,7 +784,7 @@ export default {
                         );
                     }
                 })
-                .catch(err => {});
+                .catch((err) => {});
         },
         refreshImage() {
             this.findStr = "";
@@ -785,7 +803,7 @@ export default {
                 this.pageType === "all"
                     ? this.allOnuScene
                     : this.singlePonScene;
-            this.nodes = scene.childs.filter(item => {
+            this.nodes = scene.childs.filter((item) => {
                 let flag = false;
                 if (item.data) {
                     if (typeof item.data.onu_name === "string") {
@@ -850,11 +868,11 @@ export default {
             node.visible
                 ? (node.alarm = node.data.macaddr)
                 : (node.alarm = null);
-            setTimeout(_ => {
+            setTimeout((_) => {
                 this.nodeFlash(node, n - 1);
             }, 300);
-        }
-    }
+        },
+    },
 };
 </script>
 
