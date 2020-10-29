@@ -1,30 +1,58 @@
 <template>
     <div>
-        <div style="margin: 0 0 0 10px;">
-            <nms-button @click="openDialog()">{{ lanMap['config'] + lanMap['all'] }}</nms-button>
+        <div style="margin: 0 0 0 10px">
+            <nms-button @click="openDialog()">{{
+                lanMap["config"] + lanMap["all"]
+            }}</nms-button>
         </div>
         <nms-table border :rows="wlanList">
             <nms-table-column prop="port_id" :label="lanMap['onu_id']">
-                <template slot-scope="rows">{{ `ONU${rows.port_id}/${rows.onu_id}` }}</template>
+                <template slot-scope="rows">{{
+                    `${rows.port_id}/${rows.onu_id}`
+                }}</template>
             </nms-table-column>
+            <nms-table-column
+                :label="lanMap['name']"
+                prop="name"
+            ></nms-table-column>
             <nms-table-column prop="wlan" :label="lanMap['mode']">
-                <template slot-scope="rows">{{ rows.wlan === 1 ? '2.4G' : '2.4G + 5G' }}</template>
+                <template slot-scope="rows">{{
+                    rows.wlan === 1 ? "2.4G" : "2.4G + 5G"
+                }}</template>
             </nms-table-column>
-            <nms-table-column prop="encrypt" :label="`2.4G ${lanMap['encrypt']}`">
-                <template slot-scope="rows">{{ encrypts[rows.encrypt] }}</template>
+            <nms-table-column
+                prop="encrypt"
+                :label="`2.4G ${lanMap['encrypt']}`"
+            >
+                <template slot-scope="rows">{{
+                    encrypts[rows.encrypt]
+                }}</template>
             </nms-table-column>
             <nms-table-column prop="ssid" label="2.4G SSID"></nms-table-column>
-            <nms-table-column prop="password" :label="`2.4G ${lanMap['password']}`"></nms-table-column>
-            <nms-table-column prop="encrypt_5g" :label="`5G ${lanMap['encrypt']}`">
-                <template
-                    slot-scope="rows"
-                >{{ rows.wlan === 2 ? encrypts[rows.encrypt_5g] : ' - ' }}</template>
+            <nms-table-column
+                prop="password"
+                :label="`2.4G ${lanMap['password']}`"
+            ></nms-table-column>
+            <nms-table-column
+                prop="encrypt_5g"
+                :label="`5G ${lanMap['encrypt']}`"
+            >
+                <template slot-scope="rows">{{
+                    rows.wlan === 2 ? encrypts[rows.encrypt_5g] : " - "
+                }}</template>
             </nms-table-column>
             <nms-table-column prop="ssid_5g" label="5G SSID">
-                <template slot-scope="rows">{{ rows.ssid_5g || ' - ' }}</template>
+                <template slot-scope="rows">{{
+                    rows.ssid_5g || " - "
+                }}</template>
             </nms-table-column>
-            <nms-table-column prop="password_5g" :label="`5G ${lanMap['password']}`">
-                <template slot-scope="rows">{{ rows.password_5g || ' - ' }}</template>
+            <nms-table-column
+                prop="password_5g"
+                :label="`5G ${lanMap['password']}`"
+            >
+                <template slot-scope="rows">{{
+                    rows.password_5g || " - "
+                }}</template>
             </nms-table-column>
             <nms-table-column :label="lanMap['config']">
                 <template slot-scope="rows">
@@ -32,12 +60,14 @@
                         href="javascript: void(0);"
                         class="btn-text"
                         @click="openDialog(rows)"
-                    >{{ lanMap['config'] }}</a>
+                        >{{ lanMap["config"] }}</a
+                    >
                     <a
                         href="javascript: void(0);"
                         class="btn-text"
                         @click="clearWlan(rows)"
-                    >{{ lanMap['clear'] }}</a>
+                        >{{ lanMap["clear"] }}</a
+                    >
                 </template>
             </nms-table-column>
         </nms-table>
@@ -48,25 +78,35 @@
             :before-close="beforeClose"
         >
             <div class="dialog-wlan-item">
-                <span>{{ lanMap['onu_id'] }}:</span>
-                <span v-if="isBatch">{{ lanMap['all'] }}</span>
-                <span v-else>{{ `ONU${wlanInfo.port_id}/${wlanInfo.onu_id}` }}</span>
+                <span>{{ lanMap["onu_id"] }}:</span>
+                <span v-if="isBatch">{{ lanMap["all"] }}</span>
+                <span v-else>{{
+                    `ONU${wlanInfo.port_id}/${wlanInfo.onu_id}`
+                }}</span>
             </div>
             <div class="dialog-wlan-item">
-                <span>WLAN {{ lanMap['mode'] }}:</span>
+                <span>WLAN {{ lanMap["mode"] }}:</span>
                 <span>
                     <label>
-                        <input type="radio" v-model.number="wlan_mode" :value="1" />
+                        <input
+                            type="radio"
+                            v-model.number="wlan_mode"
+                            :value="1"
+                        />
                         2.4G
                     </label>
-                    <label v-if="wlanInfo.wlan === 2" style="margin-left: 12px;">
-                        <input type="radio" v-model.number="wlan_mode" :value="2" />
+                    <label v-if="wlanInfo.wlan === 2" style="margin-left: 12px">
+                        <input
+                            type="radio"
+                            v-model.number="wlan_mode"
+                            :value="2"
+                        />
                         5G
                     </label>
                 </span>
             </div>
             <div class="dialog-wlan-item">
-                <span>{{ lanMap['encrypt'] }}:</span>
+                <span>{{ lanMap["encrypt"] }}:</span>
                 <select v-model.number="wlan_encrypt">
                     <option :value="0">None</option>
                     <option :value="4">WPA2</option>
@@ -78,23 +118,32 @@
                 <input
                     type="text"
                     v-model="ssid"
-                    :style="{ 'border-color': ssid !== '' && !valid_ssid ? 'red' : '' }"
+                    :style="{
+                        'border-color': ssid !== '' && !valid_ssid ? 'red' : '',
+                    }"
                 />
                 <span class="tips">{{ lanMap.composeRange(4, 32) }}</span>
             </div>
             <div class="dialog-wlan-item">
-                <span>{{ lanMap['password'] }}</span>
+                <span>{{ lanMap["password"] }}</span>
                 <input
                     type="text"
                     v-model="password"
-                    :style="{ 'border-color': password !== '' && !valid_password ? 'red' : '' }"
+                    :style="{
+                        'border-color':
+                            password !== '' && !valid_password ? 'red' : '',
+                    }"
                     :disabled="wlan_encrypt === 0"
                 />
                 <span class="tips">{{ lanMap.composeRange(8, 32) }}</span>
             </div>
             <div slot="footer">
-                <a href="javascript: void(0);" @click="submitWlan">{{ lanMap['apply'] }}</a>
-                <a href="javascript: void(0);" @click="closeDialog">{{ lanMap['cancel'] }}</a>
+                <a href="javascript: void(0);" @click="submitWlan">{{
+                    lanMap["apply"]
+                }}</a>
+                <a href="javascript: void(0);" @click="closeDialog">{{
+                    lanMap["cancel"]
+                }}</a>
             </div>
         </nms-dialog>
     </div>
@@ -104,7 +153,7 @@
 import { mapState } from "vuex";
 const WLAN_KEY = {
     1: { encrypt: "encrypt", ssid: "ssid", password: "password" },
-    2: { encrypt: "encrypt_5g", ssid: "ssid_5g", password: "password_5g" }
+    2: { encrypt: "encrypt_5g", ssid: "ssid_5g", password: "password_5g" },
 };
 export default {
     name: "batchWlan",
@@ -120,13 +169,13 @@ export default {
             }
             const reg = /^.{8,32}$/;
             return reg.test(this.password);
-        }
+        },
     },
     props: {
         portid: {
             type: Number,
-            required: true
-        }
+            required: true,
+        },
     },
     data() {
         return {
@@ -153,7 +202,7 @@ export default {
             wlan_encrypt: 0,
             ssid: "",
             password: "",
-            isBatch: false
+            isBatch: false,
         };
     },
     created() {
@@ -166,14 +215,14 @@ export default {
             this.wlanList = [];
             this.$http
                 .get("/onumgmt", { params: { form: "wlantab", port_id } })
-                .then(res => {
+                .then((res) => {
                     if (res.data.code === 1) {
                         if (res.data.data && res.data.data.length) {
                             this.wlanList = res.data.data;
                         }
                     }
                 })
-                .catch(err => {});
+                .catch((err) => {});
         },
         composeData() {
             return {
@@ -184,13 +233,13 @@ export default {
                     mode: this.wlan_mode,
                     encrypt: this.wlan_encrypt,
                     ssid: this.ssid,
-                    password: this.password
-                }
+                    password: this.password,
+                },
             };
         },
         clearWlan(node) {
             this.$confirm(this.lanMap["if_sure"])
-                .then(_ => {
+                .then((_) => {
                     const data = {
                         method: "clear",
                         param: {
@@ -198,12 +247,12 @@ export default {
                             onu_id: node.onu_id,
                             mode: 1,
                             ssid: "",
-                            password: ""
-                        }
+                            password: "",
+                        },
                     };
                     this.postData(data);
                 })
-                .catch(_ => {});
+                .catch((_) => {});
         },
         postData(data) {
             const url = this.isBatch
@@ -211,7 +260,7 @@ export default {
                 : "/onumgmt?form=wlan";
             this.$http
                 .post(url, data)
-                .then(res => {
+                .then((res) => {
                     if (res.data.code === 1) {
                         this.$message.success(
                             `${this.lanMap[data.method]}${
@@ -225,7 +274,7 @@ export default {
                         );
                     }
                 })
-                .catch(err => {});
+                .catch((err) => {});
             this.closeDialog();
         },
         submitWlan() {
@@ -285,11 +334,11 @@ export default {
             typeof done === "function" && done();
         },
         closeDialog() {
-            this.beforeClose(_ => {
+            this.beforeClose((_) => {
                 this.visible = false;
                 this.isBatch = false;
             });
-        }
+        },
     },
     watch: {
         portid() {
@@ -299,8 +348,8 @@ export default {
         },
         wlan_mode() {
             this.showVal();
-        }
-    }
+        },
+    },
 };
 </script>
 

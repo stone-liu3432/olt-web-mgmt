@@ -1,38 +1,48 @@
 <template>
     <div>
-        <!-- <div style="margin: 0 0 0 10px;">
-            <nms-button @click="openBatchDialog">{{ lanMap['config'] + lanMap['all'] }}</nms-button>
-            <nms-button
-                style="margin-left: 30px;"
-                @click="clearWan"
-            >{{ lanMap['clear'] + lanMap['all'] }}</nms-button>
-        </div>-->
         <nms-table :rows="wanList" border>
             <nms-table-column :label="lanMap['onu_id']">
-                <template
-                    slot-scope="rows"
-                >{{ rows.onu_name || `ONU${rows.port_id}/${rows.onu_id}` }}</template>
+                <template slot-scope="rows">{{
+                    `${rows.port_id}/${rows.onu_id}`
+                }}</template>
             </nms-table-column>
-            <nms-table-column prop="macaddr" :label="lanMap['macaddr']"></nms-table-column>
+            <nms-table-column
+                :label="lanMap['name']"
+                prop="onu_name"
+            ></nms-table-column>
+            <nms-table-column
+                prop="macaddr"
+                :label="lanMap['macaddr']"
+            ></nms-table-column>
             <nms-table-column prop="status" :label="lanMap['status']">
-                <template slot-scope="rows">{{ rows.status ? lanMap['online'] : lanMap['offline'] }}</template>
+                <template slot-scope="rows">{{
+                    rows.status ? lanMap["online"] : lanMap["offline"]
+                }}</template>
             </nms-table-column>
             <nms-table-column :label="lanMap['wan_count']">
-                <template slot-scope="rows">{{ `${rows.count}/${rows.wanmax}` }}</template>
+                <template slot-scope="rows">{{
+                    `${rows.count}/${rows.wanmax}`
+                }}</template>
             </nms-table-column>
             <nms-table-column :label="lanMap['vlan_id']">
-                <template slot-scope="rows">{{ rows.wan0 ? (rows.wan0.vlan_id || '-') : '-' }}</template>
+                <template slot-scope="rows">{{
+                    rows.wan0 ? rows.wan0.vlan_id || "-" : "-"
+                }}</template>
             </nms-table-column>
             <nms-table-column :label="lanMap['ipmode']">
-                <template
-                    slot-scope="rows"
-                >{{ rows.wan0 ? (ipmodes[rows.wan0.ipmode] || '-') : '-' }}</template>
+                <template slot-scope="rows">{{
+                    rows.wan0 ? ipmodes[rows.wan0.ipmode] || "-" : "-"
+                }}</template>
             </nms-table-column>
             <nms-table-column :label="lanMap['ctype']">
-                <template slot-scope="rows">{{ rows.wan0 ? (ctypes[rows.wan0.ctype] || '-') : '-' }}</template>
+                <template slot-scope="rows">{{
+                    rows.wan0 ? ctypes[rows.wan0.ctype] || "-" : "-"
+                }}</template>
             </nms-table-column>
             <nms-table-column :label="lanMap['desc']">
-                <template slot-scope="rows">{{ rows.wan0 ? (rows.wan0.desc || '-') : '-' }}</template>
+                <template slot-scope="rows">{{
+                    rows.wan0 ? rows.wan0.desc || "-" : "-"
+                }}</template>
             </nms-table-column>
             <nms-table-column :label="lanMap['config']">
                 <template slot-scope="rows">
@@ -40,13 +50,17 @@
                         href="javascript: void(0);"
                         class="btn-text"
                         @click="openDialog(rows)"
-                    >{{ lanMap['detail'] }}</a>
+                        >{{ lanMap["detail"] }}</a
+                    >
                 </template>
             </nms-table-column>
         </nms-table>
         <nms-dialog :visible.sync="visible">
-            <div slot="title">{{ lanMap['detail'] }}</div>
-            <onu-wan-config :port-data="portData" style="height: 600px;"></onu-wan-config>
+            <div slot="title">{{ lanMap["detail"] }}</div>
+            <onu-wan-config
+                :port-data="portData"
+                style="height: 600px"
+            ></onu-wan-config>
         </nms-dialog>
         <!-- <nms-dialog :visible.sync="batchVisible" width="660px">
             <div slot="title">{{ lanMap['config'] + lanMap['all'] }}</div>
@@ -67,13 +81,13 @@ export default {
     name: "batchWan",
     components: { onuWanConfig /* wanForm */ },
     computed: {
-        ...mapState(["lanMap"])
+        ...mapState(["lanMap"]),
     },
     props: {
         portid: {
             type: Number,
-            required: true
-        }
+            required: true,
+        },
     },
     data() {
         return {
@@ -85,9 +99,9 @@ export default {
                 0x1: "TR069",
                 0x2: "INTERNET",
                 0x4: "Other",
-                0x8: "VOICE"
+                0x8: "VOICE",
             },
-            batchVisible: false
+            batchVisible: false,
         };
     },
     created() {
@@ -122,14 +136,14 @@ export default {
             this.wanList = [];
             this.$http
                 .get("/onumgmt", { params: { form: "wantab", port_id } })
-                .then(res => {
+                .then((res) => {
                     if (res.data.code === 1) {
                         if (res.data.data && res.data.data.length) {
                             this.wanList = res.data.data;
                         }
                     }
                 })
-                .catch(err => {});
+                .catch((err) => {});
         },
         openDialog(row) {
             this.portData = {
@@ -137,7 +151,7 @@ export default {
                 onuid: row.onu_id,
                 geports: row.lanports,
                 wlan: row.wlan,
-                voip: row.voip
+                voip: row.voip,
             };
             this.visible = true;
         },
@@ -146,7 +160,7 @@ export default {
         },
         submitBatch(formName) {
             const loading = this.$loading();
-            this.$refs[formName].validate(form => {
+            this.$refs[formName].validate((form) => {
                 this.$http
                     .post("/ponmgmt?form=wan", {
                         method: "add",
@@ -176,10 +190,10 @@ export default {
                                     ? this.formData.portmap.sort(
                                           (a, b) => a - b
                                       )
-                                    : null
-                        }
+                                    : null,
+                        },
                     })
-                    .then(res => {
+                    .then((res) => {
                         if (res.data.code === 1) {
                             this.$message.success(this.lanMap["setting_ok"]);
                             this.getData(this.portid);
@@ -189,8 +203,8 @@ export default {
                             );
                         }
                     })
-                    .catch(err => {})
-                    .finally(_ => {
+                    .catch((err) => {})
+                    .finally((_) => {
                         loading.close();
                         this.batchVisible = false;
                     });
@@ -198,16 +212,16 @@ export default {
         },
         clearWan() {
             this.$confirm()
-                .then(_ => {
+                .then((_) => {
                     this.$http
                         .post("/ponmgmt?form=wan", {
                             method: "clear",
                             param: {
                                 port_id: this.portid,
-                                onu_id: 0
-                            }
+                                onu_id: 0,
+                            },
                         })
-                        .then(res => {
+                        .then((res) => {
                             if (res.data.code === 1) {
                                 this.$message.success(
                                     this.lanMap["clear"] +
@@ -220,18 +234,18 @@ export default {
                                 );
                             }
                         })
-                        .catch(err => {});
+                        .catch((err) => {});
                 })
-                .catch(_ => {});
-        }
+                .catch((_) => {});
+        },
     },
     watch: {
         portid() {
             if (this.portid) {
                 this.getData(this.portid);
             }
-        }
-    }
+        },
+    },
 };
 </script>
 
