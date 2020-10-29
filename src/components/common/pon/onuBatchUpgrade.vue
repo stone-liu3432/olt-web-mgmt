@@ -148,8 +148,7 @@
                 <div class="close" @click="close_otp_dialog"></div>
             </div>
         </div>
-        <!--  v-if="show_select_modal" -->
-        <div class="modal-dialog">
+        <div class="modal-dialog" v-if="show_select_modal">
             <div class="cover"></div>
             <div class="bind-upgrade-type">
                 <div>
