@@ -1,192 +1,242 @@
 <template>
     <div class="onu-batch-upgrade">
-        <h2>{{ lanMap['onu_batch_upgrade'] }}</h2>
+        <h2>{{ lanMap["onu_batch_upgrade"] }}</h2>
         <div>
             <hr />
             <div class="onu-type-mgmt">
-                <h3>{{ lanMap['upgrade_type_mgmt'] }}</h3>
+                <h3>{{ lanMap["upgrade_type_mgmt"] }}</h3>
                 <div>
-                    <a href="javascript:void(0);" @click="open_otp_dialog(1)">{{ lanMap['add'] }}</a>
-                    <a href="javascript:void(0);" @click="open_otp_dialog(0)">{{ lanMap['delete'] }}</a>
-                    <a
-                        href="javascript:void(0);"
-                        @click="open_bind_modal"
-                    >{{ lanMap['onu_bind_upgrade_type'] }}</a>
+                    <a href="javascript:void(0);" @click="open_otp_dialog(1)">{{
+                        lanMap["add"]
+                    }}</a>
+                    <a href="javascript:void(0);" @click="open_otp_dialog(0)">{{
+                        lanMap["delete"]
+                    }}</a>
+                    <a href="javascript:void(0);" @click="open_bind_modal">{{
+                        lanMap["onu_bind_upgrade_type"]
+                    }}</a>
                 </div>
                 <div>
-                    <span>{{ lanMap['current_upgrade_type'] + '：' }}</span>
+                    <span>{{ lanMap["current_upgrade_type"] + "：" }}</span>
                     <span
                         v-if="upgrade_type.data && upgrade_type.data.length > 0"
-                    >{{ upgrade_type.data.toString() }}</span>
-                    <span v-else>{{ lanMap['no_upgrade_type'] }}</span>
+                        >{{ upgrade_type.data.toString() }}</span
+                    >
+                    <span v-else>{{ lanMap["no_upgrade_type"] }}</span>
                 </div>
             </div>
             <br />
             <hr />
             <div class="onu-type-mgmt">
-                <h3>{{ lanMap['onu_batch_upgrade'] }}</h3>
+                <h3>{{ lanMap["onu_batch_upgrade"] }}</h3>
                 <div class="onu-upgrade">
-                    <span>{{ lanMap['file_click'] }}</span>
+                    <span>{{ lanMap["file_click"] }}</span>
                     <form class="upload-form">
                         <input
                             type="file"
                             id="onu-upgrade-file"
                             class="hide"
-                            @change="changeFile('onu-upgrade-file','onu-upgrade-filename')"
+                            @change="
+                                changeFile(
+                                    'onu-upgrade-file',
+                                    'onu-upgrade-filename'
+                                )
+                            "
                         />
-                        <span
-                            class="updateFile"
-                            id="onu-upgrade-filename"
-                        >{{ lanMap['file_click'] }}</span>
+                        <span class="updateFile" id="onu-upgrade-filename">{{
+                            lanMap["file_click"]
+                        }}</span>
                     </form>
                 </div>
                 <div class="onu-upgrade">
-                    <span>{{ lanMap['select_upgrade_type'] }}</span>
+                    <span>{{ lanMap["select_upgrade_type"] }}</span>
                     <select v-model="param_otp" v-if="upgrade_type.data">
-                        <option value>{{ lanMap['choose'] }}</option>
+                        <option value>{{ lanMap["choose"] }}</option>
                         <option
                             :value="item"
-                            v-for="(item,index) in upgrade_type.data"
+                            v-for="(item, index) in upgrade_type.data"
                             :key="index"
-                        >{{ item }}</option>
+                        >
+                            {{ item }}
+                        </option>
                     </select>
-                    <span v-else>{{ lanMap['no_upgrade_type'] }}</span>
+                    <span v-else>{{ lanMap["no_upgrade_type"] }}</span>
                 </div>
                 <div class="onu-upgrade">
-                    <span>{{ lanMap['port_id'] }}</span>
+                    <span>{{ lanMap["port_id"] }}</span>
                     <select v-model.number="param_pid">
-                        <option value="0">{{ lanMap['choose'] }}</option>
+                        <option value="0">{{ lanMap["choose"] }}</option>
                         <option
                             :value="item.id"
-                            v-for="(item,key) in port_name.pon"
+                            v-for="(item, key) in port_name.pon"
                             :key="key"
-                        >{{ item.name }}</option>
+                        >
+                            {{ item.name }}
+                        </option>
                     </select>
                 </div>
                 <div class="onu-upgrade">
-                    <a href="javascript:void(0);" @click="open_cfm_upgrade">{{ lanMap['apply'] }}</a>
+                    <a href="javascript:void(0);" @click="open_cfm_upgrade">{{
+                        lanMap["apply"]
+                    }}</a>
                 </div>
             </div>
         </div>
         <div class="modal-dialog" v-if="show_otp_modal">
             <div class="cover"></div>
             <div class="onu-type-modal">
-                <h3 v-if="show_add_modal" class="modal-header">{{ lanMap['add_onu_type'] }}</h3>
-                <h3 v-else class="modal-header">{{ lanMap['del_onu_type'] }}</h3>
+                <h3 v-if="show_add_modal" class="modal-header">
+                    {{ lanMap["add_onu_type"] }}
+                </h3>
+                <h3 v-else class="modal-header">
+                    {{ lanMap["del_onu_type"] }}
+                </h3>
                 <div>
-                    <span>{{ lanMap['upgrade_type'] }}</span>
+                    <span>{{ lanMap["upgrade_type"] }}</span>
                     <input
                         v-if="show_add_modal"
                         v-focus
                         v-model.trim="add_otp"
                         type="text"
-                        :style="{ 'border-color' : add_otp !== '' && !reg_otp.test(add_otp) ? 'red' : ''}"
+                        :style="{
+                            'border-color':
+                                add_otp !== '' && !reg_otp.test(add_otp)
+                                    ? 'red'
+                                    : '',
+                        }"
                         placeholder="4-32 characters"
                     />
                     <select
-                        v-if="!show_add_modal && otp_list.length && otp_list.length > 0"
+                        v-if="
+                            !show_add_modal &&
+                            otp_list.length &&
+                            otp_list.length > 0
+                        "
                         v-model="del_otp"
                     >
-                        <option value>{{ lanMap['choose'] }}</option>
+                        <option value>{{ lanMap["choose"] }}</option>
                         <option
                             :value="item"
-                            v-for="(item,index) in upgrade_type.data"
+                            v-for="(item, index) in upgrade_type.data"
                             :key="index"
-                        >{{ item }}</option>
+                        >
+                            {{ item }}
+                        </option>
                     </select>
-                    <span
-                        v-if="!show_add_modal && !upgrade_type.data"
-                    >{{ lanMap['no_upgrade_type'] }}</span>
+                    <span v-if="!show_add_modal && !upgrade_type.data">{{
+                        lanMap["no_upgrade_type"]
+                    }}</span>
                 </div>
-                <p v-if="show_add_modal">{{ lanMap['onu_upgrade_tips'] }}</p>
+                <p v-if="show_add_modal">{{ lanMap["onu_upgrade_tips"] }}</p>
                 <p v-else></p>
                 <div v-if="show_add_modal">
-                    <a href="javascript:void(0);" @click="add_otp_submit">{{ lanMap['apply'] }}</a>
-                    <a href="javascript:void(0);" @click="close_otp_dialog">{{ lanMap['cancel'] }}</a>
+                    <a href="javascript:void(0);" @click="add_otp_submit">{{
+                        lanMap["apply"]
+                    }}</a>
+                    <a href="javascript:void(0);" @click="close_otp_dialog">{{
+                        lanMap["cancel"]
+                    }}</a>
                 </div>
                 <div v-else>
-                    <a href="javascript:void(0);" @click="del_otp_submit">{{ lanMap['apply'] }}</a>
-                    <a href="javascript:void(0);" @click="close_otp_dialog">{{ lanMap['cancel'] }}</a>
+                    <a href="javascript:void(0);" @click="del_otp_submit">{{
+                        lanMap["apply"]
+                    }}</a>
+                    <a href="javascript:void(0);" @click="close_otp_dialog">{{
+                        lanMap["cancel"]
+                    }}</a>
                 </div>
                 <div class="close" @click="close_otp_dialog"></div>
             </div>
         </div>
-        <div class="modal-dialog" v-if="show_select_modal">
+        <!--  v-if="show_select_modal" -->
+        <div class="modal-dialog">
             <div class="cover"></div>
             <div class="bind-upgrade-type">
                 <div>
-                    <h3>{{ lanMap['onu_bind_upgrade_type'] }}</h3>
+                    <h3>{{ lanMap["onu_bind_upgrade_type"] }}</h3>
                     <div>
-                        <span>{{ lanMap['upgrade_type'] }}：</span>
-                        <select v-if="otp_list.length && otp_list.length > 0" v-model="bind_otp">
-                            <option value>{{ lanMap['choose'] }}</option>
+                        <span>{{ lanMap["upgrade_type"] }}：</span>
+                        <select
+                            v-if="otp_list.length && otp_list.length > 0"
+                            v-model="bind_otp"
+                        >
+                            <option value>{{ lanMap["choose"] }}</option>
                             <option
                                 :value="item"
-                                v-for="(item,index) in otp_list"
+                                v-for="(item, index) in otp_list"
                                 :key="index"
-                            >{{ item }}</option>
+                            >
+                                {{ item }}
+                            </option>
                         </select>
-                        <span v-else>{{ lanMap['no_upgrade_type'] }}</span>
+                        <span v-else>{{ lanMap["no_upgrade_type"] }}</span>
                     </div>
                     <div>
-                        <span>{{ lanMap['port_id'] }}：</span>
+                        <span>{{ lanMap["port_id"] }}：</span>
                         <select v-model.number="portid">
-                            <option value="0">{{ lanMap['choose'] }}</option>
+                            <option value="0">{{ lanMap["choose"] }}</option>
                             <option
                                 :value="item.id"
-                                v-for="(item,key) in port_name.pon"
+                                v-for="(item, key) in port_name.pon"
                                 :key="key"
-                            >{{ item.name }}</option>
+                            >
+                                {{ item.name }}
+                            </option>
                         </select>
                     </div>
                     <div class="onu-list">
-                        <ul>
-                            <li>
-                                <input
-                                    type="checkbox"
-                                    id="checked-otp"
-                                    v-model="checked_otp"
-                                    @click="change_ck_all_state"
-                                />
-                            </li>
-                            <li>{{ lanMap['onu_name'] }}</li>
-                            <li>{{ lanMap['vendor'] }}</li>
-                            <li>{{ lanMap['sn_model'] }}</li>
-                            <li>{{ lanMap['chip_model'] }}</li>
-                            <li>{{ lanMap['onu_chip'] }}</li>
-                            <li>{{ lanMap['software_ver'] }}</li>
-                            <li>{{ lanMap['upgrade_type'] }}</li>
-                        </ul>
-                        <ul
-                            v-if="port_bind_type.length"
-                            v-for="(item,index) in port_bind_type"
-                            :key="index"
+                        <nms-table
+                            border
+                            :rows="port_bind_type"
+                            @selection-change="selecttionChange"
                         >
-                            <li>
-                                <input
-                                    type="checkbox"
-                                    :value="item.onu_id"
-                                    name="checked-onu-bind"
-                                    v-model="bind_onu"
-                                />
-                            </li>
-                            <li
-                                :title="item.onu_name || 'ONU0' + item.port_id + '/' + item.onu_id"
-                            >{{ item.onu_name || 'ONU0' + item.port_id + '/' + item.onu_id }}</li>
-                            <li :title="item.vendor || ' - '">{{ item.vendor || ' - ' }}</li>
-                            <li :title="item.sn_model || ' - '">{{ item.sn_model || ' - ' }}</li>
-                            <li :title="item.chip_model || ' - '">{{ item.chip_model || ' - ' }}</li>
-                            <li :title="item.onu_chip || ' - '">{{ item.onu_chip || ' - ' }}</li>
-                            <li :title="item.software_ver || ' - '">{{ item.software_ver || ' - ' }}</li>
-                            <li :title="item.upgrade_type || ' - '">{{ item.upgrade_type || ' - ' }}</li>
-                        </ul>
+                            <nms-table-column
+                                type="selection"
+                            ></nms-table-column>
+                            <nms-table-column :label="lanMap['onu_id']">
+                                <template slot-scope="row">{{
+                                    `${row.port_id}/${row.onu_id}`
+                                }}</template>
+                            </nms-table-column>
+                            <nms-table-column
+                                :label="lanMap['name']"
+                                prop="onu_name"
+                            ></nms-table-column>
+                            <nms-table-column
+                                :label="lanMap['vendor']"
+                                prop="vendor"
+                            ></nms-table-column>
+                            <nms-table-column
+                                :label="lanMap['sn_model']"
+                                prop="sn_model"
+                            ></nms-table-column>
+                            <nms-table-column
+                                :label="lanMap['chip_model']"
+                                prop="chip_model"
+                            ></nms-table-column>
+                            <nms-table-column
+                                :label="lanMap['onu_chip']"
+                                prop="onu_chip"
+                            ></nms-table-column>
+                            <nms-table-column
+                                :label="lanMap['software_ver']"
+                                prop="software_ver"
+                            ></nms-table-column>
+                            <nms-table-column
+                                :label="lanMap['upgrade_type']"
+                                prop="upgrade_type"
+                            ></nms-table-column>
+                        </nms-table>
                     </div>
                     <div class="onu-upgrade-dialog-btn-group">
-                        <a href="javascript:void(0);" @click="submit_upgrade">{{ lanMap['apply'] }}</a>
+                        <a href="javascript:void(0);" @click="submit_upgrade">{{
+                            lanMap["apply"]
+                        }}</a>
                         <a
                             href="javascript:void(0);"
                             @click="close_bind_modal"
-                        >{{ lanMap['cancel'] }}</a>
+                            >{{ lanMap["cancel"] }}</a
+                        >
                     </div>
                 </div>
                 <div class="close" @click="close_bind_modal"></div>
@@ -232,7 +282,6 @@ export default {
             port_bind_type: [],
             //  选中的onu
             bind_onu: [],
-            checked_otp: false,
         };
     },
     created() {
@@ -489,17 +538,6 @@ export default {
             this.portid = 0;
             this.bind_otp = "";
         },
-        //  全选/反选 按钮
-        change_ck_all_state() {
-            this.checked_otp = !this.checked_otp;
-            this.bind_onu = [];
-            if (this.checked_otp) {
-                var olist = document.getElementsByName("checked-onu-bind");
-                olist.forEach((item) => {
-                    this.bind_onu.push(item.value);
-                });
-            }
-        },
         //  ONU绑定升级类型，提交时的操作
         submit_upgrade() {
             if (!this.bind_otp) {
@@ -533,7 +571,7 @@ export default {
                 method: "set",
                 param: {
                     port_id: this.portid,
-                    onu_list: this.bind_onu,
+                    onu_list: this.bind_onu.map((item) => item.onu_id),
                     upgrade_type: this.bind_otp,
                 },
             };
@@ -553,10 +591,11 @@ export default {
                         });
                     }
                 })
-                .catch((err) => {
-                    // to do
-                });
+                .catch((err) => {});
             this.close_bind_modal();
+        },
+        selecttionChange(selections) {
+            this.bind_onu = selections;
         },
     },
     watch: {
@@ -566,13 +605,6 @@ export default {
                 this.port_bind_type = this.onu_base_info.data.filter((item) => {
                     return item.port_id === this.portid;
                 });
-            }
-        },
-        bind_onu() {
-            if (this.bind_onu.length !== this.port_bind_type.length) {
-                this.checked_otp = false;
-            } else {
-                this.checked_otp = true;
             }
         },
     },
@@ -667,13 +699,6 @@ div.onu-upgrade {
 div.onu-type-modal {
     width: 500px;
     height: 220px;
-    // h3{
-    //     height: 60px;
-    //     line-height: 60px;
-    //     font-size: 20px;
-    //     color: #67aef6;
-    //     text-indent: 20px;
-    // }
     h3 + div {
         margin: 20px 0 10px 30px;
         span:first-child {
@@ -699,10 +724,8 @@ div.onu-type-modal {
     }
 }
 div.bind-upgrade-type {
-    // width: 80%;
     min-width: 1024px;
     height: auto;
-    //overflow-y: scroll;
     h3 {
         font-size: 20px;
         font-weight: 600;
@@ -756,6 +779,7 @@ div.bind-upgrade-type {
         div.onu-list {
             max-height: 330px;
             overflow-y: auto;
+            margin: 0;
         }
     }
 }
