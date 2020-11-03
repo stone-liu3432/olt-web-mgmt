@@ -79,6 +79,7 @@ a {
     background: transparent;
     padding-left: 0;
     padding-right: 0;
+    padding: 5px;
     &:active {
         color: #3a8ee6;
     }
