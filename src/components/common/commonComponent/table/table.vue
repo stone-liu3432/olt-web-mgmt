@@ -382,6 +382,14 @@ export default {
                               />
                           </th>
                       )
+                    : this.type === "index"
+                    ? res.push(
+                          <th>
+                              {this.columns.filter(
+                                  (item) => item.type === "index"
+                              )[0].label || ""}
+                          </th>
+                      )
                     : res.push(<th></th>);
             }
             const cols = this.columns.filter((item) => item.type !== "");
