@@ -219,7 +219,7 @@ export function clearSessionStorage() {
 
 export function isArray(val) {
     if (isFunction(Array.isArray)) {
-        return isFunction(val);
+        return Array.isArray(val);
     }
     return Object.prototype.toString.call(val).slice(8, -1) === "Array";
 }
