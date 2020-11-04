@@ -181,7 +181,12 @@ export default {
                 if (row.sortFlags >= row.sortOrders.length) {
                     row.sortFlags = 0;
                 }
-                this.$emit("sort-change", this.tableRows);
+                this.$emit(
+                    "sort-change",
+                    this.tableRows,
+                    row.sortBy,
+                    row.sortOrders[row.sortFlags]
+                );
             }
         },
     },
