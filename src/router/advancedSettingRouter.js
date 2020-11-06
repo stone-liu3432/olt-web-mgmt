@@ -109,6 +109,10 @@ const macMgmt = () =>
     import(
         /* webpackChunkName: "switch-page" */ "@/components/common/switch/macMgmt"
     );
+const ponMac = () =>
+    import(
+        /* webpackChunkName: "switch-page" */ "@/components/common/switch/ponMac"
+    );
 const portIsolation = () =>
     import(
         /* webpackChunkName: "switch-page" */ "@/components/common/switch/portIsolation"
@@ -323,8 +327,15 @@ export default [
         }
     },
     {
-        path: "/mac_mgmt",
+        path: "/mac_table",
         component: macMgmt,
+        meta: {
+            requireAuth: true
+        }
+    },
+    {
+        path: "/pon_mac",
+        component: ponMac,
         meta: {
             requireAuth: true
         }
