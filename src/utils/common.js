@@ -223,3 +223,7 @@ export function isArray(val) {
     }
     return Object.prototype.toString.call(val).slice(8, -1) === "Array";
 }
+
+export function isReg(val) {
+    return Object.prototype.toString.call(val) === "[object RegExp]";
+}
