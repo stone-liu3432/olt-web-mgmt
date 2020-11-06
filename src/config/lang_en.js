@@ -32,7 +32,7 @@ var en = {
     port_mirror: " Port Mirror",
     layer2_mgmt: " Switch",
     vlan_mgmt: " VLAN",
-    mac_mgmt: " MAC Address Table",
+    mac_mgmt: " MAC Address ",
     protocol_mgmt: " Protocol",
     rstp: " RSTP",
     tips: " Notice",
@@ -910,6 +910,8 @@ var en = {
     loid_tips5:
         "The count plus the existing LOID cannot exceed 64 (up to 64 LOIDs are allowed)",
     loid_count_limit_tips: "Only 64 LOIDs can be configured at most",
+    mac_table: " MAC Address Table",
+    pon_mac: " PON MAC Table ",
 
     composeRange(min, max) {
         return `${min}${max ? " - " + max : ""} characters`;
