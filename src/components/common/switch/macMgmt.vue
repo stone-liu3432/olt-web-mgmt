@@ -19,7 +19,7 @@
                 placeholder="secends"
                 v-focus
             />
-            <span class="tips">range: 0 , 10-1000000</span>
+            <span class="tips">0 - 65535</span>
             <a href="javascript:;" @click="macage_choose(true)">{{
                 lanMap["apply"]
             }}</a>
@@ -539,14 +539,13 @@ export default {
         macage_choose(bool) {
             if (bool) {
                 if (
-                    this.macage !== 0 &&
-                    (isNaN(this.macage) ||
-                        this.macage < 10 ||
-                        this.macage > 1000000)
+                    isNaN(this.macage) ||
+                    this.macage < 0 ||
+                    this.macage > 65535
                 ) {
                     this.$message({
                         type: "error",
-                        text: this.lanMap["param_error"],
+                        text: `${this.lanMap["param_error"]}: ${this.lanMap["age"]}`,
                     });
                     return;
                 }
@@ -574,9 +573,7 @@ export default {
                             });
                         }
                     })
-                    .catch((err) => {
-                        // to do
-                    });
+                    .catch((err) => {});
             }
             this.macage = "";
             this.cfg_age = false;
