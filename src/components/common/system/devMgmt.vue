@@ -4,7 +4,7 @@
             <div>{{ lanMap["restore_config"] }}</div>
             <hr />
             <div>
-                <p>{{ lanMap['res_cfg_info'] }}</p>
+                <p>{{ lanMap["res_cfg_info"] }}</p>
                 <div>
                     <form>
                         <input
@@ -15,8 +15,12 @@
                             id="file"
                             @change="changeFile()"
                         />
-                        <span class="updateFile" id="fileName">{{ lanMap['file_click'] }}</span>
-                        <a href="javascript:;" @click="restore_cfg">{{ lanMap["restore_config"] }}</a>
+                        <span class="updateFile" id="fileName">{{
+                            lanMap["file_click"]
+                        }}</span>
+                        <a href="javascript:;" @click="restore_cfg">{{
+                            lanMap["restore_config"]
+                        }}</a>
                     </form>
                 </div>
             </div>
@@ -25,9 +29,11 @@
             <div>{{ lanMap["reboot"] }}</div>
             <hr />
             <div>
-                <p>{{ lanMap['reboot_olt'] }}</p>
+                <p>{{ lanMap["reboot_olt"] }}</p>
                 <div>
-                    <a href="javascript:;" @click="reboot">{{ lanMap["reboot"] }}</a>
+                    <a href="javascript:;" @click="reboot">{{
+                        lanMap["reboot"]
+                    }}</a>
                 </div>
             </div>
         </div>
@@ -35,9 +41,11 @@
             <div>{{ lanMap["backup_config"] }}</div>
             <hr />
             <div>
-                <p>{{ lanMap['bkup_cfg_info'] }}</p>
+                <p>{{ lanMap["bkup_cfg_info"] }}</p>
                 <div>
-                    <a href="javascript:;" @click="backup_cfg">{{ lanMap["backup_config"] }}</a>
+                    <a href="javascript:;" @click="backup_cfg">{{
+                        lanMap["backup_config"]
+                    }}</a>
                 </div>
             </div>
         </div>
@@ -45,9 +53,11 @@
             <div>{{ lanMap["default_config"] }}</div>
             <hr />
             <div>
-                <p>{{ lanMap['def_cfg_info'] }}</p>
+                <p>{{ lanMap["def_cfg_info"] }}</p>
                 <div>
-                    <a href="javascript:;" @click="default_cfg">{{ lanMap["default_config"] }}</a>
+                    <a href="javascript:;" @click="default_cfg">{{
+                        lanMap["default_config"]
+                    }}</a>
                 </div>
             </div>
         </div>
@@ -55,22 +65,23 @@
             <div>{{ lanMap["save_config"] }}</div>
             <hr />
             <div>
-                <p>{{ lanMap['save_cfg_info'] }}</p>
+                <p>{{ lanMap["save_cfg_info"] }}</p>
                 <div>
-                    <a href="javascript:;" @click="save_cfg">{{ lanMap["save_config"] }}</a>
+                    <a href="javascript:;" @click="save_cfg">{{
+                        lanMap["save_config"]
+                    }}</a>
                 </div>
             </div>
         </div>
         <div class="dev-mgmt">
-            <div>{{ lanMap['view_cfg'] }}</div>
+            <div>{{ lanMap["view_cfg"] }}</div>
             <hr />
             <div>
-                <p>{{ lanMap['view_cfg_tips'] }}</p>
+                <p>{{ lanMap["view_cfg_tips"] }}</p>
                 <div>
-                    <a
-                        href="javascript:void(0);"
-                        @click="open_view_confirm"
-                    >{{ lanMap['view_cfg'] }}</a>
+                    <a href="javascript:void(0);" @click="open_view_confirm">{{
+                        lanMap["view_cfg"]
+                    }}</a>
                 </div>
             </div>
         </div>
@@ -80,8 +91,11 @@
                 <h3>loading...</h3>
                 <div class="progress">
                     <div class="progress-content"></div>
-                    <div class="progress-cover" :style="{ 'width': width + 'px' }"></div>
-                    <div>{{ parseInt(width*100/400) + '%' }}</div>
+                    <div
+                        class="progress-cover"
+                        :style="{ width: width + 'px' }"
+                    ></div>
+                    <div>{{ parseInt((width * 100) / 400) + "%" }}</div>
                 </div>
             </div>
         </div>
@@ -101,7 +115,7 @@ export default {
             width: 0,
             timer1: null,
             timer2: null,
-            timeout: null
+            timeout: null,
         };
     },
     created() {},
@@ -126,43 +140,43 @@ export default {
                 tips = this.lanMap["restore_succ_reboot"] + " ?";
             }
             this.$confirm(tips)
-                .then(_ => {
+                .then((_) => {
                     this.$http
                         .get("/system_reboot")
-                        .then(res => {})
-                        .catch(err => {});
+                        .then((res) => {})
+                        .catch((err) => {});
                     this.isLoading = this.$loading();
                     this.reboot_req();
                     if (this.timeout) clearTimeout(this.timeout);
                 })
-                .catch(_ => {});
+                .catch((_) => {});
         },
         reboot_req() {
             this.$http
                 .get("/system_start", { timeout: 3000 })
-                .then(res => {
+                .then((res) => {
                     if (res.data.code === 1) {
                         this.isLoading && this.isLoading.close();
                         sessionStorage.clear();
                         this.$router.push("/login");
                     }
                 })
-                .catch(err => {
+                .catch((err) => {
                     this.reboot_req();
                 });
         },
         //  恢复出厂设置
         default_cfg() {
             this.$confirm(this.lanMap["def_cfg_hit"])
-                .then(_ => {
+                .then((_) => {
                     this.$http
                         .get("/system_def_config")
-                        .then(res => {
+                        .then((res) => {
                             //  成功恢复出厂设置时重启设备
                             if (res.data.code === 1) {
                                 this.$message({
                                     type: res.data.type,
-                                    text: this.lanMap["def_cfg_succ"]
+                                    text: this.lanMap["def_cfg_succ"],
                                 });
                                 this.reboot();
                                 this.timeout = setTimeout(() => {
@@ -171,19 +185,19 @@ export default {
                             } else {
                                 this.$message({
                                     type: res.data.type,
-                                    text: this.lanMap["default_config_fail"]
+                                    text: this.lanMap["default_config_fail"],
                                 });
                             }
                         })
-                        .catch(err => {});
+                        .catch((err) => {});
                 })
-                .catch(_ => {});
+                .catch((_) => {});
         },
         //  备份配置
         backup_cfg() {
             this.$http
                 .get("/system_backup")
-                .then(res => {
+                .then((res) => {
                     if (res.data.code === 1) {
                         try {
                             var a = document.createElement("a");
@@ -194,18 +208,15 @@ export default {
                             document.body.appendChild(a);
                             a.click();
                             document.body.removeChild(a);
-                        } catch (e) {
-                            //this.backup_cfg();
-                            console.log(e);
-                        }
+                        } catch (e) {}
                     } else if (res.data.code > 1) {
                         this.$message({
                             type: res.data.type,
-                            text: this.lanMap["st_fail"]
+                            text: this.lanMap["st_fail"],
                         });
                     }
                 })
-                .catch(err => {
+                .catch((err) => {
                     // to do
                 });
         },
@@ -219,7 +230,7 @@ export default {
                 fileName.innerText = this.lanMap["file_click"];
                 this.$message({
                     type: "error",
-                    text: this.lanMap["file_not_select"]
+                    text: this.lanMap["file_not_select"],
                 });
                 return;
             }
@@ -238,9 +249,9 @@ export default {
             this.$http
                 .post("/system_restore", formData, {
                     headers: { "Content-Type": "multipart/form-data" },
-                    timeout: 0
+                    timeout: 0,
                 })
-                .then(res => {
+                .then((res) => {
                     document.body.removeEventListener(
                         "keydown",
                         this.preventRefresh
@@ -255,21 +266,21 @@ export default {
                         this.isProgress = false;
                         this.$message({
                             type: res.data.type,
-                            text: this.lanMap["restore_config_succ"]
+                            text: this.lanMap["restore_config_succ"],
                         });
                         this.width = 0;
                         this.reboot(1);
                     } else if (res.data.code > 1) {
                         this.$message({
                             type: res.data.type,
-                            text: this.lanMap["restore_config_fail"]
+                            text: this.lanMap["restore_config_fail"],
                         });
                         clearInterval(this.timer2);
                         this.isProgress = false;
                         this.width = 0;
                     }
                 })
-                .catch(err => {
+                .catch((err) => {
                     // to do
                 });
         },
@@ -287,14 +298,14 @@ export default {
         },
         save_cfg() {
             this.$confirm(this.lanMap["save_cfg_confirm"])
-                .then(_ => {
+                .then((_) => {
                     this.$http
                         .get("/system_save")
-                        .then(res => {
+                        .then((res) => {
                             if (res.data.code === 1) {
                                 this.$message({
                                     type: res.data.type,
-                                    text: this.lanMap["save_succ"]
+                                    text: this.lanMap["save_succ"],
                                 });
                             } else if (res.data.code > 1) {
                                 this.$message({
@@ -303,20 +314,20 @@ export default {
                                         "(" +
                                         res.data.code +
                                         ") " +
-                                        res.data.message
+                                        res.data.message,
                                 });
                             }
                         })
-                        .catch(err => {});
+                        .catch((err) => {});
                 })
-                .catch(_ => {});
+                .catch((_) => {});
         },
         open_view_confirm() {
             this.$confirm(this.lanMap["if_sure"])
-                .then(_ => {
+                .then((_) => {
                     this.$http
                         .get("/system_running_config")
-                        .then(res => {
+                        .then((res) => {
                             if (res.data.code === 1) {
                                 try {
                                     var a = document.createElement("a");
@@ -337,14 +348,14 @@ export default {
                                         "(" +
                                         res.data.code +
                                         ") " +
-                                        res.data.message
+                                        res.data.message,
                                 });
                             }
                         })
-                        .catch(err => {});
+                        .catch((err) => {});
                 })
-                .catch(_ => {});
-        }
+                .catch((_) => {});
+        },
     },
     watch: {
         isProgress() {
@@ -354,12 +365,12 @@ export default {
                     this.width > 380 && (this.width = 380);
                 }, 1000);
             }
-        }
+        },
     },
     beforeDestroy() {
         if (this.timer1) clearInterval(this.timer1);
         if (this.timer2) clearInterval(this.timer2);
-    }
+    },
 };
 </script>
 
