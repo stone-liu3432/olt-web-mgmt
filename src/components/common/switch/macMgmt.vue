@@ -19,7 +19,7 @@
                 placeholder="secends"
                 v-focus
             />
-            <span class="tips">0 - 65535</span>
+            <span class="tips">{{ lanMap["mac_age_tips"] }}</span>
             <a href="javascript:;" @click="macage_choose(true)">{{
                 lanMap["apply"]
             }}</a>
@@ -969,7 +969,7 @@ div.query-select select {
     vertical-align: middle;
 }
 div.mac-age > span.tips {
-    width: 180px;
+    width: auto;
     font-size: 14px;
     color: #666;
 }
