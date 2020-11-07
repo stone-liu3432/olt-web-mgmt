@@ -256,7 +256,9 @@ export default {
             this.age_time = this.age.age_time || "";
             this.$confirm(
                 <div>
-                    <span style="margin: 0 12px;">{this.lanMap["age"]}:</span>
+                    <span style="margin: 0 12px 0 0;">
+                        {this.lanMap["age"]}:
+                    </span>
                     <input
                         type="text"
                         value={this.age_time}
@@ -268,9 +270,10 @@ export default {
                                 this.age_time >= 0 && this.age_time <= 65535
                                     ? ""
                                     : "red",
+                            width: "160px",
                         }}
                     />
-                    <span class="tips"> 0 - 65535</span>
+                    <span class="tips">{this.lanMap["mac_age_tips"]}</span>
                 </div>,
                 this.lanMap["config"]
             )
@@ -292,14 +295,14 @@ export default {
                             },
                         })
                         .then((res) => {
-                            if (res.data.cdoe === 1) {
+                            if (res.data.code === 1) {
                                 this.$message.success(
                                     this.lanMap["setting_ok"]
                                 );
                                 this.getAge();
                             } else {
                                 this.$message.error(
-                                    `(${res.data.code}]) ${res.data.message}`
+                                    `(${res.data.code}) ${res.data.message}`
                                 );
                             }
                         })
