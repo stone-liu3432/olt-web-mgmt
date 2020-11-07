@@ -21,6 +21,9 @@
         </template>
         <template v-if="flag === 2 || flag === 16">
             <select v-model.number="form.port_id" key="port-id">
+                <template v-if="type === 'pon' && flag === 2">
+                    <option :value="0xff">{{ lanMap["all"] }}</option>
+                </template>
                 <template v-for="item in port_name.pon">
                     <option :value="item.id">{{ item.name }}</option>
                 </template>
@@ -79,7 +82,9 @@ export default {
         };
     },
     created() {
-        this.type === "pon" && (this.flag = 2);
+        if (this.type === "pon") {
+            this.flag = 2;
+        }
     },
     methods: {
         resetFields() {
@@ -90,6 +95,9 @@ export default {
                 macaddr: "",
                 onu_id: "",
             };
+            if (this.flag === 2 && this.type === "pon") {
+                this.form.port_id = 0xff;
+            }
         },
         computedData() {
             switch (this.flag) {
@@ -106,9 +114,12 @@ export default {
                 case 2:
                     this.$emit(
                         "data-change",
-                        this.macTable.filter(
-                            (item) => item.port_id === this.form.port_id
-                        )
+                        this.macTable.filter((item) => {
+                            if (this.form.port_id === 0xff) {
+                                return true;
+                            }
+                            return item.port_id === this.form.port_id;
+                        })
                     );
                     break;
                 case 4:
