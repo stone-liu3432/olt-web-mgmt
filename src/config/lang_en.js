@@ -912,6 +912,7 @@ var en = {
     loid_count_limit_tips: "Only 64 LOIDs can be configured at most",
     mac_table: " MAC Address Table",
     pon_mac: " PON MAC Table ",
+    mac_age_tips: "Range 0-65535, 0 means no aging",
 
     composeRange(min, max) {
         return `${min}${max ? " - " + max : ""} characters`;

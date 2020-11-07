@@ -880,6 +880,7 @@ var zh = {
     loid_count_limit_tips: "LOID最多只允许配置64条",
     mac_table: "MAC地址表",
     pon_mac: "PON侧MAC地址表",
+    mac_age_tips: "取值范围0-65535，0表示不老化",
 
     composeRange(min, max) {
         return `${min}${max ? " - " + max : ""}位字符`;
