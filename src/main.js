@@ -19,6 +19,7 @@ import dropdown from "@/components/common/commonComponent/dropdown";
 import nmsPagination from "@/components/common/commonComponent/pagination";
 import popover from "@/components/common/commonComponent/popover";
 import nmsButton from "@/components/common/commonComponent/button";
+import portCheckbox from "@/components/common/commonComponent/portCheckbox";
 
 Vue.use(VueMessage);
 Vue.use(portHeader);
@@ -29,6 +30,7 @@ Vue.use(popover);
 Vue.use(nmsButton);
 Vue.use(table);
 Vue.use(dialog);
+Vue.use(portCheckbox);
 
 Vue.filter("analysis", analysis);
 Vue.filter("getPortName", getPortName);
