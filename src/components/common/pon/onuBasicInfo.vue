@@ -1,90 +1,114 @@
 <template>
     <div>
         <div class="onu-basic-info" v-if="port_name.pon">
-            <h2>{{ lanMap['onu_basic_info'] }}</h2>
+            <h2>{{ lanMap["onu_basic_info"] }}</h2>
             <div>
-                <span>{{ lanMap['port_id'] }}</span>
+                <span>{{ lanMap["port_id"] }}</span>
                 <select v-model.number="portid">
                     <option
-                        v-for="(item,index) in port_name.pon"
+                        v-for="(item, index) in port_name.pon"
                         :key="index"
                         :value="item.id"
-                    >{{ item.name }}</option>
+                    >
+                        {{ item.name }}
+                    </option>
                 </select>
             </div>
             <div v-if="onu_list.data">
-                <span>{{ lanMap['onu_id'] }}</span>
+                <span>{{ lanMap["onu_id"] }}</span>
                 <select v-model.number="onuid">
                     <option
-                        v-for="(item,index) in onu_list.data"
+                        v-for="(item, index) in onu_list.data"
                         :key="index"
                         :value="item"
-                    >{{ 'ONU'+ onu_list.port_id + '/' + item }}</option>
+                    >
+                        {{ "ONU" + onu_list.port_id + "/" + item }}
+                    </option>
                 </select>
             </div>
-            <div v-else class="error-msg">{{ lanMap['no_onu_info'] }}</div>
+            <div v-else class="error-msg">{{ lanMap["no_onu_info"] }}</div>
         </div>
         <hr />
-        <tabBar :tab="tabs" @togglePage="select_page" v-model="show_page" v-if="onu_list.data"></tabBar>
+        <tabBar
+            :tab="tabs"
+            @togglePage="select_page"
+            v-model="show_page"
+            v-if="onu_list.data"
+        ></tabBar>
         <div v-if="show_page === 'onu_info'">
             <div class="handle-btn" v-if="onu_basic_info.data">
-                <h3 class="lf">{{ lanMap['onu_mgmt'] }}</h3>
+                <h3 class="lf">{{ lanMap["onu_mgmt"] }}</h3>
                 <div class="lf">
-                    <a
-                        href="javascript:;"
-                        @click="open_onu_desc"
-                    >{{ lanMap['config'] + lanMap['onu_info'] }}</a>
-                    <a href="javascript:;" @click="open_reboot_onu">{{ lanMap['reboot_onu'] }}</a>
-                    <a href="javascript:;" @click="open_un_auth_onu">{{ lanMap['deregister_onu'] }}</a>
-                    <a href="javascript:;" @click="open_set_fec_mode">{{ lanMap['set_fec_mode'] }}</a>
+                    <a href="javascript:;" @click="open_onu_desc">{{
+                        lanMap["config"] + lanMap["onu_info"]
+                    }}</a>
+                    <a href="javascript:;" @click="open_reboot_onu">{{
+                        lanMap["reboot_onu"]
+                    }}</a>
+                    <a href="javascript:;" @click="open_un_auth_onu">{{
+                        lanMap["deregister_onu"]
+                    }}</a>
+                    <a href="javascript:;" @click="open_set_fec_mode">{{
+                        lanMap["set_fec_mode"]
+                    }}</a>
                 </div>
             </div>
             <div>
                 <div class="lf onu-info">
                     <table border="1">
                         <tr
-                            v-for="(item,key) in onu_basic_info.data"
+                            v-for="(item, key) in onu_basic_info.data"
                             :key="key"
-                            v-if=" key != 'port_id' && onu_basic_info.data"
+                            v-if="key != 'port_id' && onu_basic_info.data"
                         >
-                            <td
-                                style="text-transform: capitalize;"
-                            >{{ lanMap[key] || key.replace(/_/, ' ') }}</td>
+                            <td style="text-transform: capitalize">
+                                {{ lanMap[key] || key.replace(/_/, " ") }}
+                            </td>
                             <td>{{ item }}</td>
                         </tr>
                         <tr v-if="onu_fec_mode.data && onu_basic_info.data">
-                            <td style="text-transform: capitalize;">fec mode</td>
-                            <td>{{ onu_fec_mode.data.fec_mode ? lanMap['enable'] : lanMap['disable'] }}</td>
+                            <td style="text-transform: capitalize">fec mode</td>
+                            <td>
+                                {{
+                                    onu_fec_mode.data.fec_mode
+                                        ? lanMap["enable"]
+                                        : lanMap["disable"]
+                                }}
+                            </td>
                         </tr>
                     </table>
                 </div>
                 <div class="lf onu-optical-diagnose" v-if="onuid">
                     <div>
                         <div class="onu-optical-title">
-                            <span>{{ lanMap['onu_optical_diagnose'] }}</span>
+                            <span>{{ lanMap["onu_optical_diagnose"] }}</span>
                             <a
                                 href="javascript:;"
                                 class="rt"
                                 @click="getOpticalData()"
-                            >{{ lanMap['refresh'] }}</a>
+                                >{{ lanMap["refresh"] }}</a
+                            >
                         </div>
                         <div
                             class="onu-optical"
-                            v-for="(item,key) in optical_diagnose.data"
+                            v-for="(item, key) in optical_diagnose.data"
                             :key="key"
-                            v-if="key != 'port_id' && key !== 'onu_id' && optical_diagnose.data"
+                            v-if="
+                                key != 'port_id' &&
+                                key !== 'onu_id' &&
+                                optical_diagnose.data
+                            "
                         >
                             <span>{{ lanMap[key] }}</span>
                             <span>{{ item }}</span>
                         </div>
-                        <div
-                            v-if="!(optical_diagnose.data)"
-                            class="no-more-data"
-                        >{{ lanMap['flush_page_retry'] }}</div>
+                        <div v-if="!optical_diagnose.data" class="no-more-data">
+                            {{ lanMap["flush_page_retry"] }}
+                        </div>
                     </div>
                     <div class="onu-upgrade">
                         <div class="onu-optical-title">
-                            <span>ONU {{ lanMap['upgrade'] }}</span>
+                            <span>ONU {{ lanMap["upgrade"] }}</span>
                             <span></span>
                         </div>
                         <div class="upgrade-item">
@@ -93,52 +117,84 @@
                                     type="file"
                                     id="onu-upgrade-file1"
                                     class="hide"
-                                    @change="changeFile('onu-upgrade-file1','onu-upgrade-filename1')"
+                                    @change="
+                                        changeFile(
+                                            'onu-upgrade-file1',
+                                            'onu-upgrade-filename1'
+                                        )
+                                    "
                                 />
                                 <span
                                     class="updateFile"
                                     id="onu-upgrade-filename1"
-                                >{{ lanMap['file_click'] }}</span>
+                                    >{{ lanMap["file_click"] }}</span
+                                >
                             </form>
                         </div>
                         <div class="upgrade-item">
-                            <a href="javascript:void(0);" @click="upload_file">{{ lanMap['apply'] }}</a>
+                            <a
+                                href="javascript:void(0);"
+                                @click="upload_file"
+                                >{{ lanMap["apply"] }}</a
+                            >
                         </div>
                     </div>
                 </div>
             </div>
         </div>
-        <onuAlarm v-if="show_page === 'onu_alarm'" :port-data="{ portid, onuid }" ref="onuAlarm"></onuAlarm>
-        <onu-wan-config v-if="show_page === 'wan_connect'" :port-data="onuWanInfo" ref="onuWan"></onu-wan-config>
-        <onu-wlan v-if="show_page === 'onu_wlan'" :port-data="{ portid, onuid }" ref="onuWlan"></onu-wlan>
+        <onuAlarm
+            v-if="show_page === 'onu_alarm'"
+            :port-data="{ portid, onuid }"
+            ref="onuAlarm"
+        ></onuAlarm>
+        <onu-wan-config
+            v-if="show_page === 'wan_connect'"
+            :port-data="onuWanInfo"
+            ref="onuWan"
+        ></onu-wan-config>
+        <onu-wlan
+            v-if="show_page === 'onu_wlan'"
+            :port-data="{ portid, onuid }"
+            ref="onuWlan"
+        ></onu-wlan>
         <div class="modal-dialog" v-if="onu_cfg_name">
             <div class="cover"></div>
             <div class="onu-desc">
-                <h3 class="modal-header">{{ lanMap['config'] + lanMap['onu_info'] }}</h3>
+                <h3 class="modal-header">
+                    {{ lanMap["config"] + lanMap["onu_info"] }}
+                </h3>
                 <div>
-                    <span>{{ lanMap['onu_id'] }}</span>
-                    <span>{{ 'ONU' + portid + '/' + onuid }}</span>
+                    <span>{{ lanMap["onu_id"] }}</span>
+                    <span>{{ "ONU" + portid + "/" + onuid }}</span>
                 </div>
                 <div>
-                    <span>{{ lanMap['onu_name'] }}</span>
+                    <span>{{ lanMap["onu_name"] }}</span>
                     <input
                         type="text"
                         v-model="onu_name"
-                        :style="{ 'border-color' : onu_name.length > 16 ? 'red' : '' }"
+                        :style="{
+                            'border-color': onu_name.length > 16 ? 'red' : '',
+                        }"
                     />
                 </div>
                 <div>
-                    <span>{{ lanMap['onu_desc'] }}</span>
+                    <span>{{ lanMap["onu_desc"] }}</span>
                     <textarea
                         cols="30"
                         rows="5"
                         v-model="onu_desc"
-                        :style="{ 'border-color' : onu_desc.length > 64 ? 'red' : '' }"
+                        :style="{
+                            'border-color': onu_desc.length > 64 ? 'red' : '',
+                        }"
                     ></textarea>
                 </div>
                 <div>
-                    <a href="javascript:;" @click="onu_cfg_info(true)">{{ lanMap['apply'] }}</a>
-                    <a href="javascript:;" @click="onu_cfg_info(false)">{{ lanMap['cancel'] }}</a>
+                    <a href="javascript:;" @click="onu_cfg_info(true)">{{
+                        lanMap["apply"]
+                    }}</a>
+                    <a href="javascript:;" @click="onu_cfg_info(false)">{{
+                        lanMap["cancel"]
+                    }}</a>
                 </div>
                 <div class="close" @click="onu_cfg_info(false)"></div>
             </div>
@@ -159,7 +215,7 @@ export default {
             "port_name",
             "port_info",
             "change_url",
-            "onu_list"
+            "onu_list",
         ]),
         tabs() {
             // return ["onu_info", "onu_alarm", "wan_connect", "onu_wlan"];
@@ -169,9 +225,13 @@ export default {
                     dev_type = this.onu_basic_info.data.dev_type,
                     reg_fw = /^4853/,
                     reg_type = /sfu/gi;
-                if (reg_fw.test(fw_ver) && !reg_type.test(dev_type)) {
+                //  && !reg_type.test(dev_type)  2020.11.11 去除 sfu限制
+                if (reg_fw.test(fw_ver)) {
                     list.push("wan_connect");
-                    if (this.onu_basic_info.data.wlan) {
+                    if (
+                        this.onu_basic_info.data.wlan &&
+                        !reg_type.test(dev_type)
+                    ) {
                         list.push("onu_wlan");
                     }
                 }
@@ -181,7 +241,7 @@ export default {
         onuWanInfo() {
             if (this.wanList.length) {
                 const row = this.wanList.filter(
-                    item => item.onu_id === this.onuid
+                    (item) => item.onu_id === this.onuid
                 )[0];
                 if (row) {
                     return {
@@ -189,12 +249,12 @@ export default {
                         onuid: row.onu_id,
                         geports: row.lanports,
                         wlan: row.wlan,
-                        voip: row.voip
+                        voip: row.voip,
                     };
                 }
             }
             return {};
-        }
+        },
     },
     components: { onuAlarm, onuWanConfig, onuWlan },
     data() {
@@ -211,7 +271,7 @@ export default {
             show_page: "onu_info",
             isCreated: false,
             wlan: 0,
-            wanList: []
+            wanList: [],
         };
     },
     created() {
@@ -223,38 +283,38 @@ export default {
         if (this.change_url.beta === "test") {
             this.$http
                 .get("./simulation_data/onu_resource.json")
-                .then(res => {
+                .then((res) => {
                     if (res.data.code === 1) {
                         var _onu_list = this.analysis(res.data.data.resource);
                         if (!_onu_list) return;
                         var obj = {
                             port_id: res.data.data.port_id,
-                            data: _onu_list
+                            data: _onu_list,
                         };
                         this.addonu_list(obj);
                         this.onuid =
                             this.$route.query.onu_id || this.onu_list.data[0];
                         this.$http
                             .get("./simulation_data/onu_basic_info.json")
-                            .then(res => {
+                            .then((res) => {
                                 this.onu_basic_info = res.data;
                                 this.$http
                                     .get("./simulation_data/onu_fec_mode.json")
-                                    .then(res => {
+                                    .then((res) => {
                                         this.onu_fec_mode = res.data;
                                     })
-                                    .catch(err => {
+                                    .catch((err) => {
                                         // to do
                                     });
                             })
-                            .catch(err => {
+                            .catch((err) => {
                                 // to do
                             });
                     } else {
                         this.addonu_list({});
                     }
                 })
-                .catch(err => {
+                .catch((err) => {
                     // to do
                 });
         }
@@ -274,20 +334,20 @@ export default {
     },
     methods: {
         ...mapMutations({
-            addonu_list: "updateOnuList"
+            addonu_list: "updateOnuList",
         }),
         getWanInfo(port_id) {
             this.wanList = [];
             this.$http
                 .get("/onumgmt", { params: { form: "wantab", port_id } })
-                .then(res => {
+                .then((res) => {
                     if (res.data.code === 1) {
                         if (res.data.data && res.data.data.length) {
                             this.wanList = res.data.data;
                         }
                     }
                 })
-                .catch(err => {});
+                .catch((err) => {});
         },
         //  打开onu描述信息模态框
         open_onu_desc() {
@@ -319,7 +379,7 @@ export default {
                         text:
                             this.lanMap["param_error"] +
                             ": " +
-                            this.lanMap["onu_name"]
+                            this.lanMap["onu_name"],
                     });
                     return;
                 }
@@ -329,7 +389,7 @@ export default {
                         text:
                             this.lanMap["param_error"] +
                             ": " +
-                            this.lanMap["onu_desc"]
+                            this.lanMap["onu_desc"],
                     });
                     return;
                 }
@@ -341,8 +401,8 @@ export default {
                         flags: 8,
                         fec_mode: this.onu_fec_mode.data.fec_mode ? 0 : 1,
                         onu_name: this.onu_name.replace(/\s*/g, ""),
-                        onu_desc: this.onu_desc
-                    }
+                        onu_desc: this.onu_desc,
+                    },
                 };
                 this.post_data(post_param);
             }
@@ -372,14 +432,14 @@ export default {
                     result.push(Number(substrs));
                 }
             }
-            return result.filter(item => !!item);
+            return result.filter((item) => !!item);
         },
         open_reboot_onu() {
             this.$confirm(this.lanMap["confirm_reboot_onu"] + "?")
-                .then(_ => {
+                .then((_) => {
                     this.reboot_onu();
                 })
-                .catch(_ => {});
+                .catch((_) => {});
         },
         //  重启ONU
         reboot_onu() {
@@ -391,17 +451,17 @@ export default {
                     flags: 1,
                     fec_mode: this.onu_fec_mode.data.fec_mode ? 0 : 1,
                     onu_name: "",
-                    onu_desc: ""
-                }
+                    onu_desc: "",
+                },
             };
             this.post_data(post_param);
         },
         open_un_auth_onu() {
             this.$confirm(this.lanMap["confirm_deresgester"] + "?")
-                .then(_ => {
+                .then((_) => {
                     this.un_auth_onu();
                 })
-                .catch(_ => {});
+                .catch((_) => {});
         },
         //  解注册 ONU
         un_auth_onu() {
@@ -413,17 +473,17 @@ export default {
                     flags: 2,
                     fec_mode: this.onu_fec_mode.data.fec_mode ? 0 : 1,
                     onu_name: "",
-                    onu_desc: ""
-                }
+                    onu_desc: "",
+                },
             };
             this.post_data(post_param);
         },
         open_set_fec_mode() {
             this.$confirm(this.lanMap["confirm_change_fecmode"] + "?")
-                .then(_ => {
+                .then((_) => {
                     this.set_fec_mode();
                 })
-                .catch(_ => {});
+                .catch((_) => {});
         },
         //  fec_mode
         set_fec_mode() {
@@ -435,30 +495,30 @@ export default {
                     flags: 4,
                     fec_mode: this.onu_fec_mode.data.fec_mode ? 0 : 1,
                     onu_name: "",
-                    onu_desc: ""
-                }
+                    onu_desc: "",
+                },
             };
             this.post_data(post_param);
         },
         post_data(data) {
             this.$http
                 .post("/onumgmt?form=config", data)
-                .then(res => {
+                .then((res) => {
                     if (res.data.code === 1) {
                         this.$message({
                             type: res.data.type,
-                            text: this.lanMap["setting_ok"]
+                            text: this.lanMap["setting_ok"],
                         });
                         this.getData();
                         this.getOpticalData();
                     } else if (res.data.code > 1) {
                         this.$message({
                             type: res.data.type,
-                            text: "(" + res.data.code + ") " + res.data.message
+                            text: "(" + res.data.code + ") " + res.data.message,
                         });
                     }
                 })
-                .catch(err => {
+                .catch((err) => {
                     // to do
                 });
         },
@@ -470,14 +530,14 @@ export default {
                         "&onu_id=" +
                         this.onuid
                 )
-                .then(res => {
+                .then((res) => {
                     if (res.data.code === 1) {
                         this.onu_basic_info = res.data;
                     } else {
                         this.onu_basic_info = {};
                     }
                 })
-                .catch(err => {});
+                .catch((err) => {});
             this.$http
                 .get(
                     "/onumgmt?form=config&port_id=" +
@@ -485,14 +545,14 @@ export default {
                         "&onu_id=" +
                         this.onuid
                 )
-                .then(res => {
+                .then((res) => {
                     if (res.data.code === 1) {
                         this.onu_fec_mode = res.data;
                     } else {
                         this.onu_fec_mode = {};
                     }
                 })
-                .catch(err => {});
+                .catch((err) => {});
         },
         getOpticalData() {
             this.$http
@@ -502,14 +562,14 @@ export default {
                         "&onu_id=" +
                         this.onuid
                 )
-                .then(res => {
+                .then((res) => {
                     if (res.data.code === 1) {
                         this.optical_diagnose = res.data;
                     } else {
                         this.optical_diagnose = {};
                     }
                 })
-                .catch(err => {
+                .catch((err) => {
                     // to do
                 });
         },
@@ -531,7 +591,7 @@ export default {
             if (!this.upgrade_file) {
                 this.$message({
                     type: "error",
-                    text: this.lanMap["file_not_select"]
+                    text: this.lanMap["file_not_select"],
                 });
                 return;
             }
@@ -543,10 +603,10 @@ export default {
             //     return
             // }
             this.$confirm(this.lanMap["if_sure"])
-                .then(_ => {
+                .then((_) => {
                     this.upgrade_result();
                 })
-                .catch(_ => {});
+                .catch((_) => {});
         },
         upgrade_result() {
             var formData = new FormData();
@@ -556,19 +616,19 @@ export default {
             this.$http
                 .post("/onu_upload", formData, {
                     headers: { "Content-Type": "multipart/form-data" },
-                    timeout: 0
+                    timeout: 0,
                 })
-                .then(res => {
+                .then((res) => {
                     if (res.data.code === 1) {
                         this.start_upgrade_onu();
                     } else if (res.data.code > 1) {
                         this.$message({
                             type: res.data.type,
-                            text: "(" + res.data.code + ") " + res.data.message
+                            text: "(" + res.data.code + ") " + res.data.message,
                         });
                     }
                 })
-                .catch(error => {
+                .catch((error) => {
                     // to do
                 });
         },
@@ -579,25 +639,25 @@ export default {
                 param: {
                     port_id: this.portid,
                     onu_id: this.onuid,
-                    upgrade_type: this.onu_basic_info.data.upgrade_type || ""
-                }
+                    upgrade_type: this.onu_basic_info.data.upgrade_type || "",
+                },
             };
             this.$http
                 .post("/onu_upgrade?form=upgrade", post_params)
-                .then(res => {
+                .then((res) => {
                     if (res.data.code === 1) {
                         this.$message({
                             type: res.data.type,
-                            text: this.lanMap["onu_upgrade_start"]
+                            text: this.lanMap["onu_upgrade_start"],
                         });
                     } else if (res.data.code > 1) {
                         this.$message({
                             type: res.data.type,
-                            text: "(" + res.data.code + ") " + res.data.message
+                            text: "(" + res.data.code + ") " + res.data.message,
                         });
                     }
                 })
-                .catch(err => {
+                .catch((err) => {
                     // to do
                 });
         },
@@ -605,7 +665,7 @@ export default {
             this.getWanInfo(this.portid);
             this.$http
                 .get("/onu_allow_list?form=resource&port_id=" + this.portid)
-                .then(res => {
+                .then((res) => {
                     if (res.data.code === 1) {
                         var _onu_list = this.analysis(res.data.data.resource);
                         if (!_onu_list) {
@@ -616,7 +676,7 @@ export default {
                         }
                         var obj = {
                             port_id: res.data.data.port_id,
-                            data: _onu_list
+                            data: _onu_list,
                         };
                         this.addonu_list(obj);
                         var oid = Number(sessionStorage.getItem("oid"));
@@ -643,7 +703,7 @@ export default {
                         this.onuid = 0;
                     }
                 })
-                .catch(err => {});
+                .catch((err) => {});
         },
         clearFile() {
             if (document) {
@@ -656,7 +716,7 @@ export default {
                     filename.innerText = this.lanMap["file_click"];
                 }
             }
-        }
+        },
     },
     watch: {
         portid() {
@@ -677,17 +737,17 @@ export default {
                     this.$refs.onuAlarm.getData();
                 });
             } else if (this.show_page === "wan_connect") {
-                this.$nextTick(_ => {
+                this.$nextTick((_) => {
                     this.$refs.onuWan.getData();
                 });
             } else if (this.show_page === "onu_wlan") {
-                this.$nextTick(_ => {
+                this.$nextTick((_) => {
                     this.$refs.onuWlan.getData();
                 });
             }
             this.clearFile();
-        }
-    }
+        },
+    },
 };
 </script>
 
