@@ -6,8 +6,8 @@
                 <slot name="title"></slot>
             </h2>
             <div class="lf" v-if="type === 'port' || type === 'pon'">
-                <span>{{ lanMap['port_id'] }}</span>
-                <select v-model="portid" style="margin-left: 6px;">
+                <span>{{ lanMap["port_id"] }}</span>
+                <select v-model="portid" style="margin-left: 6px">
                     <template v-for="item in port_name.pon">
                         <option :value="item.id">{{ item.name }}</option>
                     </template>
@@ -17,27 +17,33 @@
                         </template>
                         <template v-if="port_name.xge">
                             <template v-for="item in port_name.xge">
-                                <option :value="item.id">{{ item.name }}</option>
+                                <option :value="item.id">
+                                    {{ item.name }}
+                                </option>
                             </template>
                         </template>
                     </template>
                 </select>
             </div>
             <div class="lf" v-if="hasOnu">
-                <span>{{ lanMap['onu_id'] }}</span>
-                <select v-model="onuid" style="margin-left: 6px; width: 120px;">
+                <span>{{ lanMap["onu_id"] }}</span>
+                <select v-model="onuid" style="margin-left: 6px; width: 120px">
                     <template v-for="item in onu_list.data">
-                        <option :value="item">{{ `ONU${portid}/${item}` }}</option>
+                        <option :value="item">
+                            {{ `ONU${portid}/${item}` }}
+                        </option>
                     </template>
                 </select>
             </div>
             <div
                 class="lf"
-                style="line-height: 30px; color: red;"
+                style="line-height: 30px; color: red"
                 v-if="onu && !onu_list.data"
-            >{{ lanMap['no_more_data'] }}</div>
+            >
+                {{ lanMap["no_more_data"] }}
+            </div>
             <!-- 功能部分(页头按钮) -->
-            <div class="lf" style="margin-left: 30px;">
+            <div class="lf" style="margin-left: 30px">
                 <slot name="action"></slot>
             </div>
         </div>
@@ -58,12 +64,12 @@ export default {
                 this.type.toLowerCase() === "pon" &&
                 this.onu_list.data
             );
-        }
+        },
     },
     data() {
         return {
             portid: 0,
-            onuid: 0
+            onuid: 0,
         };
     },
     created() {
@@ -82,21 +88,21 @@ export default {
         //  type: pon / port / none  （none表示不显示端口）
         type: {
             type: String,
-            default: "pon"
+            default: "pon",
         },
         //  是否需要获取onu，type = pon 时生效
         onu: {
             type: Boolean,
-            default: false
+            default: false,
         },
         queryData: {
-            type: Object
-        }
+            type: Object,
+        },
     },
     methods: {
         ...mapActions({
-            updateResource: "updatePortUsedResource"
-        })
+            updateResource: "updatePortUsedResource",
+        }),
     },
     watch: {
         portid() {
@@ -136,8 +142,8 @@ export default {
                     this.onuid = this.onu_list.data[0];
                 }
             }
-        }
-    }
+        },
+    },
 };
 </script>
 
@@ -150,14 +156,14 @@ h2 {
     font-weight: 600;
 }
 .page-header {
-    >div{
-        &:after{
+    > div {
+        &:after {
             content: "";
             display: table;
             clear: both;
         }
     }
-    hr{
+    hr {
         margin: 20px 0 0 0;
     }
     margin: 20px 0;
@@ -166,10 +172,6 @@ h2 {
     }
     select {
         width: 150px;
-    }
-    a {
-        height: 28px;
-        line-height: 28px;
     }
     &:after {
         content: "";
