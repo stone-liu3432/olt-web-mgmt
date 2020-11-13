@@ -28,7 +28,7 @@ const onuAllow = () =>
     );
 const vlanMgmt = () =>
     import(
-        /* webpackChunkName: "main-page" */ "@/components/common/switch/vlanMgmt"
+        /* webpackChunkName: "main-page" */ "@/components/common/switch/vlan"
     );
 const topo = () =>
     import(/* webpackChunkName: "main-page" */ "@/components/page/topo");
