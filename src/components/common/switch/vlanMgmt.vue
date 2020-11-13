@@ -1,27 +1,9 @@
 <template>
     <div class="vlan-mgmt">
-        <div>
-            <h2>{{ lanMap["vlan_cfg"] }}</h2>
-        </div>
-        <div class="btn-group-vlan">
-            <a href="javascript:void(0);" @click="createVlan()"
-                >{{ lanMap["create"] }} VLAN</a
-            >
-            <a href="javascript:void(0);" @click="open_batch_del"
-                >{{ lanMap["delete"] }} VLAN</a
-            >
-            <a href="javascript:void(0);" @click="createVlan(1)">{{
-                lanMap["batch_cfg_vlan"]
-            }}</a>
-        </div>
         <div class="search">
             <p class="lf">{{ lanMap["vlan_list"] }}</p>
             <div class="lf">
-                <input
-                    type="text"
-                    placeholder="VLAN ID"
-                    v-model.number="search_id"
-                />
+                <input type="text" placeholder="VLAN ID" v-model="search_id" />
                 <i class="icon-search"></i>
             </div>
         </div>
@@ -103,7 +85,7 @@
             </nms-table-column>
         </nms-table>
         <nms-pagination
-            :total="vlan_list.length"
+            :total="vlan_filterable.length"
             :current-page="pagination.index"
             @current-change="changeIndex"
             style="float: right"
@@ -494,41 +476,22 @@ export default {
             "change_url",
             "port_info",
         ]),
-        // 分页的数据 --> 显示到页面的数据
+        // 显示到页面的数据
         vlan_tab() {
-            if (!this.search_id) {
-                this.pagination.page = Math.ceil(
-                    this.vlan_list.length / this.pagination.display
-                );
-                return this.vlan_list.slice(
-                    this.pagination.display * (this.pagination.index - 1),
-                    this.pagination.index * this.pagination.display
-                );
-            }
-            const tab = [];
-            this.vlan_list.forEach((item) => {
-                if (
-                    String(item.vlan_id).indexOf(String(this.search_id)) !== -1
-                ) {
-                    tab.push(item);
-                }
-            });
-            this.pagination.page =
-                Math.ceil(tab.length / this.pagination.display) || 1;
-            // 溢出处理
-            if (this.pagination.index > this.pagination.page) {
-                this.pagination.index = this.pagination.page;
-            }
-            return tab.slice(
-                this.pagination.display * (this.pagination.index - 1),
-                this.pagination.index * this.pagination.display
-            );
+            const tab = this.vlan_list.filter(
+                    (item) => String(item.vlan_id).indexOf(this.search_id) > -1
+                ),
+                start = this.pagination.display * (this.pagination.index - 1);
+            this.vlan_filterable = tab;
+            return tab.slice(start, start + this.pagination.display);
         },
     },
     data() {
         return {
             // 已有的 VLAN列表
             vlan_list: [],
+            // 过滤后的vlan列表
+            vlan_filterable: [],
             // 创建VLAN模态框的显示隐藏参数
             create_vlan: false,
             vlanid: 0,
@@ -1261,15 +1224,6 @@ export default {
 </script>
 
 <style scoped lang="less">
-div.vlan-mgmt {
-    height: calc(~"100% - 100px");
-    overflow-y: auto;
-    &:after {
-        content: "";
-        display: table;
-        clear: both;
-    }
-}
 div.vlan-mgmt > div:nth-child(2) {
     margin: 0 0 0 30px;
 }
