@@ -1,139 +1,199 @@
 <template>
     <div class="port-vlan-set">
-        <div class="pv-set-item">
-            <span>{{ lanMap['port_type'] }}</span>
-            <span>
-                {{ port_type_map[pvData.data.port_type] }}
-            </span>
-            <span>
-                <a href="javascript:void(0);" @click="set_port_type">{{ lanMap['config'] }}</a>
-            </span>
-        </div>
-        <div class="pv-set-item">
-            <span>{{ lanMap['pvid'] }}</span>
-            <span>
-                {{ pvData.data.pvid }}
-            </span>
-            <span>
-                <a href="javascript:void(0);" @click="set_pv_def_vlan">{{ lanMap['config'] }}</a>
-            </span>
-        </div>
-        <div class="pv-set-item">
-            <span>{{ lanMap['tagged'] }}</span>
-            <span>
-                {{ pvData.data.tagged_vlan }}
-            </span>
-        </div>
-        <div class="pv-set-item">
-            <span>{{ lanMap['untagged'] }}</span>
-            <span>
-                {{ pvData.data.untagged_vlan }}
-            </span>
-        </div>
-        <div class="pv-set-item" v-if="pvData.data.port_type !== 1">
-            <a href="javascript:void(0);" @click="set_pv_vlist_add" class="large-btn">
-                {{ lanMap['add_vlan_list'] }}
-            </a>
-            <a href="javascript:void(0);" @click="set_pv_vlist_del" class="large-btn">
-                {{ lanMap['del_vlan_list'] }}
-            </a>
-        </div>
+        <nms-table :rows="pvData" border>
+            <nms-table-column :label="lanMap['port_id']">
+                <template slot-scope="row">{{
+                    row.port_id | getPortName
+                }}</template>
+            </nms-table-column>
+            <nms-table-column :label="lanMap['port_type']">
+                <template slot-scope="row">{{
+                    PORT_TYPE_MAP[row.port_type]
+                }}</template>
+            </nms-table-column>
+            <nms-table-column
+                :label="lanMap['pvid']"
+                prop="pvid"
+            ></nms-table-column>
+            <nms-table-column :label="lanMap['tagged']">
+                <template slot-scope="row">{{
+                    row.tagged_vlan || "-"
+                }}</template>
+            </nms-table-column>
+            <nms-table-column :label="lanMap['untagged']">
+                <template slot-scope="row">{{
+                    row.untagged_vlan || "-"
+                }}</template>
+            </nms-table-column>
+            <nms-table-column :label="lanMap['config']" width="120px">
+                <template slot-scope="row">
+                    <nms-dropdown @command="dropdownClick">
+                        <span>{{ lanMap["config"] }}</span>
+                        <div slot="dropdown">
+                            <nms-dropdown-item
+                                :command="{ action: 'port_type', row }"
+                                >{{ lanMap["port_type"] }}
+                            </nms-dropdown-item>
+                            <nms-dropdown-item
+                                :command="{ action: 'pvid', row }"
+                                >{{ lanMap["pvid"] }}
+                            </nms-dropdown-item>
+                            <nms-dropdown-item
+                                :command="{ action: 'add_vlan', row }"
+                                >{{ lanMap["add_vlan_list"] }}
+                            </nms-dropdown-item>
+                            <nms-dropdown-item
+                                :command="{ action: 'del_vlan', row }"
+                                >{{ lanMap["del_vlan_list"] }}
+                            </nms-dropdown-item>
+                        </div>
+                    </nms-dropdown>
+                </template>
+            </nms-table-column>
+        </nms-table>
         <div class="modal-dialog" v-if="modal_show">
             <div class="cover"></div>
             <!-- port vlan basic config -->
             <div class="pv-type" v-if="port_type_show" key="pv-type">
                 <div class="pv-type-item">
-                    <span>{{ lanMap['port_id'] }}</span>
+                    <span>{{ lanMap["port_id"] }}</span>
                     <span>
-                        {{ port_name.pon[pvData.data.port_id] ? port_name.pon[pvData.data.port_id].name : port_name.ge[pvData.data.port_id] ? port_name.ge[pvData.data.port_id].name : 
-                            port_name.xge[pvData.data.port_id].name }}
+                        {{ row.port_id | getPortName }}
                     </span>
                 </div>
                 <div class="pv-type-item">
-                    <span>{{ lanMap['port_type'] }}</span>
+                    <span>{{ lanMap["port_type"] }}</span>
                     <span>
-                        <select v-model="port_type">
-                            <option value="1">Access</option>
-                            <option value="2">Trunk</option>
-                            <option value="3">Hybrid</option>
+                        <select v-model.number="port_type">
+                            <option :value="1">Access</option>
+                            <option :value="2">Trunk</option>
+                            <option :value="3">Hybrid</option>
                         </select>
                     </span>
                 </div>
                 <div>
-                    <a href="javascript:void(0);" @click="submit_set_port_type">{{ lanMap['apply'] }}</a>
-                    <a href="javascript:void(0);" @click="close_modal_porttype">{{ lanMap['cancel'] }}</a>
+                    <a
+                        href="javascript:void(0);"
+                        @click="submit_set_port_type"
+                        >{{ lanMap["apply"] }}</a
+                    >
+                    <a
+                        href="javascript:void(0);"
+                        @click="close_modal_porttype"
+                        >{{ lanMap["cancel"] }}</a
+                    >
                 </div>
                 <div class="close" @click="close_modal_porttype"></div>
             </div>
             <!-- port vlan default vlan -->
             <div class="pv-def-vid" v-if="port_defvid_show" key="pv-def-vid">
                 <div class="pv-defvlan-item">
-                    <span>{{ lanMap['port_id'] }}</span>
+                    <span>{{ lanMap["port_id"] }}</span>
                     <span>
-                        {{ port_name.pon[pvData.data.port_id] ? port_name.pon[pvData.data.port_id].name : port_name.ge[pvData.data.port_id] ? port_name.ge[pvData.data.port_id].name : 
-                            port_name.xge[pvData.data.port_id].name }}
+                        {{ row.port_id | getPortName }}
                     </span>
                 </div>
                 <div class="pv-defvlan-item">
-                    <span>{{ lanMap['def_vlan_id'] }}</span>
+                    <span>{{ lanMap["def_vlan_id"] }}</span>
                     <span>
-                        <input type="text" v-focus v-model.number="pvid" :style="{ 'border-color' : pvid < 1 || pvid > 4094 ? 'red' : '' }">
+                        <input
+                            type="text"
+                            v-focus
+                            v-model.number="pvid"
+                            :style="{
+                                'border-color':
+                                    pvid < 1 || pvid > 4094 ? 'red' : '',
+                            }"
+                        />
                     </span>
                 </div>
                 <div>
-                    <a href="javascript:void(0);" @click="submit_set_pv_def_vlan">{{ lanMap['apply'] }}</a>
-                    <a href="javascript:void(0);" @click="close_pv_def_vlan">{{ lanMap['cancel'] }}</a>
+                    <a
+                        href="javascript:void(0);"
+                        @click="submit_set_pv_def_vlan"
+                        >{{ lanMap["apply"] }}</a
+                    >
+                    <a href="javascript:void(0);" @click="close_pv_def_vlan">{{
+                        lanMap["cancel"]
+                    }}</a>
                 </div>
                 <div class="close" @click="close_pv_def_vlan"></div>
             </div>
             <!-- port vlan tag/untag vlan list -->
             <div class="pv-vlan-list" v-if="port_vlist_show" key="pv-clan-list">
                 <div>
-                    <h3 v-if="set_vlist_type === 1">{{ lanMap['add'] }}</h3>
-                    <h3 v-if="set_vlist_type === 0">{{ lanMap['delete'] }}</h3>
+                    <h3 v-if="set_vlist_type === 1">{{ lanMap["add"] }}</h3>
+                    <h3 v-if="set_vlist_type === 0">{{ lanMap["delete"] }}</h3>
                 </div>
                 <div class="pv-vlist-item">
-                    <span>{{ lanMap['port_id'] }}</span>
+                    <span>{{ lanMap["port_id"] }}</span>
                     <span>
-                        {{ port_name.pon[pvData.data.port_id] ? port_name.pon[pvData.data.port_id].name : port_name.ge[pvData.data.port_id] ? port_name.ge[pvData.data.port_id].name : 
-                            port_name.xge[pvData.data.port_id].name }}
+                        {{ row.port_id | getPortName }}
                     </span>
                 </div>
                 <div class="pv-vlist-item">
-                    <span>{{ lanMap['port_type'] }}</span>
-                    <span>{{ port_type_map[pvData.data.port_type] }}</span>
+                    <span>{{ lanMap["port_type"] }}</span>
+                    <span>{{ PORT_TYPE_MAP[row.port_type] }}</span>
                 </div>
                 <div class="pv-vlist-item">
-                    <span>{{ lanMap['vlan_list'] }}</span>
+                    <span>{{ lanMap["vlan_list"] }}</span>
                     <span>
-                        <input type="text" v-focus v-model="vlan_list" placeholder="ex: 100,200-300,400">
+                        <input
+                            type="text"
+                            v-focus
+                            v-model="vlan_list"
+                            placeholder="ex: 100,200-300,400"
+                        />
                     </span>
                 </div>
                 <div class="pv-vlist-item">
-                    <span>{{ lanMap['vlan_mode'] }}</span>
+                    <span>{{ lanMap["vlan_mode"] }}</span>
                     <span>
-                        <select v-model="vlan_mode" :disabled="pvData.data.port_type !== 3">
-                            <option value="1">{{ lanMap['tagged'] }}</option>
-                            <option value="2">{{ lanMap['untagged'] }}</option>
+                        <select
+                            v-model.number="vlan_mode"
+                            :disabled="row.port_type !== 3"
+                        >
+                            <option :value="1">{{ lanMap["tagged"] }}</option>
+                            <option :value="2">{{ lanMap["untagged"] }}</option>
                         </select>
                     </span>
                 </div>
-                <div style="margin: 15px 0;font-size: 14px; color: #67aef7;text-align: center; height: 16px;">
-                    <template v-if="pvData.data.link_aggregation">
-                        {{ lanMap['link_aggregation_tips'] }}
+                <div
+                    style="
+                        margin: 15px 0;
+                        font-size: 14px;
+                        color: #67aef7;
+                        text-align: center;
+                        height: 16px;
+                    "
+                >
+                    <template v-if="row.link_aggregation">
+                        {{ lanMap["link_aggregation_tips"] }}
                     </template>
                 </div>
                 <div>
-                    <a href="javascript:void(0);" v-if="this.set_vlist_type === 1" @click="submit_add_pv_vlist">{{ lanMap['apply'] }}</a>
-                    <a href="javascript:void(0);" v-if="this.set_vlist_type === 0" @click="submit_del_pv_vlist">{{ lanMap['apply'] }}</a>
-                    <a href="javascript:void(0);" @click="close_pv_vlist">{{ lanMap['cancel'] }}</a>
+                    <a
+                        href="javascript:void(0);"
+                        v-if="this.set_vlist_type === 1"
+                        @click="submit_add_pv_vlist"
+                        >{{ lanMap["apply"] }}</a
+                    >
+                    <a
+                        href="javascript:void(0);"
+                        v-if="this.set_vlist_type === 0"
+                        @click="submit_del_pv_vlist"
+                        >{{ lanMap["apply"] }}</a
+                    >
+                    <a href="javascript:void(0);" @click="close_pv_vlist">{{
+                        lanMap["cancel"]
+                    }}</a>
                 </div>
                 <div class="pv-vlist-tips">
                     <i></i>
                     <div>
-                        <p>{{ lanMap['pv_vlist_tips'] }}</p>
+                        <p>{{ lanMap["pv_vlist_tips"] }}</p>
                         <p>ex: 100,200-300,400</p>
-                        <p>{{ lanMap['pv_vmode_tips'] }}</p>
+                        <p>{{ lanMap["pv_vmode_tips"] }}</p>
                     </div>
                 </div>
                 <div class="close" @click="close_pv_vlist"></div>
@@ -143,263 +203,264 @@
 </template>
 
 <script>
-import { mapState } from 'vuex'
+import { mapState } from "vuex";
+import { isFunction } from "@/utils/common";
 export default {
-    name: 'pvSet',
-    props: ['pvData'],
-    computed: mapState(['lanMap','port_name']),
-    data(){
+    name: "pvSet",
+    props: {
+        pvData: {
+            type: Array,
+            default: () => [],
+        },
+    },
+    computed: mapState(["lanMap", "port_name"]),
+    data() {
         return {
             modal_show: false,
-            port_type_map: ['','Access','Trunk','Hybrid'],
+            PORT_TYPE_MAP: { 1: "Access", 2: "Trunk", 3: "Hybrid" },
             port_type: 0,
             pvid: 0,
-            vlan_list: '',
+            vlan_list: "",
             vlan_mode: 1,
-            set_vlist_type: 0,        //  0 -> delete   1 -> add
+            set_vlist_type: 0, //  0 -> delete   1 -> add
             port_type_show: false,
             port_defvid_show: false,
             port_vlist_show: false,
-            // pvData: {
-            //     "code":1,
-            //     "msg":"success",
-            //     "data":{
-            //         "port_id":1,
-            //         "port_type":2,
-            //         "pvid":1,
-            //         "tagged_vlan":" ",
-            //         "untagged_vlan":"1",
-            //         "link_aggregation": 1
-            //     }
-            // }
-        }
-    },
-    created(){
-        //  to do
+            row: {},
+        };
     },
     methods: {
-        set_port_type(){
+        set_port_type() {
             this.modal_show = true;
             this.port_type_show = true;
-            this.port_type = this.pvData.data.port_type;
+            this.port_type = this.row.port_type;
         },
-        submit_set_port_type(){
-            if(this.port_type === this.pvData.data.port_type){
-                this.$message({
-                    type: 'info',
-                    text: this.lanMap['modify_tips']
-                })
-                return
+        submit_set_port_type() {
+            if (this.port_type === this.row.port_type) {
+                this.$message.info(this.lanMap["modify_tips"]);
+                return;
             }
             var post_params = {
-                "method":"set",
-                "param":{
-                    "port_id": this.$parent.$data.portid,
-                    "port_type": this.port_type
-                }
-            }
-            this.$http.post('/switch_port?form=vlan_type',post_params).then(res=>{
-                if(res.data.code === 1){
-                    this.$message({
-                        type: res.data.type,
-                        text: this.lanMap['setting_ok']
-                    })
-                    this.$parent.get_pv_set();
-                }else if(res.data.code > 1){
-                    this.$message({
-                        type: res.data.type,
-                        text: '(' + res.data.code + ') ' + res.data.message
-                    })
-                }
-                this.close_modal_porttype();
-            }).catch(err=>{
-                // to do
-            })
+                method: "set",
+                param: {
+                    port_id: this.row.port_id,
+                    port_type: this.port_type,
+                },
+            };
+            this.$http
+                .post("/switch_port?form=vlan_type", post_params)
+                .then((res) => {
+                    if (res.data.code === 1) {
+                        this.$message.success(this.lanMap["setting_ok"]);
+                        this.$emit("refresh-data");
+                    } else {
+                        this.$message.error(
+                            "(" + res.data.code + ") " + res.data.message
+                        );
+                    }
+                })
+                .catch((err) => {})
+                .finally(() => {
+                    this.close_modal_porttype();
+                });
         },
-        close_modal_porttype(){
+        close_modal_porttype() {
             this.modal_show = false;
             this.port_type_show = false;
         },
-        set_pv_def_vlan(){
+        set_pv_def_vlan() {
             this.modal_show = true;
             this.port_defvid_show = true;
-            this.pvid = this.pvData.data.pvid;
+            this.pvid = this.row.pvid;
         },
-        submit_set_pv_def_vlan(){
-            if(this.pvid < 1 || this.pvid > 4094 || isNaN(this.pvid)){
-                this.$message({
-                    type: 'error',
-                    text: this.lanMap['param_error'] + ': ' + this.lanMap['pvid']
-                })
-                return
+        submit_set_pv_def_vlan() {
+            if (this.pvid < 1 || this.pvid > 4094 || isNaN(this.pvid)) {
+                this.$message.error(
+                    this.lanMap["param_error"] + ": " + this.lanMap["pvid"]
+                );
+                return;
             }
-            if(this.pvid === this.pvData.data.pvid){
-                this.$message({
-                    type: 'info',
-                    text: this.lanMap['modify_tips']
-                })
-                return
+            if (this.pvid === this.row.pvid) {
+                this.$message.info(this.lanMap["modify_tips"]);
+                return;
             }
             var post_params = {
-                "method":"set",
-                "param":{
-                    "port_id": this.$parent.$data.portid,
-                    "pvid": this.pvid
-                }
-            }
-            this.$http.post('/switch_port?form=defaultvlan',post_params).then(res=>{
-                if(res.data.code === 1){
-                    this.$message({
-                        type: res.data.type,
-                        text: this.lanMap['setting_ok']
-                    })
-                    this.$parent.get_pv_set();
-                }else if(res.data.code > 1){
-                    this.$message({
-                        type: res.data.type,
-                        text: '(' + res.data.code + ') ' + res.data.message
-                    })
-                    if(res.data.type === 'warning'){
-                        this.$parent.get_pv_set();
+                method: "set",
+                param: {
+                    port_id: this.row.port_id,
+                    pvid: this.pvid,
+                },
+            };
+            this.$http
+                .post("/switch_port?form=defaultvlan", post_params)
+                .then((res) => {
+                    if (res.data.code === 1) {
+                        this.$message.success(this.lanMap["setting_ok"]);
+                        this.$emit("refresh-data");
+                    } else {
+                        this.$message.error(
+                            "(" + res.data.code + ") " + res.data.message
+                        );
+                        if (res.data.type === "warning") {
+                            this.$emit("refresh-data");
+                        }
                     }
-                }
-                this.close_pv_def_vlan();
-            }).catch(err=>{
-                // to do
-            })
+                })
+                .catch((err) => {})
+                .finally(() => {
+                    this.close_pv_def_vlan();
+                });
         },
-        close_pv_def_vlan(){
+        close_pv_def_vlan() {
             this.modal_show = false;
             this.port_defvid_show = false;
         },
-        set_pv_vlist_add(){
+        set_pv_vlist_add() {
             this.modal_show = true;
             this.port_vlist_show = true;
             this.set_vlist_type = 1;
         },
-        set_pv_vlist_del(){
+        set_pv_vlist_del() {
             this.modal_show = true;
             this.port_vlist_show = true;
             this.set_vlist_type = 0;
         },
-        submit_add_pv_vlist(){
+        submit_add_pv_vlist() {
             var vlist;
-            if(this.pvData.data.port_type === 1){
-                vlist = this.pvData.data.untagged_vlan;
+            if (this.row.port_type === 1) {
+                vlist = this.row.untagged_vlan;
             }
-            if(this.pvData.data.port_type === 2){
-                vlist = this.pvData.data.tagged_vlan;
+            if (this.row.port_type === 2) {
+                vlist = this.row.tagged_vlan;
             }
-            if(this.pvData.data.port_type === 3){
-                vlist = this.pvData.data.tagged_vlan + ',' + this.pvData.data.untagged_vlan;
+            if (this.row.port_type === 3) {
+                vlist = this.row.tagged_vlan + "," + this.row.untagged_vlan;
             }
-            vlist = vlist.replace(/^\s*,|\s+|,\s*$/g,'');
-            if(!this.vlan_list){
-                this.$message({
-                    type: 'error',
-                    text: this.lanMap['param_error'] + ': ' + this.lanMap['vlan_list']
-                })
-                return
+            vlist = vlist.replace(/^\s*,|\s+|,\s*$/g, "");
+            if (!this.vlan_list) {
+                this.$message.error(
+                    this.lanMap["param_error"] + ": " + this.lanMap["vlan_list"]
+                );
+                return;
             }
-            if(vlist && this.vlan_list.replace(/\s+/g,'') === vlist){
-                this.$message({
-                    type: 'info',
-                    text: this.lanMap['modify_tips']
-                })
-                return
+            if (vlist && this.vlan_list.replace(/\s+/g, "") === vlist) {
+                this.$message.info(this.lanMap["modify_tips"]);
+                return;
             }
             var post_params = {
-                "method":"set",
-                "param":{
-                    "port_id": this.$parent.$data.portid,
-                    "port_type": this.pvData.data.port_type,
-                    "vlan_list": this.vlan_list.replace(/\s+/g,''),
-                    "vlan_mode": this.vlan_mode     // (hybrid)
-                }
-            }
-            this.$http.post('/switch_port?form=vlan',post_params).then(res=>{
-                if(res.data.code === 1){
-                    this.$message({
-                        type: res.data.type,
-                        text: this.lanMap['setting_ok']
-                    })
-                    this.$parent.get_pv_set();
-                }else if(res.data.code > 1){
-                    this.$message({
-                        type: res.data.type,
-                        text: '(' + res.data.code + ') ' + res.data.message
-                    })
-                    if(res.data.type === 'warning'){
-                        this.$parent.get_pv_set();
+                method: "set",
+                param: {
+                    port_id: this.row.port_id,
+                    port_type: this.row.port_type,
+                    vlan_list: this.vlan_list.replace(/\s+/g, ""),
+                    vlan_mode: this.vlan_mode, // (hybrid)
+                },
+            };
+            this.$http
+                .post("/switch_port?form=vlan", post_params)
+                .then((res) => {
+                    if (res.data.code === 1) {
+                        this.$message({
+                            type: res.data.type,
+                            text: this.lanMap["setting_ok"],
+                        });
+                        this.$emit("refresh-data");
+                    } else if (res.data.code > 1) {
+                        this.$message({
+                            type: res.data.type,
+                            text: "(" + res.data.code + ") " + res.data.message,
+                        });
+                        if (res.data.type === "warning") {
+                            this.$emit("refresh-data");
+                        }
                     }
-                }
-                this.close_pv_vlist();
-            }).catch(err=>{
-                // to do
-            })
+                })
+                .catch((err) => {})
+                .finally(() => {
+                    this.close_pv_vlist();
+                });
         },
-        submit_del_pv_vlist(){
-             var post_params = {
-                "method":"delete",
-                "param":{
-                    "port_id": this.$parent.$data.portid,
-                    "port_type": this.pvData.data.port_type,
-                    "vlan_list": this.vlan_list.replace(/\s+/g,''),
-                    "vlan_mode": this.vlan_mode     // (hybrid)
-                }
-            }
-            this.$http.post('/switch_port?form=vlan',post_params).then(res=>{
-                if(res.data.code === 1){
-                    this.$message({
-                        type: res.data.type,
-                        text: this.lanMap['setting_ok']
-                    })
-                    this.$parent.get_pv_set();
-                }else if(res.data.code > 1){
-                    this.$message({
-                        type: res.data.type,
-                        text: '(' + res.data.code + ') ' + res.data.message
-                    })
-                    if(res.data.type === 'warning'){
-                        this.$parent.get_pv_set();
+        submit_del_pv_vlist() {
+            var post_params = {
+                method: "delete",
+                param: {
+                    port_id: this.row.port_id,
+                    port_type: this.row.port_type,
+                    vlan_list: this.vlan_list.replace(/\s+/g, ""),
+                    vlan_mode: this.vlan_mode, // (hybrid)
+                },
+            };
+            this.$http
+                .post("/switch_port?form=vlan", post_params)
+                .then((res) => {
+                    if (res.data.code === 1) {
+                        this.$message.success(this.lanMap["setting_ok"]);
+                        this.$emit("refresh-data");
+                    } else if (res.data.code > 1) {
+                        this.$message.error(
+                            "(" + res.data.code + ") " + res.data.message
+                        );
+                        if (res.data.type === "warning") {
+                            this.$emit("refresh-data");
+                        }
                     }
-                }
-                this.close_pv_vlist();
-            }).catch(err=>{
-                // to do
-            })
+                })
+                .catch((err) => {})
+                .finally(() => {
+                    this.close_pv_vlist();
+                });
         },
-        close_pv_vlist(){
+        close_pv_vlist() {
             this.modal_show = false;
             this.port_vlist_show = false;
-        }
-    }
-}
+        },
+        dropdownClick({ action, row }) {
+            const ACTIONS = {
+                port_type(row) {
+                    this.set_port_type();
+                },
+                pvid(row) {
+                    this.set_pv_def_vlan();
+                },
+                add_vlan(row) {
+                    this.set_pv_vlist_add();
+                },
+                del_vlan(row) {
+                    this.set_pv_vlist_del();
+                },
+            };
+            if (isFunction(ACTIONS[action])) {
+                this.row = row;
+                ACTIONS[action].call(this, row);
+            }
+        },
+    },
+};
 </script>
 
 <style lang="less" scoped>
-a{
+a {
     font-size: 16px;
     font-weight: normal;
     width: 120px;
     padding: 0;
 }
-select{
+select {
     width: 120px;
     height: 30px;
     line-height: 30px;
     font-size: 16px;
     text-indent: 6px;
     border-radius: 3px;
-    &:focus{
+    &:focus {
         border-radius: 3px;
     }
 }
-div.port-vlan-set{
-    >div.pv-set-item{
+div.port-vlan-set {
+    > div.pv-set-item {
         margin: 10px 0 10px 10px;
         height: 30px;
-        >span{
+        > span {
             display: inline-block;
             overflow: hidden;
             text-overflow: ellipsis;
@@ -408,78 +469,78 @@ div.port-vlan-set{
             height: 30px;
             line-height: 30px;
             vertical-align: middle;
-            &:first-child{
+            &:first-child {
                 width: 130px;
             }
-            a{
+            a {
                 box-sizing: border-box;
             }
         }
-        a.large-btn{
+        a.large-btn {
             padding: 0 20px;
             width: auto;
         }
     }
 }
-div.modal-dialog{
-    div.pv-type{
+div.modal-dialog {
+    div.pv-type {
         width: 500px;
         height: 220px;
         background: #fff;
-        >div.pv-type-item{
+        > div.pv-type-item {
             margin: 20px 0;
         }
-        >div:first-child{
+        > div:first-child {
             margin-top: 60px;
         }
-        span{
+        span {
             display: inline-block;
-            &:first-child{
+            &:first-child {
                 width: 150px;
                 margin-left: 50px;
             }
         }
-        a{
+        a {
             width: 120px;
             margin-left: 83px;
             margin-top: 5px;
         }
     }
-    div.pv-def-vid{
+    div.pv-def-vid {
         width: 500px;
         height: 220px;
         background: #fff;
-        >div.pv-defvlan-item{
+        > div.pv-defvlan-item {
             margin: 20px 0;
         }
-        >div:first-child{
+        > div:first-child {
             margin-top: 60px;
         }
-        span{
+        span {
             display: inline-block;
-            &:first-child{
+            &:first-child {
                 width: 150px;
                 margin-left: 50px;
             }
         }
-        input{
+        input {
             width: 120px;
         }
-        a{
+        a {
             width: 120px;
             margin-left: 83px;
             margin-top: 5px;
         }
     }
-    div.pv-vlan-list{
+    div.pv-vlan-list {
         width: 500px;
         height: 342px;
         background: #fff;
-        >div.pv-vlist-item{
+        > div.pv-vlist-item {
             margin: 20px 0;
         }
-        >div:first-child{
-            h3{
+        > div:first-child {
+            h3 {
                 font-size: 18px;
                 height: 60px;
                 line-height: 60px;
@@ -490,38 +551,38 @@ div.modal-dialog{
                 color: #67aef7;
             }
         }
-        span{
+        span {
             display: inline-block;
-            &:first-child{
+            &:first-child {
                 width: 150px;
                 margin-left: 50px;
             }
         }
-        input{
+        input {
             width: 240px;
         }
-        a{
+        a {
             width: 120px;
             margin-left: 83px;
             margin-top: 5px;
         }
-        div.pv-vlist-tips{
+        div.pv-vlist-tips {
             position: absolute;
             top: 16px;
             right: 60px;
-            i{
+            i {
                 display: inline-block;
                 width: 32px;
                 height: 32px;
-                background: url('../../../../assets/tips.png') no-repeat;
+                background: url("../../../../assets/tips.png") no-repeat;
                 cursor: pointer;
-                &:hover{
-                    &+div{
+                &:hover {
+                    & + div {
                         display: block;
                     }
                 }
             }
-            i+div{
+            i + div {
                 display: none;
                 width: 300px;
                 background: #67aef7;
@@ -529,7 +590,7 @@ div.modal-dialog{
                 top: 23px;
                 right: 27px;
                 border-radius: 6px;
-                p{
+                p {
                     margin: 15px;
                     color: #fff;
                 }
