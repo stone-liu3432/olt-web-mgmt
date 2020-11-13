@@ -1,17 +1,19 @@
 <template>
     <div class="port-checkbox">
         <template v-if="type === 'pon' || type === 'port'">
-            <template v-for="item in port_name.pon || {}">
-                <label class="pon-item">
-                    <input
-                        type="checkbox"
-                        v-model="ports"
-                        :value="item.id"
-                        :disabled="disabledItem(item.id)"
-                    />
-                    <span>{{ item.name }}</span>
-                </label>
-            </template>
+            <div>
+                <template v-for="item in port_name.pon || {}">
+                    <label class="pon-item">
+                        <input
+                            type="checkbox"
+                            v-model="ports"
+                            :value="item.id"
+                            :disabled="disabledItem(item.id)"
+                        />
+                        <span>{{ item.name }}</span>
+                    </label>
+                </template>
+            </div>
         </template>
         <template v-if="type === 'uplink' || type === 'port'">
             <template v-for="item in port_name.ge || {}">
