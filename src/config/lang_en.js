@@ -349,7 +349,7 @@ var en = {
     no_inb_info: " None outbound interface",
     oub_con_fail: " Connect outbound interface failed",
 
-    if_sure: " Please confirm",
+    if_sure: " Please confirm ",
 
     flush_page_retry: " Please refresh and try it again...",
     sw_port_cfg: " Switch port basic configuration",
