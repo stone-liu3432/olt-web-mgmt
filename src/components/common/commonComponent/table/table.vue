@@ -2,6 +2,7 @@
 import tableColumnSlot from "./tableSlots";
 import { removeItem } from "@/utils/common";
 import nmsSortIcon from "../svg/sort";
+import { isFunction } from "../../../../utils/common";
 export default {
     name: "nmsTable",
     components: { tableColumnSlot, nmsSortIcon },
@@ -90,17 +91,17 @@ export default {
             }
             return rowClass;
         },
-        setCellStyle(row, cell) {
+        setCellStyle(row, col, colIndex) {
             const cellStyle = row.cellStyle;
             if (typeof cellStyle === "function") {
-                return cellStyle(row, cell);
+                return cellStyle(col, colIndex);
             }
             return cellStyle;
         },
-        setCellClass(row, cell) {
+        setCellClass(row, col, colIndex) {
             const cellClass = row.cellClass;
             if (typeof cellClass === "function") {
-                return cellClass(row, cell);
+                return cellClass(col, colIndex);
             }
             return cellClass;
         },
@@ -275,9 +276,11 @@ export default {
                     }
                     return null;
                 }
+                const _style = this.setCellStyle(col, row, colIndex),
+                    _class = this.setCellClass(col, row, colIndex);
                 if (!col.slots && !col.scopedSlots) {
                     return (
-                        <td style={this.setCellStyle(row, colIndex)}>
+                        <td style={_style} class={_class}>
                             {col.formatters
                                 ? col.formatters(
                                       row,
@@ -293,7 +296,8 @@ export default {
                         <table-column-slot
                             slots={col.slots || col.scopedSlots}
                             row={row}
-                            style={this.setCellStyle(row, colIndex)}
+                            style={_style}
+                            class={_class}
                         ></table-column-slot>
                     );
                 }
