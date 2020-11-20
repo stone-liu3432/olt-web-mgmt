@@ -399,7 +399,7 @@ export default {
                               )[0].label || ""}
                           </th>
                       )
-                    : res.push(<th></th>);
+                    : res.push(<th width="50px"></th>);
             }
             const cols = this.columns.filter((item) => item.type !== "");
             res.push.apply(
