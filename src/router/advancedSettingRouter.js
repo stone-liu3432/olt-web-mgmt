@@ -93,13 +93,13 @@ const perfInfo = () =>
     import(
         /* webpackChunkName: "switch-page" */ "@/components/common/switch/perfInfo"
     );
-const portCfg = () =>
+const stormctrl = () =>
     import(
-        /* webpackChunkName: "switch-page" */ "@/components/common/switch/portCfg"
+        /* webpackChunkName: "switch-page" */ "@/components/common/switch/stormctrl"
     );
-const portVlan = () =>
+const mirror = () =>
     import(
-        /* webpackChunkName: "switch-page" */ "@/components/common/switch/portVlan"
+        /* webpackChunkName: "switch-page" */ "@/components/common/switch/mirror"
     );
 const loopDetect = () =>
     import(
@@ -311,8 +311,8 @@ export default [
         }
     },
     {
-        path: "/port_cfg",
-        component: portCfg,
+        path: "/stormctrl",
+        component: stormctrl,
         meta: {
             requireAuth: true,
             keepAlive: true
@@ -376,8 +376,8 @@ export default [
         }
     },
     {
-        path: "/port_vlan",
-        component: portVlan,
+        path: "/mirror",
+        component: mirror,
         meta: {
             requireAuth: true
         }
