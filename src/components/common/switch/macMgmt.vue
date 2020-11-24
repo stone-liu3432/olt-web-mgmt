@@ -54,10 +54,6 @@
             <mac-query :data="tab" @data-change="dataChange"></mac-query>
         </div>
         <nms-table :rows="macList" border @sort-change="sortChange">
-            <!-- <nms-table-column
-                type="index"
-                :label="lanMap['mac_index']"
-            ></nms-table-column> -->
             <nms-table-column
                 :label="lanMap['macaddr']"
                 prop="macaddr"
@@ -76,7 +72,7 @@
                 :sort-orders="sortOrders"
             >
                 <template slot-scope="row">{{
-                    row.port_id | getPortName
+                    row.port_id ? getName(row.port_id) : "CPU"
                 }}</template>
             </nms-table-column>
             <nms-table-column :label="lanMap['mac_type']">
