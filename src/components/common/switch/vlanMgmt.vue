@@ -6,6 +6,12 @@
                 <input type="text" placeholder="VLAN ID" v-model="search_id" />
                 <i class="icon-search"></i>
             </div>
+            <nms-button
+                @click="createVlan(1)"
+                style="margin-left: 30px; width: auto"
+            >
+                {{ lanMap["batch_cfg_vlan"] }}
+            </nms-button>
         </div>
         <nms-table :rows="vlan_tab" border>
             <nms-table-column
