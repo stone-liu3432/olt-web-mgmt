@@ -1,6 +1,26 @@
 <template>
     <div class="port-vlan-set">
         <nms-table :rows="pvData" border>
+            <nms-table-column type="expand">
+                <template slot-scope="row">
+                    <template v-if="row.port_type === 2">
+                        <div class="nms-table-expand-item">
+                            <span>{{ lanMap["vlan_list"] }}:</span>
+                            <span>{{ row.tagged_vlan }}</span>
+                        </div>
+                    </template>
+                    <template v-if="row.port_type === 3">
+                        <div class="nms-table-expand-item">
+                            <span>{{ lanMap["tagged"] }}:</span>
+                            <span>{{ row.tagged_vlan }}</span>
+                        </div>
+                        <div class="nms-table-expand-item">
+                            <span>{{ lanMap["untagged"] }}:</span>
+                            <span>{{ row.untagged_vlan }}</span>
+                        </div>
+                    </template>
+                </template>
+            </nms-table-column>
             <nms-table-column :label="lanMap['port_id']">
                 <template slot-scope="row">{{
                     row.port_id | getPortName
@@ -15,7 +35,11 @@
                 :label="lanMap['pvid']"
                 prop="pvid"
             ></nms-table-column>
-            <nms-table-column :label="lanMap['tagged']">
+            <nms-table-column
+                :label="lanMap['priority']"
+                prop="priority"
+            ></nms-table-column>
+            <!-- <nms-table-column :label="lanMap['tagged']">
                 <template slot-scope="row">{{
                     row.tagged_vlan || "-"
                 }}</template>
@@ -24,8 +48,8 @@
                 <template slot-scope="row">{{
                     row.untagged_vlan || "-"
                 }}</template>
-            </nms-table-column>
-            <nms-table-column :label="lanMap['config']" width="120px">
+            </nms-table-column> -->
+            <nms-table-column :label="lanMap['config']">
                 <template slot-scope="row">
                     <nms-dropdown @command="dropdownClick">
                         <span>{{ lanMap["config"] }}</span>
@@ -38,14 +62,16 @@
                                 :command="{ action: 'pvid', row }"
                                 >{{ lanMap["pvid"] }}
                             </nms-dropdown-item>
-                            <nms-dropdown-item
-                                :command="{ action: 'add_vlan', row }"
-                                >{{ lanMap["add_vlan_list"] }}
-                            </nms-dropdown-item>
-                            <nms-dropdown-item
-                                :command="{ action: 'del_vlan', row }"
-                                >{{ lanMap["del_vlan_list"] }}
-                            </nms-dropdown-item>
+                            <template v-if="row.port_type !== 1">
+                                <nms-dropdown-item
+                                    :command="{ action: 'add_vlan', row }"
+                                    >{{ lanMap["add_vlan_list"] }}
+                                </nms-dropdown-item>
+                                <nms-dropdown-item
+                                    :command="{ action: 'del_vlan', row }"
+                                    >{{ lanMap["del_vlan_list"] }}
+                                </nms-dropdown-item>
+                            </template>
                         </div>
                     </nms-dropdown>
                 </template>
@@ -105,6 +131,17 @@
                                     pvid < 1 || pvid > 4094 ? 'red' : '',
                             }"
                         />
+                    </span>
+                </div>
+                <div class="pv-defvlan-item">
+                    <span>{{ lanMap["priority"] }}</span>
+                    <span>
+                        <select v-model.number="priority">
+                            <option :value="0">0</option>
+                            <template v-for="i in 7">
+                                <option :value="i">{{ i }}</option>
+                            </template>
+                        </select>
                     </span>
                 </div>
                 <div>
@@ -220,6 +257,7 @@ export default {
             PORT_TYPE_MAP: { 1: "Access", 2: "Trunk", 3: "Hybrid" },
             port_type: 0,
             pvid: 0,
+            priority: 0,
             vlan_list: "",
             vlan_mode: 1,
             set_vlist_type: 0, //  0 -> delete   1 -> add
@@ -227,6 +265,17 @@ export default {
             port_defvid_show: false,
             port_vlist_show: false,
             row: {},
+            // pvData: [
+            //     {
+            //         port_id: 1,
+            //         port_type: 2,
+            //         pvid: 1,
+            //         priority: 0,
+            //         tagged_vlan: " ",
+            //         untagged_vlan: "1",
+            //         link_aggregation: 0,
+            //     },
+            // ],
         };
     },
     methods: {
@@ -272,6 +321,7 @@ export default {
             this.modal_show = true;
             this.port_defvid_show = true;
             this.pvid = this.row.pvid;
+            this.priority = this.row.priority;
         },
         submit_set_pv_def_vlan() {
             if (this.pvid < 1 || this.pvid > 4094 || isNaN(this.pvid)) {
@@ -280,15 +330,24 @@ export default {
                 );
                 return;
             }
-            if (this.pvid === this.row.pvid) {
+            const flags = { pvid: 0x1, priority: 0x2 };
+            const flag = Object.keys(flags).reduce((pre, item) => {
+                if (this[item] !== this.row[item]) {
+                    pre |= flags[item];
+                }
+                return pre;
+            }, 0);
+            if (!flag) {
                 this.$message.info(this.lanMap["modify_tips"]);
                 return;
             }
             var post_params = {
                 method: "set",
                 param: {
+                    flags: flag,
                     port_id: this.row.port_id,
                     pvid: this.pvid,
+                    priority: this.priority,
                 },
             };
             this.$http
@@ -508,7 +567,7 @@ div.modal-dialog {
     }
     div.pv-def-vid {
         width: 500px;
-        height: 220px;
+        height: 250px;
         background: #fff;
         > div.pv-defvlan-item {
             margin: 20px 0;
@@ -595,6 +654,21 @@ div.modal-dialog {
                     color: #fff;
                 }
             }
+        }
+    }
+}
+.nms-table-expand-item {
+    text-align: left;
+    margin: 10px;
+    > span {
+        display: inline-block;
+        vertical-align: middle;
+        width: calc(~"100% - 125px");
+        &:first-child {
+            width: 120px;
+            text-align: right;
+            padding-right: 12px;
+            box-sizing: border-box;
         }
     }
 }
