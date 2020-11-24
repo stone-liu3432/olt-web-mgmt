@@ -15,8 +15,8 @@
                 >
                     {{ lanMap["delete"] }} VLAN
                 </nms-button>
-                <nms-button class="page-header-btn" @click="openDialog('set')">
-                    {{ lanMap["batch_cfg_vlan"] }}
+                <nms-button class="page-header-btn" @click="refreshData">
+                    {{ lanMap["refresh"] }}
                 </nms-button>
             </template>
         </page-header>
@@ -60,7 +60,7 @@
                 />
                 <span class="tips">{{ lanMap["vlanid_range_hit"] }}</span>
             </div>
-            <template v-if="dialogType !== 'delete'">
+            <template v-if="dialogType !== 'destroy'">
                 <div class="form-item">
                     <span>tagged:</span>
                     <span>
@@ -89,7 +89,7 @@
 
 <script>
 import { mapState } from "vuex";
-import { isArray, isDef, isFunction } from "@/utils/common";
+import { isArray, isDef, isFunction, debounce } from "@/utils/common";
 import vlanMgmt from "./vlanMgmt";
 import pvSet from "./portVlan/pvSet";
 import pvTranslate from "./portVlan/pvTranslate";
@@ -287,6 +287,7 @@ export default {
                                                 this.$message.success(
                                                     this.lanMap["setting_ok"]
                                                 );
+                                                this.getData(this.activeName);
                                             } else {
                                                 this.$message.error(
                                                     `(${_res.data.code}) ${_res.data.message}`
@@ -328,6 +329,9 @@ export default {
         },
         intersection(target, source) {
             return target.filter((item) => source.includes(item));
+        },
+        refreshData() {
+            debounce(this.getData, 1000, this, this.activeName);
         },
     },
     directives: {
