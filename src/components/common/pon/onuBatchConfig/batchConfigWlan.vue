@@ -13,7 +13,7 @@
             </nms-table-column>
             <nms-table-column
                 :label="lanMap['name']"
-                prop="name"
+                prop="onu_name"
             ></nms-table-column>
             <nms-table-column prop="wlan" :label="lanMap['mode']">
                 <template slot-scope="rows">{{
