@@ -8,7 +8,6 @@ import axios from "axios";
 import store from "./vuex/store";
 import VueMessage from "@/components/common/message";
 import tabBar from "@/components/common/commonComponent/tabs";
-import { analysis, getPortName, parsePortList } from "./utils/common.js";
 import serviceConfirm from "@/components/common/commonComponent/confirm";
 import Notification from "@/components/common/commonComponent/notify";
 import table from "@/components/common/commonComponent/table";
@@ -20,6 +19,13 @@ import nmsPagination from "@/components/common/commonComponent/pagination";
 import popover from "@/components/common/commonComponent/popover";
 import nmsButton from "@/components/common/commonComponent/button";
 import portCheckbox from "@/components/common/commonComponent/portCheckbox";
+import {
+    analysis,
+    getPortName,
+    isFunction,
+    parsePortList,
+    isReg
+} from "@/utils/common";
 
 Vue.use(VueMessage);
 Vue.use(portHeader);
@@ -69,6 +75,46 @@ Vue.prototype.$loading = loading;
 Vue.directive("focus", {
     inserted(el) {
         el.focus();
+    }
+});
+
+Vue.directive("validator", {
+    update(el, { value, arg }) {
+        const val = el.value,
+            { regexp, min, max, nullable, validator } = value;
+        if (isFunction(validator)) {
+            if (validator(val)) {
+                el.style.borderColor = "";
+            } else {
+                el.style.borderColor = "red";
+            }
+            return;
+        }
+        if (nullable && !val) {
+            el.style.borderColor = "";
+            return;
+        }
+        if (isReg(regexp)) {
+            if (!regexp.test(val)) {
+                el.style.borderColor = "red";
+            } else {
+                el.style.borderColor = "";
+            }
+            return;
+        }
+        if (arg === "number") {
+            if (val < min || val > max || isNaN(val)) {
+                el.style.borderColor = "red";
+            } else {
+                el.style.borderColor = "";
+            }
+        } else if (arg === "string") {
+            if (val.length < min || val.length > max) {
+                el.style.borderColor = "red";
+            } else {
+                el.style.borderColor = "";
+            }
+        }
     }
 });
 
