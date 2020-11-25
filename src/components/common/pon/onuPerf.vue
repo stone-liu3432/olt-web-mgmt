@@ -1,71 +1,91 @@
 <template>
     <div>
         <div class="onu-perf-info" v-if="port_name.pon">
-            <h2>{{ lanMap['onu_perf_info'] }}</h2>
+            <h2>{{ lanMap["onu_perf_info"] }}</h2>
             <div>
-                <span>{{ lanMap['port_id'] }}</span>
+                <span>{{ lanMap["port_id"] }}</span>
                 <select v-model.number="portid">
                     <option
-                        v-for="(item,index) in port_name.pon"
+                        v-for="(item, index) in port_name.pon"
                         :key="index"
                         :value="item.id"
-                    >{{ item.name }}</option>
+                    >
+                        {{ item.name }}
+                    </option>
                 </select>
             </div>
             <div v-if="onu_list.data">
-                <span>{{ lanMap['onu_id'] }}</span>
+                <span>{{ lanMap["onu_id"] }}</span>
                 <select v-model.number="onuid">
                     <option
-                        v-for="(item,index) in onu_list.data"
+                        v-for="(item, index) in onu_list.data"
                         :key="index"
                         :value="item"
-                    >{{ 'ONU'+ onu_list.port_id + '/' + item }}</option>
+                    >
+                        {{ "ONU" + onu_list.port_id + "/" + item }}
+                    </option>
                 </select>
             </div>
-            <div v-else class="error-msg">{{ lanMap['no_onu_info'] }}</div>
+            <div v-else class="error-msg">{{ lanMap["no_onu_info"] }}</div>
         </div>
         <hr />
         <div v-if="onuPort.length && onu_list.data">
             <div>
-                <span>ONU{{ lanMap['port_id'] }}</span>
+                <span>ONU{{ lanMap["port_id"] }}</span>
                 <select v-model.number="opid">
                     <option
                         :value="item"
                         v-for="(item, index) in onuPort"
                         :key="index"
-                    >{{ item === 0 ? 'PON' : item }}</option>
+                    >
+                        {{ item === 0 ? "PON" : item }}
+                    </option>
                 </select>
                 <a
                     href="javascript: void(0);"
                     class="op-perf-refresh"
                     @click="refreshData"
-                >{{ lanMap['refresh'] }}</a>
+                    >{{ lanMap["refresh"] }}</a
+                >
                 <a
                     href="javascript: void(0);"
                     class="op-perf-refresh"
                     @click="openCfm"
-                >{{ lanMap['clear_perf'] }}</a>
+                    >{{ lanMap["clear_perf"] }}</a
+                >
                 <a
                     href="javascript: void(0);"
                     class="op-perf-refresh"
                     @click="change_data('history')"
                     v-if="showFlag === 'history'"
-                >{{ lanMap['curr_perf'] }}</a>
+                    >{{ lanMap["curr_perf"] }}</a
+                >
                 <a
                     href="javascript: void(0);"
                     class="op-perf-refresh"
                     @click="change_data('current')"
                     v-if="showFlag === 'current'"
-                >{{ lanMap['history_perf'] }}</a>
+                    >{{ lanMap["history_perf"] }}</a
+                >
             </div>
             <div class="op-perf-info" v-if="opInfo.hasOwnProperty('status')">
-                <span class="op-perf-status">{{ lanMap['onu_perf_status'] }}</span>:
-                <span>{{ opInfo.status === 2 ? lanMap['enable'] : lanMap['disable'] }}</span>
-                <span class="op-perf-period">{{ lanMap['onu_perf_period'] }}</span>:
+                <span class="op-perf-status">{{
+                    lanMap["onu_perf_status"]
+                }}</span
+                >:
+                <span>{{
+                    opInfo.status === 2 ? lanMap["enable"] : lanMap["disable"]
+                }}</span>
+                <span class="op-perf-period">{{
+                    lanMap["onu_perf_period"]
+                }}</span
+                >:
                 <span>{{ opInfo.period }}</span>
-                <a href="javascript: void(0);" @click="openModal">{{ lanMap['config'] }}</a>
+                <a href="javascript: void(0);" @click="openModal">{{
+                    lanMap["config"]
+                }}</a>
             </div>
-            <div class="error-msg" v-else>{{ lanMap['get_data_fail'] }}</div>
+            <div class="error-msg" v-else>{{ lanMap["get_data_fail"] }}</div>
             <div class="onu-perf-detail" v-if="Object.keys(onuPerf).length > 0">
                 <div v-for="(item, key) in onuPerf" :key="key">
                     <span>{{ lanMap[key] }}</span>
@@ -75,33 +95,41 @@
         </div>
         <div class="modal-dialog" v-if="isShowDialog">
             <div class="cover"></div>
-            <div style="height: 260px;">
-                <h3 class="modal-header">{{ lanMap['config'] + lanMap['onu_perf_status'] }}</h3>
+            <div style="height: 260px">
+                <h3 class="modal-header">
+                    {{ lanMap["config"] + lanMap["onu_perf_status"] }}
+                </h3>
                 <div class="modal-item">
-                    <span>ONU{{ lanMap['port_id'] }}</span>
+                    <span>ONU{{ lanMap["port_id"] }}</span>
                     <select v-model.number="opid_set">
                         <option
                             :value="item"
                             v-for="(item, index) in onuPort"
                             :key="index"
-                        >{{ item === 0 ? 'PON' : item }}</option>
+                        >
+                            {{ item === 0 ? "PON" : item }}
+                        </option>
                     </select>
                 </div>
                 <div class="modal-item">
-                    <span>{{ lanMap['onu_perf_status'] }}</span>
+                    <span>{{ lanMap["onu_perf_status"] }}</span>
                     <select v-model.number="status">
-                        <option value="1">{{ lanMap['disable'] }}</option>
-                        <option value="2">{{ lanMap['enable'] }}</option>
+                        <option value="1">{{ lanMap["disable"] }}</option>
+                        <option value="2">{{ lanMap["enable"] }}</option>
                     </select>
                 </div>
                 <div class="modal-item">
-                    <span>{{ lanMap['onu_perf_period'] }}</span>
+                    <span>{{ lanMap["onu_perf_period"] }}</span>
                     <input type="text" v-model.number="period" />
                     s
                 </div>
                 <div class="modal-item">
-                    <a href="javascript: void(0);" @click="submitCfg">{{ lanMap['apply'] }}</a>
-                    <a href="javascript: void(0);" @click="closeModal">{{ lanMap['cancel'] }}</a>
+                    <a href="javascript: void(0);" @click="submitCfg">{{
+                        lanMap["apply"]
+                    }}</a>
+                    <a href="javascript: void(0);" @click="closeModal">{{
+                        lanMap["cancel"]
+                    }}</a>
                 </div>
                 <div class="close" @click="closeModal"></div>
             </div>
@@ -132,27 +160,27 @@ export default {
             period: "",
             isShowDialog: false,
             showFlag: "current",
-            debounce: false
+            debounce: false,
         };
     },
     created() {
-        this.portid = sessionStorage.getItem("pid") || 1;
+        this.portid = Number(sessionStorage.getItem("pid")) || 1;
     },
     methods: {
         ...mapMutations({
-            addonu_list: "updateOnuList"
+            addonu_list: "updateOnuList",
         }),
         getOnuPort() {
             this.$http
                 .get("/onumgmt?form=port_cfg", {
-                    params: { port_id: this.portid, onu_id: this.onuid }
+                    params: { port_id: this.portid, onu_id: this.onuid },
                 })
-                .then(res => {
+                .then((res) => {
                     this.onuPort = [];
                     if (res.data.code === 1) {
                         if (res.data.data && res.data.data.length) {
                             this.onuPort.push(0); //  onu  pon口
-                            res.data.data.forEach(item => {
+                            res.data.data.forEach((item) => {
                                 this.onuPort.push(item.op_id);
                             });
                             var op = Number(sessionStorage.getItem("opid"));
@@ -169,7 +197,7 @@ export default {
                         this.opid = "";
                     }
                 })
-                .catch(err => {});
+                .catch((err) => {});
         },
         getPerfStatus() {
             this.$http
@@ -177,10 +205,10 @@ export default {
                     params: {
                         port_id: this.portid,
                         onu_id: this.onuid,
-                        op_id: this.opid
-                    }
+                        op_id: this.opid,
+                    },
                 })
-                .then(res => {
+                .then((res) => {
                     if (res.data.code === 1) {
                         if (res.data.data) {
                             this.opInfo = res.data.data;
@@ -191,11 +219,11 @@ export default {
                         this.opInfo = {};
                         this.$message({
                             type: "error",
-                            text: `(${res.data.code}) ${res.data.message}`
+                            text: `(${res.data.code}) ${res.data.message}`,
                         });
                     }
                 })
-                .catch(err => {});
+                .catch((err) => {});
         },
         getPerfInfo() {
             this.$http
@@ -203,10 +231,10 @@ export default {
                     params: {
                         port_id: this.portid,
                         onu_id: this.onuid,
-                        op_id: this.opid
-                    }
+                        op_id: this.opid,
+                    },
                 })
-                .then(res => {
+                .then((res) => {
                     if (res.data.code === 1) {
                         if (res.data.data) {
                             this.onuPerf = res.data.data;
@@ -217,7 +245,7 @@ export default {
                         this.onuPerf = {};
                     }
                 })
-                .catch(err => {});
+                .catch((err) => {});
         },
         getHistory() {
             this.$http
@@ -225,10 +253,10 @@ export default {
                     params: {
                         port_id: this.portid,
                         onu_id: this.onuid,
-                        op_id: this.opid
-                    }
+                        op_id: this.opid,
+                    },
                 })
-                .then(res => {
+                .then((res) => {
                     if (res.data.code === 1) {
                         if (res.data.data) {
                             this.onuPerf = res.data.data;
@@ -239,14 +267,14 @@ export default {
                         this.onuPerf = {};
                     }
                 })
-                .catch(err => {});
+                .catch((err) => {});
         },
         getResource() {
             this.$http
                 .get("/onu_allow_list?form=resource", {
-                    params: { port_id: this.portid }
+                    params: { port_id: this.portid },
                 })
-                .then(res => {
+                .then((res) => {
                     if (res.data.code === 1) {
                         var _onu_list = this.analysis(res.data.data.resource);
                         if (!_onu_list) {
@@ -256,7 +284,7 @@ export default {
                         }
                         var obj = {
                             port_id: res.data.data.port_id,
-                            data: _onu_list
+                            data: _onu_list,
                         };
                         this.addonu_list(obj);
                         var oid = Number(sessionStorage.getItem("oid"));
@@ -295,7 +323,7 @@ export default {
                         this.onuid = 0;
                     }
                 })
-                .catch(err => {
+                .catch((err) => {
                     // to do
                 });
         },
@@ -313,7 +341,7 @@ export default {
             ) {
                 this.$message({
                     type: "info",
-                    text: this.lanMap["modify_tips"]
+                    text: this.lanMap["modify_tips"],
                 });
                 this.closeModal();
                 return;
@@ -325,16 +353,16 @@ export default {
                     onu_id: this.onuid,
                     op_id: this.opid_set,
                     status: this.status,
-                    period: this.period
-                }
+                    period: this.period,
+                },
             };
             this.$http
                 .post("/onumgmt?form=performance", post_data)
-                .then(res => {
+                .then((res) => {
                     if (res.data.code === 1) {
                         this.$message({
                             type: res.data.type,
-                            text: this.lanMap["st_success"]
+                            text: this.lanMap["st_success"],
                         });
                         if (this.opid === this.opid_set) {
                             this.getPerfStatus();
@@ -342,11 +370,11 @@ export default {
                     } else {
                         this.$message({
                             type: res.data.type,
-                            text: "(" + res.data.code + ")" + res.data.message
+                            text: "(" + res.data.code + ")" + res.data.message,
                         });
                     }
                 })
-                .catch(err => {});
+                .catch((err) => {});
             this.closeModal();
         },
         closeModal() {
@@ -378,14 +406,14 @@ export default {
                     result.push(Number(substrs));
                 }
             }
-            return result.filter(item => !!item);
+            return result.filter((item) => !!item);
         },
         openCfm() {
             this.$confirm()
-                .then(_ => {
+                .then((_) => {
                     this.clearData();
                 })
-                .catch(_ => {});
+                .catch((_) => {});
         },
         clearData() {
             var post_data = {
@@ -393,34 +421,34 @@ export default {
                 param: {
                     port_id: this.portid,
                     onu_id: this.onuid,
-                    op_id: this.opid
-                }
+                    op_id: this.opid,
+                },
             };
             this.$http
                 .post("/onumgmt?form=performance", post_data)
-                .then(res => {
+                .then((res) => {
                     if (res.data.code === 1) {
                         this.$message({
                             type: res.data.type,
                             text:
                                 this.lanMap["clear_perf"] +
-                                this.lanMap["setting_ok"]
+                                this.lanMap["setting_ok"],
                         });
                         this.getPerfInfo();
                     } else {
                         this.$message({
                             type: res.data.type,
-                            text: "(" + res.data.code + ")" + res.data.message
+                            text: "(" + res.data.code + ")" + res.data.message,
                         });
                     }
                 })
-                .catch(err => {});
+                .catch((err) => {});
         },
         change_data(flag) {
             if (this.debounce) {
                 return this.$message({
                     type: "warning",
-                    text: this.lanMap["click_often"]
+                    text: this.lanMap["click_often"],
                 });
             }
             this.debounce = true;
@@ -432,10 +460,10 @@ export default {
                 this.showFlag = "current";
                 this.getPerfInfo();
             }
-            setTimeout(_ => {
+            setTimeout((_) => {
                 this.debounce = false;
             }, 1000);
-        }
+        },
     },
     watch: {
         portid() {
@@ -452,8 +480,8 @@ export default {
             this.getPerfStatus();
             this.getPerfInfo();
             sessionStorage.setItem("opid", this.opid);
-        }
-    }
+        },
+    },
 };
 </script>
 
