@@ -17,14 +17,14 @@ export default {
         return {
             lang: {
                 zh: {},
-                en: {}
-            }
+                en: {},
+            },
         };
     },
     created() {
         this.lang = {
             zh,
-            en
+            en,
         };
         var def_lang = sessionStorage.getItem("def_lang");
         if (def_lang) {
@@ -33,7 +33,7 @@ export default {
         } else {
             this.$http
                 .get(this.change_url.get_lang)
-                .then(res => {
+                .then((res) => {
                     if (res.data.code === 1) {
                         const lang = res.data.data.lang || "en";
                         this.set_language(lang.replace(/[\r\n\s]/g, ""));
@@ -47,7 +47,7 @@ export default {
                         sessionStorage.setItem("def_lang", "en");
                     }
                 })
-                .catch(err => {
+                .catch((err) => {
                     // to do
                 });
         }
@@ -57,17 +57,17 @@ export default {
         ...mapMutations({
             add_lanMap: "updateLanMap",
             loading: "updateLoading",
-            set_language: "updateLang"
+            set_language: "updateLang",
         }),
         //  http响应拦截器，如返回登录超时或登录信息异常时进行强制跳转
         http_interceptors() {
             this.$http.interceptors.response.use(
-                response => {
+                (response) => {
                     //  返回 0 ，非法登录信息
                     if (response.data.code === 0) {
                         this.$message({
                             type: "error",
-                            text: this.lanMap["illegal_login_info"]
+                            text: this.lanMap["illegal_login_info"],
                         });
                         sessionStorage.clear();
                         this.$router.push("/login");
@@ -76,7 +76,7 @@ export default {
                     if (response.data.code === -1) {
                         this.$message({
                             type: "error",
-                            text: this.lanMap["login_timeout"]
+                            text: this.lanMap["login_timeout"],
                         });
                         sessionStorage.clear();
                         this.$router.push("/login");
@@ -94,11 +94,11 @@ export default {
                     }
                     return response;
                 },
-                err => {
+                (err) => {
                     return Promise.reject(err);
                 }
             );
-        }
+        },
     },
     computed: {
         ...mapState([
@@ -107,15 +107,15 @@ export default {
             "isLoading",
             "language",
             "change_url",
-            "lanMap"
-        ])
+            "lanMap",
+        ]),
     },
     watch: {
         language() {
             this.add_lanMap(this.lang[this.language]);
             sessionStorage.setItem("def_lang", this.language);
-        }
-    }
+        },
+    },
 };
 </script>
 
@@ -280,6 +280,11 @@ a:active {
 }
 i {
     user-select: none;
+}
+input:disabled,
+select:disabled,
+textarea:disabled {
+    background-color: #cecece;
 }
 /* 复用模态框类 */
 .modal-dialog {
