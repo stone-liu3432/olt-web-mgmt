@@ -2,7 +2,19 @@
     <div id="detail" class="lf">
         <div v-if="port_name.pon && port_name.ge">
             <keep-alive
-                :include="['onuAllow','ponSetting','onuDeny','onuBasicInfo','slaCfg','onuPortCfg','perfInfo','portCfg','portVlan','igmp','multicast','multiVlan']"
+                :include="[
+                    'onuAllow',
+                    'ponSetting',
+                    'onuDeny',
+                    'onuBasicInfo',
+                    'slaCfg',
+                    'onuPortCfg',
+                    'perfInfo',
+                    'portCfg',
+                    'igmp',
+                    'multicast',
+                    'multiVlan',
+                ]"
             >
                 <router-view v-if="isRouterAlive"></router-view>
             </keep-alive>
@@ -16,7 +28,7 @@ export default {
     name: "detail",
     data() {
         return {
-            isRouterAlive: true
+            isRouterAlive: true,
         };
     },
     computed: mapState(["lanMap", "change_url", "system", "port_name"]),
@@ -26,7 +38,7 @@ export default {
     methods: {
         ...mapMutations({
             portInfo: "updatePortData",
-            portName: "updatePortName"
+            portName: "updatePortName",
         }),
         //  控制router子组件，销毁再加载，实现子组件更新
         reload() {
@@ -49,11 +61,11 @@ export default {
                 this.reload();
                 return false;
             }
-        }
+        },
     },
     beforeDestroy() {
         document.body.removeEventListener("keydown", this.preventRefresh);
-    }
+    },
 };
 </script>
 
