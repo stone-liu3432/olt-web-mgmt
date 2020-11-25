@@ -16,6 +16,10 @@ const remoteMgmt = () =>
     import(
         /* webpackChunkName: "system-page" */ "@/components/common/system/remoteMgmt"
     );
+const cliAcl = () =>
+    import(
+        /* webpackChunkName: "system-page" */ "@/components/common/system/cliAcl"
+    );
 const upgrade = () =>
     import(
         /* webpackChunkName: "system-page" */ "@/components/common/system/upgrade"
@@ -38,7 +42,6 @@ const userMgmt = () =>
     );
 
 // pon
-//const onuAllow = () => import(/* webpackChunkName: "ponmgmt-page" */  '@/components/common/pon/onuAllow')
 const onuDeny = () =>
     import(
         /* webpackChunkName: "ponmgmt-page" */ "@/components/common/pon/onuDeny"
@@ -166,6 +169,10 @@ const mstp = () =>
     import(
         /* webpackChunkName: "protocol-page" */ "@/components/common/protocol/mstp"
     );
+const dhcpV6 = () =>
+    import(
+        /* webpackChunkName: "protocol-page" */ "@/components/common/protocol/dhcpv6"
+    );
 export default [
     {
         path: "/advanced_setting",
@@ -198,6 +205,13 @@ export default [
     {
         path: "/remote_mgmt",
         component: remoteMgmt,
+        meta: {
+            requireAuth: true
+        }
+    },
+    {
+        path: "/cli_acl",
+        component: cliAcl,
         meta: {
             requireAuth: true
         }
@@ -455,6 +469,13 @@ export default [
     {
         path: "/mstp",
         component: mstp,
+        meta: {
+            requireAuth: true
+        }
+    },
+    {
+        path: "/dhcp_v6",
+        component: dhcpV6,
         meta: {
             requireAuth: true
         }
