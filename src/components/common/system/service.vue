@@ -1,39 +1,68 @@
 <template>
     <div>
-        <div class="service-title">{{ lanMap['service'] }}</div>
+        <div class="service-title">{{ lanMap["service"] }}</div>
         <hr />
         <div class="system-port">
-            <span>{{ lanMap['sys_port'] }}</span>
-            <a href="javascript: void(0);" @click="openSysPortDialog">{{ lanMap['config'] }}</a>
+            <span>{{ lanMap["sys_port"] }}</span>
+            <a href="javascript: void(0);" @click="openSysPortDialog">{{
+                lanMap["config"]
+            }}</a>
             <div>
-                <span style="margin: 0 8px 0 50px;">http:</span>
+                <span style="margin: 0 8px 0 50px">http:</span>
                 <span>{{ sysPortInfo.http }}</span>
-                <span style="margin: 0 8px 0 50px;">https:</span>
+                <span style="margin: 0 8px 0 50px">https:</span>
                 <span>{{ sysPortInfo.https }}</span>
-                <span style="margin: 0 8px 0 50px;">telnet:</span>
+                <span style="margin: 0 8px 0 50px">telnet:</span>
                 <span>{{ sysPortInfo.telnet }}</span>
             </div>
         </div>
         <hr />
         <div class="spec-support">
             <span>
-                <span>5620{{ lanMap['support'] }}:</span>
-                <span>{{ spec1 ? lanMap['support'] : lanMap['not_support'] }}</span>
+                <span>{{ lanMap["syslog_server"] }}:</span>
+                <span>{{ syslogIpaddr }}</span>
             </span>
-            <a href="javascript: void(0);" @click="setSpec">{{ lanMap['config'] }}</a>
+            <nms-button style="margin-left: 30px" @click="setSyslogServer">
+                {{ lanMap["config"] }}
+            </nms-button>
+        </div>
+        <hr />
+        <div class="spec-support">
+            <span>
+                <span>5620{{ lanMap["support"] }}:</span>
+                <span>{{
+                    spec1 ? lanMap["support"] : lanMap["not_support"]
+                }}</span>
+            </span>
+            <a
+                href="javascript: void(0);"
+                style="margin-left: 30px"
+                @click="setSpec"
+            >
+                {{ lanMap["config"] }}
+            </a>
         </div>
         <div class="frpc" v-if="showFRPC">
             <hr />
             <h4>
                 <span>FRPC</span>
-                <a href="javascript: void(0);" @click="openDialog">{{ lanMap['config'] }}</a>
+                <a href="javascript: void(0);" @click="openDialog">{{
+                    lanMap["config"]
+                }}</a>
             </h4>
             <template v-if="Object.keys(frpc).length">
                 <div v-for="(item, key) in frpc">
-                    <span>{{ key !== 'local_ip' ? key.replace(/_/, ' ') : "Local IP" }}:</span>
                     <span
-                        style="text-transform: none;"
-                    >{{ (key === 'type' ? item ? 'https' : 'http' : item) || '' }}</span>
+                        >{{
+                            key !== "local_ip"
+                                ? key.replace(/_/, " ")
+                                : "Local IP"
+                        }}:</span
+                    >
+                    <span style="text-transform: none">{{
+                        (key === "type" ? (item ? "https" : "http") : item) ||
+                        ""
+                    }}</span>
                 </div>
             </template>
         </div>
@@ -56,22 +85,38 @@
                             id="trap_community"
                             type="text"
                             v-model="trap_community"
-                            :style="{ 'border-color': trap_community.length > 16 ? 'red' : ''}"
+                            :style="{
+                                'border-color':
+                                    trap_community.length > 16 ? 'red' : '',
+                            }"
                             placeholder="0-16 characters"
                         />
                     </div>
                     <div onselectstart="return false;">
-                        <a href="javascript:void(0);" @click="set_trapserver">{{ lanMap['apply'] }}</a>
+                        <a href="javascript:void(0);" @click="set_trapserver">{{
+                            lanMap["apply"]
+                        }}</a>
                     </div>
                 </div>
             </div>
             <div class="snmp-item">
                 <h5>SNMP community</h5>
                 <div>
-                    <div onselectstart="return false;" style="padding-left: 20px;">
-                        <input type="checkbox" id="read_community" v-model="flag_read" />
+                    <div
+                        onselectstart="return false;"
+                        style="padding-left: 20px"
+                    >
+                        <input
+                            type="checkbox"
+                            id="read_community"
+                            v-model="flag_read"
+                        />
                         <label for="read_community">Read community</label>
-                        <input type="checkbox" id="write_community" v-model="flag_write" />
+                        <input
+                            type="checkbox"
+                            id="write_community"
+                            v-model="flag_write"
+                        />
                         <label for="write_community">Write community</label>
                     </div>
                     <div>
@@ -80,7 +125,10 @@
                             id="read_community_input"
                             type="text"
                             v-model="read_community"
-                            :style="{ 'border-color': read_community.length > 16 ? 'red' : ''}"
+                            :style="{
+                                'border-color':
+                                    read_community.length > 16 ? 'red' : '',
+                            }"
                             placeholder="0-16 characters"
                         />
                     </div>
@@ -90,12 +138,17 @@
                             id="write_community_input"
                             type="text"
                             v-model="write_community"
-                            :style="{ 'border-color': write_community.length > 16 ? 'red' : ''}"
+                            :style="{
+                                'border-color':
+                                    write_community.length > 16 ? 'red' : '',
+                            }"
                             placeholder="0-16 characters"
                         />
                     </div>
                     <div onselectstart="return false;">
-                        <a href="javascript:void(0);" @click="set_community">{{ lanMap['apply'] }}</a>
+                        <a href="javascript:void(0);" @click="set_community">{{
+                            lanMap["apply"]
+                        }}</a>
                     </div>
                 </div>
             </div>
@@ -104,39 +157,49 @@
         <div class="ssh-info">
             <div>
                 <h3>SSH-Key</h3>
-                <a href="javascript:void(0);" @click="open_add_ssh">{{ lanMap['add'] }} SSH</a>
+                <a href="javascript:void(0);" @click="open_add_ssh"
+                    >{{ lanMap["add"] }} SSH</a
+                >
             </div>
             <div class="add-ssh" v-if="is_add_ssh">
-                <h4>{{ lanMap['add'] + lanMap['key'] }}</h4>
-                <h4>{{ lanMap['title'] }}</h4>
+                <h4>{{ lanMap["add"] + lanMap["key"] }}</h4>
+                <h4>{{ lanMap["title"] }}</h4>
                 <input
                     type="text"
                     v-model="ssh_name"
                     placeholder="Enter a name to ensure clear use"
-                    :style="{'border-color': ssh_name !== '' && !reg_name.test(ssh_name) ? 'red' : ''}"
+                    :style="{
+                        'border-color':
+                            ssh_name !== '' && !reg_name.test(ssh_name)
+                                ? 'red'
+                                : '',
+                    }"
                 />
-                <h4>{{ lanMap['key'] }}</h4>
+                <h4>{{ lanMap["key"] }}</h4>
                 <textarea
                     rows="6"
                     v-model="ssh_key"
                     spellcheck="false"
                     placeholder="Begins with 'ssh-rsa', 'ssh-dss', 'ssh-ed25519', 'ecdsa-sha2-nistp256', 'ecdsa-sha2-nistp384', or 'ecdsa-sha2-nistp521'"
                 ></textarea>
-                <a href="javascript:void(0);" @click="submit_add_ssh">{{ lanMap['apply'] }}</a>
+                <a href="javascript:void(0);" @click="submit_add_ssh">{{
+                    lanMap["apply"]
+                }}</a>
                 <a
                     href="javascript:void(0);"
                     class="cancel"
                     @click="close_add_ssh"
-                >{{ lanMap['cancel'] }}</a>
+                    >{{ lanMap["cancel"] }}</a
+                >
             </div>
             <div
                 class="ssh-item"
-                v-for="(item,index) in ssh_info.data"
+                v-for="(item, index) in ssh_info.data"
                 :key="index"
                 v-if="ssh_info.data && ssh_info.data.length > 0"
             >
                 <div>
-                    <h4>{{ lanMap['title'] + ' ' + item.keyname }}</h4>
+                    <h4>{{ lanMap["title"] + " " + item.keyname }}</h4>
                     <hr />
                     <p>{{ item.publickey }}</p>
                 </div>
@@ -144,7 +207,8 @@
                     <a
                         href="javascript:void(0);"
                         @click="open_del_sshkey(item)"
-                    >{{ lanMap['delete'] }}</a>
+                        >{{ lanMap["delete"] }}</a
+                    >
                 </div>
             </div>
         </div>
@@ -159,7 +223,10 @@
                 <input
                     type="text"
                     v-model="frpcForm.server_addr"
-                    :style="{ 'border-color': (frpcForm.server_addr.length < 129) ? '' : 'red' }"
+                    :style="{
+                        'border-color':
+                            frpcForm.server_addr.length < 129 ? '' : 'red',
+                    }"
                 />
                 <span>IP/ Domain name</span>
             </div>
@@ -168,7 +235,13 @@
                 <input
                     type="text"
                     v-model.number="frpcForm.server_port"
-                    :style="{ 'border-color': (frpcForm.server_port === '' || validPort('server_port')) ? '' : 'red' }"
+                    :style="{
+                        'border-color':
+                            frpcForm.server_port === '' ||
+                            validPort('server_port')
+                                ? ''
+                                : 'red',
+                    }"
                 />
                 <span>Range: 1 - 65535</span>
             </div>
@@ -179,7 +252,14 @@
                     v-model.trim="frpcForm.token"
                     spellcheck="false"
                     rows="5"
-                    :style="{ 'border-color': (frpcForm.token !== undefined && frpcForm.token !== null) && frpcForm.token.length <= 128 ? '' : 'red' }"
+                    :style="{
+                        'border-color':
+                            frpcForm.token !== undefined &&
+                            frpcForm.token !== null &&
+                            frpcForm.token.length <= 128
+                                ? ''
+                                : 'red',
+                    }"
                 />
                 <span>{{ lanMap.composeRange(0, 128) }}</span>
             </div>
@@ -188,7 +268,12 @@
                 <input
                     type="text"
                     v-model="frpcForm.appname"
-                    :style="{ 'border-color': (frpcForm.appname === '' || validAppname ) ? '' : 'red' }"
+                    :style="{
+                        'border-color':
+                            frpcForm.appname === '' || validAppname
+                                ? ''
+                                : 'red',
+                    }"
                 />
                 <span>{{ lanMap.composeRange(1, 32) }}</span>
             </div>
@@ -205,7 +290,12 @@
                     disabled
                     type="text"
                     v-model="frpcForm.local_ip"
-                    :style="{ 'border-color': (frpcForm.local_ip === '' || validIp('local_ip')) ? '' : 'red' }"
+                    :style="{
+                        'border-color':
+                            frpcForm.local_ip === '' || validIp('local_ip')
+                                ? ''
+                                : 'red',
+                    }"
                 />
             </div>
             <div class="frpc-form-item">
@@ -214,7 +304,13 @@
                     disabled
                     type="text"
                     v-model.number="frpcForm.local_port"
-                    :style="{ 'border-color': (frpcForm.local_port === '' || validPort('local_port')) ? '' : 'red' }"
+                    :style="{
+                        'border-color':
+                            frpcForm.local_port === '' ||
+                            validPort('local_port')
+                                ? ''
+                                : 'red',
+                    }"
                 />
             </div>
             <div class="frpc-form-item">
@@ -222,7 +318,14 @@
                 <input
                     type="text"
                     v-model.number="frpcForm.remote_port"
-                    :style="{ 'border-color': (frpcForm.remote_port === '' || frpcForm.remote_port === 0 || validPort('remote_port')) ? '' : 'red' }"
+                    :style="{
+                        'border-color':
+                            frpcForm.remote_port === '' ||
+                            frpcForm.remote_port === 0 ||
+                            validPort('remote_port')
+                                ? ''
+                                : 'red',
+                    }"
                 />
                 <span>Range: 0 - 65535</span>
             </div>
@@ -231,7 +334,12 @@
                 <input
                     type="text"
                     v-model="frpcForm.custom_domains"
-                    :style="{ 'border-color': (frpcForm.custom_domains === '' || validDomains) ? '' : 'red' }"
+                    :style="{
+                        'border-color':
+                            frpcForm.custom_domains === '' || validDomains
+                                ? ''
+                                : 'red',
+                    }"
                 />
                 <span>ex. www.test.com</span>
             </div>
@@ -240,22 +348,41 @@
                 <input
                     type="text"
                     v-model.trim="frpcForm.subdomain"
-                    :style="{ 'border-color': (frpcForm.subdomain !== undefined && frpcForm.subdomain !== null) && frpcForm.subdomain.length <= 64   ? '' : 'red' }"
+                    :style="{
+                        'border-color':
+                            frpcForm.subdomain !== undefined &&
+                            frpcForm.subdomain !== null &&
+                            frpcForm.subdomain.length <= 64
+                                ? ''
+                                : 'red',
+                    }"
                 />
                 <span>{{ lanMap.composeRange(0, 64) }}</span>
             </div>
             <div slot="footer">
-                <a href="javascript: void(0);" @click="submitForm">{{ lanMap['apply'] }}</a>
-                <a href="javascript: void(0);" @click="closeModal">{{ lanMap['cancel'] }}</a>
+                <a href="javascript: void(0);" @click="submitForm">{{
+                    lanMap["apply"]
+                }}</a>
+                <a href="javascript: void(0);" @click="closeModal">{{
+                    lanMap["cancel"]
+                }}</a>
             </div>
         </nms-dialog>
-        <nms-dialog :visible.sync="portVisible" width="500px" :title="lanMap['config']">
+        <nms-dialog
+            :visible.sync="portVisible"
+            width="500px"
+            :title="lanMap['config']"
+        >
             <div class="sys-port-item">
                 <span>http</span>
                 <input
                     type="text"
                     v-model.number="sysForm.http"
-                    :style="{ 'border-color': validatePort(sysForm.http, 'http') ? '' : 'red' }"
+                    :style="{
+                        'border-color': validatePort(sysForm.http, 'http')
+                            ? ''
+                            : 'red',
+                    }"
                 />
                 <span class="tips">80 - 50000</span>
             </div>
@@ -264,7 +391,11 @@
                 <input
                     type="text"
                     v-model.number="sysForm.https"
-                    :style="{ 'border-color': validatePort(sysForm.https, 'https') ? '' : 'red' }"
+                    :style="{
+                        'border-color': validatePort(sysForm.https, 'https')
+                            ? ''
+                            : 'red',
+                    }"
                 />
                 <span class="tips">443 - 50000</span>
             </div>
@@ -273,13 +404,41 @@
                 <input
                     type="text"
                     v-model.number="sysForm.telnet"
-                    :style="{ 'border-color': validatePort(sysForm.telnet, 'telnet') ? '' : 'red' }"
+                    :style="{
+                        'border-color': validatePort(sysForm.telnet, 'telnet')
+                            ? ''
+                            : 'red',
+                    }"
                 />
                 <span class="tips">23, 1000 - 50000</span>
             </div>
             <div slot="footer">
-                <nms-button @click="submitSysPort">{{ lanMap['apply'] }}</nms-button>
-                <nms-button @click="portVisible = false;">{{ lanMap['cancel'] }}</nms-button>
+                <nms-button @click="submitSysPort">{{
+                    lanMap["apply"]
+                }}</nms-button>
+                <nms-button @click="portVisible = false">{{
+                    lanMap["cancel"]
+                }}</nms-button>
+            </div>
+        </nms-dialog>
+        <nms-dialog :visible.sync="syslogVisible" border width="550px">
+            <template slot="title">{{ lanMap["syslog_server"] }}</template>
+            <div class="sys-port-item">
+                <span>{{ lanMap["ipaddr"] }}</span>
+                <input
+                    type="text"
+                    v-model="syslogModel"
+                    v-validator="{ validator: testIPAddr }"
+                />
+                <span class="tips">ex. 127.0.0.1</span>
+            </div>
+            <div slot="footer">
+                <nms-button @click="submitSyslog">{{
+                    lanMap["apply"]
+                }}</nms-button>
+                <nms-button @click="syslogVisible = false">
+                    {{ lanMap["cancel"] }}
+                </nms-button>
             </div>
         </nms-dialog>
     </div>
@@ -307,7 +466,7 @@ export default {
                 this.custom.frpc;
             res && this.getFrpc();
             return res;
-        }
+        },
     },
     data() {
         return {
@@ -348,7 +507,7 @@ export default {
                 local_port: "",
                 remote_port: "",
                 custom_domains: "",
-                subdomain: ""
+                subdomain: "",
             },
             visible: false,
             supportFrpc: false,
@@ -357,10 +516,13 @@ export default {
             sysForm: {
                 http: "", // 80 - 50000
                 https: "", // 443 - 50000
-                telnet: "" // 23 1000 - 50000
+                telnet: "", // 23 1000 - 50000
             },
             spec1: 0,
-            spec_model: 0
+            spec_model: 0,
+            syslogIpaddr: "192.168.100.121",
+            syslogModel: "",
+            syslogVisible: false,
         };
     },
     created() {
@@ -369,46 +531,47 @@ export default {
         this.get_community();
         this.getSysPort();
         this.getSpec();
+        this.getSyslogServer();
     },
     methods: {
         get_ssh() {
             this.$http
                 .get("/system_service?form=sshd")
-                .then(res => {
+                .then((res) => {
                     if (res.data.code === 1) {
                         this.ssh_info = res.data;
                     } else {
                         this.ssh_info = {};
                     }
                 })
-                .catch(err => {
+                .catch((err) => {
                     // to do
                 });
         },
         get_trap() {
             this.$http
                 .get("/snmp_cfg?form=trap")
-                .then(res => {
+                .then((res) => {
                     if (res.data.code === 1) {
                         this.serverip = res.data.data.serverip;
                         this.trap_port = res.data.data.trap_port;
                         this.trap_community = res.data.data.trap_community;
                     }
                 })
-                .catch(err => {
+                .catch((err) => {
                     // to do
                 });
         },
         get_community() {
             this.$http
                 .get("/snmp_cfg?form=community")
-                .then(res => {
+                .then((res) => {
                     if (res.data.code === 1) {
                         this.read_community = res.data.data.read_community;
                         this.write_community = res.data.data.write_community;
                     }
                 })
-                .catch(err => {
+                .catch((err) => {
                     // to do
                 });
         },
@@ -416,47 +579,47 @@ export default {
             this.sysPortInfo = {};
             this.$http
                 .get("/system_service?form=port")
-                .then(res => {
+                .then((res) => {
                     if (res.data.code === 1) {
                         if (res.data.data) {
                             this.sysPortInfo = res.data.data;
                         }
                     }
                 })
-                .catch(err => {});
+                .catch((err) => {});
         },
         getSpec() {
             this.spec1 = 0;
             this.$http
                 .get("/system_service?form=spec1")
-                .then(res => {
+                .then((res) => {
                     if (res.data.code === 1) {
                         if (res.data.data) {
                             this.spec1 = res.data.data.spec1;
                         }
                     }
                 })
-                .catch(err => {});
+                .catch((err) => {});
         },
         open_del_sshkey(node) {
             this.$confirm(this.lanMap["if_sure"])
-                .then(_ => {
+                .then((_) => {
                     var post_param = {
                         method: "delete",
                         param: {
-                            keyname: node.keyname
-                        }
+                            keyname: node.keyname,
+                        },
                     };
                     this.$http
                         .post("/system_service?form=sshd", post_param)
-                        .then(res => {
+                        .then((res) => {
                             if (res.data.code === 1) {
                                 this.$message({
                                     type: res.data.type,
                                     text:
                                         this.lanMap["delete"] +
                                         ": " +
-                                        this.lanMap["st_success"]
+                                        this.lanMap["st_success"],
                                 });
                                 this.get_ssh();
                             } else if (res.data.code > 1) {
@@ -466,15 +629,15 @@ export default {
                                         "(" +
                                         res.data.code +
                                         ") " +
-                                        res.data.message
+                                        res.data.message,
                                 });
                             }
                         })
-                        .catch(err => {
+                        .catch((err) => {
                             // to do
                         });
                 })
-                .catch(_ => {});
+                .catch((_) => {});
         },
         set_trapserver() {
             if (this.limit) {
@@ -483,7 +646,7 @@ export default {
                 this.$message({
                     type: "error",
                     text: this.lanMap["click_often"],
-                    duration: 1000
+                    duration: 1000,
                 });
                 return;
             }
@@ -495,7 +658,7 @@ export default {
             if (!reg_ip.test(this.serverip)) {
                 this.$message({
                     type: "error",
-                    text: this.lanMap["ipaddr_error"]
+                    text: this.lanMap["ipaddr_error"],
                 });
                 return;
             }
@@ -518,26 +681,26 @@ export default {
                 param: {
                     serverip: this.serverip,
                     trap_port: this.trap_port,
-                    trap_community: this.trap_community
-                }
+                    trap_community: this.trap_community,
+                },
             };
             this.$http
                 .post("/snmp_cfg?form=trap", params)
-                .then(res => {
+                .then((res) => {
                     if (res.data.code === 1) {
                         this.$message({
                             type: res.data.type,
-                            text: this.lanMap["setting_ok"]
+                            text: this.lanMap["setting_ok"],
                         });
                         this.get_trap();
                     } else if (res.data.code > 1) {
                         this.$message({
                             type: res.data.type,
-                            text: "(" + res.data.code + ") " + res.data.message
+                            text: "(" + res.data.code + ") " + res.data.message,
                         });
                     }
                 })
-                .catch(err => {
+                .catch((err) => {
                     // to do
                 });
         },
@@ -546,7 +709,7 @@ export default {
                 this.$message({
                     type: "error",
                     text: this.lanMap["click_often"],
-                    duration: 1000
+                    duration: 1000,
                 });
                 return;
             }
@@ -560,7 +723,7 @@ export default {
             if (!flags) {
                 this.$message({
                     type: "info",
-                    text: this.lanMap["modify_tips"]
+                    text: this.lanMap["modify_tips"],
                 });
                 return;
             }
@@ -591,26 +754,26 @@ export default {
                 param: {
                     flags: flags,
                     read_community: this.read_community,
-                    write_community: this.write_community
-                }
+                    write_community: this.write_community,
+                },
             };
             this.$http
                 .post("/snmp_cfg?form=community", params)
-                .then(res => {
+                .then((res) => {
                     if (res.data.code === 1) {
                         this.$message({
                             type: res.data.type,
-                            text: this.lanMap["setting_ok"]
+                            text: this.lanMap["setting_ok"],
                         });
                         this.get_community();
                     } else if (res.data.code > 1) {
                         this.$message({
                             type: res.data.type,
-                            text: "(" + res.data.code + ") " + res.data.message
+                            text: "(" + res.data.code + ") " + res.data.message,
                         });
                     }
                 })
-                .catch(err => {});
+                .catch((err) => {});
         },
         //  添加ssh密钥
         open_add_ssh() {
@@ -626,14 +789,17 @@ export default {
                 this.$message({
                     type: "error",
                     text:
-                        this.lanMap["param_error"] + ": " + this.lanMap["title"]
+                        this.lanMap["param_error"] +
+                        ": " +
+                        this.lanMap["title"],
                 });
                 return;
             }
             if (!this.ssh_key) {
                 this.$message({
                     type: "error",
-                    text: this.lanMap["param_error"] + ": " + this.lanMap["key"]
+                    text:
+                        this.lanMap["param_error"] + ": " + this.lanMap["key"],
                 });
                 return;
             }
@@ -641,26 +807,27 @@ export default {
                 method: "add",
                 param: {
                     keyname: this.ssh_name,
-                    publickey: this.ssh_key.replace(/(^\s+)|(\s+$)/, "")
-                }
+                    publickey: this.ssh_key.replace(/(^\s+)|(\s+$)/, ""),
+                },
             };
             this.$http
                 .post("/system_service?form=sshd", post_param)
-                .then(res => {
+                .then((res) => {
                     if (res.data.code === 1) {
                         this.$message({
                             type: res.data.type,
-                            text: this.lanMap["add"] + this.lanMap["st_success"]
+                            text:
+                                this.lanMap["add"] + this.lanMap["st_success"],
                         });
                         this.get_ssh();
                     } else if (res.data.code > 1) {
                         this.$message({
                             type: res.data.type,
-                            text: "(" + res.data.code + ") " + res.data.message
+                            text: "(" + res.data.code + ") " + res.data.message,
                         });
                     }
                 })
-                .catch(err => {
+                .catch((err) => {
                     // to do
                 });
             this.close_add_ssh();
@@ -669,14 +836,14 @@ export default {
             this.frpc = {};
             this.$http
                 .get("/system_service?form=frpc")
-                .then(res => {
+                .then((res) => {
                     if (res.data.code === 1) {
                         if (res.data.data) {
                             this.frpc = res.data.data;
                         }
                     }
                 })
-                .catch(err => {});
+                .catch((err) => {});
         },
         openDialog() {
             this.visible = true;
@@ -741,13 +908,13 @@ export default {
                     type: this.frpcForm.type,
                     remote_port: this.frpcForm.remote_port || 0,
                     custom_domains: this.frpcForm.custom_domains,
-                    subdomain: this.frpcForm.subdomain
-                }
+                    subdomain: this.frpcForm.subdomain,
+                },
             };
             const loading = this.$loading();
             this.$http
                 .post("/system_service?form=frpc", post_param)
-                .then(res => {
+                .then((res) => {
                     if (res.data.code === 1) {
                         this.$message.success(this.lanMap["setting_ok"]);
                     } else {
@@ -759,12 +926,12 @@ export default {
                     this.closeModal();
                     loading.close();
                 })
-                .catch(err => {
+                .catch((err) => {
                     loading.close();
                 });
         },
         closeModal() {
-            this.beforeClose(_ => {
+            this.beforeClose((_) => {
                 this.visible = false;
             });
         },
@@ -777,7 +944,7 @@ export default {
                 local_ip: "",
                 local_port: "",
                 remote_port: "",
-                custom_domains: ""
+                custom_domains: "",
             };
             for (var key in this.frpcForm) {
                 this.frpcForm[key] = form[key];
@@ -788,7 +955,7 @@ export default {
         },
         openSysPortDialog() {
             this.portVisible = true;
-            Object.keys(this.sysForm).forEach(key => {
+            Object.keys(this.sysForm).forEach((key) => {
                 this.sysForm[key] = this.sysPortInfo[key];
             });
         },
@@ -814,10 +981,10 @@ export default {
                     param: {
                         http: Number(this.sysForm.http),
                         https: Number(this.sysForm.https),
-                        telnet: Number(this.sysForm.telnet)
-                    }
+                        telnet: Number(this.sysForm.telnet),
+                    },
                 })
-                .then(res => {
+                .then((res) => {
                     if (res.data.code === 1) {
                         this.$message.success(this.lanMap["setting_ok"]);
                         this.getSysPort();
@@ -827,7 +994,7 @@ export default {
                         );
                     }
                 })
-                .catch(err => {});
+                .catch((err) => {});
             this.portVisible = false;
         },
         validatePort(port, type) {
@@ -840,7 +1007,7 @@ export default {
                 },
                 telnet(val) {
                     return val === 23 || (val >= 1000 && val <= 50000);
-                }
+                },
             };
             if (typeof TYPES[type] === "function") {
                 return TYPES[type].call(this, Number(port));
@@ -853,7 +1020,7 @@ export default {
                     <span>5620{this.lanMap["support"]}:</span>
                     <select
                         value={this.spec_model}
-                        onChange={e => (this.spec_model = e.target.value)}
+                        onChange={(e) => (this.spec_model = e.target.value)}
                     >
                         <option value={0}>{this.lanMap["not_support"]}</option>
                         <option value={1}>{this.lanMap["support"]}</option>
@@ -861,10 +1028,10 @@ export default {
                 </div>,
                 this.lanMap["config"]
             )
-                .then(_ => {
+                .then(() => {
                     this.submitSpec(this.spec_model);
                 })
-                .catch(_ => {});
+                .catch(() => {});
         },
         submitSpec(spec) {
             if (Number(this.spec_model) === this.spec1) {
@@ -874,16 +1041,16 @@ export default {
                 .post("/system_service?form=spec1", {
                     method: "set",
                     param: {
-                        spec1: this.spec_model
-                    }
+                        spec1: this.spec_model,
+                    },
                 })
-                .then(res => {
+                .then((res) => {
                     if (res.data.code === 1) {
                         this.$confirm(this.lanMap["cfg_succ_reboot_tips"])
-                            .then(_ => {
+                            .then((_) => {
                                 this.$http
                                     .get("/system_reboot")
-                                    .then(res => {
+                                    .then((res) => {
                                         const lang = sessionStorage.getItem(
                                             "lang"
                                         );
@@ -891,26 +1058,74 @@ export default {
                                         sessionStorage.setItem("lang", lang);
                                         this.$router.push("/login");
                                     })
-                                    .catch(err => {});
+                                    .catch((err) => {});
                             })
-                            .catch(_ => {});
+                            .catch((_) => {});
                     } else {
                         this.$message.error(
                             `(${res.data.code}) ${res.data.message}`
                         );
                     }
                 })
-                .catch(_ => {});
-        }
-    }
+                .catch((_) => {});
+        },
+        getSyslogServer() {
+            this.$http
+                .get("/system_service?form=syslog")
+                .then((res) => {
+                    if (res.data.code === 1) {
+                        if (res.data.data) {
+                            this.syslogIpaddr = res.data.data.ipaddr || "";
+                        }
+                    }
+                })
+                .catch((err) => {});
+        },
+        setSyslogServer() {
+            this.syslogModel = this.syslogIpaddr;
+            this.syslogVisible = true;
+        },
+        testIPAddr(str) {
+            return testIPAddr(str);
+        },
+        submitSyslog() {
+            if (this.syslogModel === this.syslogIpaddr) {
+                return this.$message.info(this.lanMap["modify_tips"]);
+            }
+            if (!testIPAddr(this.syslogModel)) {
+                return this.$message.error(
+                    `${this.lanMap["param_error"]}: ${this.lanMap["ipaddr"]}`
+                );
+            }
+            const url = "/system_service?form=syslog",
+                post_params = {
+                    method: "set",
+                    param: {
+                        ipaddr: this.syslogModel,
+                    },
+                };
+            this.$http
+                .post(url, post_params)
+                .then((res) => {
+                    if (res.data.code === 1) {
+                        this.$message.success(this.lanMap["setting_ok"]);
+                        this.getSyslogServer();
+                    } else {
+                        this.$message.error(
+                            `(${res.data.code}) ${res.data.message}`
+                        );
+                    }
+                })
+                .catch((err) => {})
+                .finally(() => {
+                    this.syslogVisible = false;
+                });
+        },
+    },
 };
 </script>
 
 <style lang="less" scoped>
-a {
-    width: 120px;
-    padding: 0;
-}
 div.service-title {
     font-size: 24px;
     margin: 20px 10px;
@@ -1170,7 +1385,6 @@ div.spec-support {
     > span {
         display: inline-block;
         vertical-align: middle;
-        width: 230px;
         > span {
             line-height: 32px;
             display: inline-block;
@@ -1179,6 +1393,9 @@ div.spec-support {
                 color: @titleColor;
                 font-size: 20px;
                 font-weight: 500;
+            }
+            & + span {
+                margin-left: 12px;
             }
         }
     }
