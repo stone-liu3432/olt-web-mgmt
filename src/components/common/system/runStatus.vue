@@ -3,7 +3,19 @@
         <h1>{{ lanMap["running_status"] }}</h1>
         <div>
             <div class="system-info" v-if="system.data && system.data">
-                <h2>{{ lanMap["sys_info"] }}</h2>
+                <h2>
+                    {{ lanMap["sys_info"] }}
+                    <nms-button
+                        style="float: right; margin-right: 20px"
+                        @click="setDevName"
+                    >
+                        {{ lanMap["set_dev_name"] }}
+                    </nms-button>
+                </h2>
+                <div class="system-info-detail">
+                    <span>{{ lanMap["dev_name"] }}</span>
+                    <span>{{ hostname }}</span>
+                </div>
                 <div
                     v-for="(item, key) of system.data"
                     :key="key"
@@ -23,7 +35,9 @@
                         {{ item }}
                     </span>
                     <template v-else>
-                        <span>{{ item === 0 ? lanMap["forever"] : item }}</span>
+                        <span :style="{ width: item !== 0 ? 'auto' : '' }">
+                            {{ item === 0 ? lanMap["forever"] : item }}
+                        </span>
                         <template v-if="item !== 0">
                             <nms-button
                                 style="margin-left: 30px"
@@ -133,12 +147,8 @@
                 <input
                     type="text"
                     v-model="trylic"
-                    :style="{
-                        'border-color': /^[a-zA-Z0-9]{32}$/.test(trylic)
-                            ? ''
-                            : 'red',
-                        width: '350px',
-                    }"
+                    style="width: 350px"
+                    v-validator="{ regexp: /^[a-z0-9]{32}$/i }"
                 />
                 <span class="tips">{{ lanMap.composeRange(32) }}</span>
             </div>
@@ -149,6 +159,27 @@
                 <nms-button @click="dialogVisible = false">{{
                     lanMap["cancel"]
                 }}</nms-button>
+            </div>
+        </nms-dialog>
+        <nms-dialog :visible.sync="devNameVisible" border width="600px">
+            <div slot="title">{{ lanMap["set_dev_name"] }}</div>
+            <div class="dialog-content">
+                <span style="width: 130px">{{ lanMap["dev_name"] }}</span>
+                <input
+                    type="text"
+                    v-model="devName"
+                    style="width: 300px"
+                    v-validator="{ regexp: regDevName }"
+                />
+                <span class="tips">{{ lanMap.composeRange(1, 64) }}</span>
+            </div>
+            <div slot="footer">
+                <nms-button @click="submitDevName">{{
+                    lanMap["apply"]
+                }}</nms-button>
+                <nms-button @click="devNameVisible = false">
+                    {{ lanMap["cancel"] }}
+                </nms-button>
             </div>
         </nms-dialog>
     </div>
@@ -187,6 +218,10 @@ export default {
             supplier_info: "",
             dialogVisible: false,
             trylic: "",
+            hostname: "",
+            devNameVisible: false,
+            devName: "",
+            regDevName: /^[a-z][\w-]{0,63}$/i,
         };
     },
     computed: {
@@ -284,6 +319,7 @@ export default {
             this.getUsageRate();
         }, 5000);
         this.getCompanyInfo();
+        this.getDevName();
         sessionStorage.setItem("first_menu", "running_status");
         sessionStorage.removeItem("sec_menu");
     },
@@ -434,6 +470,56 @@ export default {
                 })
                 .catch((err) => {});
         },
+        getDevName() {
+            this.hostname = "";
+            this.$http
+                .get("/system?form=hostname")
+                .then((res) => {
+                    if (res.data.code === 1) {
+                        if (res.data.data) {
+                            this.hostname = res.data.data.hostname || "";
+                        }
+                    }
+                })
+                .catch((err) => {});
+        },
+        setDevName() {
+            this.devName = this.hostname;
+            this.devNameVisible = true;
+        },
+        submitDevName() {
+            if (this.devName === this.hostname) {
+                return this.$message.info(this.lanMap["modify_tips"]);
+            }
+            if (!this.regDevName.test(this.devName)) {
+                return this.$message.error(
+                    `${this.lanMap["param_error"]}: ${this.lanMap["dev_name"]}`
+                );
+            }
+            const url = "/system?form=hostname",
+                post_params = {
+                    method: "set",
+                    param: {
+                        hostname: this.devName,
+                    },
+                };
+            this.$http
+                .post(url, post_params)
+                .then((res) => {
+                    if (res.data.code === 1) {
+                        this.$message.success(this.lanMap["setting_ok"]);
+                        this.getDevName();
+                    } else {
+                        this.$message.error(
+                            `(${res.data.code}) ${res.data.message}`
+                        );
+                    }
+                })
+                .catch((err) => {})
+                .finally(() => {
+                    this.devNameVisible = false;
+                });
+        },
     },
     watch: {
         usageRates() {
@@ -484,6 +570,7 @@ div.pon-modal > span {
     height: 30px;
     line-height: 30px;
     border-bottom: 1px solid #ddd;
+    padding: 12px 0;
 }
 p.tips {
     margin-bottom: 10px;
@@ -491,6 +578,7 @@ p.tips {
 h2 {
     color: #67aef7;
     font-weight: 500;
+    font-size: 18px;
 }
 .pon-detail > div {
     width: 64px;
@@ -525,14 +613,28 @@ h2 {
 .system-info > h2 {
     height: 30px;
     line-height: 30px;
-    border-bottom: 1px solid #ddd;
+    margin: 12px 0;
+    & + .system-info-detail {
+        border-top: 1px solid #ddd;
+    }
 }
-.system-info-detail > span:first-child {
-    display: inline-block;
-    width: 150px;
-    padding: 10px 30px 10px 0;
-    text-align: right;
-    vertical-align: middle;
+.system-info-detail {
+    > span {
+        display: inline-block;
+        vertical-align: middle;
+    }
+    > span:first-child {
+        width: 180px;
+        padding: 10px 30px 10px 0;
+        text-align: right;
+        box-sizing: border-box;
+    }
+    > span + span {
+        width: calc(~"100% - 190px");
+        padding: 6px 0;
+        word-break: break-all;
+        word-wrap: break-word;
+    }
 }
 .system-info-detail {
     border-bottom: 1px solid #ddd;
@@ -557,11 +659,12 @@ div.cpu-info > div.container {
     padding-left: 10px;
     margin-right: 15px;
     line-height: 30px;
-    border-bottom: 1px solid #ddd;
+    margin: 12px 0;
 }
 .cpu-info > div {
     float: left;
-    margin-left: 30px;
+    padding-left: 30px;
+    border-top: 1px solid #ddd;
 }
 .cpu-info > div > div {
     float: left;
@@ -616,6 +719,7 @@ div.cpu-info > div.container {
         text-align: right;
         padding-right: 20px;
         box-sizing: border-box;
+        vertical-align: middle;
     }
     span.tips {
         width: auto;
