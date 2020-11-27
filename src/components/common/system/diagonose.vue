@@ -1,48 +1,59 @@
 <template>
     <div class="diagonose">
-        <h2>{{ lanMap['diagonose'] }}</h2>
+        <h2>{{ lanMap["diagonose"] }}</h2>
         <div class="diagonose-item">
-            <span>{{ lanMap['diag_tools_type'] }}</span>
-            <span>{{ lanMap['diag_type'] }}</span>
+            <span>{{ lanMap["diag_tools_type"] }}</span>
+            <span>{{ lanMap["diag_type"] }}</span>
         </div>
         <div class="diagonose-item">
-            <span>{{ lanMap['dest_ping_ip'] }}</span>
+            <span>{{ lanMap["dest_ping_ip"] }}</span>
             <span>
                 <input type="text" v-model="ipaddr" />
-                <span>ex: 127.0.0.1</span>
+                <span> IPv4 / IPv6</span>
             </span>
         </div>
         <div class="diagonose-item">
-            <span>{{ lanMap['diag_ping_intf'] }}</span>
+            <span>{{ lanMap["diag_ping_intf"] }}</span>
             <span>
                 <select v-model="interfaces">
                     <option
-                        v-for="(item,index) in interface_data"
+                        v-for="(item, index) in interface_data"
                         :key="index"
                         :value="item.interface"
                         :selected="item.interface === 'outbound'"
-                    >{{ lanMap[item.interface] ? lanMap[item.interface] : item.interface }}</option>
+                    >
+                        {{
+                            lanMap[item.interface]
+                                ? lanMap[item.interface]
+                                : item.interface
+                        }}
+                    </option>
                 </select>
             </span>
         </div>
         <div class="diagonose-item">
-            <span>{{ lanMap['diag_ping_count'] }}</span>
+            <span>{{ lanMap["diag_ping_count"] }}</span>
             <span>
                 <input
                     type="text"
                     v-model="count"
-                    :style="{ 'border-color': count > 50 || count < 1 ? 'red' : '' }"
+                    :style="{
+                        'border-color': count > 50 || count < 1 ? 'red' : '',
+                    }"
                 />
                 <span>(1-50)</span>
             </span>
         </div>
         <div class="diagonose-item">
-            <span>{{ lanMap['diag_ping_pktsize'] }}</span>
+            <span>{{ lanMap["diag_ping_pktsize"] }}</span>
             <span>
                 <input
                     type="text"
                     v-model="pktsize"
-                    :style="{ 'border-color': pktsize > 1472 || pktsize < 4 ? 'red' : '' }"
+                    :style="{
+                        'border-color':
+                            pktsize > 1472 || pktsize < 4 ? 'red' : '',
+                    }"
                 />
                 <span>(4-1472 Bytes)</span>
             </span>
@@ -50,15 +61,17 @@
         <div class="diagonose-item">
             <a
                 href="javascript:void(0);"
-                :class="{ 'disabled': disabled }"
+                :class="{ disabled: disabled }"
                 @click="ping_start"
-            >{{ lanMap['start'] }}</a>
+                >{{ lanMap["start"] }}</a
+            >
             <a
                 href="javascript: void(0);"
                 v-if="disabled"
-                style="margin-left: 30px;"
+                style="margin-left: 30px"
                 @click="cancel_ping"
-            >{{ lanMap['cancel'] }}</a>
+                >{{ lanMap["cancel"] }}</a
+            >
         </div>
         <div class="diagonose-item">
             <textarea cols="100" rows="20" readonly v-model="result"></textarea>
@@ -81,21 +94,21 @@ export default {
             result: "The device is ready!",
             interface_data: [],
             // IP验证正则
-            reg_ip: /^(([1-9]|[1-9]\d|1\d\d|2[0-4]\d|25[0-5])\.){1}((\d|[1-9]\d|1\d\d|2[0-4]\d|25[0-5])\.){2}([1-9]|[1-9]\d|1\d\d|2[0-4]\d|25[0-4]){1}$/,
-            disabled: false
+            reg_ip: /^((25[0-4]|2[0-4]\d|1?\d?\d)(\.(?!$)|$)){4}/,
+            disabled: false,
         };
     },
     created() {
         this.$http
             .get(this.change_url.outbound)
-            .then(res => {
+            .then((res) => {
                 this.outbound = res.data;
                 if (res.data.code == 1) {
                     this.interface_data.push(res.data.data);
                 }
                 this.$http
                     .get(this.change_url.inbound)
-                    .then(res => {
+                    .then((res) => {
                         if (res.data.code == 1) {
                             this.inbound = res.data;
                             if (res.data.data) {
@@ -108,41 +121,34 @@ export default {
                             this.inbound = {};
                         }
                     })
-                    .catch(err => {
+                    .catch((err) => {
                         // to do
                     });
             })
-            .catch(err => {
+            .catch((err) => {
                 // to do
             });
     },
     methods: {
         ping_start() {
-            // if (!this.reg_ip.test(this.ipaddr)) {
-            //     this.$message({
-            //         type: "error",
-            //         text: this.lanMap["ipaddr_error"]
-            //     });
-            //     return;
-            // }
-            if (!this.ipaddr || this.ipaddr.indexOf(".") < 0) {
+            if (this.ipaddr.length < 2) {
                 this.$message({
                     type: "error",
-                    text: this.lanMap["ipaddr_error"]
+                    text: this.lanMap["ipaddr_error"],
                 });
                 return;
             }
             if (this.count < 1 || this.count > 50) {
                 this.$message({
                     type: "error",
-                    text: this.lanMap["param_error"]
+                    text: this.lanMap["param_error"],
                 });
                 return;
             }
             if (this.pktsize < 4 || this.pktsize > 1472) {
                 this.$message({
                     type: "error",
-                    text: this.lanMap["param_error"]
+                    text: this.lanMap["param_error"],
                 });
                 return;
             }
@@ -157,26 +163,26 @@ export default {
                     ipaddr: this.ipaddr,
                     interface: this.interfaces,
                     count: this.count,
-                    pktsize: this.pktsize
-                }
+                    pktsize: this.pktsize,
+                },
             };
             this.$http
                 .post("/diagnose?form=ping", post_params)
-                .then(res => {
+                .then((res) => {
                     if (res.data.code === 1) {
                         this.result = "";
                         this.ping_result();
                     } else {
                         this.$message({
                             type: res.data.type,
-                            text: "(" + res.data.code + ") " + res.data.message
+                            text: "(" + res.data.code + ") " + res.data.message,
                         });
                         this.disabled = false;
                         this.result = "The device is ready!";
                     }
                     clearInterval(this.interval);
                 })
-                .catch(err => {
+                .catch((err) => {
                     clearInterval(this.interval);
                     this.disabled = false;
                     this.result = "Network connection error!";
@@ -186,7 +192,7 @@ export default {
             if (this.disabled) {
                 this.$http
                     .get("/diagnose?form=ping")
-                    .then(res => {
+                    .then((res) => {
                         if (res.data.code === 1) {
                             this.result = res.data.data.result;
                             if (res.data.data.finish === 0) {
@@ -200,13 +206,13 @@ export default {
                         } else {
                             this.$message({
                                 type: res.data.type,
-                                text: `(${res.data.code}) ${res.data.message}`
+                                text: `(${res.data.code}) ${res.data.message}`,
                             });
                             this.result = "The device is ready!";
                             this.disabled = false;
                         }
                     })
-                    .catch(err => {
+                    .catch((err) => {
                         this.disabled = false;
                     });
             }
@@ -214,11 +220,11 @@ export default {
         cancel_ping() {
             this.disabled = false;
             clearInterval(this.interval);
-        }
+        },
     },
     beforeDestroy() {
         this.interval && clearInterval(this.interval);
-    }
+    },
 };
 </script>
 
