@@ -240,7 +240,7 @@ export default {
                 .catch((err) => {});
         },
         openDialog(type) {
-            if (!this.aclList.length) {
+            if (type === "bind" && !this.aclList.length) {
                 return this.$message.error(this.lanMap["bind_cli_acl_tips"]);
             }
             this.dialogType = type;
