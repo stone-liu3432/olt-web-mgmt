@@ -1,8 +1,11 @@
 <template>
     <div>
         <div>
-            <nms-button @click="refreshData" style="width: 120px">{{
-                lanMap["refresh"]
+            <nms-button @click="refreshData">
+                {{ lanMap["refresh"] }}
+            </nms-button>
+            <nms-button @click="clearAlarm">{{
+                lanMap["clear"] + lanMap["alarm"]
             }}</nms-button>
         </div>
         <ul>
@@ -53,6 +56,41 @@ export default {
         refreshData() {
             debounce(this.getData, 1000, this);
         },
+        clearAlarm() {
+            this.$confirm(
+                this.lanMap["if_sure"] +
+                    this.lanMap["clear"] +
+                    this.lanMap["alarm"] +
+                    " ?"
+            )
+                .then(() => {
+                    const url = "/onumgmt?form=alarm",
+                        post_params = {
+                            method: "clear",
+                            param: {
+                                port_id: this.portData.portid,
+                                onu_id: this.portData.onuid,
+                            },
+                        };
+                    this.$http
+                        .post(url, post_params)
+                        .then((res) => {
+                            if (res.data.code === 1) {
+                                this.$message.success(
+                                    this.lanMap["clear"] +
+                                        this.lanMap["st_success"]
+                                );
+                                this.getData();
+                            } else {
+                                this.$message.error(
+                                    `(${res.data.code}) ${res.data.message}`
+                                );
+                            }
+                        })
+                        .catch((err) => {});
+                })
+                .catch(() => {});
+        },
     },
 };
 </script>
@@ -64,5 +102,8 @@ li {
 div.no-more-data {
     margin: 20px 10px;
     color: red;
+}
+a {
+    margin-left: 30px;
 }
 </style>
