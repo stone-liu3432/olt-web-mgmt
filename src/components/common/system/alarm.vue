@@ -1,32 +1,38 @@
 <template>
     <div>
         <div class="alarm-title">
-            {{ lanMap['alarm_info'] }}
-            <a
-                href="javascript:void(0);"
-                @click="getData"
-            >{{ lanMap['refresh'] }}</a>
-            <a
-                href="javascript:void(0);"
-                @click="downloadAlarm"
-            >{{ lanMap['download'] + lanMap['alarm'] }}</a>
-            <a
-                href="javascript:void(0);"
-                @click="openLogger"
-            >{{ (logger ? lanMap['off'] : lanMap['on'] )+ lanMap['log'] }}</a>
-            <a
-                href="javascript:void(0);"
-                @click="downloadLogger"
-            >{{ lanMap['download'] + lanMap['log'] }}</a>
+            {{ lanMap["alarm_info"] }}
+        </div>
+        <div>
+            <nms-button @click="getData">
+                {{ lanMap["refresh"] }}
+            </nms-button>
+            <nms-button @click="downloadAlarm">
+                {{ lanMap["download"] + lanMap["alarm"] }}
+            </nms-button>
+            <nms-button @click="openLogger">
+                {{ (logger ? lanMap["off"] : lanMap["on"]) + lanMap["log"] }}
+            </nms-button>
+            <nms-button @click="downloadLogger">
+                {{ lanMap["download"] + lanMap["log"] }}
+            </nms-button>
+            <nms-button @click="clearAlarm">
+                {{ lanMap["clear"] + lanMap["alarm"] }}
+            </nms-button>
+            <nms-button @click="downloadSavedAlarm">{{
+                lanMap["download_saved_alarm"]
+            }}</nms-button>
         </div>
         <ul
-            v-if="alarm_data.data && alarm_data.data.length > 0"
-            v-for="(item,index) in alarm_data.data"
+            v-if="alarm_data.length > 0"
+            v-for="(item, index) in alarm_data"
             :key="index"
         >
             <li>{{ item }}</li>
         </ul>
-        <div v-if="!alarm_data.data" class="no-more-data">{{ lanMap['no_more_data'] }}</div>
+        <div v-if="!alarm_data.length" class="no-more-data">
+            {{ lanMap["no_more_data"] }}
+        </div>
         <scroll-top></scroll-top>
     </div>
 </template>
@@ -34,14 +40,15 @@
 <script>
 import { mapState } from "vuex";
 import scrollTop from "@/components/common/scrollTop";
+import { isArray } from "@/utils/common";
 export default {
     name: "alarm",
     computed: mapState(["lanMap"]),
     components: { scrollTop },
     data() {
         return {
-            alarm_data: {},
-            logger: 0
+            alarm_data: [],
+            logger: 0,
         };
     },
     created() {
@@ -50,25 +57,24 @@ export default {
     },
     methods: {
         getData() {
+            this.alarm_data = [];
             this.$http
                 .get("/alarm?form=info")
-                .then(res => {
+                .then((res) => {
                     if (res.data.code === 1) {
-                        this.alarm_data = res.data;
-                    } else {
-                        this.alarm_data = {};
+                        if (isArray(res.data.data)) {
+                            this.alarm_data = res.data.data;
+                        }
                     }
                 })
-                .catch(err => {
-                    // to do
-                });
+                .catch((err) => {});
         },
         downloadAlarm() {
             this.$confirm(this.lanMap["if_sure"])
-                .then(_ => {
+                .then((_) => {
                     this.$http
                         .get("/alarm?form=download")
-                        .then(res => {
+                        .then((res) => {
                             if (res.data.code === 1) {
                                 try {
                                     var a = document.createElement("a");
@@ -92,27 +98,27 @@ export default {
                                         "(" +
                                         res.data.code +
                                         ") " +
-                                        res.data.message
+                                        res.data.message,
                                 });
                             }
                         })
-                        .catch(err => {
+                        .catch((err) => {
                             // to do
                         });
                 })
-                .catch(_ => {});
+                .catch((_) => {});
         },
         getLogStatus() {
             this.$http
                 .get("/alarm?form=logger")
-                .then(res => {
+                .then((res) => {
                     if (res.data.code === 1) {
                         if (res.data.data) {
                             this.logger = res.data.data.pondev >>> 0;
                         }
                     }
                 })
-                .catch(err => {});
+                .catch((err) => {});
         },
         openLogger() {
             let msg;
@@ -130,15 +136,15 @@ export default {
                     " ?";
             }
             this.$confirm(msg)
-                .then(_ => {
+                .then((_) => {
                     this.$http
                         .post("/alarm?form=logger", {
                             method: "set",
                             param: {
-                                pondev: Number(!this.logger)
-                            }
+                                pondev: Number(!this.logger),
+                            },
                         })
-                        .then(res => {
+                        .then((res) => {
                             if (res.data.code === 1) {
                                 this.$message.success(
                                     this.lanMap["setting_ok"]
@@ -150,9 +156,9 @@ export default {
                                 );
                             }
                         })
-                        .catch(err => {});
+                        .catch((err) => {});
                 })
-                .catch(_ => {});
+                .catch((_) => {});
         },
         downloadLogger() {
             this.$confirm(
@@ -161,10 +167,10 @@ export default {
                     this.lanMap["log"] +
                     " ?"
             )
-                .then(_ => {
+                .then((_) => {
                     this.$http
                         .get("/alarm?form=logger_dw")
-                        .then(res => {
+                        .then((res) => {
                             if (res.data.code === 1) {
                                 try {
                                     var a = document.createElement("a");
@@ -184,11 +190,76 @@ export default {
                                 );
                             }
                         })
-                        .catch(err => {});
+                        .catch((err) => {});
                 })
-                .catch(_ => {});
-        }
-    }
+                .catch((_) => {});
+        },
+        clearAlarm() {
+            this.$confirm(
+                this.lanMap["if_sure"] +
+                    this.lanMap["clear"] +
+                    this.lanMap["alarm"] +
+                    " ?"
+            )
+                .then(() => {
+                    const url = "/alarm?form=clear",
+                        post_params = {
+                            method: "clear",
+                            param: {},
+                        };
+                    this.$http
+                        .post(url, post_params)
+                        .then((res) => {
+                            if (res.data.code === 1) {
+                                this.$message.success(
+                                    this.lanMap["clear"] +
+                                        this.lanMap["st_success"]
+                                );
+                                this.getData();
+                            } else {
+                                this.$message.error(
+                                    `(${res.data.code}) ${res.data.message}`
+                                );
+                            }
+                        })
+                        .catch((err) => {});
+                })
+                .catch(() => {});
+        },
+        downloadSavedAlarm() {
+            this.$confirm(
+                this.lanMap["if_sure"] +
+                    this.lanMap["download_saved_alarm"] +
+                    " ?"
+            )
+                .then(() => {
+                    this.$http
+                        .get("/alarm?form=download_save")
+                        .then((res) => {
+                            if (res.data.code === 1) {
+                                try {
+                                    var a = document.createElement("a");
+                                    a.href = "/" + res.data.data.filename;
+                                    a.setAttribute(
+                                        "download",
+                                        res.data.data.filename
+                                    );
+                                    a.style.display = "none";
+                                    document.body.appendChild(a);
+                                    a.click();
+                                    document.body.removeChild(a);
+                                } catch (e) {}
+                            } else {
+                                this.$message.error(
+                                    `(${res.data.code}) ${res.data.message}`
+                                );
+                            }
+                        })
+                        .catch((err) => {});
+                })
+                .catch(() => {});
+        },
+    },
 };
 </script>
 
@@ -198,16 +269,9 @@ div.alarm-title {
     margin: 20px 10px;
     font-weight: bold;
     color: #67aef7;
-    a {
-        font-size: 16px;
-        font-weight: normal;
-        min-width: 120px;
-        padding: 0 12px;
-        margin-left: 80px;
-    }
-    a + a {
-        margin-left: 30px;
-    }
+}
+a {
+    margin-left: 10px;
 }
 ul {
     margin-left: 20px;
