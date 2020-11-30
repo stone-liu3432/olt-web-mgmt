@@ -276,8 +276,10 @@ export default {
                         data: {
                             method: "set",
                             param: {
-                                vtyacl: form.vtyacl,
-                                vtyacl_ipv6: form.vtyacl_ipv6,
+                                vtyacl: this.clearVtyacl ? "" : form.vtyacl,
+                                vtyacl_ipv6: this.clearVtyaclIpv6
+                                    ? ""
+                                    : form.vtyacl_ipv6,
                             },
                         },
                     };
