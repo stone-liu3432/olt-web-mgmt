@@ -164,7 +164,7 @@ export default {
     font-weight: 500;
 }
 .menu > li > ul.hide {
-    max-height: 350px;
+    max-height: 380px;
     transition: max-height 0.3s ease-in;
 }
 .menu > li {
