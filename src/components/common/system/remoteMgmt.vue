@@ -386,9 +386,9 @@ export default {
             this.modalDialog = true;
             this.type = 1;
             this.click_interface = node.interface;
-            this.ipaddr = node.ipaddr;
-            this.ipmask = node.ipmask;
-            this.vlan = node.vlan_id || " - ";
+            this.ipaddr = node.ipaddr || "";
+            this.ipmask = node.ipmask || "";
+            this.ipv6 = node.ipv6 || "";
             this.interface_map = node;
         },
         openAddModal() {
@@ -425,8 +425,8 @@ export default {
             var post_params = {
                 method: "add",
                 param: {
-                    ipaddr: this.ipaddr,
-                    ipmask: this.ipmask,
+                    ipaddr: this.type === 2 ? undefined : this.ipaddr,
+                    ipmask: this.type === 2 ? undefined : this.ipmask,
                     ipv6: this.type === 1 ? undefined : this.ipv6,
                     vlan_id: this.vlan,
                 },
@@ -511,13 +511,13 @@ export default {
                 var post_params = {
                     method: "set",
                     param: {
-                        ipaddr: this.ipaddr,
-                        ipmask: this.ipmask,
+                        ipaddr: this.type === 2 ? undefined : this.ipaddr,
+                        ipmask: this.type === 2 ? undefined : this.ipmask,
                         ipv6: this.type === 1 ? undefined : this.ipv6,
                         interface: this.click_interface,
                     },
                 };
-                // 请求url: /system?form=outbound   -->  str.substring(str.indexOf("//") + 2,str.indexOf("/#/"));
+                // 请求url: /system?form=outbound
                 this.$http
                     .post("/system?form=outbound", post_params, {
                         timeout: 5000,
@@ -564,8 +564,8 @@ export default {
                 var post_params = {
                     method: "set",
                     param: {
-                        ipaddr: this.ipaddr,
-                        ipmask: this.ipmask,
+                        ipaddr: this.type === 2 ? undefined : this.ipaddr,
+                        ipmask: this.type === 2 ? undefined : this.ipmask,
                         ipv6: this.type === 1 ? undefined : this.ipv6,
                         interface: this.click_interface,
                         vlan_id: this.vlan,
