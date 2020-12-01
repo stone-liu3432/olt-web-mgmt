@@ -45,51 +45,53 @@
                     href="javascript: void(0);"
                     class="op-perf-refresh"
                     @click="refreshData"
-                    >{{ lanMap["refresh"] }}</a
-                >
+                    >{{ lanMap["refresh"] }}
+                </a>
                 <a
                     href="javascript: void(0);"
                     class="op-perf-refresh"
                     @click="openCfm"
-                    >{{ lanMap["clear_perf"] }}</a
-                >
+                    >{{ lanMap["clear_perf"] }}
+                </a>
                 <a
                     href="javascript: void(0);"
                     class="op-perf-refresh"
                     @click="change_data('history')"
                     v-if="showFlag === 'history'"
-                    >{{ lanMap["curr_perf"] }}</a
-                >
+                    >{{ lanMap["curr_perf"] }}
+                </a>
                 <a
                     href="javascript: void(0);"
                     class="op-perf-refresh"
                     @click="change_data('current')"
                     v-if="showFlag === 'current'"
-                    >{{ lanMap["history_perf"] }}</a
-                >
+                    >{{ lanMap["history_perf"] }}
+                </a>
             </div>
             <div class="op-perf-info" v-if="opInfo.hasOwnProperty('status')">
-                <span class="op-perf-status">{{
-                    lanMap["onu_perf_status"]
-                }}</span
-                >:
-                <span>{{
-                    opInfo.status === 2 ? lanMap["enable"] : lanMap["disable"]
-                }}</span>
-                <span class="op-perf-period">{{
-                    lanMap["onu_perf_period"]
-                }}</span
-                >:
+                <span class="op-perf-status">
+                    {{ lanMap["onu_perf_status"] }} :
+                </span>
+                <span>
+                    {{
+                        opInfo.status === 2
+                            ? lanMap["enable"]
+                            : lanMap["disable"]
+                    }}
+                </span>
+                <span class="op-perf-period">
+                    {{ lanMap["onu_perf_period"] }} :
+                </span>
                 <span>{{ opInfo.period }}</span>
-                <a href="javascript: void(0);" @click="openModal">{{
-                    lanMap["config"]
-                }}</a>
+                <a href="javascript: void(0);" @click="openModal">
+                    {{ lanMap["config"] }}
+                </a>
             </div>
             <div class="error-msg" v-else>{{ lanMap["get_data_fail"] }}</div>
             <div class="onu-perf-detail" v-if="Object.keys(onuPerf).length > 0">
-                <div v-for="(item, key) in onuPerf" :key="key">
+                <div v-for="key in perfKeyMap" :key="key">
                     <span>{{ lanMap[key] }}</span>
-                    <span>{{ item }}</span>
+                    <span>{{ onuPerf[key] || "" }}</span>
                 </div>
             </div>
         </div>
@@ -142,7 +144,50 @@ import { mapState, mapMutations } from "vuex";
 import { analysis } from "@/utils/common";
 export default {
     name: "onuPerf",
-    computed: mapState(["lanMap", "port_name", "onu_list", "system"]),
+    computed: {
+        ...mapState(["lanMap", "port_name", "onu_list", "system"]),
+        perfKeyMap() {
+            return [
+                "dsDropEvents",
+                "usDropEvents",
+                "dsOctets",
+                "usOctets",
+                "dsFrames",
+                "usFrames",
+                "dsBroadcastFrames",
+                "usBroadcastFrames",
+                "dsMulticastFrames",
+                "usMulticastFrames",
+                "dsCrcErrorFrames",
+                "usCrcErrorFrames",
+                "dsUndersizeFrames",
+                "usUndersizeFrames",
+                "dsOversizeFrames",
+                "usOversizeFrames",
+                "dsFragmentFrames",
+                "usFragmentFrames",
+                "dsJabberFrames",
+                "usJabberFrames",
+                "dsFrames64Octets",
+                "usFrames64Octets",
+                "dsFrames65to127Octets",
+                "usFrames65to127Octets",
+                "dsFrames128to255Octets",
+                "usFrames128to255Octets",
+                "dsFrames256to511Octets",
+                "usFrames256to511Octets",
+                "dsFrames512to1023Octets",
+                "usFrames512to1023Octets",
+                "dsFrames1024to1518Octets",
+                "usFrames1024to1518Octets",
+                "dsDiscardFrames",
+                "usDiscardFrames",
+                "dsErrorFrames",
+                "usErrorFrames",
+                "statusChangeTimes",
+            ];
+        },
+    },
     data() {
         return {
             portid: "",
@@ -154,7 +199,6 @@ export default {
             opInfo: {},
             //  onu 端口统计信息/数据
             onuPerf: {},
-            onuPerf_h: {},
             opid_set: 1,
             status: 1,
             period: "",
