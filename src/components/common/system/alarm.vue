@@ -19,9 +19,11 @@
             <nms-button @click="clearAlarm">
                 {{ lanMap["clear"] + lanMap["alarm"] }}
             </nms-button>
-            <nms-button @click="downloadSavedAlarm">{{
-                lanMap["download_saved_alarm"]
-            }}</nms-button>
+            <template v-if="custom.alarm_save">
+                <nms-button @click="downloadSavedAlarm">
+                    {{ lanMap["download_saved_alarm"] }}
+                </nms-button>
+            </template>
         </div>
         <ul
             v-if="alarm_data.length > 0"
@@ -43,7 +45,7 @@ import scrollTop from "@/components/common/scrollTop";
 import { isArray } from "@/utils/common";
 export default {
     name: "alarm",
-    computed: mapState(["lanMap"]),
+    computed: mapState(["lanMap", "custom"]),
     components: { scrollTop },
     data() {
         return {
