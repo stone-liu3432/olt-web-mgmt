@@ -4,29 +4,35 @@
             <template v-for="(item, key) in info">
                 <div class="cist-form-item">
                     <span>{{ lanMap[key] }}:</span>
-                    <input type="text" v-model.number="info[key]" :style="validateStyle(key)" />
+                    <input
+                        type="text"
+                        v-model.number="info[key]"
+                        :style="validateStyle(key)"
+                    />
                     <span>{{ bridgeTips[key] }}</span>
                 </div>
             </template>
         </template>
         <template v-if="type === 'port'">
             <div class="cist-form-item msti-form-port">
-                <span>{{ lanMap['port_id'] }}:</span>
+                <span>{{ lanMap["port_id"] }}:</span>
                 <span>{{ port.port_id | getPortName }}</span>
             </div>
             <div class="cist-form-item msti-form-port">
-                <span>{{ lanMap['cist'] }}:</span>
+                <span>{{ lanMap["cist"] }}:</span>
                 <span>{{ port.mstid }}</span>
             </div>
             <div class="cist-form-item msti-form-port">
-                <span>{{ lanMap['config'] }}</span>
-                <select v-model.number="configFlag" style="width:200px;">
-                    <option :value="0">{{ lanMap['admin_external_cost'] }}</option>
-                    <option :value="1">{{ lanMap['port_priority'] }}</option>
+                <span>{{ lanMap["config"] }}</span>
+                <select v-model.number="configFlag" style="width: 200px">
+                    <option :value="0">
+                        {{ lanMap["admin_external_cost"] }}
+                    </option>
+                    <option :value="1">{{ lanMap["port_priority"] }}</option>
                 </select>
             </div>
             <div class="cist-form-item msti-form-port" v-if="configFlag === 0">
-                <span>{{ lanMap['admin_external_cost'] }}:</span>
+                <span>{{ lanMap["admin_external_cost"] }}:</span>
                 <input
                     type="text"
                     v-model.number="port.admin_external_cost"
@@ -35,8 +41,11 @@
                 <span>Range: 0-200000000(0: Auto)</span>
             </div>
             <div class="cist-form-item msti-form-port" v-if="configFlag === 1">
-                <span>{{ lanMap['port_priority'] }}:</span>
-                <select v-model.number="port.port_priority" style="width: 200px;">
+                <span>{{ lanMap["port_priority"] }}:</span>
+                <select
+                    v-model.number="port.port_priority"
+                    style="width: 200px"
+                >
                     <option :value="0">0</option>
                     <template v-for="i in 15">
                         <option :value="i">{{ i * 16 }}</option>
@@ -59,7 +68,7 @@ export default {
         },
         validateTime() {
             const val = this.info.bridge_hello_time;
-            return (val >= 1 && val <= 10) || val === 20;
+            return val >= 1 && val <= 10;
         },
         validateHops() {
             const val = this.info.max_hops;
@@ -72,7 +81,7 @@ export default {
         validateCost() {
             const val = this.port.admin_external_cost;
             return val >= 0 && val <= 200000000;
-        }
+        },
     },
     data() {
         return {
@@ -81,22 +90,22 @@ export default {
             configFlag: 0,
             bridgeTips: {
                 bridge_max_age: "Range: 6-40",
-                bridge_hello_time: "Range: 1-10, 20",
+                bridge_hello_time: "Range: 1-10",
                 max_hops: "Range: 1-40",
-                bridge_forward_delay: "Range: 4-30"
+                bridge_forward_delay: "Range: 4-30",
             },
             info: {
                 bridge_max_age: "",
                 bridge_hello_time: "",
                 max_hops: "",
-                bridge_forward_delay: ""
+                bridge_forward_delay: "",
             },
             port: {
                 port_id: 0,
                 mstid: 0,
                 admin_external_cost: "",
-                port_priority: ""
-            }
+                port_priority: "",
+            },
         };
     },
     methods: {
@@ -104,7 +113,7 @@ export default {
             this.type = type;
             this.cache = JSON.parse(JSON.stringify(data));
             this.configFlag = 0;
-            Object.keys(this[type]).forEach(key => {
+            Object.keys(this[type]).forEach((key) => {
                 if (data[key] !== undefined) {
                     this[type][key] = data[key];
                 }
@@ -126,13 +135,13 @@ export default {
                 },
                 admin_external_cost() {
                     return this.validateCost;
-                }
+                },
             };
             if (typeof FLAGS[key] === "function") {
                 return FLAGS[key].call(this)
                     ? ""
                     : {
-                          "border-color": "red"
+                          "border-color": "red",
                       };
             }
             return "";
@@ -171,7 +180,7 @@ export default {
                                 this.cache.bridge_forward_delay ===
                                 this.info.bridge_forward_delay >>> 0
                                     ? 0
-                                    : 1
+                                    : 1,
                         };
                         fn.call(this, this.type, data);
                     }
@@ -187,7 +196,7 @@ export default {
                                 this.cache.port_priority ===
                                 this.port.port_priority >>> 0
                                     ? 0
-                                    : 1
+                                    : 1,
                         };
                         fn.call(this, this.type, data);
                     } else if (this.configFlag === 0 && this.validateCost) {
@@ -203,14 +212,14 @@ export default {
                                 this.cache.admin_external_cost ===
                                 this.port.admin_external_cost >>> 0
                                     ? 0
-                                    : 1
+                                    : 1,
                         };
                         fn.call(this, this.type, data);
                     }
                 }
             }
-        }
-    }
+        },
+    },
 };
 </script>
 
