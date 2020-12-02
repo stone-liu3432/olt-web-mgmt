@@ -190,35 +190,40 @@
                             <div slot="dropdown">
                                 <nms-dropdown-item
                                     :command="{ action: 'detail', data: row }"
-                                    >{{
-                                        lanMap["show_detail"]
-                                    }}</nms-dropdown-item
                                 >
+                                    {{ lanMap["show_detail"] }}
+                                </nms-dropdown-item>
                                 <nms-dropdown-item
                                     :command="{
                                         action: 'port_config',
                                         data: row,
                                     }"
-                                    >{{
-                                        lanMap["onu_port_cfg"]
-                                    }}</nms-dropdown-item
                                 >
+                                    {{ lanMap["onu_port_cfg"] }}
+                                </nms-dropdown-item>
                                 <nms-dropdown-item
                                     :command="{ action: 'delete', data: row }"
-                                    >{{ lanMap["del_onu"] }}</nms-dropdown-item
                                 >
+                                    {{ lanMap["del_onu"] }}
+                                </nms-dropdown-item>
                                 <nms-dropdown-item
                                     :command="{ action: 'remove', data: row }"
-                                    >{{
-                                        lanMap["add_to_deny"]
-                                    }}</nms-dropdown-item
                                 >
+                                    {{ lanMap["add_to_deny"] }}
+                                </nms-dropdown-item>
                                 <nms-dropdown-item
                                     :command="{ action: 'reboot', data: row }"
-                                    >{{
-                                        lanMap["reboot_onu"]
-                                    }}</nms-dropdown-item
                                 >
+                                    {{ lanMap["reboot_onu"] }}
+                                </nms-dropdown-item>
+                                <nms-dropdown-item
+                                    :command="{
+                                        action: 'off_opt',
+                                        data: row,
+                                    }"
+                                >
+                                    {{ lanMap["turnoff_opt_transmitter"] }}
+                                </nms-dropdown-item>
                             </div>
                         </nms-dropdown>
                     </template>
@@ -282,6 +287,28 @@
         <template v-if="activeName === 'onu_version'">
             <onu-version :port_id="portid"></onu-version>
         </template>
+        <nms-dialog :visible.sync="dialogVisible" width="550px">
+            <template slot="title">
+                {{ lanMap["turnoff_opt_transmitter"] }}
+            </template>
+            <div>
+                <span>{{ lanMap["txsupply_time"] }}</span>
+                <input
+                    type="text"
+                    v-model.number="txsupply_time"
+                    v-validator:number="{ min: 0, max: 65535 }"
+                />
+                <span class="tips">0 - 65535</span>
+            </div>
+            <div slot="footer">
+                <nms-button @click="submitCoseOpt">{{
+                    lanMap["apply"]
+                }}</nms-button>
+                <nms-button @click="dialogVisible = false">
+                    {{ lanMap["cancel"] }}
+                </nms-button>
+            </div>
+        </nms-dialog>
     </div>
 </template>
 
@@ -310,6 +337,9 @@ export default {
             // 排序标识， 正序/倒序
             sortState: false,
             activeName: "onu_allow",
+            dialogVisible: false,
+            txsupply_time: "",
+            row: {},
         };
     },
     computed: {
@@ -782,6 +812,11 @@ export default {
                 reboot(row) {
                     this.reboot(row);
                 },
+                off_opt(row) {
+                    this.row = row;
+                    this.txsupply_time = "";
+                    this.dialogVisible = true;
+                },
             };
             if (typeof ACTIONS[action] === "function") {
                 ACTIONS[action].call(this, data);
@@ -870,6 +905,46 @@ export default {
             if (this.activeName === "onu_allow") {
                 this.getData();
             }
+        },
+        submitCoseOpt() {
+            if (
+                this.txsupply_time < 0 ||
+                this.txsupply_time > 65535 ||
+                isNaN(this.txsupply_time)
+            ) {
+                return this.$message.error(
+                    this.lanMap["param_error"] +
+                        ": " +
+                        this.lanMap["txsupply_time"]
+                );
+            }
+            this.$http
+                .post("/onumgmt?form=config", {
+                    method: "set",
+                    param: {
+                        port_id: this.row.port_id,
+                        onu_id: this.row.onu_id,
+                        flags: 1 << 9,
+                        fec_mode: 0,
+                        txsupply_time: Number(this.txsupply_time),
+                        onu_name: "",
+                        onu_desc: "",
+                    },
+                })
+                .then((res) => {
+                    if (res.data.code === 1) {
+                        this.$message.success(this.lanMap["setting_ok"]);
+                        this.getData();
+                    } else {
+                        this.$message.error(
+                            `(${res.data.code}) ${res.data.message}`
+                        );
+                    }
+                })
+                .catch((err) => {})
+                .finally(() => {
+                    this.dialogVisible = false;
+                });
         },
     },
     beforeRouteLeave(to, from, next) {
@@ -1130,5 +1205,10 @@ span.onu-count {
     &.onu-offline + span {
         color: #f56c6c;
     }
+}
+.tips {
+    font-size: @tipsFontSize;
+    color: @tipsColor;
+    margin-left: 12px;
 }
 </style>

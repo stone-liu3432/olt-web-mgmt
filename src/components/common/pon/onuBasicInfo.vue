@@ -39,18 +39,21 @@
             <div class="handle-btn" v-if="onu_basic_info.data">
                 <h3 class="lf">{{ lanMap["onu_mgmt"] }}</h3>
                 <div class="lf">
-                    <a href="javascript:;" @click="open_onu_desc">{{
-                        lanMap["config"] + lanMap["onu_info"]
-                    }}</a>
-                    <a href="javascript:;" @click="open_reboot_onu">{{
-                        lanMap["reboot_onu"]
-                    }}</a>
-                    <a href="javascript:;" @click="open_un_auth_onu">{{
-                        lanMap["deregister_onu"]
-                    }}</a>
-                    <a href="javascript:;" @click="open_set_fec_mode">{{
-                        lanMap["set_fec_mode"]
-                    }}</a>
+                    <nms-button @click="open_onu_desc">
+                        {{ lanMap["config"] + lanMap["onu_info"] }}
+                    </nms-button>
+                    <nms-button @click="open_reboot_onu">
+                        {{ lanMap["reboot_onu"] }}
+                    </nms-button>
+                    <nms-button @click="open_un_auth_onu">
+                        {{ lanMap["deregister_onu"] }}
+                    </nms-button>
+                    <nms-button @click="open_set_fec_mode">
+                        {{ lanMap["set_fec_mode"] }}
+                    </nms-button>
+                    <nms-button @click="closeOptTsm">
+                        {{ lanMap["turnoff_opt_transmitter"] }}
+                    </nms-button>
                 </div>
             </div>
             <div>
@@ -82,12 +85,9 @@
                     <div>
                         <div class="onu-optical-title">
                             <span>{{ lanMap["onu_optical_diagnose"] }}</span>
-                            <a
-                                href="javascript:;"
-                                class="rt"
-                                @click="getOpticalData()"
-                                >{{ lanMap["refresh"] }}</a
-                            >
+                            <nms-button class="rt" @click="getOpticalData()">
+                                {{ lanMap["refresh"] }}
+                            </nms-button>
                         </div>
                         <div
                             class="onu-optical"
@@ -132,11 +132,9 @@
                             </form>
                         </div>
                         <div class="upgrade-item">
-                            <a
-                                href="javascript:void(0);"
-                                @click="upload_file"
-                                >{{ lanMap["apply"] }}</a
-                            >
+                            <nms-button @click="upload_file">
+                                {{ lanMap["apply"] }}
+                            </nms-button>
                         </div>
                     </div>
                 </div>
@@ -199,6 +197,28 @@
                 <div class="close" @click="onu_cfg_info(false)"></div>
             </div>
         </div>
+        <nms-dialog :visible.sync="dialogVisible" width="550px">
+            <template slot="title">
+                {{ lanMap["turnoff_opt_transmitter"] }}
+            </template>
+            <div class="dialog-content-txsupply-time">
+                <span>{{ lanMap["txsupply_time"] }}</span>
+                <input
+                    type="text"
+                    v-model="txsupply_time"
+                    v-validator:number="{ mix: 0, max: 65535 }"
+                />
+                <span class="tips">0 - 65535</span>
+            </div>
+            <div slot="footer">
+                <nms-button @click="submitOptTsm">{{
+                    lanMap["apply"]
+                }}</nms-button>
+                <nms-button @click="dialogVisible = false">
+                    {{ lanMap["cancel"] }}
+                </nms-button>
+            </div>
+        </nms-dialog>
     </div>
 </template>
 
@@ -272,6 +292,8 @@ export default {
             isCreated: false,
             wlan: 0,
             wanList: [],
+            dialogVisible: false,
+            txsupply_time: "",
         };
     },
     created() {
@@ -303,20 +325,14 @@ export default {
                                     .then((res) => {
                                         this.onu_fec_mode = res.data;
                                     })
-                                    .catch((err) => {
-                                        // to do
-                                    });
+                                    .catch((err) => {});
                             })
-                            .catch((err) => {
-                                // to do
-                            });
+                            .catch((err) => {});
                     } else {
                         this.addonu_list({});
                     }
                 })
-                .catch((err) => {
-                    // to do
-                });
+                .catch((err) => {});
         }
     },
     activated() {
@@ -717,6 +733,50 @@ export default {
                 }
             }
         },
+        closeOptTsm() {
+            this.txsupply_time = "";
+            this.dialogVisible = true;
+        },
+        submitOptTsm() {
+            if (
+                this.txsupply_time < 0 ||
+                this.txsupply_time > 65535 ||
+                isNaN(this.txsupply_time)
+            ) {
+                return this.$message.error(
+                    this.lanMap["param_error"] +
+                        ": " +
+                        this.lanMap["txsupply_time"]
+                );
+            }
+            this.$http
+                .post("/onumgmt?form=config", {
+                    method: "set",
+                    param: {
+                        port_id: this.portid,
+                        onu_id: this.onuid,
+                        flags: 1 << 9,
+                        fec_mode: 0,
+                        txsupply_time: Number(this.txsupply_time),
+                        onu_name: "",
+                        onu_desc: "",
+                    },
+                })
+                .then((res) => {
+                    if (res.data.code === 1) {
+                        this.$message.success(this.lanMap["setting_ok"]);
+                        this.getData();
+                    } else {
+                        this.$message.error(
+                            `(${res.data.code}) ${res.data.message}`
+                        );
+                    }
+                })
+                .catch((err) => {})
+                .finally(() => {
+                    this.dialogVisible = false;
+                });
+        },
     },
     watch: {
         portid() {
@@ -815,8 +875,8 @@ div.onu-optical-diagnose {
     }
 }
 div.onu-optical-title {
-    height: 30px;
-    line-height: 30px;
+    height: 34px;
+    line-height: 34px;
     padding: 20px 0;
     vertical-align: middle;
     border-bottom: 1px solid #ccc;
@@ -827,8 +887,6 @@ div.onu-optical-title {
         border: none;
     }
     > a {
-        width: 100px;
-        padding: 0;
         margin-right: 20px;
     }
 }
@@ -897,10 +955,8 @@ div.handle-btn {
     }
     > div {
         margin-left: 30px;
-        > a {
-            margin-left: 50px;
-            width: 150px;
-            padding: 0;
+        a + a {
+            margin-left: 30px;
         }
     }
 }
@@ -989,9 +1045,6 @@ div.onu-upgrade {
     div.upgrade-item {
         margin: 20px 0;
         text-align: center;
-        a {
-            padding: 0 50px;
-        }
     }
 }
 table {
@@ -1009,6 +1062,16 @@ table {
                 padding-right: 20px;
             }
         }
+    }
+}
+.dialog-content-txsupply-time {
+    > span {
+        border-right: none !important;
+    }
+    > span.tips {
+        margin-left: 12px;
+        color: @tipsColor;
+        font-size: @tipsFontSize;
     }
 }
 </style>
