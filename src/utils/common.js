@@ -229,10 +229,13 @@ export function isReg(val) {
 }
 
 /**
- * @param {String} a String
+ * @param {String} string
  * @return {Boolean} true if the String is a valid IPv6 address; false otherwise
  */
 export function isIPv6(value) {
+    if (!value) {
+        return false;
+    }
     const components = value.split(":");
     if (components.length < 2 || components.length > 8) {
         return false;
