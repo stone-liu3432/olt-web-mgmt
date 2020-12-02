@@ -130,6 +130,9 @@
                         type="text"
                         spellcheck="false"
                         v-model="form.hostip"
+                        :placeholder="
+                            form.afi === 1 ? '0.0.0.0/0' : '2001:250:6000::/48'
+                        "
                         :style="{ width: form.afi === 2 ? '300px' : '' }"
                         v-validator="ipValidator"
                     />
@@ -156,7 +159,7 @@
 
 <script>
 import { mapState } from "vuex";
-import { isArray, isIPv6, testIPAddr, isFunction } from "@/utils/common";
+import { isArray, isIPv6, isFunction } from "@/utils/common";
 export default {
     name: "cliAcl",
     computed: {
@@ -170,7 +173,7 @@ export default {
         ipValidator() {
             if (this.form.afi === 1) {
                 return {
-                    validator: testIPAddr,
+                    validator: this.testIPAddr,
                 };
             }
             return {
@@ -292,7 +295,7 @@ export default {
                         return;
                     }
                     if (this.form.afi === 1) {
-                        if (!testIPAddr(this.form.hostip)) {
+                        if (!this.testIPAddr(this.form.hostip)) {
                             this.$message.error(
                                 `${this.lanMap["param_error"]}: ${this.lanMap["hostip"]}`
                             );
@@ -384,6 +387,10 @@ export default {
                         .catch((err) => {});
                 })
                 .catch(() => {});
+        },
+        testIPAddr(val) {
+            const reg = /^((25[0-5]|2[0-4]\d|1?\d?\d)(\.(?!\/)|(\/\d{1,3}$|$))){4}/;
+            return reg.test(val);
         },
     },
 };
