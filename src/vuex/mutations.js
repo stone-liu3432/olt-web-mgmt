@@ -40,5 +40,8 @@ export default {
     },
     updateCustom(state, data) {
         state.custom = data;
+    },
+    updateHostName(state, data) {
+        state.hostname = data;
     }
 };
