@@ -218,7 +218,6 @@ export default {
             supplier_info: "",
             dialogVisible: false,
             trylic: "",
-            hostname: "",
             devNameVisible: false,
             devName: "",
             regDevName: /^[a-z][\w-]{0,63}$/i,
@@ -232,6 +231,7 @@ export default {
             "change_url",
             "menu",
             "port_name",
+            "hostname",
         ]),
         showCompanyInfo() {
             return (
@@ -319,7 +319,6 @@ export default {
             this.getUsageRate();
         }, 5000);
         this.getCompanyInfo();
-        this.getDevName();
         sessionStorage.setItem("first_menu", "running_status");
         sessionStorage.removeItem("sec_menu");
     },
@@ -333,6 +332,7 @@ export default {
         }),
         ...mapActions({
             getSystem: "updateSystem",
+            getHost: "getHostName",
         }),
         getUsageRate() {
             this.$http
@@ -470,19 +470,6 @@ export default {
                 })
                 .catch((err) => {});
         },
-        getDevName() {
-            this.hostname = "";
-            this.$http
-                .get("/system?form=hostname")
-                .then((res) => {
-                    if (res.data.code === 1) {
-                        if (res.data.data) {
-                            this.hostname = res.data.data.hostname || "";
-                        }
-                    }
-                })
-                .catch((err) => {});
-        },
         setDevName() {
             this.devName = this.hostname;
             this.devNameVisible = true;
@@ -508,7 +495,7 @@ export default {
                 .then((res) => {
                     if (res.data.code === 1) {
                         this.$message.success(this.lanMap["setting_ok"]);
-                        this.getDevName();
+                        this.getHost();
                     } else {
                         this.$message.error(
                             `(${res.data.code}) ${res.data.message}`
