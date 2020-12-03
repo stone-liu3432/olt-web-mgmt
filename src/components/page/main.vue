@@ -1,7 +1,7 @@
 <template>
     <div id="main-content">
         <topBanner></topBanner>
-        <div style="height: 70px; width: 100%;"></div>
+        <div style="height: 70px; width: 100%"></div>
         <router-view v-if="isRouterAlive"></router-view>
         <bottom-footer ref="main-footer"></bottom-footer>
     </div>
@@ -34,6 +34,7 @@ export default {
         this.getSystem();
         this.getMenu();
         this.getCustom();
+        this.getHost();
         this.uName = sessionStorage.getItem("uname");
         this.getData();
         var f_menu = sessionStorage.getItem("first_menu");
@@ -119,6 +120,7 @@ export default {
             getSystem: "updateSystem",
             getMenu: "updateMenu",
             getCustom: "updateCustom",
+            getHost: "getHostName",
         }),
         reload() {
             this.isRouterAlive = false;
