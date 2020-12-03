@@ -90,5 +90,18 @@ export default {
                 }
             })
             .catch(err => {});
+    },
+    getHostName({ commit }) {
+        commit("updateHostName", "");
+        Vue.prototype.$http
+            .get("/system?form=hostname")
+            .then(res => {
+                if (res.data.code === 1) {
+                    if (res.data.data) {
+                        commit("updateHostName", res.data.data.hostname || "");
+                    }
+                }
+            })
+            .catch(err => {});
     }
 };
