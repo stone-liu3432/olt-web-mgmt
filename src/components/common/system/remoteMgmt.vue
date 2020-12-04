@@ -9,25 +9,34 @@
                 <span style="color: #333; font-weight: normal">{{
                     def_route
                 }}</span>
-                <a href="javascript:void(0);" @click="openSetDialog">{{
-                    lanMap["config"]
-                }}</a>
-                <a
-                    href="javascript:void(0);"
+                <nms-button @click="openSetDialog('v4')">
+                    {{ lanMap["config"] }}
+                </nms-button>
+                <nms-button
+                    @click="delDefRoute"
                     v-if="
                         default_route.gateway &&
                         default_route.gateway !== '0.0.0.0'
                     "
-                    style="margin-left: 30px"
-                    @click="delDefRoute"
-                    >{{ lanMap["delete"] }}</a
                 >
+                    {{ lanMap["delete"] }}
+                </nms-button>
+                <span style="margin-left: 30px">
+                    {{ lanMap["def_route_v6"] }}:
+                </span>
+                <span>{{ def_route_v6 }}</span>
+                <nms-button @click="openSetDialog('v6')">
+                    {{ lanMap["config"] }}
+                </nms-button>
+                <nms-button v-if="def_route_v6 !== '--'" @click="delDefRouteV6">
+                    {{ lanMap["delete"] }}
+                </nms-button>
             </h3>
         </div>
         <hr />
         <div class="dns-mgmt">
             <h3>DNS:</h3>
-            <div>
+            <div class="dns-mgmt-content">
                 <div>
                     <span>{{ lanMap["primary"] }}:</span>
                     <span>{{ dnsData.primary || " - " }}</span>
@@ -38,9 +47,27 @@
                 </div>
             </div>
             <div>
-                <a href="javascript:void(0);" @click="configDns">{{
-                    lanMap["config"]
-                }}</a>
+                <nms-button @click="openDialog('v4')">
+                    {{ lanMap["config"] }}
+                </nms-button>
+            </div>
+            <div class="dns-mgmt-content">
+                <div>
+                    <span>{{ lanMap["primary_v6"] }}:</span>
+                    <span>{{ dnsData.primary_v6 }}</span>
+                </div>
+                <div>
+                    <span>{{ lanMap["secondary_v6"] }}:</span>
+                    <span>{{ dnsData.secondary_v6 }}</span>
+                </div>
+            </div>
+            <div>
+                <nms-button @click="openDialog('v6')">
+                    {{ lanMap["config"] }}
+                </nms-button>
+                <nms-button @click="deleteDnsV6" style="margin-left: 30px">
+                    {{ lanMap["delete"] }}
+                </nms-button>
             </div>
         </div>
         <hr />
@@ -88,9 +115,22 @@
                 :label="lanMap['ipmask']"
                 prop="ipmask"
             ></nms-table-column>
-            <nms-table-column :label="lanMap['ipv6']" prop="ipv6">
+            <nms-table-column :label="lanMap['ipv6']">
                 <template slot-scope="row">
-                    {{ row.ipv6 || "-" }}
+                    <template v-for="item in row.ipv6_address || []">
+                        <div
+                            :style="{
+                                padding: '6px 0',
+                                borderBottom:
+                                    row.ipv6_address &&
+                                    row.ipv6_address.length > 1
+                                        ? '1px solid #ccc'
+                                        : '',
+                            }"
+                        >
+                            {{ item.ipv6 }}
+                        </div>
+                    </template>
                 </template>
             </nms-table-column>
             <nms-table-column :label="lanMap['vlan_id']">
@@ -137,6 +177,29 @@
                                         : lanMap["on"]) + lanMap["telnet"]
                                 }}
                             </nms-dropdown-item>
+                            <template
+                                v-if="
+                                    row.ipv6_address &&
+                                    row.ipv6_address.length <= 10
+                                "
+                            >
+                                <nms-dropdown-item
+                                    :command="{ action: 'add_ipv6', row }"
+                                >
+                                    {{ lanMap["add"] + lanMap["ipv6"] }}
+                                </nms-dropdown-item>
+                            </template>
+                            <template
+                                v-if="
+                                    row.ipv6_address && row.ipv6_address.length
+                                "
+                            >
+                                <nms-dropdown-item
+                                    :command="{ action: 'delete_ipv6', row }"
+                                >
+                                    {{ lanMap["delete"] + lanMap["ipv6"] }}
+                                </nms-dropdown-item>
+                            </template>
                         </template>
                     </nms-dropdown>
                 </template>
@@ -229,20 +292,33 @@
             </div>
         </nms-dialog>
         <nms-dialog :visible.sync="dialogVisible" width="500px">
-            <template slot="title">{{
-                lanMap["config"] + lanMap["def_route"]
-            }}</template>
-            <div class="default-route-set">
-                <span>{{ lanMap["def_route"] }}</span>
-                <input
-                    type="text"
-                    v-model="gateway"
-                    :style="{
-                        'border-color': validateIp(gateway) ? '' : 'red',
-                    }"
-                />
-                <span class="tips">ex: 127.0.0.1</span>
-            </div>
+            <template slot="title">
+                {{ this.lanMap["config"] + this.lanMap["def_route"] }}
+            </template>
+            <template v-if="dialogType === 'v4'">
+                <div class="default-route-set">
+                    <span>{{ lanMap["def_route"] }}</span>
+                    <input
+                        type="text"
+                        v-model="gateway"
+                        :style="{
+                            'border-color': validateIp(gateway) ? '' : 'red',
+                        }"
+                    />
+                    <span class="tips">ex: 127.0.0.1</span>
+                </div>
+            </template>
+            <template v-if="dialogType === 'v6'">
+                <div class="default-route-set">
+                    <span>{{ lanMap["def_route_v6"] }}</span>
+                    <input
+                        type="text"
+                        v-model="gateway_v6"
+                        style="width: 260px"
+                        spellcheck="false"
+                    />
+                </div>
+            </template>
             <div slot="footer">
                 <a href="javascript:void(0);" @click="submitForm">{{
                     lanMap["apply"]
@@ -253,33 +329,104 @@
             </div>
         </nms-dialog>
         <nms-dialog :visible.sync="dnsVisible" width="500px">
-            <template slot="title">{{ lanMap["config"] }} DNS</template>
-            <div class="default-route-set">
-                <span>{{ lanMap["primary"] }}</span>
-                <input
-                    type="text"
-                    v-model.trim="primary"
-                    :style="{
-                        'border-color':
-                            primary === '' || validateIp(primary) ? '' : 'red',
-                    }"
-                />
-                <span class="tips">ex: 127.0.0.1</span>
-            </div>
-            <div class="default-route-set" style="margin-top: 12px">
-                <span>{{ lanMap["secondary"] }}</span>
-                <input
-                    type="text"
-                    v-model.trim="secondary"
-                    :style="{
-                        'border-color':
-                            secondary === '' || validateIp(secondary)
-                                ? ''
-                                : 'red',
-                    }"
-                />
-                <span class="tips">ex: 127.0.0.1</span>
-            </div>
+            <template slot="title">{{ dialogTitle }}</template>
+            <template v-if="dialogType === 'v4'">
+                <div class="default-route-set">
+                    <span>{{ lanMap["primary"] }}</span>
+                    <input
+                        type="text"
+                        v-model.trim="primary"
+                        :style="{
+                            'border-color':
+                                primary === '' || validateIp(primary)
+                                    ? ''
+                                    : 'red',
+                        }"
+                        spellcheck="false"
+                    />
+                    <span class="tips">ex: 127.0.0.1</span>
+                </div>
+                <div class="default-route-set">
+                    <span>{{ lanMap["secondary"] }}</span>
+                    <input
+                        type="text"
+                        v-model.trim="secondary"
+                        :style="{
+                            'border-color':
+                                secondary === '' || validateIp(secondary)
+                                    ? ''
+                                    : 'red',
+                        }"
+                        spellcheck="false"
+                    />
+                    <span class="tips">ex: 127.0.0.1</span>
+                </div>
+            </template>
+            <template v-if="dialogType === 'v6'">
+                <div class="default-route-set">
+                    <span>{{ lanMap["primary_v6"] }}</span>
+                    <input
+                        type="text"
+                        v-model="primary_v6"
+                        style="width: 260px"
+                        :style="{
+                            'border-color':
+                                primary_v6 === '' || isIPv6(primary_v6)
+                                    ? ''
+                                    : 'red',
+                        }"
+                        spellcheck="false"
+                    />
+                </div>
+                <div class="default-route-set">
+                    <span>{{ lanMap["secondary_v6"] }}</span>
+                    <input
+                        type="text"
+                        v-model="secondary_v6"
+                        style="width: 260px"
+                        :style="{
+                            'border-color':
+                                secondary_v6 === '' || isIPv6(secondary_v6)
+                                    ? ''
+                                    : 'red',
+                        }"
+                        spellcheck="false"
+                    />
+                </div>
+            </template>
+            <template v-if="dialogType === 'add_ipv6'">
+                <div class="add-or-set-ipv6">
+                    <span>{{ lanMap["interface"] }}:</span>
+                    <span>{{ row.interface }}</span>
+                </div>
+                <div class="add-or-set-ipv6">
+                    <span>{{ lanMap["ipv6"] }}:</span>
+                    <input
+                        type="text"
+                        v-model="ipv6"
+                        placeholder=""
+                        spellcheck="false"
+                        :style="{
+                            'border-color':
+                                ipv6 === '' || isIPv6(ipv6) ? '' : 'red',
+                        }"
+                    />
+                </div>
+            </template>
+            <template v-if="dialogType === 'delete_ipv6'">
+                <div class="add-or-set-ipv6">
+                    <span>{{ lanMap["interface"] }}:</span>
+                    <span>{{ row.interface }}</span>
+                </div>
+                <div class="add-or-set-ipv6">
+                    <span>{{ lanMap["ipv6"] }}:</span>
+                    <select v-model="ipv6">
+                        <template v-for="item in row.ipv6_address">
+                            <option :value="item.ipv6">{{ item.ipv6 }}</option>
+                        </template>
+                    </select>
+                </div>
+            </template>
             <div slot="footer">
                 <a href="javascript:void(0);" @click="submitDns">{{
                     lanMap["apply"]
@@ -294,7 +441,7 @@
 
 <script>
 import { mapState } from "vuex";
-import { isArray, isIPv6 } from "@/utils/common";
+import { isArray, isIPv6, isFunction } from "@/utils/common";
 export default {
     name: "remoteMgmt",
     computed: {
@@ -304,6 +451,9 @@ export default {
                 ? " -- "
                 : this.default_route.gateway;
         },
+        def_route_v6() {
+            return this.default_route.gateway_v6 || "--";
+        },
         outboundBtnText() {
             const state =
                 this.outboundAdmin === 1
@@ -311,11 +461,18 @@ export default {
                     : this.lanMap["on"];
             return state + this.lanMap["outbound"];
         },
+        dialogTitle() {
+            if (this.dialogType === "v4" || this.dialogType === "v6") {
+                return this.lanMap["config"] + "DNS";
+            }
+            if (this.dialogType === "add_ipv6") {
+                return this.lanMap["add"] + this.lanMap["ipv6"];
+            }
+            return this.lanMap["delete"] + this.lanMap["ipv6"];
+        },
     },
     data() {
         return {
-            outbound: {},
-            inbound: {},
             outboundAdmin: 1,
             interfaces: [],
             // 控制模态框隐藏显示
@@ -340,11 +497,16 @@ export default {
             vlan: " - ",
             default_route: {},
             dialogVisible: false,
+            dialogType: "",
             gateway: "",
+            gateway_v6: "",
             dnsData: {},
             dnsVisible: false,
             primary: "",
             secondary: "",
+            primary_v6: "",
+            secondary_v6: "",
+            row: {},
         };
     },
     created() {
@@ -523,8 +685,14 @@ export default {
                         timeout: 5000,
                     })
                     .then((res) => {
-                        this.$message.success(this.lanMap["setting_ok"]);
-                        this.getData();
+                        if (res.data.code === 1) {
+                            this.$message.success(this.lanMap["setting_ok"]);
+                            this.getData();
+                        } else {
+                            this.$message.error(
+                                `(${res.data.code}) ${res.data.message}`
+                            );
+                        }
                     })
                     .catch((err) => {
                         this.$http
@@ -568,7 +736,7 @@ export default {
                         ipmask: this.type === 2 ? undefined : this.ipmask,
                         ipv6: this.type === 1 ? undefined : this.ipv6,
                         interface: this.click_interface,
-                        vlan_id: this.vlan,
+                        vlan_id: data.vlan_id,
                     },
                 };
                 // 请求url: /system?form=inbound
@@ -640,7 +808,7 @@ export default {
         },
         delDefRoute() {
             this.$confirm(this.lanMap["if_sure"])
-                .then((_) => {
+                .then(() => {
                     const post_data = {
                         method: "delete",
                         param: {
@@ -663,47 +831,88 @@ export default {
                         })
                         .catch((err) => {});
                 })
-                .catch((_) => {});
+                .catch(() => {});
         },
-        openSetDialog() {
+        openSetDialog(type) {
             this.dialogVisible = true;
+            this.dialogType = type;
             this.gateway = this.default_route.gateway;
+            this.gateway_v6 = this.default_route.gateway_v6;
         },
         validateIp(val) {
             const reg = /^((25[0-5]|2[0-4]\d|1?\d?\d)(\.(?!$)|$)){4}/;
             return reg.test(val);
         },
         submitForm() {
-            if (!this.validateIp(this.gateway)) {
-                return this.$message.error(
-                    `${this.lanMap["param_error"]}: ${this.lanMap["def_route"]}`
-                );
-            }
-            if (this.gateway === this.def_route) {
-                this.$message.info(this.lanMap["modify_tips"]);
-                this.dialogVisible = false;
-                return;
-            }
-            const post_data = {
-                method: "set",
-                param: {
-                    gateway: this.gateway,
-                },
-            };
-            this.$http
-                .post("/switch_route?form=route_default", post_data)
-                .then((res) => {
-                    if (res.data.code === 1) {
-                        this.$message.success(this.lanMap["setting_ok"]);
-                        this.getDefRoute();
-                    } else {
-                        this.$message.error(
-                            "(" + res.data.code + ") " + res.data.message
+            const ACTIONS = {
+                v4() {
+                    if (!this.validateIp(this.gateway)) {
+                        return this.$message.error(
+                            `${this.lanMap["param_error"]}: ${this.lanMap["def_route"]}`
                         );
                     }
-                    this.dialogVisible = false;
-                })
-                .catch((err) => {});
+                    if (this.gateway === this.def_route) {
+                        this.$message.info(this.lanMap["modify_tips"]);
+                        return;
+                    }
+                    return {
+                        url: "/switch_route?form=route_default",
+                        data: {
+                            method: "set",
+                            param: {
+                                gateway: this.gateway,
+                            },
+                        },
+                    };
+                },
+                v6() {
+                    if (!isIPv6(this.gateway_v6)) {
+                        return this.$message.error(
+                            `${this.lanMap["param_error"]}: ${this.lanMap["def_route_v6"]}`
+                        );
+                    }
+                    if (this.gateway_v6 === this.def_route_v6) {
+                        this.$message.info(this.lanMap["modify_tips"]);
+                        return;
+                    }
+                    return {
+                        url: "/switch_route?form=route_default_v6",
+                        data: {
+                            method: "set",
+                            param: {
+                                gateway_v6: this.gateway_v6,
+                            },
+                        },
+                    };
+                },
+            };
+            if (isFunction(ACTIONS[this.dialogType])) {
+                const res = ACTIONS[this.dialogType].call(this);
+                if (res) {
+                    const { url, data } = res;
+                    this.$http
+                        .post(url, data)
+                        .then((res) => {
+                            if (res.data.code === 1) {
+                                this.$message.success(
+                                    this.lanMap["setting_ok"]
+                                );
+                                this.getDefRoute();
+                            } else {
+                                this.$message.error(
+                                    "(" +
+                                        res.data.code +
+                                        ") " +
+                                        res.data.message
+                                );
+                            }
+                        })
+                        .catch((err) => {})
+                        .finally(() => {
+                            this.dialogVisible = false;
+                        });
+                }
+            }
         },
         getDns() {
             this.dnsData = {};
@@ -718,56 +927,175 @@ export default {
                 })
                 .catch((err) => {});
         },
-        configDns() {
+        openDialog(type, data) {
             this.dnsVisible = true;
-            this.primary = this.dnsData.primary || "";
-            this.secondary = this.dnsData.secondary || "";
+            this.dialogType = type;
+            if (type === "v4") {
+                this.primary = this.dnsData.primary || "";
+                this.secondary = this.dnsData.secondary || "";
+            } else if (type === "v6") {
+                this.primary_v6 = this.dnsData.primary_v6 || "";
+                this.secondary_v6 = this.dnsData.secondary_v6 || "";
+            } else if (type === "add_ipv6") {
+                this.ipv6 = "";
+                this.row = data;
+            } else if (type === "delete_ipv6") {
+                this.ipv6 = data.ipv6_address[0].ipv6;
+                this.row = data;
+            }
         },
         submitDns() {
-            if (
-                (!this.primary &&
-                    !this.dnsData.primary &&
-                    !this.secondary &&
-                    !this.dnsData.secondary) ||
-                (this.primary === this.dnsData.primary &&
-                    this.secondary === this.dnsData.secondary)
-            ) {
-                this.$message.info(this.lanMap["modify_tips"]);
-                return;
-            }
-            if (this.primary !== "" && !this.validateIp(this.primary)) {
-                this.$message.error(
-                    `${this.lanMap["param_error"]}: ${this.lanMap["primary"]}`
-                );
-                return;
-            }
-            if (this.secondary !== "" && !this.validateIp(this.secondary)) {
-                this.$message.error(
-                    `${this.lanMap["param_error"]}: ${this.lanMap["secondary"]}`
-                );
-                return;
-            }
-            const post_params = {
-                method: "set",
-                param: {
-                    primary: this.primary,
-                    secondary: this.secondary,
-                },
-            };
-            this.$http
-                .post("/system?form=dns", post_params)
-                .then((res) => {
-                    if (res.data.code === 1) {
-                        this.$message.success(this.lanMap["setting_ok"]);
-                        this.getDns();
-                        this.dnsVisible = false;
-                    } else {
+            const ACTIONS = {
+                v4() {
+                    if (
+                        (!this.primary &&
+                            !this.dnsData.primary &&
+                            !this.secondary &&
+                            !this.dnsData.secondary) ||
+                        (this.primary === this.dnsData.primary &&
+                            this.secondary === this.dnsData.secondary)
+                    ) {
+                        this.$message.info(this.lanMap["modify_tips"]);
+                        return;
+                    }
+                    if (this.primary !== "" && !this.validateIp(this.primary)) {
                         this.$message.error(
-                            `(${res.data.code}) ${res.data.code}`
+                            `${this.lanMap["param_error"]}: ${this.lanMap["primary"]}`
+                        );
+                        return;
+                    }
+                    if (
+                        this.secondary !== "" &&
+                        !this.validateIp(this.secondary)
+                    ) {
+                        this.$message.error(
+                            `${this.lanMap["param_error"]}: ${this.lanMap["secondary"]}`
+                        );
+                        return;
+                    }
+                    return {
+                        url: "/system?form=dns",
+                        data: {
+                            method: "set",
+                            param: {
+                                primary: this.primary,
+                                secondary: this.secondary,
+                            },
+                        },
+                    };
+                },
+                v6() {
+                    if (
+                        (!this.primary_v6 &&
+                            !this.dnsData.primary_v6 &&
+                            !this.secondary_v6 &&
+                            !this.dnsData.secondary_v6) ||
+                        (this.primary_v6 === this.dnsData.primary_v6 &&
+                            this.secondary_v6 === this.dnsData.secondary_v6)
+                    ) {
+                        this.$message.info(this.lanMap["modify_tips"]);
+                        return;
+                    }
+                    if (
+                        this.primary_v6 !== "" &&
+                        !this.isIPv6(this.primary_v6)
+                    ) {
+                        this.$message.error(
+                            `${this.lanMap["param_error"]}: ${this.lanMap["primary_v6"]}`
+                        );
+                        return;
+                    }
+                    if (
+                        this.secondary_v6 !== "" &&
+                        !this.isIPv6(this.secondary_v6)
+                    ) {
+                        this.$message.error(
+                            `${this.lanMap["param_error"]}: ${this.lanMap["secondary_v6"]}`
+                        );
+                        return;
+                    }
+                    return {
+                        url: "/system?form=dns_v6",
+                        data: {
+                            method: "set",
+                            param: {
+                                primary_v6: this.primary_v6,
+                                secondary_v6: this.secondary_v6,
+                            },
+                        },
+                    };
+                },
+                add_ipv6() {
+                    if (!isIPv6(this.ipv6)) {
+                        this.$hessage.error(
+                            `${this.lanMap["param_error"]}: ${this.lanMap["ipv6"]}`
                         );
                     }
-                })
-                .catch((err) => {});
+                    const url =
+                        this.row.interface === "outbound"
+                            ? "/system?form=outbound"
+                            : "/system?form=inbound";
+                    return {
+                        url,
+                        data: {
+                            method: "set",
+                            param: {
+                                ipv6: this.ipv6,
+                                interface: this.row.interface,
+                                vlan_id: this.row.vlan_id,
+                            },
+                        },
+                    };
+                },
+                delete_ipv6() {
+                    const url =
+                        this.row.interface === "outbound"
+                            ? "/system?form=outbound_v6"
+                            : "/system?form=inbound_v6";
+                    return {
+                        url,
+                        data: {
+                            method: "delete",
+                            param: {
+                                ipv6: this.ipv6,
+                                interface: this.row.interface,
+                                vlan_id: this.row.vlan_id,
+                            },
+                        },
+                    };
+                },
+            };
+            if (isFunction(ACTIONS[this.dialogType])) {
+                const res = ACTIONS[this.dialogType].call(this);
+                if (res) {
+                    const { url, data } = res;
+                    this.$http
+                        .post(url, data)
+                        .then((res) => {
+                            if (res.data.code === 1) {
+                                this.$message.success(
+                                    this.lanMap["setting_ok"]
+                                );
+                                if (
+                                    this.dialogType === "v4" ||
+                                    this.dialogType === "v6"
+                                ) {
+                                    this.getDns();
+                                    return;
+                                }
+                                this.getData();
+                            } else {
+                                this.$message.error(
+                                    `(${res.data.code}) ${res.data.message}`
+                                );
+                            }
+                        })
+                        .catch((err) => {})
+                        .finally(() => {
+                            this.dnsVisible = false;
+                        });
+                }
+            }
         },
         isIPv6(val) {
             return isIPv6(val);
@@ -782,6 +1110,12 @@ export default {
                     break;
                 case "telnet":
                     this.setTelnetStatus(row);
+                    break;
+                case "add_ipv6":
+                    this.openDialog("add_ipv6", row);
+                    break;
+                case "delete_ipv6":
+                    this.openDialog("delete_ipv6", row);
                     break;
             }
         },
@@ -842,6 +1176,55 @@ export default {
                             } else {
                                 this.$message.error(
                                     `(${res.data.code}) ${res.data.message}`
+                                );
+                            }
+                        })
+                        .catch((err) => {});
+                })
+                .catch(() => {});
+        },
+        delDefRouteV6() {
+            this.$confirm(this.lanMap["if_sure"] + this.lanMap["delete"] + " ?")
+                .then(() => {
+                    this.$http
+                        .post("/switch_route?form=route_default_v6", {
+                            method: "delete",
+                            param: {},
+                        })
+                        .then((res) => {
+                            if (res.data.code === 1) {
+                                this.$message.success(
+                                    this.lanMap["setting_ok"]
+                                );
+                                this.getDefRoute();
+                            } else {
+                                this.$message.error(
+                                    `(${res.data.code}) ${res.data.message}`
+                                );
+                            }
+                        })
+                        .catch((err) => {});
+                })
+                .catch(() => {});
+        },
+        deleteDnsV6() {
+            this.$confirm(this.lanMap["if_sure"] + this.lanMap["delete"] + " ?")
+                .then(() => {
+                    this.$http
+                        .post("/system?form=dns_v6", {
+                            method: "set",
+                            param: {},
+                        })
+                        .then((res) => {
+                            if (res.data.code === 1) {
+                                this.$message.success(
+                                    this.lanMap["delete"] +
+                                        this.lanMap["st_success"]
+                                );
+                                this.getDns();
+                            } else {
+                                this.$message.error(
+                                    `(${res.data.code}) ${res.data.code}`
                                 );
                             }
                         })
@@ -1044,8 +1427,12 @@ h3 {
     > a {
         font-weight: normal;
     }
+    a + a {
+        margin-left: 30px;
+    }
 }
 div.default-route-set {
+    margin-top: 12px;
     span.tips {
         font-size: @tipsFontSize;
         color: @tipsColor;
@@ -1053,7 +1440,22 @@ div.default-route-set {
     }
     span:first-child {
         display: inline-block;
+        width: 160px;
+    }
+}
+.add-or-set-ipv6 {
+    margin: 12px 0;
+    > span:first-child {
+        display: inline-block;
         width: 120px;
+        vertical-align: middle;
+        text-align: right;
+        padding-right: 12px;
+        box-sizing: border-box;
+    }
+    input,
+    select {
+        width: 300px;
     }
 }
 div.dns-mgmt {
@@ -1063,7 +1465,7 @@ div.dns-mgmt {
         float: left;
         line-height: 72px;
     }
-    > h3 + div {
+    div.dns-mgmt-content {
         margin: 0 30px 0 20px;
         line-height: 24px;
         > div {
