@@ -586,6 +586,7 @@ var zh = {
     ARP: "ARP表",
     static_route_tips: "关闭路由功能将会清除所有路由表和ARP表",
     def_route: "缺省路由",
+    def_route_v6: "IPv6缺省路由",
 
     loid_mgmt: "LOID允许列表",
     used: "绑定",
@@ -887,8 +888,8 @@ var zh = {
     option37_admin: "Option37状态",
     ipv6: "IPv6",
     ipv4: "IPv4",
-    deny: "允许",
-    permit: "阻止",
+    deny: "阻止",
+    permit: "允许",
     cli_acl: "CLI访问控制",
     vtyacl: "绑定CLI ACL名称",
     vtyacl_ipv6: "绑定IPv6 CLI ACL名称",
@@ -904,6 +905,11 @@ var zh = {
     dev_name: "设备名称",
     set_dev_name: "配置设备名称",
     syslog_server: "System Log",
+    download_saved_alarm: "下载已保存告警",
+    primary_v6: "IPv6主DNS",
+    secondary_v6: "IPv6备用DNS",
+    turnoff_opt_transmitter: "关闭光发射机",
+    txsupply_time: "关闭时长",
 
     composeRange(min, max) {
         return `${min}${max ? " - " + max : ""}位字符`;

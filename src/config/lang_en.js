@@ -441,7 +441,7 @@ var en = {
     ntp_ipaddr2: " Alternate IP Address",
     ntp_gettime: " Get Time Automatically",
     update_frequency: " Update Frequency",
-    alarm: "  Alarm",
+    alarm: " Alarm ",
     alarm_info: " Alarm Information",
     port_vlan: " Port VLAN",
     pv_vlist_tips:
@@ -608,6 +608,7 @@ var en = {
     static_route_tips:
         " Turning off routing will clear all route tables and ARP tables ",
     def_route: " Default Route ",
+    def_route_v6: " IPv6 Default Route ",
 
     loid_mgmt: " LOID List ",
     used: " Used ",
@@ -936,6 +937,11 @@ var en = {
     dev_name: "Device Name",
     set_dev_name: "Set device name",
     syslog_server: "System Log",
+    download_saved_alarm: "Download Saved Alarm",
+    primary_v6: " IPv6 Primary DNS ",
+    secondary_v6: " IPv6 Secondary DNS ",
+    turnoff_opt_transmitter: "Turn off optical transmitter",
+    txsupply_time: " Close Time ",
 
     composeRange(min, max) {
         return `${min}${max ? " - " + max : ""} characters`;
