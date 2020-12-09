@@ -40,6 +40,10 @@ const userMgmt = () =>
     import(
         /* webpackChunkName: "system-page" */ "@/components/common/system/userMgmt"
     );
+const sysAcl = () =>
+    import(
+        /* webpackChunkName: "system-page" */ "@/components/common/system/sysAcl"
+    );
 
 // pon
 const onuDeny = () =>
@@ -119,6 +123,10 @@ const ponMac = () =>
 const portIsolation = () =>
     import(
         /* webpackChunkName: "switch-page" */ "@/components/common/switch/portIsolation"
+    );
+const portOptical = () =>
+    import(
+        /* webpackChunkName: "switch-page" */ "@/components/common/switch/portOptical"
     );
 // protocol
 const rstp = () =>
@@ -210,8 +218,8 @@ export default [
         }
     },
     {
-        path: "/cli_acl",
-        component: cliAcl,
+        path: "/sys_acl",
+        component: sysAcl,
         meta: {
             requireAuth: true
         }
@@ -476,6 +484,13 @@ export default [
     {
         path: "/dhcp_v6",
         component: dhcpV6,
+        meta: {
+            requireAuth: true
+        }
+    },
+    {
+        path: "/port_optical",
+        component: portOptical,
         meta: {
             requireAuth: true
         }
