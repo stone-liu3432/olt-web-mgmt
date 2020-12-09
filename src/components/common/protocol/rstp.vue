@@ -4,57 +4,88 @@
             <div slot="title">RSTP</div>
         </page-header>
         <div>
-            <span>{{ lanMap['rstp_b_info'] }}</span>
-            <a href="javascript:;" @click="open_modal" v-if="rstp.data">{{ lanMap['config'] }}</a>
+            <span>{{ lanMap["rstp_b_info"] }}</span>
+            <nms-button @click="open_modal" v-if="rstp.data">
+                {{ lanMap["config"] }}
+            </nms-button>
         </div>
         <ul v-if="rstp.data">
-            <li v-for="(item,key) in rstp.data" :key="key">
+            <li v-for="(item, key) in rstp.data" :key="key">
                 <span>{{ lanMap[key] }}</span>
-                <span v-if="key !== 'status' && key !== 'rstp_mode'">{{ item }}</span>
-                <span
-                    v-if=" key === 'status'"
-                >{{ item === 1 ? lanMap['enable'] : lanMap['disable'] }}</span>
-                <span v-if=" key === 'rstp_mode'">{{ item === 0 ? 'stp' : 'rstp' }}</span>
+                <span v-if="key !== 'status' && key !== 'rstp_mode'">{{
+                    item
+                }}</span>
+                <span v-if="key === 'status'">{{
+                    item === 1 ? lanMap["enable"] : lanMap["disable"]
+                }}</span>
+                <span v-if="key === 'rstp_mode'">{{
+                    item === 0 ? "stp" : "rstp"
+                }}</span>
             </li>
         </ul>
         <div>
-            <span>{{ lanMap['rstp_p_info'] }}</span>
-            <a
-                href="javascript:;"
-                @click="open_priority"
-                v-if="rstp_port.length"
-            >{{ lanMap['rstp_p_pri_b'] }}</a>
+            <span>{{ lanMap["rstp_p_info"] }}</span>
+            <nms-button v-if="rstp_port.length" @click="open_priority">
+                {{ lanMap["rstp_p_pri_b"] }}
+            </nms-button>
+            <nms-button style="margin-left: 30px" @click="refreshPort">
+                {{ lanMap["refresh"] }}
+            </nms-button>
         </div>
         <nms-table :rows="rstp_port" border>
             <nms-table-column :label="lanMap['port_id']">
-                <template
-                    slot-scope="rows"
-                >{{ port_name.ge[rows.port_id] ? port_name.ge[rows.port_id].name : port_name.xge[rows.port_id] ? port_name.xge[rows.port_id].name : '' }}</template>
+                <template slot-scope="rows">{{
+                    port_name.ge[rows.port_id]
+                        ? port_name.ge[rows.port_id].name
+                        : port_name.xge[rows.port_id]
+                        ? port_name.xge[rows.port_id].name
+                        : ""
+                }}</template>
             </nms-table-column>
-            <nms-table-column prop="port_priority" :label="lanMap['port_priority']"></nms-table-column>
-            <nms-table-column prop="port_path_cost" :label="lanMap['port_path_cost']"></nms-table-column>
+            <nms-table-column
+                prop="port_priority"
+                :label="lanMap['port_priority']"
+            ></nms-table-column>
+            <nms-table-column
+                prop="port_path_cost"
+                :label="lanMap['port_path_cost']"
+            ></nms-table-column>
             <nms-table-column :label="lanMap['edge_status']">
-                <template slot-scope="rows">{{ rows.edge_status === 1 ? 'Edge' : 'NEdge' }}</template>
+                <template slot-scope="rows">{{
+                    rows.edge_status === 1 ? "Edge" : "NEdge"
+                }}</template>
             </nms-table-column>
-            <nms-table-column prop="admin_link_type" :label="lanMap['admin_link_type']"></nms-table-column>
-            <nms-table-column prop="oper_link_type" :label="lanMap['oper_link_type']"></nms-table-column>
-            <nms-table-column prop="port_role" :label="lanMap['port_role']"></nms-table-column>
-            <nms-table-column prop="port_state" :label="lanMap['port_state']"></nms-table-column>
+            <nms-table-column
+                prop="admin_link_type"
+                :label="lanMap['admin_link_type']"
+            ></nms-table-column>
+            <nms-table-column
+                prop="oper_link_type"
+                :label="lanMap['oper_link_type']"
+            ></nms-table-column>
+            <nms-table-column
+                prop="port_role"
+                :label="lanMap['port_role']"
+            ></nms-table-column>
+            <nms-table-column
+                prop="port_state"
+                :label="lanMap['port_state']"
+            ></nms-table-column>
         </nms-table>
         <!-- 设置rstp全局信息模态框 -->
         <div class="modal-dialog" v-if="modal" key="modal-rstp-basic-info">
             <div class="cover"></div>
             <div class="modal-body">
-                <h2 class="modal-header">{{ lanMap['rstp_global_info'] }}</h2>
+                <h2 class="modal-header">{{ lanMap["rstp_global_info"] }}</h2>
                 <div>
-                    <span>{{ lanMap['status'] }}</span>
+                    <span>{{ lanMap["status"] }}</span>
                     <select v-model.number="bridge_info.status">
-                        <option value="0">{{ lanMap['disable'] }}</option>
-                        <option value="1">{{ lanMap['enable'] }}</option>
+                        <option value="0">{{ lanMap["disable"] }}</option>
+                        <option value="1">{{ lanMap["enable"] }}</option>
                     </select>
                 </div>
                 <div>
-                    <span>{{ lanMap['rstp_mode'] }}</span>
+                    <span>{{ lanMap["rstp_mode"] }}</span>
                     <select v-model.number="bridge_info.rstp_mode">
                         <option value="0">stp</option>
                         <option value="2">rstp</option>
@@ -63,7 +94,7 @@
                     </select>
                 </div>
                 <div>
-                    <span>{{ lanMap['rb_priority'] }}</span>
+                    <span>{{ lanMap["rb_priority"] }}</span>
                     <select v-model.number="bridge_info.rb_priority">
                         <option value="0">0</option>
                         <option value="4096">4096</option>
@@ -84,62 +115,94 @@
                     </select>
                 </div>
                 <div>
-                    <span>{{ lanMap['max_age'] }}</span>
+                    <span>{{ lanMap["max_age"] }}</span>
                     <input
                         type="text"
                         v-model.number="bridge_info.max_age"
-                        :style="{ 'borderColor' : verify_input.max_age ? 'red' : '#ccc' }"
+                        :style="{
+                            borderColor: verify_input.max_age ? 'red' : '#ccc',
+                        }"
                     />
                     <span>range: 6-40</span>
                 </div>
                 <div>
-                    <span>{{ lanMap['hello_time'] }}</span>
+                    <span>{{ lanMap["hello_time"] }}</span>
                     <input
                         type="text"
                         v-model.number="bridge_info.hello_time"
-                        :style="{ 'borderColor' : verify_input.hello_time ? 'red' : '#ccc' }"
+                        :style="{
+                            borderColor: verify_input.hello_time
+                                ? 'red'
+                                : '#ccc',
+                        }"
                     />
                     <span>range: 1-10</span>
                 </div>
                 <div>
-                    <span>{{ lanMap['forward_delay'] }}</span>
+                    <span>{{ lanMap["forward_delay"] }}</span>
                     <input
                         type="text"
                         v-model.number="bridge_info.forward_delay"
-                        :style="{ 'borderColor' : verify_input.forward_delay ? 'red' : '#ccc' }"
+                        :style="{
+                            borderColor: verify_input.forward_delay
+                                ? 'red'
+                                : '#ccc',
+                        }"
                     />
                     <span>range: 4-30</span>
                 </div>
                 <div>
-                    <span>{{ lanMap['transmit_hold_count'] }}</span>
+                    <span>{{ lanMap["transmit_hold_count"] }}</span>
                     <input
                         type="text"
                         v-model.number="bridge_info.transmit_hold_count"
-                        :style="{ 'borderColor' : verify_input.transmit_hold_count ? 'red' : '#ccc' }"
+                        :style="{
+                            borderColor: verify_input.transmit_hold_count
+                                ? 'red'
+                                : '#ccc',
+                        }"
                     />
                     <span>range: 1-255</span>
                 </div>
                 <div>
-                    <a href="javascript:;" @click="set_bridge">{{ lanMap['apply'] }}</a>
-                    <a href="javascript:;" @click="close_modal">{{ lanMap['cancel'] }}</a>
+                    <a href="javascript:;" @click="set_bridge">{{
+                        lanMap["apply"]
+                    }}</a>
+                    <a href="javascript:;" @click="close_modal">{{
+                        lanMap["cancel"]
+                    }}</a>
                 </div>
                 <div class="close" @click="close_modal"></div>
             </div>
         </div>
         <!-- 设置rstp端口优先级模态框 -->
-        <div class="modal-dialog" v-if="modal_priority" key="modal-rstp-priority">
+        <div
+            class="modal-dialog"
+            v-if="modal_priority"
+            key="modal-rstp-priority"
+        >
             <div class="cover"></div>
             <div class="modal-content">
-                <h2 class="modal-header">{{ lanMap['rstp_port_pri'] }}</h2>
+                <h2 class="modal-header">{{ lanMap["rstp_port_pri"] }}</h2>
                 <div>
-                    <span>{{ lanMap['port_id'] }}</span>
+                    <span>{{ lanMap["port_id"] }}</span>
                     <select v-model.number="priority_info.port_id">
-                        <option v-for="(item,key) in port_name.ge" :value="item.id">{{ item.name }}</option>
-                        <option v-for="(item,key) in port_name.xge" :value="item.id">{{ item.name }}</option>
+                        <option
+                            v-for="(item, key) in port_name.ge"
+                            :value="item.id"
+                        >
+                            {{ item.name }}
+                        </option>
+                        <option
+                            v-for="(item, key) in port_name.xge"
+                            :value="item.id"
+                        >
+                            {{ item.name }}
+                        </option>
                     </select>
                 </div>
                 <div>
-                    <span>{{ lanMap['port_priority'] }}</span>
+                    <span>{{ lanMap["port_priority"] }}</span>
                     <select v-model.number="priority_info.port_priority">
                         <option value="0">0</option>
                         <option value="16">16</option>
@@ -160,37 +223,45 @@
                     </select>
                 </div>
                 <div>
-                    <span>{{ lanMap['port_path_cost'] }}</span>
+                    <span>{{ lanMap["port_path_cost"] }}</span>
                     <input
                         type="text"
                         v-model.number="priority_info.port_path_cost"
-                        :style="{ 'borderColor' : verify_input.port_path_cost ? 'red' : '#ccc' }"
+                        :style="{
+                            borderColor: verify_input.port_path_cost
+                                ? 'red'
+                                : '#ccc',
+                        }"
                     />
                     <span>range: 0-200000000</span>
                 </div>
                 <div>
-                    <span>{{ lanMap['edge_status'] }}</span>
+                    <span>{{ lanMap["edge_status"] }}</span>
                     <select v-model.number="priority_info.edge_status">
                         <option value="0">NEdge</option>
                         <option value="1">Edge</option>
                     </select>
                 </div>
                 <div>
-                    <span>{{ lanMap['admin_link_type'] }}</span>
+                    <span>{{ lanMap["admin_link_type"] }}</span>
                     <select v-model="priority_info.admin_link_type">
                         <option value="Auto">Auto</option>
                         <option value="P2P">P2P</option>
                         <option value="Shared">Shared</option>
                     </select>
                 </div>
-                <div style="font-size: 14px; color: #67aef6;">
-                    <template
-                        v-if="priority_info.link_aggregation"
-                    >{{ lanMap['link_aggregation_tips'] }}</template>
+                <div style="font-size: 14px; color: #67aef6">
+                    <template v-if="priority_info.link_aggregation">{{
+                        lanMap["link_aggregation_tips"]
+                    }}</template>
                 </div>
                 <div>
-                    <a href="javascript:;" @click="set_priority">{{ lanMap['apply'] }}</a>
-                    <a href="javascript:;" @click="close_priority">{{ lanMap['cancel'] }}</a>
+                    <a href="javascript:;" @click="set_priority">{{
+                        lanMap["apply"]
+                    }}</a>
+                    <a href="javascript:;" @click="close_priority">{{
+                        lanMap["cancel"]
+                    }}</a>
                 </div>
                 <div class="close" @click="close_priority"></div>
             </div>
@@ -200,6 +271,7 @@
 
 <script>
 import { mapState } from "vuex";
+import { debounce } from "@/utils/common";
 export default {
     name: "rstp",
     computed: mapState(["lanMap", "change_url", "port_name"]),
@@ -221,7 +293,7 @@ export default {
                 max_age: "",
                 hello_time: "",
                 forward_delay: "",
-                transmit_hold_count: ""
+                transmit_hold_count: "",
             },
             //  验证输入是否在指定的范围内
             verify_input: {
@@ -229,7 +301,7 @@ export default {
                 hello_time: false,
                 forward_delay: false,
                 transmit_hold_count: false,
-                port_path_cost: false
+                port_path_cost: false,
             },
             //  表单绑定  -->  rstp端口优先级设置页
             priority_info: {
@@ -237,8 +309,8 @@ export default {
                 port_priority: 0,
                 port_path_cost: 0,
                 edge_status: 0,
-                admin_link_type: ""
-            }
+                admin_link_type: "",
+            },
         };
     },
     created() {
@@ -247,33 +319,28 @@ export default {
     },
     methods: {
         getData() {
+            this.rstp = {};
             this.$http
                 .get(this.change_url.rstp)
-                .then(res => {
+                .then((res) => {
                     if (res.data.code === 1) {
                         this.rstp = res.data;
-                    } else if (res.data.code > 1) {
-                        this.rstp = {};
                     }
                 })
-                .catch(err => {
-                    // to do
-                });
+                .catch((err) => {});
         },
         getPortData() {
             this.rstp_port = [];
             this.$http
                 .get(this.change_url.rstp_port)
-                .then(res => {
+                .then((res) => {
                     if (res.data.code === 1) {
                         if (res.data.data && res.data.data.length) {
                             this.rstp_port = res.data.data;
                         }
                     }
                 })
-                .catch(err => {
-                    // to do
-                });
+                .catch((err) => {});
         },
         //  设置全局rstp信息内的提交动作
         set_bridge() {
@@ -285,7 +352,7 @@ export default {
             ) {
                 this.$message({
                     type: "error",
-                    text: this.lanMap["param_error"]
+                    text: this.lanMap["param_error"],
                 });
                 return;
             }
@@ -319,7 +386,7 @@ export default {
                 this.modal = false;
                 this.$message({
                     type: "info",
-                    text: this.lanMap["modify_tips"]
+                    text: this.lanMap["modify_tips"],
                 });
                 return;
             }
@@ -333,27 +400,27 @@ export default {
                     max_age: this.bridge_info.max_age,
                     hello_time: this.bridge_info.hello_time,
                     forward_delay: this.bridge_info.forward_delay,
-                    transmit_hold_count: this.bridge_info.transmit_hold_count
-                }
+                    transmit_hold_count: this.bridge_info.transmit_hold_count,
+                },
             };
             this.$http
                 .post("/switch_rstp?form=bridge", post_params)
-                .then(res => {
+                .then((res) => {
                     if (res.data.code === 1) {
                         this.getData();
                         this.$message({
                             type: res.data.type,
-                            text: this.lanMap["setting_ok"]
+                            text: this.lanMap["setting_ok"],
                         });
                         this.getPortData();
                     } else if (res.data.code > 1) {
                         this.$message({
                             type: res.data.type,
-                            text: "(" + res.data.code + ") " + res.data.message
+                            text: "(" + res.data.code + ") " + res.data.message,
                         });
                     }
                 })
-                .catch(err => {
+                .catch((err) => {
                     // to do
                 });
             this.modal = false;
@@ -376,7 +443,7 @@ export default {
             if (!this.rstp.data.status) {
                 this.$message({
                     type: "error",
-                    text: this.lanMap["rstp_tips_disable"]
+                    text: this.lanMap["rstp_tips_disable"],
                 });
                 return;
             }
@@ -392,20 +459,14 @@ export default {
         },
         //  设置端口优先级内的提交按钮
         set_priority() {
-            var data;
-            for (var key in this.rstp_port) {
-                if (
-                    this.priority_info.port_id === this.rstp_port[key].port_id
-                ) {
-                    data = this.rstp_port[key];
-                }
-            }
+            const data = this.rstp_port.filter(
+                (item) => item.port_id === this.priority_info.port_id
+            )[0];
             if (!data) return;
             if (this.verify_input.port_path_cost) {
-                this.$message({
-                    type: "error",
-                    text: this.lanMap["param_error"]
-                });
+                this.$message.error(
+                    `${this.lanMap["param_error"]}: ${this.lanMap["port_path_cost"]}`
+                );
                 return;
             }
             if (this.priority_info.port_priority !== data.port_priority) {
@@ -424,7 +485,7 @@ export default {
                 this.modal_priority = false;
                 this.$message({
                     type: "info",
-                    text: this.lanMap["modify_tips"]
+                    text: this.lanMap["modify_tips"],
                 });
                 return;
             }
@@ -434,7 +495,7 @@ export default {
             var type_map = {
                 P2P: "force_true",
                 Auto: "auto",
-                Shared: "force_false"
+                Shared: "force_false",
             };
             var post_params = {
                 method: "set",
@@ -445,30 +506,31 @@ export default {
                     port_path_cost: this.priority_info.port_path_cost,
                     edge_status: this.priority_info.edge_status,
                     admin_link_type:
-                        type_map[this.priority_info.admin_link_type]
-                }
+                        type_map[this.priority_info.admin_link_type],
+                },
             };
             this.$http
                 .post("/switch_rstp?form=port", post_params)
-                .then(res => {
+                .then((res) => {
                     if (res.data.code === 1) {
                         this.modal_priority = false;
                         this.getPortData();
                         this.$message({
                             type: res.data.type,
-                            text: this.lanMap["setting_ok"]
+                            text: this.lanMap["setting_ok"],
                         });
                     } else if (res.data.code > 1) {
                         this.$message({
                             type: res.data.type,
-                            text: "(" + res.data.code + ") " + res.data.message
+                            text: "(" + res.data.code + ") " + res.data.message,
                         });
                     }
                 })
-                .catch(err => {
-                    // to do
-                });
-        }
+                .catch((err) => {});
+        },
+        refreshPort() {
+            debounce(this.getPortData, 1000, this);
+        },
     },
     watch: {
         "bridge_info.max_age"() {
@@ -528,19 +590,16 @@ export default {
         },
         //  设置端口模态框内，检测到port_id变化时，实时更新页面数据
         "priority_info.port_id"() {
-            for (var key in this.rstp_port.data) {
-                if (
-                    this.priority_info.port_id ===
-                    this.rstp_port.data[key].port_id
-                ) {
-                    var data = this.rstp_port.data[key];
-                    for (var _key in this.priority_info) {
-                        this.priority_info[_key] = data[_key];
-                    }
-                }
+            const data = this.rstp_port.filter(
+                (item) => item.port_id === this.priority_info.port_id
+            )[0];
+            if (data) {
+                Object.keys(this.priority_info).forEach((key) => {
+                    this.priority_info[key] = data[key];
+                });
             }
-        }
-    }
+        },
+    },
 };
 </script>
 
