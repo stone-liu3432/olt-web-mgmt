@@ -12,14 +12,22 @@ export default {
     name: "content-area",
     components: {
         leftAside,
-        detail
+        detail,
     },
-    methods: {},
-    created() {},
+    provide() {
+        return {
+            scrollRef: this.scrollRef,
+        };
+    },
+    methods: {
+        scrollRef(top) {
+            this.$el.scrollTop = top;
+        },
+    },
     beforeDestroy() {
         sessionStorage.removeItem("first_menu");
         sessionStorage.removeItem("sec_menu");
-    }
+    },
 };
 </script>
 
