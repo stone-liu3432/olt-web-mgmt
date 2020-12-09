@@ -11,7 +11,7 @@
         <nms-table :rows="mirrors" border>
             <nms-table-column :label="lanMap['src_port']">
                 <template slot-scope="row">
-                    {{ row.src_port | getPortName }}
+                    {{ row.port_id | getPortName }}
                 </template>
             </nms-table-column>
             <nms-table-column :label="lanMap['dst_port']">
@@ -39,7 +39,7 @@
             <template slot="title">{{ lanMap["config"] }}</template>
             <div class="nms-dialog-content-item">
                 <span>{{ lanMap["src_port"] }}:</span>
-                <span>{{ row.src_port | getPortName }}</span>
+                <span>{{ row.port_id | getPortName }}</span>
             </div>
             <div class="nms-dialog-content-item">
                 <span>{{ lanMap["dst_port"] }}:</span>
@@ -128,7 +128,7 @@ export default {
                         post_params = {
                             method: "clear",
                             param: {
-                                src_port: row.src_port,
+                                src_port: row.port_id,
                             },
                         };
                     this.$http
@@ -160,7 +160,7 @@ export default {
                 post_params = {
                     method: "set",
                     param: {
-                        src_port: this.row.src_port,
+                        src_port: this.row.port_id,
                         dst_port: this.formData.dst_port,
                         type: this.formData.type,
                     },
