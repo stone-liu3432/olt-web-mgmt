@@ -115,7 +115,7 @@ export default {
                 );
             }
             if (this.portType === "ge" || this.portType === "xge") {
-                this.$router.push("/port_cfg?port_id=" + this.portInfo.id);
+                this.$router.push("/port_info?port_id=" + this.portInfo.id);
             }
         },
     },
