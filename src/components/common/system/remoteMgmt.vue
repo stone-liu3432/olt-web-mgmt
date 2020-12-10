@@ -87,7 +87,7 @@
                 <template slot-scope="row">
                     <div class="interface-expand-item">
                         <span>{{ lanMap["rcvpkt"] }}:</span>
-                        <span>{{ row.rcvpkt || 0 }}</span>
+                        <span>{{ row.rcvpkts || 0 }}</span>
                     </div>
                     <div class="interface-expand-item">
                         <span>{{ lanMap["rcvbytes"] }}:</span>
@@ -95,7 +95,7 @@
                     </div>
                     <div class="interface-expand-item">
                         <span>{{ lanMap["transpkt"] }}:</span>
-                        <span>{{ row.transpkt || 0 }}</span>
+                        <span>{{ row.transpkts || 0 }}</span>
                     </div>
                     <div class="interface-expand-item">
                         <span>{{ lanMap["transbytes"] }}:</span>
