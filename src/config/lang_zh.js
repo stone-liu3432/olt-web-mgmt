@@ -910,6 +910,9 @@ var zh = {
     secondary_v6: "IPv6备用DNS",
     turnoff_opt_transmitter: "关闭光发射机",
     txsupply_time: "关闭时长",
+    port_optical: "端口光诊断",
+    sys_acl: "系统访问控制",
+    access: "访问方式",
 
     composeRange(min, max) {
         return `${min}${max ? " - " + max : ""}位字符`;

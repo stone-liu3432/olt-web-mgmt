@@ -942,6 +942,9 @@ var en = {
     secondary_v6: " IPv6 Secondary DNS ",
     turnoff_opt_transmitter: "Turn off optical transmitter",
     txsupply_time: " Close Time ",
+    port_optical: "Port Optical Diagnose",
+    sys_acl: "System Access",
+    access: " Access ",
 
     composeRange(min, max) {
         return `${min}${max ? " - " + max : ""} characters`;
