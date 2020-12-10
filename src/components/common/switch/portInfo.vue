@@ -73,7 +73,11 @@
             </nms-table-column>
             <nms-table-column prop="speed" :label="lanMap['speed']">
                 <template slot-scope="row">
-                    {{ row.auto_neg ? `Auto(${row.speed})` : row.speed }}
+                    {{
+                        row.auto_neg
+                            ? `Auto(${row.speed === "0M" ? "--" : row.speed})`
+                            : row.speed
+                    }}
                 </template>
             </nms-table-column>
             <nms-table-column prop="media" :label="lanMap['media']">
