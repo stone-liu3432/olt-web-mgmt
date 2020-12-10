@@ -8,7 +8,7 @@
                 </nms-button>
             </template>
         </page-header>
-        <nms-table :rows="port_info" border>
+        <nms-table :rows="port_info" border ref="port-info-table">
             <nms-table-column type="expand">
                 <template slot-scope="scope">
                     <div class="nms-table-expand-item">
@@ -71,30 +71,11 @@
                     }}
                 </template>
             </nms-table-column>
-            <nms-table-column prop="auto_neg" :label="lanMap['auto_neg']">
-                <template slot-scope="row">
-                    {{ row.auto_neg >= 1 ? "Enable" : "Disable" }}
-                </template>
-            </nms-table-column>
             <nms-table-column prop="speed" :label="lanMap['speed']">
                 <template slot-scope="row">
-                    {{ row.speed === "10/100/1000M" ? "Auto" : row.speed }}
+                    {{ row.auto_neg ? `Auto(${row.speed})` : row.speed }}
                 </template>
             </nms-table-column>
-            <!-- <nms-table-column prop="duplex" :label="lanMap['duplex']">
-                <template slot-scope="row">
-                    {{ row.duplex >= 1 ? "full" : "half" }}
-                </template>
-            </nms-table-column>
-            <nms-table-column prop="flow_ctrl" :label="lanMap['flow_ctrl']">
-                <template slot-scope="row">
-                    {{ row.flow_ctrl >= 1 ? "Enable" : "Disable" }}
-                </template>
-            </nms-table-column>
-            <nms-table-column
-                prop="mtu"
-                :label="lanMap['mtu']"
-            ></nms-table-column> -->
             <nms-table-column prop="media" :label="lanMap['media']">
                 <template slot-scope="row">
                     {{ lanMap[row.media] }}
@@ -128,21 +109,28 @@
             <template v-if="!isPon">
                 <div class="nms-form-item">
                     <span>{{ lanMap["admin_status"] }}:</span>
-                    <select v-model.number="formData.admin_status">
+                    <select
+                        v-model.number="formData.admin_status"
+                        key="admin-status"
+                    >
                         <option value="0">{{ lanMap["disable"] }}</option>
                         <option value="1">{{ lanMap["enable"] }}</option>
                     </select>
                 </div>
                 <div class="nms-form-item">
                     <span>{{ lanMap["auto_neg"] }}:</span>
-                    <select v-model.number="formData.auto_neg">
+                    <select
+                        v-model.number="formData.auto_neg"
+                        disabled
+                        key="auto-neg"
+                    >
                         <option value="0">{{ lanMap["disable"] }}</option>
                         <option value="1">{{ lanMap["enable"] }}</option>
                     </select>
                 </div>
                 <div class="nms-form-item">
                     <span>{{ lanMap["speed"] }}:</span>
-                    <select v-model="formData.speed">
+                    <select v-model="formData.speed" key="speed">
                         <option value="0M" disabled>Auto</option>
                         <option
                             v-if="
@@ -177,7 +165,7 @@
                 </div>
                 <div class="nms-form-item">
                     <span>{{ lanMap["duplex"] }}:</span>
-                    <select v-model.number="formData.duplex">
+                    <select v-model.number="formData.duplex" key="duplex">
                         <option value="0">{{ lanMap["half"] }}</option>
                         <option value="1">{{ lanMap["full"] }}</option>
                     </select>
@@ -185,7 +173,7 @@
             </template>
             <div class="nms-form-item">
                 <span>{{ lanMap["flow_ctrl"] }}:</span>
-                <select v-model.number="formData.flow_ctrl">
+                <select v-model.number="formData.flow_ctrl" key="flow-ctrl">
                     <option value="0">{{ lanMap["disable"] }}</option>
                     <option value="1">{{ lanMap["enable"] }}</option>
                 </select>
@@ -196,6 +184,7 @@
                     type="text"
                     v-model.number="formData.mtu"
                     v-validator="{ min: 128, max: 2000 }"
+                    key="mtu"
                 />
                 <span class="tips">128 - 2000</span>
             </div>
@@ -204,6 +193,7 @@
                     <span>{{ lanMap["erate"] }}:</span>
                     <input
                         type="text"
+                        key="erate"
                         v-model.number="formData.erate"
                         v-validator:allow0="{ min: 64, max: 1024000 }"
                     />
@@ -213,6 +203,7 @@
                     <span>{{ lanMap["irate"] }}:</span>
                     <input
                         type="text"
+                        key="irate"
                         v-model.number="formData.irate"
                         v-validator:allow0="{ min: 64, max: 1024000 }"
                     />
@@ -225,6 +216,7 @@
                     type="text"
                     v-model.number="formData.pvid"
                     v-validator="{ min: 1, max: 4094 }"
+                    key="pvid"
                 />
                 <span class="tips">1 - 4094</span>
             </div>
@@ -232,6 +224,7 @@
                 <span>{{ lanMap["port_desc"] }}:</span>
                 <textarea
                     v-model="formData.port_desc"
+                    key="port-desc"
                     :style="{
                         'border-color':
                             formData.port_desc.length &&
@@ -287,6 +280,7 @@ export default {
     activated() {
         this.getData();
     },
+    inject: ["scrollRef"],
     created() {
         this.getData();
     },
@@ -307,6 +301,33 @@ export default {
                     if (res.data.code === 1) {
                         if (isArray(res.data.data)) {
                             this.port_info = res.data.data;
+                            if (this.$route.query.port_id) {
+                                const port_id = Number(
+                                    this.$route.query.port_id
+                                );
+                                delete this.$route.query.port_id;
+                                this.$nextTick(() => {
+                                    const row = this.port_info.filter(
+                                        (item) => item.port_id === port_id
+                                    )[0];
+                                    if (row) {
+                                        this.$refs[
+                                            "port-info-table"
+                                        ].expandedRows.push(row);
+                                        this.$nextTick(() => {
+                                            const el = document.getElementsByClassName(
+                                                "table-expanded-row"
+                                            )[0];
+                                            if (el) {
+                                                const {
+                                                    top,
+                                                } = el.getBoundingClientRect();
+                                                this.scrollRef(top - 70);
+                                            }
+                                        });
+                                    }
+                                });
+                            }
                         }
                     }
                 })
@@ -332,6 +353,9 @@ export default {
             keys.forEach((key) => {
                 if (isDef(row[key])) {
                     this.formData[key] = row[key];
+                }
+                if (row.auto_neg) {
+                    this.formData.speed = "auto";
                 }
             });
             this.dialogVisible = true;
@@ -380,7 +404,7 @@ export default {
                     .post(url, post_params)
                     .then((res) => {
                         if (res.data.code === 1) {
-                            this.$hessage.success(this.lanMap["setting_ok"]);
+                            this.$message.success(this.lanMap["setting_ok"]);
                             this.getData();
                         } else {
                             this.$message.error(
@@ -439,6 +463,12 @@ export default {
         computedFlag(flags, data, baseData) {
             let flag = 0;
             Object.keys(flags).forEach((key) => {
+                if (key === "speed") {
+                    if (baseData.auto_neg && data[key] !== "auto") {
+                        flag |= flags[key];
+                        return;
+                    }
+                }
                 if (data[key] !== baseData[key]) {
                     flag |= flags[key];
                 }
