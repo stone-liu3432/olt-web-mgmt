@@ -107,10 +107,11 @@ export default {
             captchaSrc: "",
             captcha: "",
             hasLogo: false,
+            system: {},
         };
     },
     computed: {
-        ...mapState(["lanMap", "language", "custom", "system"]),
+        ...mapState(["lanMap", "language", "custom"]),
         verify_uname() {
             const reg = /^[a-zA-Z][a-zA-Z_\d]{3,15}$/;
             return !reg.test(this.userName) && this.userName !== "";
@@ -149,7 +150,7 @@ export default {
         ...mapMutations({
             setLanguage: "updateLang",
         }),
-        ...mapActions(["updateCustom", "updateSystem"]),
+        ...mapActions(["updateCustom"]),
         userLogin() {
             if (
                 this.verify_uname ||
@@ -229,6 +230,13 @@ export default {
                     }
                 })
                 .catch((err) => {});
+        },
+        updateSystem() {
+            this.$http.get("/board_info").then((res) => {
+                if (res.data.code === 1) {
+                    this.system = res.data;
+                }
+            });
         },
     },
     watch: {
