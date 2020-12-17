@@ -210,18 +210,6 @@ export default {
             this.getData();
         }
     },
-    // mounted() {
-    //     this.snoopingTable = [
-    //         {
-    //             ipaddr: "192.168.1.1",
-    //             macaddr: "38:3a:21:f0:01:b0",
-    //             port_id: 1,
-    //             vlan_id: 1,
-    //             lease_time: 86400,
-    //             entry_status: 0
-    //         }
-    //     ];
-    // },
     methods: {
         getData() {
             this.snoopingTable = [];
@@ -229,9 +217,19 @@ export default {
                 .get("/switch_dhcp?form=snooping_table")
                 .then((res) => {
                     if (res.data.code === 1) {
-                        if (res.data.data && res.data.data.length) {
-                            this.snoopingTable = res.data.data;
-                        }
+                        this.$http
+                            .get("/dhcp_snooping_table")
+                            .then((_res) => {
+                                if (_res.data.code === 1) {
+                                    if (
+                                        _res.data.data &&
+                                        _res.data.data.length
+                                    ) {
+                                        this.snoopingTable = _res.data.data;
+                                    }
+                                }
+                            })
+                            .catch((_err) => {});
                     }
                 })
                 .catch((err) => {});
