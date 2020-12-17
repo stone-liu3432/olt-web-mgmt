@@ -3,20 +3,34 @@
         <page-header type="none">
             <span slot="title">ARP</span>
             <div slot="action">
-                <a href="javascript:void(0);" @click="refreshTable">{{ lanMap['refresh'] }}</a>
+                <a href="javascript:void(0);" @click="refreshTable">{{
+                    lanMap["refresh"]
+                }}</a>
                 <a
                     href="javascript:void(0);"
                     @click="openDelModal"
-                    style="margin-left: 30px;"
-                >{{ lanMap['delete_all'] }}</a>
+                    style="margin-left: 30px"
+                    >{{ lanMap["delete_all"] }}</a
+                >
             </div>
         </page-header>
         <nms-table :rows="show_arp" border>
-            <nms-table-column prop="ipaddress" :label="lanMap['ipaddr']"></nms-table-column>
-            <nms-table-column prop="macaddress" :label="lanMap['macaddr']"></nms-table-column>
-            <nms-table-column prop="vlanid" :label="lanMap['vlan_id']"></nms-table-column>
+            <nms-table-column
+                prop="ipaddress"
+                :label="lanMap['ipaddr']"
+            ></nms-table-column>
+            <nms-table-column
+                prop="macaddress"
+                :label="lanMap['macaddr']"
+            ></nms-table-column>
+            <nms-table-column
+                prop="vlanid"
+                :label="lanMap['vlan_id']"
+            ></nms-table-column>
             <nms-table-column :label="lanMap['port_id']">
-                <template slot-scope="rows">{{ rows.portid | getPortName }}</template>
+                <template slot-scope="rows">{{
+                    rows.portid | getPortName
+                }}</template>
             </nms-table-column>
         </nms-table>
         <nms-pagination
@@ -24,7 +38,7 @@
             :current-page="index"
             :page-size="display"
             @current-change="changeIndex"
-            style="float: right;"
+            style="float: right"
         ></nms-pagination>
     </div>
 </template>
@@ -43,7 +57,7 @@ export default {
                 return this.arp.slice(start);
             }
             return this.arp.slice(start, end);
-        }
+        },
     },
     data() {
         return {
@@ -51,7 +65,7 @@ export default {
             index: 1,
             display: 20,
             isShowPagination: false,
-            pagesData: {}
+            pagesData: {},
         };
     },
     created() {
@@ -61,55 +75,65 @@ export default {
         getData() {
             this.arp = [];
             this.$http
-                .get(this.change_url.get_arp)
-                .then(res => {
+                .get("/switch_route?form=arp_table")
+                .then((res) => {
                     if (res.data.code === 1) {
-                        if (res.data.data && res.data.data.length) {
-                            this.arp = res.data.data;
-                        }
+                        this.$http
+                            .get("/arp_table")
+                            .then((_res) => {
+                                if (_res.data.code === 1) {
+                                    if (
+                                        _res.data.data &&
+                                        _res.data.data.length
+                                    ) {
+                                        this.arp = _res.data.data;
+                                    }
+                                }
+                            })
+                            .catch((_err) => {});
                     }
                 })
-                .catch(err => {});
+                .catch((err) => {});
         },
         changeIndex(index) {
             this.index = index;
         },
         openDelModal() {
             this.$confirm(this.lanMap["if_sure"])
-                .then(_ => {
+                .then((_) => {
                     this.destroyARP();
                 })
-                .catch(_ => {});
+                .catch((_) => {});
         },
         destroyARP() {
             const post_data = {
                 method: "destroy",
-                param: {}
+                param: {},
             };
             this.$http
                 .post("/switch_route?form=arp_flush", post_data)
-                .then(res => {
+                .then((res) => {
                     if (res.data.code === 1) {
                         this.$message({
                             type: res.data.type,
                             text:
                                 this.lanMap["delete"] +
-                                this.lanMap["st_success"]
+                                this.lanMap["st_success"],
                         });
                         this.getData();
                     } else {
                         this.$message({
                             type: res.data.type,
-                            text: "(" + res.data.code + ") " + res.data.message
+                            text: "(" + res.data.code + ") " + res.data.message,
                         });
                     }
                 })
-                .catch(err => {});
+                .catch((err) => {});
         },
         refreshTable() {
             debounce(this.getData, 500, this);
-        }
-    }
+        },
+    },
 };
 </script>
 
