@@ -48,7 +48,7 @@
                     {{ lanMap["refresh"] }}
                 </a>
             </div>
-            <nms-table :rows="snoopingTable" border>
+            <nms-table :rows="snoopingTabs" border>
                 <nms-table-column
                     prop="ipaddr"
                     :label="lanMap['ipaddr']"
@@ -79,6 +79,13 @@
                     </template>
                 </nms-table-column>
             </nms-table>
+            <nms-pagination
+                :total="snoopingTable.length"
+                :current-page="index"
+                :page-size="display"
+                @current-change="changeIndex"
+                style="float: right"
+            ></nms-pagination>
         </div>
         <nms-dialog
             :visible.sync="visible"
@@ -185,6 +192,11 @@ export default {
         validTime() {
             return this.response_time >= 3 && this.response_time <= 3600;
         },
+        snoopingTabs() {
+            const start = (this.index - 1) * this.display,
+                end = start + this.display;
+            return this.snoopingTable.slice(start, end);
+        },
     },
     data() {
         return {
@@ -197,6 +209,8 @@ export default {
             //  dialog的 type:  admin / check / time / portlist
             dialogType: "",
             dialogMethod: "",
+            index: 1,
+            display: 10,
         };
     },
     props: {
@@ -393,6 +407,9 @@ export default {
         },
         refreshData() {
             debounce(this.getData, 1000, this, null);
+        },
+        changeIndex(index) {
+            this.index = index;
         },
     },
     watch: {
