@@ -1,16 +1,22 @@
 <template>
     <div class="pon-setting">
-        <h2>{{ lanMap['pon_setting'] }}</h2>
+        <h2>{{ lanMap["pon_setting"] }}</h2>
         <hr />
         <nms-table :rows="ponSetting" border>
             <nms-table-column :label="lanMap['port_id']">
-                <template slot-scope="rows">{{ rows.port_id | getPortName }}</template>
+                <template slot-scope="rows">{{
+                    rows.port_id | getPortName
+                }}</template>
             </nms-table-column>
             <nms-table-column :label="lanMap['optstate']">
-                <template slot-scope="row">{{ row.optstate ? lanMap['on'] : lanMap['off'] }}</template>
+                <template slot-scope="row">{{
+                    row.optstate ? lanMap["on"] : lanMap["off"]
+                }}</template>
             </nms-table-column>
             <nms-table-column prop="auth_type" :label="lanMap['auth_type']">
-                <template slot-scope="rows">{{ def_auth_type[rows.auth_type] }}</template>
+                <template slot-scope="rows">{{
+                    def_auth_type[rows.auth_type]
+                }}</template>
             </nms-table-column>
             <nms-table-column prop="auth_mode" :label="lanMap['auth_mode']">
                 <template slot-scope="rows">
@@ -18,20 +24,29 @@
                 </template>
             </nms-table-column>
             <nms-table-column prop="p2p_flag" :label="lanMap['p2p_flag']">
-                <template
-                    slot-scope="rows"
-                >{{ rows.p2p_flag === 1 ? lanMap['enable'] : lanMap['disable'] }}</template>
+                <template slot-scope="rows">{{
+                    rows.p2p_flag === 1 ? lanMap["enable"] : lanMap["disable"]
+                }}</template>
             </nms-table-column>
             <nms-table-column prop="rogue_mode" :label="lanMap['rogue_mode']">
-                <template slot-scope="rows">{{ modes[rows.rogue_mode] }}</template>
+                <template slot-scope="rows">
+                    {{
+                        modes[rows.rogue_mode] +
+                        (rows.add_deny_flag ? `(${lanMap["add_to_deny"]})` : "")
+                    }}
+                </template>
             </nms-table-column>
             <nms-table-column :label="lanMap['opt_limit']">
-                <template slot-scope="rows">{{ `${rows.opt_min || "-"}(dBm)` }}</template>
+                <template slot-scope="rows">{{
+                    `${rows.opt_min || "-"}(dBm)`
+                }}</template>
             </nms-table-column>
             <nms-table-column :label="lanMap['opt_below_limit']">
-                <template
-                    slot-scope="row"
-                >{{ row.opt_min_action ? lanMap['add_to_deny'] : lanMap['no_operation'] }}</template>
+                <template slot-scope="row">{{
+                    row.opt_min_action
+                        ? lanMap["add_to_deny"]
+                        : lanMap["no_operation"]
+                }}</template>
             </nms-table-column>
             <!-- <nms-table-column :label="lanMap['opt_exceed_limit']">
                 <template slot-scope="row">{{ lanMap['no_operation'] }}</template>
@@ -39,30 +54,54 @@
             <nms-table-column :label="lanMap['config']" width="160px">
                 <template slot-scope="row">
                     <nms-dropdown @command="commandHandle">
-                        <span>{{ lanMap['config'] }}</span>
+                        <span>{{ lanMap["config"] }}</span>
                         <div slot="dropdown">
                             <template v-if="custom.pon_authmode">
                                 <nms-dropdown-item
-                                    :command="{ action: 'auth_mode', data: row }"
-                                >{{ lanMap['auth_mode'] }}</nms-dropdown-item>
+                                    :command="{
+                                        action: 'auth_mode',
+                                        data: row,
+                                    }"
+                                    >{{
+                                        lanMap["auth_mode"]
+                                    }}</nms-dropdown-item
+                                >
                             </template>
                             <nms-dropdown-item
                                 :command="{ action: 'p2p_flag', data: row }"
-                            >{{ (row.p2p_flag === 1 ? lanMap['off'] : lanMap['on']) + ' P2P' }}</nms-dropdown-item>
+                                >{{
+                                    (row.p2p_flag === 1
+                                        ? lanMap["off"]
+                                        : lanMap["on"]) + " P2P"
+                                }}</nms-dropdown-item
+                            >
                             <nms-dropdown-item
                                 :command="{ action: 'rogue_mode', data: row }"
-                            >{{ lanMap['rogue_mode'] }}</nms-dropdown-item>
+                                >{{ lanMap["rogue_mode"] }}</nms-dropdown-item
+                            >
                             <template v-if="row.rogue_mode === 2">
                                 <nms-dropdown-item
-                                    :command="{ action: 'detection', data: row }"
-                                >{{ lanMap['detection'] }}</nms-dropdown-item>
+                                    :command="{
+                                        action: 'detection',
+                                        data: row,
+                                    }"
+                                    >{{
+                                        lanMap["detection"]
+                                    }}</nms-dropdown-item
+                                >
                             </template>
                             <nms-dropdown-item
                                 :command="{ action: 'opt_limit', data: row }"
-                            >{{ lanMap['opt_limit'] }}</nms-dropdown-item>
+                                >{{ lanMap["opt_limit"] }}</nms-dropdown-item
+                            >
                             <nms-dropdown-item
                                 :command="{ action: 'optstate', data: row }"
-                            >{{ (row.optstate ? lanMap['off'] : lanMap['on']) + lanMap['optstate'] }}</nms-dropdown-item>
+                                >{{
+                                    (row.optstate
+                                        ? lanMap["off"]
+                                        : lanMap["on"]) + lanMap["optstate"]
+                                }}</nms-dropdown-item
+                            >
                         </div>
                     </nms-dropdown>
                 </template>
@@ -72,20 +111,20 @@
             <div class="cover"></div>
             <div class="ponmgmt-cfg">
                 <template v-if="dialogType === ''">
-                    <div class="modal-header">{{ lanMap['pon_auth'] }}</div>
+                    <div class="modal-header">{{ lanMap["pon_auth"] }}</div>
                     <div>
-                        <div>{{ lanMap['port_id'] }}</div>
+                        <div>{{ lanMap["port_id"] }}</div>
                         <span>{{ port_id }}</span>
                     </div>
                     <div>
-                        <div>{{ lanMap['auth_type'] }}</div>
+                        <div>{{ lanMap["auth_type"] }}</div>
                         <select v-model.number="auth_type">
                             <option value="0">Auto</option>
                             <option value="1">Manual</option>
                         </select>
                     </div>
                     <div>
-                        <div>{{ lanMap['auth_mode'] }}</div>
+                        <div>{{ lanMap["auth_mode"] }}</div>
                         <select v-model.number="auth_mode">
                             <option value="0">MAC</option>
                             <option value="1">LOID</option>
@@ -94,40 +133,85 @@
                         </select>
                     </div>
                     <div>
-                        <a href="javascript: void(0);" @click="set_auth">{{ lanMap['apply'] }}</a>
-                        <a href="javascript: void(0);" @click="closeDialog">{{ lanMap['cancel'] }}</a>
+                        <a href="javascript: void(0);" @click="set_auth">{{
+                            lanMap["apply"]
+                        }}</a>
+                        <a href="javascript: void(0);" @click="closeDialog">{{
+                            lanMap["cancel"]
+                        }}</a>
                     </div>
                 </template>
                 <template v-if="dialogType === 'opt_limit'">
-                    <div class="modal-header">{{ lanMap['opt_limit'] }}</div>
+                    <div class="modal-header">{{ lanMap["opt_limit"] }}</div>
                     <div>
-                        <div>{{ lanMap['port_id'] }}</div>
+                        <div>{{ lanMap["port_id"] }}</div>
                         <span>{{ port_name.pon[port_id].name }}</span>
                     </div>
                     <div>
-                        <div>{{ lanMap['lower_limit'] }}</div>
+                        <div>{{ lanMap["lower_limit"] }}</div>
                         <input
                             type="text"
                             v-model.number="opt_min"
-                            :style="{ 'border-color': isNaN(opt_min) || (opt_min && opt_min > -20) ? 'red' : '' }"
+                            :style="{
+                                'border-color':
+                                    isNaN(opt_min) || (opt_min && opt_min > -20)
+                                        ? 'red'
+                                        : '',
+                            }"
                         />
                         <span>dBm</span>
                     </div>
                     <div>
-                        <div>{{ lanMap['opt_below_limit'] }}</div>
+                        <div>{{ lanMap["opt_below_limit"] }}</div>
                         <select v-model.number="opt_min_action">
-                            <option :value="0">{{ lanMap['no_operation'] }}</option>
-                            <option :value="1">{{ lanMap['add_to_deny'] }}</option>
+                            <option :value="0">
+                                {{ lanMap["no_operation"] }}
+                            </option>
+                            <option :value="1">
+                                {{ lanMap["add_to_deny"] }}
+                            </option>
                         </select>
                     </div>
                     <div>
-                        <a href="javascript: void(0);" @click="setOptLimit">{{ lanMap['apply'] }}</a>
-                        <a href="javascript: void(0);" @click="closeDialog">{{ lanMap['cancel'] }}</a>
+                        <a href="javascript: void(0);" @click="setOptLimit">{{
+                            lanMap["apply"]
+                        }}</a>
+                        <a href="javascript: void(0);" @click="closeDialog">{{
+                            lanMap["cancel"]
+                        }}</a>
                     </div>
                 </template>
                 <div class="close" @click="closeDialog"></div>
             </div>
         </div>
+        <nms-dialog :visible.sync="dialogVisible" width="550px">
+            <template slot="title">
+                {{ lanMap["set"] + lanMap["rogue_mode"] }}
+            </template>
+            <div class="rogue-onu-item">
+                <span>{{ lanMap["mode"] }}:</span>
+                <select v-model.number="detect_mode">
+                    <template v-for="(item, index) in modes">
+                        <option :value="index">{{ item }}</option>
+                    </template>
+                </select>
+            </div>
+            <div class="rogue-onu-item">
+                <span>{{ lanMap["add_to_deny"] }}:</span>
+                <select v-model.number="add_deny_flag">
+                    <option :value="0">{{ lanMap["disable"] }}</option>
+                    <option :value="1">{{ lanMap["enable"] }}</option>
+                </select>
+            </div>
+            <div slot="footer">
+                <nms-button @click="submitDetectMode">
+                    {{ lanMap["apply"] }}
+                </nms-button>
+                <nms-button @click="dialogVisible = false">
+                    {{ lanMap["cancel"] }}
+                </nms-button>
+            </div>
+        </nms-dialog>
     </div>
 </template>
 
@@ -150,7 +234,9 @@ export default {
             ponSetting: [],
             dialogType: "",
             opt_min: 0,
-            opt_min_action: 0
+            opt_min_action: 0,
+            add_deny_flag: 0,
+            dialogVisible: false,
         };
     },
     created() {
@@ -164,14 +250,14 @@ export default {
             this.ponSetting = [];
             this.$http
                 .get(this.change_url.pon_setting)
-                .then(res => {
+                .then((res) => {
                     if (res.data.code === 1) {
                         if (res.data.data && res.data.data.length) {
                             this.ponSetting = res.data.data;
                         }
                     }
                 })
-                .catch(err => {});
+                .catch((err) => {});
         },
         authConfirm(row) {
             this.isSetAuth = true;
@@ -186,26 +272,26 @@ export default {
                 param: {
                     port_id: this.port_id,
                     auth_type: this.auth_type,
-                    auth_mode: this.auth_mode
-                }
+                    auth_mode: this.auth_mode,
+                },
             };
             this.$http
                 .post("/ponmgmt?form=authorize", params)
-                .then(res => {
+                .then((res) => {
                     if (res.data.code === 1) {
                         this.$message({
                             type: res.data.type,
-                            text: this.lanMap["st_success"]
+                            text: this.lanMap["st_success"],
                         });
                         this.getData();
                     } else if (res.data.code > 1) {
                         this.$message({
                             type: res.data.type,
-                            text: "(" + res.data.code + ") " + res.data.message
+                            text: "(" + res.data.code + ") " + res.data.message,
                         });
                     }
                 })
-                .catch(err => {
+                .catch((err) => {
                     // to do
                 });
             this.isSetAuth = false;
@@ -222,21 +308,21 @@ export default {
                 this.port_name.pon[node.port_id].name +
                 " P2P ?";
             this.$confirm(msg)
-                .then(_ => {
+                .then((_) => {
                     const post_data = {
                         method: "set",
                         param: {
                             port_id: node.port_id,
-                            p2p_flag: node.p2p_flag ? 0 : 1
-                        }
+                            p2p_flag: node.p2p_flag ? 0 : 1,
+                        },
                     };
                     this.$http
                         .post("/ponmgmt?form=p2p", post_data)
-                        .then(res => {
+                        .then((res) => {
                             if (res.data.code === 1) {
                                 this.$message({
                                     type: res.data.type,
-                                    text: this.lanMap["setting_ok"]
+                                    text: this.lanMap["setting_ok"],
                                 });
                                 this.getData();
                             } else if (res.data.code > 1) {
@@ -246,43 +332,46 @@ export default {
                                         "(" +
                                         res.data.code +
                                         ") " +
-                                        res.data.message
+                                        res.data.message,
                                 });
                             }
                         })
-                        .catch(err => {
+                        .catch((err) => {
                             // to do
                         });
                 })
-                .catch(_ => {});
+                .catch((_) => {});
         },
         setDetectMode(node) {
+            this.port_id = node.port_id;
             this.detect_mode = node.rogue_mode;
-            this.$confirm(
-                <div class="modal-content-item">
-                    <span>{this.lanMap["mode"]}</span>
-                    <select value={this.detect_mode} onChange={this.modeChange}>
-                        {this.modes.map((item, index) => {
-                            return <option value={index}>{item}</option>;
-                        })}
-                    </select>
-                </div>,
-                { title: this.lanMap["set"], center: true }
-            )
-                .then(_ => {
-                    if (this.detect_mode === node.rogue_mode) {
-                        return;
-                    }
-                    const data = {
-                        method: "set",
-                        param: {
-                            port_id: node.port_id,
-                            rogue_mode: this.detect_mode
-                        }
-                    };
-                    this.setMode(data);
+            this.add_deny_flag = node.add_deny_flag || 0;
+            this.dialogVisible = true;
+        },
+        submitDetectMode() {
+            this.$http
+                .post("/ponmgmt?form=rogueonu", {
+                    method: "set",
+                    param: {
+                        port_id: this.port_id,
+                        rogue_mode: this.detect_mode,
+                        add_deny_flag: this.add_deny_flag,
+                    },
                 })
-                .catch(_ => {});
+                .then((res) => {
+                    if (res.data.code === 1) {
+                        this.$message.success(this.lanMap["setting_ok"]);
+                        this.getData();
+                    } else {
+                        this.$message.error(
+                            `(${res.data.code}) ${res.data.message}`
+                        );
+                    }
+                })
+                .catch((err) => {})
+                .finally(() => {
+                    this.dialogVisible = false;
+                });
         },
         modeChange(e) {
             this.detect_mode = Number(e.target.value);
@@ -290,7 +379,7 @@ export default {
         setMode(data) {
             this.$http
                 .post("/ponmgmt?form=rogueonu", data)
-                .then(res => {
+                .then((res) => {
                     if (res.data.code === 1) {
                         if (data.param.rogue_mode === 2) {
                             this.$message.success(
@@ -306,15 +395,15 @@ export default {
                         );
                     }
                 })
-                .catch(err => {});
+                .catch((err) => {});
         },
         manualDetect(rows) {
             const data = {
                 method: "set",
                 param: {
                     port_id: rows.port_id,
-                    rogue_mode: 2
-                }
+                    rogue_mode: 2,
+                },
             };
             debounce(this.setMode, 1000, this, data);
         },
@@ -341,7 +430,7 @@ export default {
                 },
                 optstate(row) {
                     this.setOptState(row);
-                }
+                },
             };
             if (isFunction(ACTIONS[action])) {
                 ACTIONS[action].call(this, data);
@@ -356,16 +445,16 @@ export default {
                 this.lanMap["optstate"] +
                 " ?";
             this.$confirm(msg)
-                .then(_ => {
+                .then((_) => {
                     this.$http
                         .post("/ponmgmt?form=optstate", {
                             method: "set",
                             param: {
                                 port_id: row.port_id,
-                                optstate: Number(!row.optstate)
-                            }
+                                optstate: Number(!row.optstate),
+                            },
                         })
-                        .then(res => {
+                        .then((res) => {
                             if (res.data.code === 1) {
                                 this.$message.success(
                                     this.lanMap["setting_ok"]
@@ -377,9 +466,9 @@ export default {
                                 );
                             }
                         })
-                        .catch(err => {});
+                        .catch((err) => {});
                 })
-                .catch(_ => {});
+                .catch((_) => {});
         },
         setOptLimit() {
             if ((this.opt_min && this.opt_min > -20) || isNaN(this.opt_min)) {
@@ -397,10 +486,10 @@ export default {
                         opt_min: Number(this.opt_min),
                         opt_min_action: this.opt_min_action,
                         opt_max: 0,
-                        opt_max_action: 0
-                    }
+                        opt_max_action: 0,
+                    },
                 })
-                .then(res => {
+                .then((res) => {
                     if (res.data.code === 1) {
                         this.$message.success(this.lanMap["setting_ok"]);
                         this.getData();
@@ -410,10 +499,10 @@ export default {
                         );
                     }
                 })
-                .catch(err => {});
+                .catch((err) => {});
             this.closeDialog();
-        }
-    }
+        },
+    },
 };
 </script>
 
@@ -489,9 +578,24 @@ div.ponmgmt-cfg {
     }
 }
 div.modal-content-item {
+    margin: 12px 0;
     > span:first-child {
         display: inline-block;
         width: 120px;
+    }
+    select {
+        width: 200px;
+    }
+}
+.rogue-onu-item {
+    margin: 12px 0;
+    span {
+        display: inline-block;
+        vertical-align: middle;
+        width: 140px;
+        text-align: right;
+        padding-right: 12px;
+        box-sizing: border-box;
     }
     select {
         width: 200px;
