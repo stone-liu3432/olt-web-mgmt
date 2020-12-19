@@ -945,6 +945,9 @@ var en = {
     port_optical: "Port Optical Diagnose",
     sys_acl: "System Access",
     access: " Access ",
+    polarity: " Polarity ",
+    high_polarity: " High polarity ",
+    low_polarity: " Low polarity ",
 
     composeRange(min, max) {
         return `${min}${max ? " - " + max : ""} characters`;

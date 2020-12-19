@@ -913,6 +913,9 @@ var zh = {
     port_optical: "端口光诊断",
     sys_acl: "系统访问控制",
     access: "访问方式",
+    polarity: "极性",
+    high_polarity: "高极性",
+    low_polarity: "低极性",
 
     composeRange(min, max) {
         return `${min}${max ? " - " + max : ""}位字符`;
