@@ -45,23 +45,13 @@
             :tab="['optical_module', 'pon_optical', 'onu_optical_diagnose']"
             @togglePage="select_page"
         ></tabBar>
-        <!-- RSSI -->
-        <a
-            href="javascript:void(0);"
-            class="rt"
-            @click="reload"
-            v-if="
-                show_index === 'pon_optical' &&
-                pon_optical.data &&
-                onu_list.data &&
-                onu_list.data.length > 0
-            "
-            >{{ lanMap["refresh"] }}</a
-        >
+
         <div v-if="show_index === 'optical_module'">
             <optical-module :data="optical_module_info.data"></optical-module>
         </div>
-        <p
+        <!-- RSSI -->
+        <div
+            class="pon-optical-info"
             v-if="
                 show_index === 'pon_optical' &&
                 pon_optical.data &&
@@ -69,8 +59,18 @@
                 onu_list.data.length > 0
             "
         >
-            {{ lanMap["pon_optical_tips"] }}
-        </p>
+            <div>{{ lanMap["pon_optical_tips"] }}</div>
+            <div>
+                <span>{{ lanMap["polarity"] }}:</span>
+                <select v-model.number="polarity">
+                    <option :value="0">{{ lanMap["high_polarity"] }}</option>
+                    <option :value="1">{{ lanMap["low_polarity"] }}</option>
+                </select>
+                <nms-button @click="refreshData" style="margin-left: 30px">
+                    {{ lanMap["refresh"] }}
+                </nms-button>
+            </div>
+        </div>
         <ul
             class="rssi"
             v-if="
@@ -129,7 +129,7 @@
 
 <script>
 import { mapState, mapMutations } from "vuex";
-import { isArray } from "@/utils/common";
+import { isArray, debounce } from "@/utils/common";
 import opticalModule from "./opticalModule";
 export default {
     name: "ponOptical",
@@ -142,18 +142,19 @@ export default {
             portid: 0,
             onuid: 0,
             // onu_list: {
-            //     data: [1,2,3]
+            //     data: [1, 2, 3],
             // },
+            polarity: 0,
             pon_optical: {
-                // "code":1,
-                // "message":"success",
-                // "data":{
-                //     "work_temprature":"21 C",
-                //     "work_voltage":"3.29 V",
-                //     "transmit_bias":"13 mA",
-                //     "transmit_power":"1.8295 dBm",
-                //     "receive_power":"-3.3003 dBm"
-                // }
+                // code: 1,
+                // message: "success",
+                // data: {
+                //     work_temprature: "21 C",
+                //     work_voltage: "3.29 V",
+                //     transmit_bias: "13 mA",
+                //     transmit_power: "1.8295 dBm",
+                //     receive_power: "-3.3003 dBm",
+                // },
             },
             all_onu_optical: [
                 // {
@@ -199,7 +200,11 @@ export default {
         getData() {
             this.$http
                 .get("/ponmgmt?form=optical_pon", {
-                    params: { port_id: this.portid, onu_id: this.onuid },
+                    params: {
+                        polarity: this.polarity,
+                        port_id: this.portid,
+                        onu_id: this.onuid,
+                    },
                 })
                 .then((res) => {
                     if (res.data.code === 1) {
@@ -246,8 +251,8 @@ export default {
             }
         },
         //  手动刷新
-        reload() {
-            this.$parent.reload();
+        refreshData() {
+            debounce(this.getData, 1000, this);
         },
         //  解析后台返回的字符串
         analysis(str) {
@@ -306,9 +311,7 @@ export default {
                         this.onuid = 0;
                     }
                 })
-                .catch((err) => {
-                    // to do
-                });
+                .catch((err) => {});
         },
         get_optical_info() {
             this.optical_module_info = {};
@@ -439,5 +442,14 @@ div.error-tips {
     margin: 20px;
     height: 30px;
     line-height: 30px;
+}
+.pon-optical-info {
+    margin-left: 10px;
+    > div {
+        margin: 20px 0;
+        select {
+            width: 200px;
+        }
+    }
 }
 </style>
