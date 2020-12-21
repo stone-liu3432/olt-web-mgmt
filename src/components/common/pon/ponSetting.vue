@@ -36,6 +36,15 @@
                     }}
                 </template>
             </nms-table-column>
+            <nms-table-column :label="lanMap['lb_onu_mode']">
+                <template slot-scope="row">
+                    {{
+                        row.lb_onu_mode
+                            ? lanMap["add_to_deny"]
+                            : lanMap["no_operation"]
+                    }}
+                </template>
+            </nms-table-column>
             <nms-table-column :label="lanMap['opt_limit']">
                 <template slot-scope="rows">{{
                     `${rows.opt_min || "-"}(dBm)`
@@ -62,46 +71,53 @@
                                         action: 'auth_mode',
                                         data: row,
                                     }"
-                                    >{{
-                                        lanMap["auth_mode"]
-                                    }}</nms-dropdown-item
                                 >
+                                    {{ lanMap["auth_mode"] }}
+                                </nms-dropdown-item>
                             </template>
                             <nms-dropdown-item
                                 :command="{ action: 'p2p_flag', data: row }"
-                                >{{
+                            >
+                                {{
                                     (row.p2p_flag === 1
                                         ? lanMap["off"]
                                         : lanMap["on"]) + " P2P"
-                                }}</nms-dropdown-item
-                            >
+                                }}
+                            </nms-dropdown-item>
                             <nms-dropdown-item
                                 :command="{ action: 'rogue_mode', data: row }"
-                                >{{ lanMap["rogue_mode"] }}</nms-dropdown-item
                             >
+                                {{ lanMap["rogue_mode"] }}
+                            </nms-dropdown-item>
+                            <nms-dropdown-item
+                                :command="{ action: 'lb_onu_mode', data: row }"
+                            >
+                                {{ lanMap["lb_onu_mode"] }}
+                            </nms-dropdown-item>
                             <template v-if="row.rogue_mode === 2">
                                 <nms-dropdown-item
                                     :command="{
                                         action: 'detection',
                                         data: row,
                                     }"
-                                    >{{
-                                        lanMap["detection"]
-                                    }}</nms-dropdown-item
                                 >
+                                    {{ lanMap["detection"] }}
+                                </nms-dropdown-item>
                             </template>
                             <nms-dropdown-item
                                 :command="{ action: 'opt_limit', data: row }"
-                                >{{ lanMap["opt_limit"] }}</nms-dropdown-item
                             >
+                                {{ lanMap["opt_limit"] }}
+                            </nms-dropdown-item>
                             <nms-dropdown-item
                                 :command="{ action: 'optstate', data: row }"
-                                >{{
+                            >
+                                {{
                                     (row.optstate
                                         ? lanMap["off"]
                                         : lanMap["on"]) + lanMap["optstate"]
-                                }}</nms-dropdown-item
-                            >
+                                }}
+                            </nms-dropdown-item>
                         </div>
                     </nms-dropdown>
                 </template>
@@ -189,20 +205,37 @@
                 {{ lanMap["set"] + lanMap["rogue_mode"] }}
             </template>
             <div class="rogue-onu-item">
-                <span>{{ lanMap["mode"] }}:</span>
-                <select v-model.number="detect_mode">
-                    <template v-for="(item, index) in modes">
-                        <option :value="index">{{ item }}</option>
-                    </template>
-                </select>
+                <span>{{ lanMap["port_id"] }}</span>
+                <span style="text-align: left; vertical-align: bottom">{{
+                    port_id | getPortName
+                }}</span>
             </div>
-            <div class="rogue-onu-item">
-                <span>{{ lanMap["add_to_deny"] }}:</span>
-                <select v-model.number="add_deny_flag">
-                    <option :value="0">{{ lanMap["disable"] }}</option>
-                    <option :value="1">{{ lanMap["enable"] }}</option>
-                </select>
-            </div>
+            <template v-if="dialogType === 'rogue'">
+                <div class="rogue-onu-item">
+                    <span>{{ lanMap["mode"] }}:</span>
+                    <select v-model.number="detect_mode">
+                        <template v-for="(item, index) in modes">
+                            <option :value="index">{{ item }}</option>
+                        </template>
+                    </select>
+                </div>
+                <div class="rogue-onu-item">
+                    <span>{{ lanMap["add_to_deny"] }}:</span>
+                    <select v-model.number="add_deny_flag">
+                        <option :value="0">{{ lanMap["disable"] }}</option>
+                        <option :value="1">{{ lanMap["enable"] }}</option>
+                    </select>
+                </div>
+            </template>
+            <template v-if="dialogType === 'loop'">
+                <div class="rogue-onu-item">
+                    <span>{{ lanMap["lb_onu_mode"] }}</span>
+                    <select v-model.number="lb_onu_mode">
+                        <option :value="0">{{ lanMap["no_operation"] }}</option>
+                        <option :value="1">{{ lanMap["add_to_deny"] }}</option>
+                    </select>
+                </div>
+            </template>
             <div slot="footer">
                 <nms-button @click="submitDetectMode">
                     {{ lanMap["apply"] }}
@@ -237,6 +270,7 @@ export default {
             opt_min_action: 0,
             add_deny_flag: 0,
             dialogVisible: false,
+            lb_onu_mode: 0,
         };
     },
     created() {
@@ -342,36 +376,66 @@ export default {
                 })
                 .catch((_) => {});
         },
-        setDetectMode(node) {
+        setDetectMode(node, type) {
+            this.dialogType = type;
             this.port_id = node.port_id;
             this.detect_mode = node.rogue_mode;
             this.add_deny_flag = node.add_deny_flag || 0;
+            this.lb_onu_mode = node.lb_onu_mode || 0;
             this.dialogVisible = true;
         },
         submitDetectMode() {
-            this.$http
-                .post("/ponmgmt?form=rogueonu", {
-                    method: "set",
-                    param: {
-                        port_id: this.port_id,
-                        rogue_mode: this.detect_mode,
-                        add_deny_flag: this.add_deny_flag,
-                    },
-                })
-                .then((res) => {
-                    if (res.data.code === 1) {
-                        this.$message.success(this.lanMap["setting_ok"]);
-                        this.getData();
-                    } else {
-                        this.$message.error(
-                            `(${res.data.code}) ${res.data.message}`
-                        );
-                    }
-                })
-                .catch((err) => {})
-                .finally(() => {
-                    this.dialogVisible = false;
-                });
+            const ACTIONS = {
+                rogue() {
+                    return {
+                        url: "/ponmgmt?form=rogueonu",
+                        data: {
+                            method: "set",
+                            param: {
+                                port_id: this.port_id,
+                                rogue_mode: this.detect_mode,
+                                add_deny_flag: this.add_deny_flag,
+                            },
+                        },
+                    };
+                },
+                loop() {
+                    return {
+                        url: "/ponmgmt?form=lb_onu",
+                        data: {
+                            method: "set",
+                            param: {
+                                port_id: this.port_id,
+                                lb_onu_mode: this.lb_onu_mode,
+                            },
+                        },
+                    };
+                },
+            };
+            if (isFunction(ACTIONS[this.dialogType])) {
+                const res = ACTIONS[this.dialogType].call(this);
+                if (res) {
+                    const { url, data } = res;
+                    this.$http
+                        .post(url, data)
+                        .then((res) => {
+                            if (res.data.code === 1) {
+                                this.$message.success(
+                                    this.lanMap["setting_ok"]
+                                );
+                                this.getData();
+                            } else {
+                                this.$message.error(
+                                    `(${res.data.code}) ${res.data.message}`
+                                );
+                            }
+                        })
+                        .catch((err) => {})
+                        .finally(() => {
+                            this.dialogVisible = false;
+                        });
+                }
+            }
         },
         modeChange(e) {
             this.detect_mode = Number(e.target.value);
@@ -416,7 +480,10 @@ export default {
                     this.openP2PCfm(row);
                 },
                 rogue_mode(row) {
-                    this.setDetectMode(row);
+                    this.setDetectMode(row, "rogue");
+                },
+                lb_onu_mode(row) {
+                    this.setDetectMode(row, "loop");
                 },
                 detection(row) {
                     this.manualDetect(row);
@@ -592,7 +659,7 @@ div.modal-content-item {
     span {
         display: inline-block;
         vertical-align: middle;
-        width: 140px;
+        width: 170px;
         text-align: right;
         padding-right: 12px;
         box-sizing: border-box;
