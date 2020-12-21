@@ -948,6 +948,7 @@ var en = {
     polarity: " Polarity ",
     high_polarity: " High polarity ",
     low_polarity: " Low polarity ",
+    lb_onu_mode: " Loop ONU processing ",
 
     composeRange(min, max) {
         return `${min}${max ? " - " + max : ""} characters`;
