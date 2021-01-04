@@ -876,7 +876,7 @@ var zh = {
     loid_tips3:
         "count大于1时，将会批量添加LOID，规则为在当前输入的LOID后追加两位数字标识。",
     loid_tips4:
-        '例：LOID为"test"，count为2时，将依次添加“test00”，“test01”两个LOID。',
+        '例：LOID为"test"，count为2时，将依次添加“test01”，“test02”两个LOID。',
     loid_tips5: "count加上已存在的LOID不能超过64(LOID最多只允许配置64条)",
     loid_count_limit_tips: "LOID最多只允许配置64条",
     mac_table: "MAC地址表",

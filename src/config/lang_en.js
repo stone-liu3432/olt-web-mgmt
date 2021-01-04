@@ -907,7 +907,7 @@ var en = {
     loid_tips3:
         "When count is greater than 1, LOIDs will be added in batches, and the rule is to add a digital ID after the currently entered LOID.",
     loid_tips4:
-        'Example: When the LOID is "test" and the count is 2, two LOIDs of "test00" and "test01" will be added in sequence.',
+        'Example: When the LOID is "test" and the count is 2, two LOIDs of "test01" and "test02" will be added in sequence.',
     loid_tips5:
         "The count plus the existing LOID cannot exceed 64 (up to 64 LOIDs are allowed)",
     loid_count_limit_tips: "Only 64 LOIDs can be configured at most",
