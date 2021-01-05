@@ -47,7 +47,7 @@
                             @click="changeVisible"
                         ></i>
                     </div>
-                    <template v-if="!custom.fix_lang">
+                    <template v-if="custom.fix_lang === 0">
                         <div class="login-form-item">
                             <span>{{ lanMap["lang"] }}:</span>
                             <label>
@@ -240,8 +240,8 @@ export default {
         },
     },
     watch: {
-        lang() {
-            if (this.custom.fix_lang) {
+        lang(nv, ov) {
+            if (this.custom.fix_lang || ov === "") {
                 return;
             }
             this.setLanguage(this.lang);
