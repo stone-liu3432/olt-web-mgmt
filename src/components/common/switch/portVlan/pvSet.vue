@@ -1,6 +1,6 @@
 <template>
     <div class="port-vlan-set">
-        <nms-table :rows="pvData" border>
+        <nms-table :rows="pvData" border ref="pv-set">
             <nms-table-column type="expand">
                 <template slot-scope="row">
                     <template v-if="row.port_type === 2">
@@ -39,16 +39,6 @@
                 :label="lanMap['priority']"
                 prop="priority"
             ></nms-table-column>
-            <!-- <nms-table-column :label="lanMap['tagged']">
-                <template slot-scope="row">{{
-                    row.tagged_vlan || "-"
-                }}</template>
-            </nms-table-column>
-            <nms-table-column :label="lanMap['untagged']">
-                <template slot-scope="row">{{
-                    row.untagged_vlan || "-"
-                }}</template>
-            </nms-table-column> -->
             <nms-table-column :label="lanMap['config']">
                 <template slot-scope="row">
                     <nms-dropdown @command="dropdownClick">
@@ -250,7 +240,7 @@ export default {
             default: () => [],
         },
     },
-    computed: mapState(["lanMap", "port_name"]),
+    computed: { ...mapState(["lanMap", "port_name"]) },
     data() {
         return {
             modal_show: false,
@@ -277,6 +267,9 @@ export default {
             //     },
             // ],
         };
+    },
+    mounted() {
+        this.$refs["pv-set"].expandedRows = this.pvData;
     },
     methods: {
         set_port_type() {
