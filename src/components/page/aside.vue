@@ -41,24 +41,6 @@
                 </transition>
             </li>
         </ul>
-        <div class="menu-footer">
-            <div v-if="company_name">
-                <h4>{{ lanMap["company_name"] }}</h4>
-                <p>{{ company_name }}</p>
-            </div>
-            <div v-if="company_addr">
-                <h4>{{ lanMap["company_addr"] }}</h4>
-                <p>{{ company_addr }}</p>
-            </div>
-            <div v-if="company_email">
-                <h4>{{ lanMap["company_email"] }}</h4>
-                <p>{{ company_email }}</p>
-            </div>
-            <div v-if="company_phone">
-                <h4>{{ lanMap["company_phone"] }}</h4>
-                <p>{{ company_phone }}</p>
-            </div>
-        </div>
     </div>
 </template>
 
@@ -67,12 +49,7 @@ import { mapState, mapMutations } from "vuex";
 export default {
     name: "leftAside",
     data() {
-        return {
-            company_name: "",
-            company_addr: "",
-            company_email: "",
-            company_phone: "",
-        };
+        return {};
     },
     created() {},
     beforeDestroy() {
@@ -84,32 +61,15 @@ export default {
             changeAdvMenu: "updateAdvMenu",
             changeFMenu: "updateAdvFMenu",
         }),
-        getData() {
-            this.$http
-                .get("/board?info=setting_board")
-                .then((res) => {
-                    if (res.data.code === 1) {
-                        var data = res.data.data;
-                        this.company_name = data.name || "";
-                        this.company_addr = data.addr || "";
-                        this.company_email = data.email || "";
-                        this.company_phone = data.phone || "";
-                    } else {
-                        this.company_name = "";
-                        this.company_addr = "";
-                        this.company_email = "";
-                        this.company_phone = "";
-                    }
-                })
-                .catch((err) => {
-                    // to do
-                });
-        },
         select_first_menu(node) {
-            this.changeFMenu(node.name);
             if (!node.children) {
                 this.$router.replace(node.name);
             }
+            if (this.adv_f_menu === node.name) {
+                this.changeFMenu("");
+                return;
+            }
+            this.changeFMenu(node.name);
         },
         //  点击切换页面
         select_page(node) {
