@@ -70,6 +70,10 @@ const onuBatchUpgrade = () =>
     import(
         /* webpackChunkName: "ponmgmt-page" */ "@/components/common/pon/onuBatchUpgrade"
     );
+const onuUpgradeStatus = () =>
+    import(
+        /* webpackChunkName: "ponmgmt-page" */ "@/components/common/pon/onuUpgradeStatus"
+    );
 const onuMulticast = () =>
     import(
         /* webpackChunkName: "ponmgmt-page" */ "@/components/common/pon/onuMulticast"
@@ -273,6 +277,14 @@ export default [
     {
         path: "/onu_batch_upgrade",
         component: onuBatchUpgrade,
+        meta: {
+            requireAuth: true,
+            keepAlive: true
+        }
+    },
+    {
+        path: "/onu_upgrade_status",
+        component: onuUpgradeStatus,
         meta: {
             requireAuth: true,
             keepAlive: true
