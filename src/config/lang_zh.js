@@ -917,6 +917,8 @@ var zh = {
     high_polarity: "高极性",
     low_polarity: "低极性",
     lb_onu_mode: "环路ONU处理",
+    onu_upgrade_status: "ONU升级状态",
+    upgrade_progress: "下载进度",
 
     composeRange(min, max) {
         return `${min}${max ? " - " + max : ""}位字符`;

@@ -61,7 +61,7 @@ Mock.mock(/\/onumgmt\?form=upgrade_status&port_id=\d+/, "get", ({ url }) => {
                 onu_name: `ONU${port_id}/${index + 1}`,
                 macaddr: Random.mac(),
                 status: "Wait Upgrade Queue",
-                totoallen: 12345,
+                totallen: 12345,
                 sendlen: Random.natural(0, 12345),
                 block: 12,
                 upgrade_type: "realtek"
