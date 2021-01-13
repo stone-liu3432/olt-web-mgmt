@@ -27,6 +27,8 @@ import {
     isReg
 } from "@/utils/common";
 
+process.env.NODE_ENV == "development" && require("./config/mock.js");
+
 Vue.use(VueMessage);
 Vue.use(portHeader);
 Vue.use(tabBar);
