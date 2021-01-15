@@ -103,6 +103,7 @@ export default {
                 "work_voltage",
                 "transmit_bias",
                 "transmit_power",
+                "receive_power",
             ];
             return mStates.reduce((prev, item) => {
                 if (!prev[item]) {
