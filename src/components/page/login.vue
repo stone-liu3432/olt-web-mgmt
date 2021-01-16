@@ -3,7 +3,9 @@
         <div class="login-body">
             <div class="login-logo">
                 <template v-if="hasLogo">
-                    <img src="/login_logo.png" />
+                    <div class="login-logo-imm-container">
+                        <img src="/login_logo.png" />
+                    </div>
                     <template v-if="custom.hsgq">
                         <div class="copyright-design-info">
                             Copyright 2017-2020. Design by HSGQ.
@@ -299,6 +301,11 @@ div.login {
             border-right: 1px solid @borderColor;
             text-align: center;
             position: relative;
+            .login-logo-imm-container {
+                height: 240px;
+                line-height: 240px;
+                overflow: hidden;
+            }
             img {
                 max-width: 298px;
                 max-height: 240px;
