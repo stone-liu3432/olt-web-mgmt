@@ -12,9 +12,9 @@
                         </div>
                     </template>
                 </template>
-                <div :class="['device-type', { 'is-no-logo': !hasLogo }]">
-                    EPON-OLT
-                </div>
+                <template v-else>
+                    <div class="device-type is-no-logo">EPON-OLT</div>
+                </template>
                 <div class="device-vendor" v-if="system.data">
                     <span>{{ system.data.product_name }}</span>
                     <span style="color: #000"
@@ -302,8 +302,8 @@ div.login {
             text-align: center;
             position: relative;
             .login-logo-imm-container {
-                height: 240px;
-                line-height: 240px;
+                height: 320px;
+                line-height: 320px;
                 overflow: hidden;
             }
             img {
