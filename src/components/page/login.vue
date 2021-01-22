@@ -17,8 +17,8 @@
                 </template>
                 <div class="device-vendor" v-if="system.data">
                     <span>{{ system.data.product_name }}</span>
-                    <span style="color: #000"
-                        >{{ `(${system.data.ponports} port OLT)` }}
+                    <span style="color: #000">
+                        {{ `(${system.data.ponports} PON Ports)` }}
                     </span>
                 </div>
             </div>
