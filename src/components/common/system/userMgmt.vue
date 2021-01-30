@@ -477,11 +477,14 @@ export default {
                 .post("/usermgmt?form=modifyps", post_param)
                 .then((res) => {
                     if (res.data.code === 1) {
-                        this.$message.success(this.lanMap["modify_success"]);
                         if (this.currUserName === this.user_name) {
                             this.logout();
+                            this.$message.success(
+                                this.lanMap["modify_success"]
+                            );
                         } else {
                             this.getData();
+                            this.$message.success(this.lanMap["setting_ok"]);
                         }
                     } else {
                         this.$message.error(
@@ -489,8 +492,10 @@ export default {
                         );
                     }
                 })
-                .catch((err) => {});
-            this.close_modify_user();
+                .catch((err) => {})
+                .finally(() => {
+                    this.close_modify_user();
+                });
         },
         logout() {
             var post_params = {
