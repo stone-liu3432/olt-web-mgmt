@@ -1,38 +1,55 @@
 <template>
     <div id="sys-set">
         <div class="change-lang rt">
-            <a href="javascript:void(0);" @click="backto_devmgmt">{{ lanMap['goback_devmgmt'] }}</a>
+            <a href="javascript:void(0);" @click="backto_devmgmt">{{
+                lanMap["goback_devmgmt"]
+            }}</a>
             <template v-if="!custom.fix_lang">
-                <span>{{ lanMap['lang'] }}</span>
+                <span>{{ lanMap["lang"] }}</span>
                 <select v-model="lang">
                     <option value="zh">简体中文</option>
                     <option value="en">English</option>
                 </select>
             </template>
         </div>
-        <h1 class="sys-set-title">{{ lanMap['sysinfo_set'] }}</h1>
+        <h1 class="sys-set-title">{{ lanMap["sysinfo_set"] }}</h1>
         <div class="sys-set-item">
             <h1>login logo</h1>
-            <p class="tips">{{ lanMap['imagesize_tips'] }}</p>
+            <p class="tips">{{ lanMap["imagesize_tips"] }}</p>
             <form>
                 <input
                     type="file"
                     name="sys-file"
                     class="hide"
                     ref="login-logo-file"
-                    @change="changeFile('loginLogo','login-logo-file', 'login-logo-fileName')"
+                    @change="
+                        changeFile(
+                            'loginLogo',
+                            'login-logo-file',
+                            'login-logo-fileName'
+                        )
+                    "
                     accept="image/png, image/jpg, image/jpeg"
                 />
-                <span class="updateFile" ref="login-logo-fileName">{{ lanMap['file_click'] }}</span>
+                <span class="updateFile" ref="login-logo-fileName">{{
+                    lanMap["file_click"]
+                }}</span>
                 <a
                     href="javascript:void(0);"
-                    @click="commit_logo('loginLogo','login-logo-file', 'login-logo-fileName')"
-                >{{ lanMap['commit'] }}</a>
+                    @click="
+                        commit_logo(
+                            'loginLogo',
+                            'login-logo-file',
+                            'login-logo-fileName'
+                        )
+                    "
+                    >{{ lanMap["commit"] }}</a
+                >
             </form>
         </div>
         <div class="sys-set-item">
             <h1>logo</h1>
-            <p class="tips">{{ lanMap['logosize_tips'] }}</p>
+            <p class="tips">{{ lanMap["logosize_tips"] }}</p>
             <form>
                 <input
                     type="file"
@@ -42,29 +59,34 @@
                     @change="changeFile('logo', 'sys-file', 'sys-fileName')"
                     accept="image/png, image/jpg, image/jpeg"
                 />
-                <span class="updateFile" ref="sys-fileName">{{ lanMap['file_click'] }}</span>
+                <span class="updateFile" ref="sys-fileName">{{
+                    lanMap["file_click"]
+                }}</span>
                 <a
                     href="javascript:void(0);"
                     @click="commit_logo('logo', 'sys-file', 'sys-fileName')"
-                >{{ lanMap['commit'] }}</a>
+                    >{{ lanMap["commit"] }}</a
+                >
             </form>
         </div>
         <div class="sys-set-item">
-            <h1>{{ lanMap['company_info'] }}</h1>
-            <h3>{{ lanMap['company_name'] }}</h3>
+            <h1>{{ lanMap["company_info"] }}</h1>
+            <h3>{{ lanMap["company_name"] }}</h3>
             <input type="text" v-model="company_name" maxlength="128" />
             <br />
-            <h3>{{ lanMap['company_addr'] }}</h3>
+            <h3>{{ lanMap["company_addr"] }}</h3>
             <input type="text" v-model="company_addr" maxlength="256" />
-            <h3>{{ lanMap['company_email'] }}</h3>
+            <h3>{{ lanMap["company_email"] }}</h3>
             <input type="text" v-model="company_email" maxlength="32" />
-            <h3>{{ lanMap['company_phone'] }}</h3>
+            <h3>{{ lanMap["company_phone"] }}</h3>
             <input type="text" v-model="company_phone" maxlength="32" />
-            <h3>{{ lanMap['supplier_info'] }}</h3>
+            <h3>{{ lanMap["supplier_info"] }}</h3>
             <input type="text" maxlength="128" v-model="supplier_info" />
         </div>
         <div class="sys-set-item">
-            <a href="javascript:void(0);" @click="commit_info">{{ lanMap['commit'] }}</a>
+            <a href="javascript:void(0);" @click="commit_info">{{
+                lanMap["commit"]
+            }}</a>
         </div>
     </div>
 </template>
@@ -88,7 +110,9 @@ export default {
         };
     },
     created() {
-        this.lang = sessionStorage.getItem("def_lang") || "en";
+        if (this.language) {
+            this.lang = this.language;
+        }
         if (sessionStorage.getItem("uname") !== "devol") {
             this.$router.back();
         }
@@ -218,6 +242,9 @@ export default {
     },
     watch: {
         lang() {
+            if (this.language === this.lang) {
+                return;
+            }
             this.set_language(this.lang);
         },
         language() {
