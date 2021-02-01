@@ -212,9 +212,7 @@ export function isFunction(func) {
 }
 
 export function clearSessionStorage() {
-    const lang = sessionStorage.getItem("def_lang");
     sessionStorage.clear();
-    sessionStorage.setItem("def_lang", lang);
 }
 
 export function isArray(val) {
