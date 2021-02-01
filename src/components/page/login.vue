@@ -247,7 +247,6 @@ export default {
                 return;
             }
             this.setLanguage(this.lang);
-            sessionStorage.setItem("def_lang", this.lang);
             const data = {
                 method: "set",
                 param: {
