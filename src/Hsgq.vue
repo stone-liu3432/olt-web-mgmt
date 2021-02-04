@@ -1,5 +1,5 @@
 <template>
-    <div id="hsgq" v-if="lanMap">
+    <div id="hsgq">
         <router-view></router-view>
         <loading v-if="isLoading"></loading>
     </div>
@@ -26,31 +26,17 @@ export default {
             zh,
             en,
         };
-        var def_lang = sessionStorage.getItem("def_lang");
-        if (def_lang) {
-            this.set_language(def_lang);
-            this.add_lanMap(this.lang[def_lang]);
-        } else {
-            this.$http
-                .get(this.change_url.get_lang)
-                .then((res) => {
-                    if (res.data.code === 1) {
-                        const lang = res.data.data.lang || "en";
-                        this.set_language(lang.replace(/[\r\n\s]/g, ""));
-                        //  缓存用户选择的语言类型，防止用户手动刷新数据消失
-                        sessionStorage.setItem(
-                            "def_lang",
-                            lang.replace(/[\r\n\s]/g, "")
-                        );
-                    } else {
-                        this.set_language("en");
-                        sessionStorage.setItem("def_lang", "en");
-                    }
-                })
-                .catch((err) => {
-                    // to do
-                });
-        }
+        this.$http
+            .get(this.change_url.get_lang)
+            .then((res) => {
+                if (res.data.code === 1) {
+                    const lang = res.data.data.lang;
+                    this.set_language(lang);
+                } else {
+                    this.set_language("en");
+                }
+            })
+            .catch((err) => {});
         this.http_interceptors();
     },
     methods: {
@@ -101,19 +87,11 @@ export default {
         },
     },
     computed: {
-        ...mapState([
-            "port_info",
-            "system",
-            "isLoading",
-            "language",
-            "change_url",
-            "lanMap",
-        ]),
+        ...mapState(["isLoading", "language", "change_url", "lanMap"]),
     },
     watch: {
         language() {
             this.add_lanMap(this.lang[this.language]);
-            sessionStorage.setItem("def_lang", this.language);
         },
     },
 };
