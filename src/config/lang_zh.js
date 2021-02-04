@@ -919,6 +919,7 @@ var zh = {
     lb_onu_mode: "环路ONU处理",
     onu_upgrade_status: "ONU升级状态",
     upgrade_progress: "下载进度",
+    device_type: "设备类型",
 
     composeRange(min, max) {
         return `${min}${max ? " - " + max : ""}位字符`;
