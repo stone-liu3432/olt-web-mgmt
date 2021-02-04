@@ -15,7 +15,7 @@ export default {
     // 端口映射 => port_id : port_name
     port_name: {},
     // 选择语言输出到页面 => 语言映射
-    lanMap: null,
+    lanMap: {},
     // 菜单映射
     menu: {},
     // onu列表
