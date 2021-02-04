@@ -24,7 +24,7 @@
                 >
                     <span>{{ lanMap[key] }}</span>
                     <span
-                        v-if="key !== 'lic_total'"
+                        v-if="key !== 'lic_total' && key !== 'device_type'"
                         :style="{
                             color:
                                 key === 'lic_available' && item <= 5
@@ -34,7 +34,7 @@
                     >
                         {{ item }}
                     </span>
-                    <template v-else>
+                    <template v-if="key === 'lic_total'">
                         <span :style="{ width: item !== 0 ? 'auto' : '' }">
                             {{ item === 0 ? lanMap["forever"] : item }}
                         </span>
@@ -46,6 +46,9 @@
                                 {{ lanMap["add"] + lanMap["lic_total"] }}
                             </nms-button>
                         </template>
+                    </template>
+                    <template v-if="key === 'device_type'">
+                        <span>{{ item === 1 ? "EPON" : "GPON" }}</span>
                     </template>
                 </div>
             </div>
