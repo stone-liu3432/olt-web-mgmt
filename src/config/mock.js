@@ -40,7 +40,7 @@ Mock.mock("/onu_allow_list", "get", () => {
                 register_time: "2019/03/04 12:29:54",
                 last_down_time: "2000/04/06 22:39:24",
                 last_down_reason: "Power Down",
-                parent: Random.pick([0, 1, 2, 3])
+                parent: Random.pick([1, 2, 3, 4, 5, 6, 8, 7])
             }))
         );
         return pre;
@@ -73,3 +73,26 @@ Mock.mock(/\/onumgmt\?form=upgrade_status&port_id=\d+/, "get", ({ url }) => {
         data
     };
 });
+
+Mock.mock(/\/ponmgmt\?form=splitter&port_id=\d+/, "get", ({ url }) => {
+    const port_id = url.match(/(?<=port_id=)\d+/) >>> 0,
+        data = Array.from({ length: 97 /* Random.natural(1, 8) */ }).map(
+            (item, index) => ({
+                port_id,
+                splitter_id: index + 1,
+                name: Random.word(1, 32),
+                description: Random.word(0, 64),
+                parent: index === 0 ? 0 : index < 33 ? 1 : 2
+            })
+        );
+    return {
+        code: 1,
+        message: "success",
+        data
+    };
+});
+
+Mock.mock("/ponmgmt?form=splitter", "post", () => ({
+    code: 1,
+    message: "success"
+}));

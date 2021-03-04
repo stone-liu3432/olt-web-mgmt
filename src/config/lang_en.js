@@ -952,6 +952,11 @@ var en = {
     onu_upgrade_status: " ONU Upgrade Status ",
     upgrade_progress: "Download progress",
     device_type: " Device Type ",
+    splitter_id: " Splitter ID ",
+    bind_onu: " Bind ONU ",
+    add_sub_splitter: " Add sub-splitter ",
+    splitter_parent: " Parent node ",
+    onulist: " ONU List ",
 
     composeRange(min, max) {
         return `${min}${max ? " - " + max : ""} characters`;

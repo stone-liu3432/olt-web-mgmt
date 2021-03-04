@@ -920,6 +920,11 @@ var zh = {
     onu_upgrade_status: "ONU升级状态",
     upgrade_progress: "下载进度",
     device_type: "设备类型",
+    splitter_id: "分光器ID",
+    bind_onu: "绑定ONU",
+    add_sub_splitter: "添加下级分光器",
+    splitter_parent: "父节点",
+    onulist: "ONU列表",
 
     composeRange(min, max) {
         return `${min}${max ? " - " + max : ""}位字符`;
