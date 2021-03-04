@@ -8,7 +8,7 @@
                     </div>
                     <template v-if="custom.hsgq">
                         <div class="copyright-design-info">
-                            Copyright 2017-2020. Design by HSGQ.
+                            Copyright 2017-2021. Design by HSGQ.
                         </div>
                     </template>
                 </template>
