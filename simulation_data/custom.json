@@ -1,0 +1,14 @@
+{
+    "code": 1,
+    "message": "success",
+    "data": {
+        "hsgq": 1,
+        "addonu": 1,
+        "pon_authmode": 1,
+        "frpc": 1,
+        "captcha": 0,
+        "fix_lang": 0,
+        "mac_auth": 1,
+        "alarm_save": 1
+    }
+}

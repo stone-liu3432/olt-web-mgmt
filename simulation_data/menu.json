@@ -1,0 +1,178 @@
+{
+    "code": 1,
+    "msg": "success",
+    "data": {
+        "page": "advanced",
+        "menu": [
+            {
+                "name": "running_status"
+            },
+            {
+                "name": "system_mgmt",
+                "children": [
+                    {
+                        "name": "dev_mgmt"
+                    },
+                    {
+                        "name": "diagonose"
+                    },
+                    {
+                        "name": "remote_mgmt"
+                    },
+                    {
+                        "name": "sys_acl"
+                    },
+                    {
+                        "name": "upgrade"
+                    },
+                    {
+                        "name": "time"
+                    },
+                    {
+                        "name": "service"
+                    },
+                    {
+                        "name": "alarm"
+                    },
+                    {
+                        "name": "user_mgmt"
+                    }
+                ]
+            },
+            {
+                "name": "pon_mgmt",
+                "children": [
+                    {
+                        "name": "onu_deny"
+                    },
+                    {
+                        "name": "sla_cfg"
+                    },
+                    {
+                        "name": "pon_setting"
+                    },
+                    {
+                        "name": "loid_mgmt"
+                    },
+                    {
+                        "name": "onu_batch_upgrade"
+                    },
+                    {
+                        "name": "onu_upgrade_status"
+                    },
+                    {
+                        "name": "pon_optical"
+                    },
+                    {
+                        "name": "batch_config"
+                    }
+                ]
+            },
+            {
+                "name": "onu_mgmt",
+                "children": [
+                    {
+                        "name": "onu_basic_info"
+                    },
+                    {
+                        "name": "onu_port_cfg"
+                    },
+                    {
+                        "name": "onu_multicast"
+                    },
+                    {
+                        "name": "onu_perf_info"
+                    }
+                ]
+            },
+            {
+                "name": "swport_mgmt",
+                "children": [
+                    {
+                        "name": "port_info"
+                    },
+                    {
+                        "name": "perf_info"
+                    },
+                    {
+                        "name": "stormctrl"
+                    },
+                    {
+                        "name": "mirror"
+                    },
+                    {
+                        "name": "port_optical"
+                    },
+                    {
+                        "name": "loop_detect"
+                    },
+                    {
+                        "name": "port_group"
+                    }
+                ]
+            },
+            {
+                "name": "mac_mgmt",
+                "children": [
+                    {
+                        "name": "mac_table"
+                    },
+                    {
+                        "name": "pon_mac"
+                    }
+                ]
+            },
+            {
+                "name": "protocol_mgmt",
+                "children": [
+                    {
+                        "name": "rstp"
+                    },
+                    {
+                        "name": "igmp"
+                    },
+                    {
+                        "name": "dhcp"
+                    },
+                    {
+                        "name": "mstp"
+                    },
+                    {
+                        "name": "dhcp_v6"
+                    }
+                ]
+            },
+            {
+                "name": "ACL/QoS",
+                "children": [
+                    {
+                        "name": "time_range"
+                    },
+                    {
+                        "name": "acl_mgmt"
+                    },
+                    {
+                        "name": "packet_filter"
+                    },
+                    {
+                        "name": "QoS"
+                    }
+                ]
+            },
+            {
+                "name": "route",
+                "children": [
+                    {
+                        "name": "route_mgmt"
+                    },
+                    {
+                        "name": "ARP"
+                    }
+                ]
+            },
+            {
+                "name": "link_aggregation"
+            }
+        ]
+    }
+}

@@ -1,0 +1,30 @@
+{
+    "code": 1,
+    "message": "success",
+    "data": {
+        "port_id": 2,
+        "onu_id": 1,
+        "llid": 0,
+        "onu_name": "ONU02/01",
+        "auth_mode": "mac",
+        "auth_state": "FALSE",
+        "status": "Register",
+        "onu_type": "",
+        "rtt": "18",
+        "macaddr": "d8:42:ac:cb:5c:d0",
+        "loid": "",
+        "password": "",
+        "upgrade_type": "",
+        "ctcver": "2.1",
+        "software_ver": "",
+        "hardware_ver": "",
+        "vendor": "",
+        "sn_model": "",
+        "chip_model": "00",
+        "onu_chip": "00",
+        "fw_ver": "00000000000000000000000000000000",
+        "onu_desc": "aggjkhadjkgasdgdslgggggggggggggggggggggggggggggggggkkaskjfsakdfaksd",
+        "geports": 4,
+        "wlan": 2
+    }
+}

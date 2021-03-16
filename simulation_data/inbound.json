@@ -1,0 +1,51 @@
+{
+    "code": 1,
+    "message": "success",
+    "data": [
+        {
+            "telnet_status": 1,
+            "ipaddr": "192.168.12.30",
+            "ipmask": "255.255.235.0",
+            "ipv6_address": [
+                {
+                    "ipv6": "fe80:3a3a::fe2c:30a/64"
+                }
+            ],
+            "interface": "vlanif-100",
+            "vlan_id": 100,
+            "mtu": 1500,
+            "macaddr": "38:3A:21:F0:01:B0",
+            "rcvpkts": 1231,
+            "rcvbytes": "",
+            "transpkts": 1234,
+            "transbytes": 1500
+        },
+        {
+            "telnet_status": 1,
+            "ipaddr": "192.168.8.30",
+            "ipmask": "255.244.255.0",
+            "ipv6_address": [
+                {
+                    "ipv6": "0:9e91:0:c708:aaae:0:aee7:7391/32"
+                },
+                {
+                    "ipv6": "0:0:c708:aaae:0::7391/64"
+                },
+                {
+                    "ipv6": "0:9e91:0:c708::aee7:7391/32"
+                },
+                {
+                    "ipv6": "0:9e91::aaae:0:aee7:7391/64"
+                }
+            ],
+            "interface": "vlanif-88",
+            "vlan_id": 88,
+            "mtu": 1500,
+            "macaddr": "38:3A:21:F0:01:B0",
+            "rcvpkts": 1231,
+            "rcvbytes": 1756,
+            "transpkts": 1575,
+            "transbytes": 1540
+        }
+    ]
+}

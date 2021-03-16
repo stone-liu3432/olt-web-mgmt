@@ -1,0 +1,62 @@
+{
+    "code": 1,
+    "message": "success",
+    "data": [
+        {
+            "port_id": 1,
+            "auth_type": 1,
+            "auth_mode": 0,
+            "p2p_flag": 1,
+            "rogue_mode": 1,
+            "add_deny_flag": 1,
+            "lb_onu_mode": 0,
+            "opt_min": 1,
+            "opt_min_action": 1,
+            "opt_max": 2,
+            "opt_max_action": 1,
+            "optstate": 0
+        },
+        {
+            "port_id": 2,
+            "auth_type": 1,
+            "auth_mode": 0,
+            "p2p_flag": 1,
+            "rogue_mode": 1,
+            "add_deny_flag": 0,
+            "lb_onu_mode": 1,
+            "opt_min": 1,
+            "opt_min_action": 1,
+            "opt_max": 2,
+            "opt_max_action": 1,
+            "optstate": 1
+        },
+        {
+            "port_id": 3,
+            "auth_type": 0,
+            "auth_mode": 1,
+            "p2p_flag": 1,
+            "rogue_mode": 2,
+            "add_deny_flag": 1,
+            "lb_onu_mode": 0,
+            "opt_min": 1,
+            "opt_min_action": 1,
+            "opt_max": 2,
+            "opt_max_action": 1,
+            "optstate": 1
+        },
+        {
+            "port_id": 4,
+            "auth_type": 0,
+            "auth_mode": 1,
+            "p2p_flag": 0,
+            "rogue_mode": 1,
+            "add_deny_flag": 0,
+            "lb_onu_mode": 1,
+            "opt_min": 1,
+            "opt_min_action": 1,
+            "opt_max": 2,
+            "opt_max_action": 1,
+            "optstate": 0
+        }
+    ]
+}

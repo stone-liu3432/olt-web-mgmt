@@ -1,0 +1,136 @@
+{
+    "root": {
+        "name": "HSGQ-E08", 
+        "ponports": [
+            {
+                "port_id": 1,
+                "status": 1,
+                "online": 12,
+                "offline": 2,
+                "children": [
+                    { 
+                        "port_id": 1,
+                        "split_id": 1,
+                        "parent": null,
+                        "children": null,
+                        "onulist": [1, 2, 3, 4, 5, 6]
+                    }, { 
+                        "port_id": 1,
+                        "split_id": 2,
+                        "parent": 1,
+                        "children": [3],
+                        "onulist": [19, 20, 21, 22, 23, 24]
+                    }, { 
+                        "port_id": 1,
+                        "split_id": 3,
+                        "parent": 2,
+                        "children": null,
+                        "onulist": null
+                    }, { 
+                        "port_id": 1,
+                        "split_id": 2,
+                        "parent": 2,
+                        "children": null,
+                        "onulist": [7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18]
+                    }
+                ]
+            },{
+                "port_id": 2,
+                "status": 1,
+                "online": 12,
+                "offline": 2,
+                "children": [
+                    { 
+                        "port_id": 2,
+                        "split_id": 1,
+                        "parent": null,
+                        "children": null,
+                        "onulist": [1, 2, 3, 4, 5, 6, 7, 8, 9, 10]
+                    }, { 
+                        "port_id": 2,
+                        "split_id": 2,
+                        "parent": 1,
+                        "children": [3, 4],
+                        "onulist": [11, 12, 13, 14, 15, 16, 17, 18]
+                    }, { 
+                        "port_id": 2,
+                        "split_id": 3,
+                        "parent": 2,
+                        "children": null,
+                        "onulist": null
+                    }, { 
+                        "port_id": 2,
+                        "split_id": 4,
+                        "parent": 2,
+                        "children": null,
+                        "onulist": [19, 20, 21, 22, 23, 24]
+                    }
+                ]
+            },{
+                "port_id": 3,
+                "status": 1,
+                "online": 12,
+                "offline": 2,
+                "children": [
+                    { 
+                        "port_id": 3,
+                        "split_id": 1,
+                        "parent": null,
+                        "children": null,
+                        "onulist": [16, 17, 18, 19, 20, 21, 22, 23, 24]
+                    }, { 
+                        "port_id": 3,
+                        "split_id": 2,
+                        "parent": 1,
+                        "children": [4],
+                        "onulist": [1, 2, 3, 4, 5, 6]
+                    }, { 
+                        "port_id": 3,
+                        "split_id": 3,
+                        "parent": 1,
+                        "children": null,
+                        "onulist": [7, 8, 9, 10, 11, 12, 13, 14, 15]
+                    }, { 
+                        "port_id": 3,
+                        "split_id": 4,
+                        "parent": 2,
+                        "children": null,
+                        "onulist": null
+                    }
+                ]
+            },{
+                "port_id": 4,
+                "status": 1,
+                "online": 12,
+                "offline": 2,
+                "children": [
+                    { 
+                        "port_id": 4,
+                        "split_id": 1,
+                        "parent": null,
+                        "children": null,
+                        "onulist": null
+                    }, { 
+                        "port_id": 4,
+                        "split_id": 2,
+                        "parent": 1,
+                        "children": [],
+                        "onulist": [10, 11, 12, 13]
+                    }, { 
+                        "port_id": 4,
+                        "split_id": 3,
+                        "parent": 1,
+                        "children": null,
+                        "onulist": [1, 2, 3, 4, 5, 6, 7, 8, 9]
+                    }, { 
+                        "port_id": 4,
+                        "split_id": 4,
+                        "parent": 1,
+                        "children": null,
+                        "onulist": [14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24]
+                    }
+                ]
+            }
+        ]
+    }
+}

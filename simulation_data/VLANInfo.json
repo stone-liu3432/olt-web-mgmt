@@ -1,0 +1,11 @@
+{
+    "code":1,
+    "msg":"success",
+    "data":{
+        "port_id":1,
+        "port_type":3,
+        "pvid":1,
+        "tagged":" ",
+        "untagged":"1"
+    }
+}

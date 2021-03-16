@@ -1,0 +1,17 @@
+{
+    "code":1,
+    "msg":"success",
+    "data":{
+        "status":1,
+        "rstp_mode":2,
+        "rb_priority":4096,
+        "rb_address":"00:00:00:00:00:11",
+        "db_priority":1,
+        "db_address":"00:00:00:00:00:11",
+        "max_age":6,
+        "hello_time":4,
+        "forward_delay":6,
+        "transmit_hold_count":1,
+        "root_path_cost":1
+    }
+}

@@ -1,0 +1,10 @@
+{
+    "code":1,
+    "msg":"success",
+    "data":{
+        "port_id":1,
+        "broadcast":1,
+        "multicast":2,
+        "unicast":3
+    }
+}

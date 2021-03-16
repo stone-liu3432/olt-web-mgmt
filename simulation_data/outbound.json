@@ -1,0 +1,22 @@
+{
+    "code": 1,
+    "message": "success",
+    "data": {
+        "admin": 1,
+        "telnet_status": 1,
+        "ipaddr": "192.168.1.30",
+        "ipmask": "255.255.255.0",
+        "ipv6_address": [
+            {
+                "ipv6": "fe80::3a3a:21ff:fe2c:30a/64"
+            }
+        ],
+        "interface": "outbound",
+        "mtu": 1500,
+        "macaddr": "38:3A:21:F0:01:B0",
+        "rcvpkts": 1231,
+        "rcvbytes": 1423,
+        "transpkts": 1234,
+        "transbytes": 1500
+    }
+}
