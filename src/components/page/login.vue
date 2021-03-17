@@ -6,14 +6,14 @@
                     <div class="login-logo-imm-container">
                         <img src="/login_logo.png" />
                     </div>
-                    <template v-if="custom.hsgq">
-                        <div class="copyright-design-info">
-                            Copyright 2017-2021. Design by HSGQ.
-                        </div>
-                    </template>
                 </template>
                 <template v-else>
                     <div class="device-type is-no-logo">EPON-OLT</div>
+                </template>
+                <template v-if="custom.hsgq">
+                    <div class="copyright-design-info">
+                        Copyright 2017-2021. Design by HSGQ.
+                    </div>
                 </template>
                 <div class="device-vendor" v-if="system.data">
                     <span>{{ system.data.product_name }}</span>
