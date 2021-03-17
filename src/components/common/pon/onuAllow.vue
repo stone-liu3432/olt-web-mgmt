@@ -437,20 +437,32 @@ export default {
             this.onu_allow_list = [];
             const url =
                 this.portid === 0x100
-                    ? this.change_url.onu_allow_all
+                    ? "/onu_allow_list"
                     : "/onu_allow_list?port_id=" + this.portid;
             this.$http
                 .get(url)
                 .then((res) => {
                     if (res.data.code === 1) {
+                        if (this.portid === 0x100) {
+                            this.$http
+                                .get("/onutable")
+                                .then((_res) => {
+                                    if (_res.data.code === 1) {
+                                        if (Array.isArray(_res.data.data)) {
+                                            this.onu_allow_list =
+                                                _res.data.data;
+                                        }
+                                    }
+                                })
+                                .catch((_err) => {});
+                            return;
+                        }
                         if (Array.isArray(res.data.data)) {
                             this.onu_allow_list = res.data.data;
                         }
                     }
                 })
-                .catch((err) => {
-                    // to do
-                });
+                .catch((err) => {});
         },
         closeModal() {
             this.add_dialog = false;
