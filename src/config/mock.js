@@ -17,7 +17,12 @@ Random.extend({
     }
 });
 
-Mock.mock("/onu_allow_list", "get", () => {
+Mock.mock("/onu_allow_list", "get", {
+    code: 1,
+    message: "success"
+});
+
+Mock.mock("/onutable", "get", () => {
     const data = Array.from({ length: 8 }).reduce((pre, item, index) => {
         pre.push(
             ...Array.from({ length: 64 }).map((sub, idx) => ({
