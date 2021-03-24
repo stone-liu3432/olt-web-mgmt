@@ -1,95 +1,114 @@
 {
-    "code":1,
-    "msg":"success",
-    "data":[{
-        "multi_ip":"224.255.255.255",
-        "vid":100,
-        "action":1, 
-        "host_portlist": "1", 
-        "router_portlist":"2"
-    },{
-        "multi_ip":"224.1.1.2",
-        "vid":101,
-        "action":1, 
-        "host_portlist": "11", 
-        "router_portlist":"12"
-    },{
-        "multi_ip":"224.1.1.3",
-        "vid":102,
-        "action":1, 
-        "host_portlist": "", 
-        "router_portlist":""
-    },{
-        "multi_ip":"224.1.1.4",
-        "vid":103,
-        "action":1, 
-        "host_portlist": "", 
-        "router_portlist":""
-    },{
-        "multi_ip":"224.1.1.5",
-        "vid":104,
-        "action":1, 
-        "host_portlist": "", 
-        "router_portlist":""
-    },{
-        "multi_ip":"224.1.1.6",
-        "vid":105,
-        "action":1, 
-        "host_portlist": "", 
-        "router_portlist":""
-    },{
-        "multi_ip":"224.1.1.7",
-        "vid":106,
-        "action":1, 
-        "host_portlist": "", 
-        "router_portlist":""
-    },{
-        "multi_ip":"224.1.1.8",
-        "vid":107,
-        "action":1, 
-        "host_portlist": "", 
-        "router_portlist":""
-    },{
-        "multi_ip":"224.1.1.9",
-        "vid":108,
-        "action":1, 
-        "host_portlist": "", 
-        "router_portlist":""
-    },{
-        "multi_ip":"224.1.1.10",
-        "vid":109,
-        "action":1, 
-        "host_portlist": "", 
-        "router_portlist":""
-    },{
-        "multi_ip":"224.1.1.10",
-        "vid":110,
-        "action":1, 
-        "host_portlist": "", 
-        "router_portlist":""
-    },{
-        "multi_ip":"224.1.1.10",
-        "vid":150,
-        "action":1, 
-        "host_portlist": "", 
-        "router_portlist":""
-    },{
-        "multi_ip":"224.1.1.10",
-        "vid":120,
-        "action":1, 
-        "host_portlist": "", 
-        "router_portlist":""
-    },{
-        "multi_ip":"224.1.1.10",
-        "vid":160,
-        "action":1, 
-        "host_portlist": "", 
-        "router_portlist":""
-    },{
-        "multi_ip":"224.1.1.10",
-        "vid":130,
-        "action":1, 
-        "host_portlist": "", 
-        "router_portlist":""
-    }]
+    "code": 1,
+    "msg": "success",
+    "data": [
+        {
+            "multi_ip": "224.255.255.255",
+            "user_num": 123,
+            "vid": 100,
+            "action": 1,
+            "host_portlist": "1",
+            "router_portlist": "2"
+        },
+        {
+            "multi_ip": "224.1.1.2",
+            "user_num": 123,
+            "vid": 101,
+            "action": 1,
+            "host_portlist": "11",
+            "router_portlist": "12"
+        },
+        {
+            "multi_ip": "224.1.1.3",
+            "user_num": 123,
+            "vid": 102,
+            "action": 1,
+            "host_portlist": "",
+            "router_portlist": ""
+        },
+        {
+            "multi_ip": "224.1.1.4",
+            "vid": 103,
+            "action": 1,
+            "host_portlist": "",
+            "router_portlist": ""
+        },
+        {
+            "multi_ip": "224.1.1.5",
+            "vid": 104,
+            "action": 1,
+            "host_portlist": "",
+            "router_portlist": ""
+        },
+        {
+            "multi_ip": "224.1.1.6",
+            "vid": 105,
+            "action": 1,
+            "host_portlist": "",
+            "router_portlist": ""
+        },
+        {
+            "multi_ip": "224.1.1.7",
+            "vid": 106,
+            "action": 1,
+            "host_portlist": "",
+            "router_portlist": ""
+        },
+        {
+            "multi_ip": "224.1.1.8",
+            "vid": 107,
+            "action": 1,
+            "host_portlist": "",
+            "router_portlist": ""
+        },
+        {
+            "multi_ip": "224.1.1.9",
+            "vid": 108,
+            "action": 1,
+            "host_portlist": "",
+            "router_portlist": ""
+        },
+        {
+            "multi_ip": "224.1.1.10",
+            "vid": 109,
+            "action": 1,
+            "host_portlist": "",
+            "router_portlist": ""
+        },
+        {
+            "multi_ip": "224.1.1.10",
+            "vid": 110,
+            "action": 1,
+            "host_portlist": "",
+            "router_portlist": ""
+        },
+        {
+            "multi_ip": "224.1.1.10",
+            "vid": 150,
+            "action": 1,
+            "host_portlist": "",
+            "router_portlist": ""
+        },
+        {
+            "multi_ip": "224.1.1.10",
+            "vid": 120,
+            "action": 1,
+            "host_portlist": "",
+            "router_portlist": ""
+        },
+        {
+            "multi_ip": "224.1.1.10",
+            "vid": 160,
+            "action": 1,
+            "host_portlist": "",
+            "router_portlist": ""
+        },
+        {
+            "multi_ip": "224.1.1.10",
+            "vid": 130,
+            "action": 1,
+            "host_portlist": "",
+            "router_portlist": ""
+        }
+    ]
 }

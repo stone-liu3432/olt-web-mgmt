@@ -4,6 +4,7 @@
     "data": {
         "mode": 1,
         "fast_leave": 0,
+        "aging_mode": 1,
         "protocol_policy": 0,
         "group_aging_time": 260,
         "robustness": 2,
