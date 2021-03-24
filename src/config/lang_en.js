@@ -957,6 +957,11 @@ var en = {
     add_sub_splitter: " Add sub-splitter ",
     splitter_parent: " Parent node ",
     onulist: " ONU List ",
+    aging_mode: "Aging Mode",
+    timer: "Timer",
+    "not-timer": "Not Timer",
+    user_num: "User Numbers",
+    isp_oper: "ISP",
 
     composeRange(min, max) {
         return `${min}${max ? " - " + max : ""} characters`;

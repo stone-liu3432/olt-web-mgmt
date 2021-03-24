@@ -925,6 +925,11 @@ var zh = {
     add_sub_splitter: "添加下级分光器",
     splitter_parent: "父节点",
     onulist: "ONU列表",
+    aging_mode: "老化模式",
+    timer: "定时器",
+    "not-timer": "非定时器",
+    user_num: "用户数",
+    isp_oper: "ISP",
 
     composeRange(min, max) {
         return `${min}${max ? " - " + max : ""}位字符`;
