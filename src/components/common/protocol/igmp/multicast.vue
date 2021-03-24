@@ -26,6 +26,10 @@
                 :label="lanMap['multi_ip']"
             ></nms-table-column>
             <nms-table-column
+                prop="user_num"
+                :label="lanMap['user_num']"
+            ></nms-table-column>
+            <nms-table-column
                 prop="vid"
                 :label="lanMap['vid']"
             ></nms-table-column>
